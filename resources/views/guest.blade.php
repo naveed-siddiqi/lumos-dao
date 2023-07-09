@@ -11,7 +11,7 @@
                     </div>
                     <div class="mainIntroBtn">
                         <a class="firstBtn" href="javascript:;">What is a DAO?</a>
-                        <a class="SecondBtn" href="javascript:;">Launch your DAO</a>
+                        <a class="SecondBtn" href="javascript:;" data-bs-toggle="modal" data-bs-target="#ConnectWallet">Launch your DAO</a>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12">
@@ -37,7 +37,7 @@
                         <p>LumosDAO is a powerful and user-friendly platform designed to bridge Stellar-based projects with the world of decentralized autonomous organizations (DAOs). Our platform empowers DAO creators and members to actively participate in shaping the future of their projects. LumosDAO is more than just a platform—it's the catalyst for Stellar's decentralized revolution.</p>
                     </div>
                     <div class="sndIntroBtn">
-                        <a class="bgBtn" href="javascript:;">Launch your DAO</a>
+                        <a class="bgBtn" href="javascript:;" data-bs-toggle="modal" data-bs-target="#ConnectWallet">Launch your DAO</a>
                     </div>
                 </div>
             </div>
@@ -57,7 +57,7 @@
                         <strong>3. Coming Soon:</strong> <p>We're constantly innovating. Get ready for a dedicated discussion forum, crowdfunding features, Airdrops and Bounty panel, and customizable themes.</p>
                     </div>
                     <div class="sndIntroBtn">
-                        <a class="bgBtn tBg" href="javascript:;">Launch your DAO</a>
+                        <a class="bgBtn tBg" href="javascript:;" data-bs-toggle="modal" data-bs-target="#ConnectWallet">Launch your DAO</a>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12">
@@ -85,7 +85,7 @@
                         <p>Our native LUMOS tokens are central to the LumosDAO ecosystem. With a total supply of 10 billion, LUMOS tokens are used for DAO creation, voting, and accessing future platform features. LumosDAO and the LUMOS token—designed to drive the Stellar DAO revolution.</p>
                     </div>
                     <div class="mainIntroBtn">
-                        <a class="SecondBtn" href="javascript:;">Launch your DAO</a>
+                        <a class="SecondBtn" href="javascript:;" data-bs-toggle="modal" data-bs-target="#ConnectWallet">Launch your DAO</a>
                     </div>
                 </div>
             </div>

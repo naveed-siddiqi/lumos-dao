@@ -85,13 +85,9 @@
                 <div class="col-12">
                     <div class="propFilterInner">
                         <div class="heading">Proposals</div>
-                        <div class="sort-by-filter">
-                            Sort by
-                            <select>
-                                <option value="asc">Ascending</option>
-                                <option value="desc">Descending</option>
-                            </select>
-                        </div>
+                        <a href="{{ route('proposal.create') }}" class="btn btnCreate">
+                            Create Proposal <img class="plu" src="{{ asset('images/11.png') }}" alt="">
+                        </a>
                     </div>
                 </div>
             </div>
@@ -103,6 +99,35 @@
             <div class="row">
                 <div class="cardEndDiv">
                     <div class="col-12">
+                        <a href="{{ route('proposal') }}" class="text-decoration-none">
+                            <div class="d-flex justify-content-between">
+                                <div class="cardEndDetail">
+                                    <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="Profile Image" class="image">
+                                    <div class="text">ByGBV6...SYEN</div>
+                                </div>
+                                <div class="small-card">
+                                    <div class="small-card-text">Ended</div>
+                                </div>
+                            </div>
+                            <div class="cardendHeading">
+                                <h2 class="heading">Incentivized Referral Program</h2>
+                                <div class="paragraph">
+                                    <p>We will introduce an incentivized referral program, rewarding existing LumosDAO members for bringing in new users. This program will encourage community growth while rewarding loyal members who contribute to expanding our user base.</p>
+                                </div>
+                            </div>
+                            <div class="carendBottom">
+                                <div class="small-card">
+                                    <img src="{{ asset('images/Layer 13.png') }}" alt="Small Image" class="small-image">
+                                    <div class="small-card-text">Yes</div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="cardEndDiv">
+                    <a href="{{ route('proposal') }}" class="text-decoration-none">
                         <div class="d-flex justify-content-between">
                             <div class="cardEndDetail">
                                 <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="Profile Image" class="image">
@@ -124,61 +149,37 @@
                                 <div class="small-card-text">Yes</div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
             <div class="row">
                 <div class="cardEndDiv">
-                    <div class="d-flex justify-content-between">
-                        <div class="cardEndDetail">
-                            <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="Profile Image" class="image">
-                            <div class="text">ByGBV6...SYEN</div>
+                    <a href="{{ route('proposal') }}" class="text-decoration-none">
+                        <div class="d-flex justify-content-between">
+                            <div class="cardEndDetail">
+                                <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="Profile Image" class="image">
+                                <div class="text">ByGBV6...SYEN</div>
+                            </div>
+                            <div class="small-card">
+                                <div class="small-card-text">Ended</div>
+                            </div>
                         </div>
-                        <div class="small-card">
-                            <div class="small-card-text">Ended</div>
+                        <div class="cardendHeading">
+                            <h2 class="heading">Incentivized Referral Program</h2>
+                            <div class="paragraph">
+                                <p>We will introduce an incentivized referral program, rewarding existing LumosDAO members for bringing in new users. This program will encourage community growth while rewarding loyal members who contribute to expanding our user base.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="cardendHeading">
-                        <h2 class="heading">Incentivized Referral Program</h2>
-                        <div class="paragraph">
-                            <p>We will introduce an incentivized referral program, rewarding existing LumosDAO members for bringing in new users. This program will encourage community growth while rewarding loyal members who contribute to expanding our user base.</p>
+                        <div class="carendBottom">
+                            <div class="small-card">
+                                <img src="{{ asset('images/Layer 13.png') }}" alt="Small Image" class="small-image">
+                                <div class="small-card-text">Yes</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="carendBottom">
-                        <div class="small-card">
-                            <img src="{{ asset('images/Layer 13.png') }}" alt="Small Image" class="small-image">
-                            <div class="small-card-text">Yes</div>
-                        </div>
-                    </div>
+                    </a>
                 </div>
             </div>
-            <div class="row">
-                <div class="cardEndDiv">
-                    <div class="d-flex justify-content-between">
-                        <div class="cardEndDetail">
-                            <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="Profile Image" class="image">
-                            <div class="text">ByGBV6...SYEN</div>
-                        </div>
-                        <div class="small-card">
-                            <div class="small-card-text">Ended</div>
-                        </div>
-                    </div>
-                    <div class="cardendHeading">
-                        <h2 class="heading">Incentivized Referral Program</h2>
-                        <div class="paragraph">
-                            <p>We will introduce an incentivized referral program, rewarding existing LumosDAO members for bringing in new users. This program will encourage community growth while rewarding loyal members who contribute to expanding our user base.</p>
-                        </div>
-                    </div>
-                    <div class="carendBottom">
-                        <div class="small-card">
-                            <img src="{{ asset('images/Layer 13.png') }}" alt="Small Image" class="small-image">
-                            <div class="small-card-text">Yes</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row mb-2
-        ">
+            <div class="row mb-2">
                 <div class="col-12 text-center">
                     <button class="cardendBtn">Load more</button>
                 </div>

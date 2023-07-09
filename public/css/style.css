@@ -41,6 +41,10 @@ code {
     color: var(--primary-color);
 }
 
+a.text-decoration-none {
+    color: inherit;
+}
+
 .DOA {
     background-color: var(--third-bg);
 }
@@ -299,6 +303,9 @@ button#profileDropdown:focus {
     margin-bottom: 10px;
     margin-top: 10px;
     font-family: "MontReg";
+}
+
+.cardDisplay .card-join .card-paragraph {
     min-height: 144px;
 }
 
@@ -2106,6 +2113,10 @@ a.btn.dope {
 
     .email-input {
         padding-right: 103px;
+    }
+
+    .footer .right {
+        justify-content: center;
     }
 }
 

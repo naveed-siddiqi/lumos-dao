@@ -67,8 +67,7 @@
                     </div>
                     @else
                     <div class="loginBox">
-                        {{-- data-bs-target="#ConnectWallet" --}}
-                        <button class="btn btnReg" data-bs-toggle="modal">Connect Wallet</button>
+                        <button class="btn btnReg" data-bs-toggle="modal" data-bs-target="#ConnectWallet">Connect Wallet</button>
                     </div>
                     @endif
                     <div class="themeSwitcher">

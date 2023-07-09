@@ -59,98 +59,104 @@
             <div class="row">
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="card-join cardShow">
-                        <div class="lblJoin">
-                            <p class="mb-0">join</p>
-                        </div>
-                        <div class="card-imgflex">
-                            <img src="{{ asset('images/apple.png') }}" alt="Apple">
-                            <div class="cardHeading">
-                                <p class="card-heading">Apple</p>
+                        <a href="{{ route('dao') }}" class="text-decoration-none">
+                            <div class="lblJoin">
+                                <p class="mb-0">join</p>
                             </div>
-                        </div>
-                        <div class="card-paragraph">
-                            A tech giant renowned for its iconic products like iPhones, iPads, and Macs, Apple combines cutting-edge technology with elegant design to shape the consumer electronics industry.
-                        </div>
+                            <div class="card-imgflex">
+                                <img src="{{ asset('images/apple.png') }}" alt="Apple">
+                                <div class="cardHeading">
+                                    <p class="card-heading">Apple</p>
+                                </div>
+                            </div>
+                            <div class="card-paragraph">
+                                A tech giant renowned for its iconic products like iPhones, iPads, and Macs, Apple combines cutting-edge technology with elegant design to shape the consumer electronics industry.
+                            </div>
 
-                        <div class="cardCircle">
-                            <p>15</p>
-                        </div>
-                        <p class="circleP">Active propsal</p>
+                            <div class="cardCircle">
+                                <p>15</p>
+                            </div>
+                            <p class="circleP">Active propsal</p>
 
-                        <div class="d-flex justify-content-around">
-                            <div class="card-small-div cardShowSmall">
-                                <p class="card-bold-word">17,23</p>
-                                <p class="card-link">Members</p>
+                            <div class="d-flex justify-content-around">
+                                <div class="card-small-div cardShowSmall">
+                                    <p class="card-bold-word">17,23</p>
+                                    <p class="card-link">Members</p>
+                                </div>
+                                <div class="card-small-div cardShowSmall">
+                                    <p class="card-bold-word">17,23</p>
+                                    <p class="card-link">Members</p>
+                                </div>
                             </div>
-                            <div class="card-small-div cardShowSmall">
-                                <p class="card-bold-word">17,23</p>
-                                <p class="card-link">Members</p>
-                            </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="card-join cardShow">
-                        <div class="lblJoin">
-                            <p class="mb-0">join</p>
-                        </div>
-                        <div class="card-imgflex">
-                            <img src="{{ asset('images/google.png') }}" alt="Google">
-                            <div class="cardHeading">
-                                <p class="card-heading">Google</p>
+                        <a href="{{ route('dao') }}" class="text-decoration-none">
+                            <div class="lblJoin">
+                                <p class="mb-0">join</p>
                             </div>
-                        </div>
-                        <div class="card-paragraph">
-                            Google offers a range of services including its renowned search engine, Google Search, along with popular platforms like Google Maps, Gmail, and YouTube, revolutionizing the way people access information and connect online.
-                        </div>
+                            <div class="card-imgflex">
+                                <img src="{{ asset('images/google.png') }}" alt="Google">
+                                <div class="cardHeading">
+                                    <p class="card-heading">Google</p>
+                                </div>
+                            </div>
+                            <div class="card-paragraph">
+                                Google offers a range of services including its renowned search engine, Google Search, along with popular platforms like Google Maps, Gmail, and YouTube, revolutionizing the way people access information and connect online.
+                            </div>
 
-                        <div class="cardCircle">
-                            <p>15</p>
-                        </div>
-                        <p class="circleP">Active propsal</p>
+                            <div class="cardCircle">
+                                <p>15</p>
+                            </div>
+                            <p class="circleP">Active propsal</p>
 
-                        <div class="d-flex justify-content-around">
-                            <div class="card-small-div cardShowSmall">
-                                <p class="card-bold-word">17,23</p>
-                                <p class="card-link">Members</p>
+                            <div class="d-flex justify-content-around">
+                                <div class="card-small-div cardShowSmall">
+                                    <p class="card-bold-word">17,23</p>
+                                    <p class="card-link">Members</p>
+                                </div>
+                                <div class="card-small-div cardShowSmall">
+                                    <p class="card-bold-word">17,23</p>
+                                    <p class="card-link">Members</p>
+                                </div>
                             </div>
-                            <div class="card-small-div cardShowSmall">
-                                <p class="card-bold-word">17,23</p>
-                                <p class="card-link">Members</p>
-                            </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="card-join cardShow">
-                        <div class="lblJoin">
-                            <p class="mb-0">join</p>
-                        </div>
-                        <div class="card-imgflex">
-                            <img src="{{ asset('images/amazon.png') }}" alt="Amazon">
-                            <div class="cardHeading">
-                                <p class="card-heading">Amazon</p>
+                        <a href="{{ route('dao') }}" class="text-decoration-none">
+                            <div class="lblJoin">
+                                <p class="mb-0">join</p>
                             </div>
-                        </div>
-                        <div class="card-paragraph">
-                            The world's largest online retailer, Amazon has transformed the retail landscape with its vast product selection, convenient shopping experience, and fast delivery services.
-                        </div>
+                            <div class="card-imgflex">
+                                <img src="{{ asset('images/amazon.png') }}" alt="Amazon">
+                                <div class="cardHeading">
+                                    <p class="card-heading">Amazon</p>
+                                </div>
+                            </div>
+                            <div class="card-paragraph">
+                                The world's largest online retailer, Amazon has transformed the retail landscape with its vast product selection, convenient shopping experience, and fast delivery services.
+                            </div>
 
-                        <div class="cardCircle">
-                            <p>15</p>
-                        </div>
-                        <p class="circleP">Active propsal</p>
+                            <div class="cardCircle">
+                                <p>15</p>
+                            </div>
+                            <p class="circleP">Active propsal</p>
 
-                        <div class="d-flex justify-content-around">
-                            <div class="card-small-div cardShowSmall">
-                                <p class="card-bold-word">17,23</p>
-                                <p class="card-link">Members</p>
+                            <div class="d-flex justify-content-around">
+                                <div class="card-small-div cardShowSmall">
+                                    <p class="card-bold-word">17,23</p>
+                                    <p class="card-link">Members</p>
+                                </div>
+                                <div class="card-small-div cardShowSmall">
+                                    <p class="card-bold-word">17,23</p>
+                                    <p class="card-link">Members</p>
+                                </div>
                             </div>
-                            <div class="card-small-div cardShowSmall">
-                                <p class="card-bold-word">17,23</p>
-                                <p class="card-link">Members</p>
-                            </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
             </div>
