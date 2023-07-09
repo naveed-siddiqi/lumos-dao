@@ -40,7 +40,7 @@
                             <a class="nav-link" href="{{ route('page', 'how-it-works') }}">How it works</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Github</a>
+                            <a class="nav-link" href="https://github.com/lumosdao/app" target="_blank">Github</a>
                         </li>
                     </ul>
                     {{-- temporary --}}
