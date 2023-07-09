@@ -1,0 +1,125 @@
+Check Wallet Connection:
+<?php
+$wallet_connected = true;
+if ( isset($wallet_connected) && $wallet_connected==true ) {}
+?>
+
+
+Clone CSS:
+/* wallet conenction */
+.drop {
+    display: inline-block;
+    position: relative;
+    text-align: center;
+}
+.drop input[type=checkbox] {
+    display: none;
+}
+.drop input[type=checkbox]:checked~.drop-items {
+    opacity: 1;
+    max-height: 400px;
+    padding: 0.6rem 0;
+}
+.drop input[type=checkbox]:checked~.control {
+    z-index: 99;
+    box-shadow: 0 0 0 2px #5055b1;
+}
+.drop input[type=checkbox]:checked~.control:after {
+    transform: rotate(180deg);
+}
+.drop input[type=checkbox]:checked~.overlay-close {
+    transform: none;
+    pointer-events: initial;
+}
+.drop .control {
+    position: relative;
+    color: #898989;
+    display: inline-block;
+    cursor: pointer;
+    padding: 0.5em 1.2em;
+    background: white;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    border: 1px solid #eaeaea;
+}
+.drop .control:after {
+    content: "";
+    display: inline-block;
+    height: 0.5em;
+    width: 0.5em;
+    margin-left: 6.8em;
+    background-image: url(/images/down-arrow.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    transition: transform 0.3s ease;
+}
+.drop .drop-items {
+    position: absolute;
+    top: calc(100% + .4rem);
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    transition: all 0.3s ease;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    z-index: 99;
+}
+.drop .drop-items .item-drop {
+    list-style: none;
+}
+.drop .drop-items .item-drop a {
+    display: flex;
+    text-align: left;
+    color: black;
+    align-items: center;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.9rem;
+    transition: all 0.3s ease;
+}
+.drop .overlay-close {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 9;
+    transform: translate(100%, 0);
+    pointer-events: none;
+}
+.modal-content {
+    height: 400px;
+}
+.modal-body {
+    padding: 4rem;
+}
+.modal-dialog {
+    top: 17%;
+}
+.modal-content{
+    border-radius: 1.3rem;
+}
+.modal-body h3{
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+.cont-btn {
+    padding: 0px 33px;
+    margin-top: 15px;
+}
+a.btn.dope {
+    font-size: 18px;
+    font-weight: 500;
+    background-image: linear-gradient(to right, #FFA500, #FF4500, #FF0000);
+    border: none;
+    color: white;
+    padding: 12px 50px;
+    border-radius: 50px;
+    margin-top: 40px;
+}
+/* wallet conenction */

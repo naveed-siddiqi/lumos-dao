@@ -1,0 +1,91 @@
+
+
+.flat-slider {
+  width: 26rem;
+  padding: 0;
+  position: relative;
+  margin: auto;
+  left: -6px;
+}
+
+.flat-slider .ui-corner-all { border-radius: 0px; }
+
+.flat-slider .ui-widget-content a { color: #222222; }
+
+.flat-slider .ui-widget-content {
+  color: #222222;
+  /* background-color: #999; */
+  background: linear-gradient(90deg, #7d70ff, #23d7ff) !important;
+  border-width: 0;
+  border-radius: 10px;
+}
+
+.flat-slider .ui-widget-header {
+  background-color: white;
+  border-color: white;
+  background-image: none;
+}
+
+.flat-slider .ui-state-hover,
+.flat-slider .ui-widget-content .ui-state-hover,
+.flat-slider .ui-widget-header .ui-state-hover,
+.flat-slider .ui-state-focus,
+ .flat-slider .ui-widget-content .ui-state-focus,
+.flat-slider .ui-widget-header .ui-state-focus { background:#23d7ff; }
+
+.flat-slider .ui-slider {
+  position: relative;
+  text-align: left;
+}
+.flat-slider .ui-slider-handle:focus-visible{
+  outline: none !important;
+}
+
+.flat-slider .ui-slider-horizontal { height: 0.4rem; }
+
+.flat-slider .ui-slider-handle {
+  cursor: pointer;
+  position: absolute;
+  z-index: 2;
+  background-color: #23d7ff;
+  background-image: none;
+  border-color: #fff;
+  border-radius: 20px;
+  height: 1rem;
+  top: -0.3rem;
+  width: 1rem;
+}
+
+.flat-slider .min,
+.flat-slider .max,
+ .flat-slider .min_value,
+.flat-slider .max_value,
+.flat-slider .value {
+  margin-top: 0.3em;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  -webkit-transition-duration: 0.35s;
+  -moz-transition-duration: 0.35s;
+  -o-transition-duration: 0.35s;
+  transition-duration: 0.35s;
+  -webkit-transition-property: opacity;
+  -moz-transition-property: opacity;
+  -o-transition-property: opacity;
+  transition-property: opacity;
+}
+
+.flat-slider .min,
+.flat-slider .max {
+  font-size: 16px;
+  color: #c4c4c4;
+}
+
+.flat-slider .min { float: left; }
+
+.flat-slider .max { float: right; }
+
+.flat-slider .min_value,
+.flat-slider .max_value,
+.flat-slider .value { position: absolute; color: white; font-size: 16px; }
+
+.flat-slider::after { clear: both; }
