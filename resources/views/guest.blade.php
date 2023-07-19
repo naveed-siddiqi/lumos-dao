@@ -66,7 +66,7 @@
                     </div>
                     <div class="videoBox">
                         <video controls autoplay muted playsinline>
-                            <source src="{{ asset('video.mp4') }}" type="video/mp4">
+                            <source src="{{asset('video.mp4')}}" type="video/mp4">
                         </video>
                     </div>
                 </div>
