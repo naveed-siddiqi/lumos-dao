@@ -43,25 +43,20 @@
                             <a class="nav-link" href="https://github.com/lumosdao/app" target="_blank">Github</a>
                         </li>
                     </ul>
-                    {{-- temporary --}}
-                    {{-- @if (isset($_COOKIE['public'])) --}}
-                    @if (Route::currentRouteName()!='home')
+                    @if (isset($_COOKIE['public']))
                     <div class="profile-dropdown">
                         <div class="dropdown">
                             <button class="btn btn-light dropdown-toggle hide-arrow" type="button" id="profileDropdown"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 <div class="profile-icon">
-                                    {{-- <img src="https://id.lobstr.co/{{$_COOKIE['public']}}.png" alt="Profile Icon">
-                                    <code class="profile-name">{{ substr($_COOKIE['public'], 0, 4) . '...' . substr($_COOKIE['public'], -5) }}</code> --}}
-                                    <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="Profile Icon">
-                                    <code class="profile-name">GBZZV...DRW5P</code>
+                                    <img src="https://id.lobstr.co/{{$_COOKIE['public']}}.png" alt="Profile Icon">
+                                    <code class="profile-name">{{ substr($_COOKIE['public'], 0, 4) . '...' . substr($_COOKIE['public'], -5) }}</code>
                                     <span class="arrowdown"><img src="{{ asset('images/Layer 3.png') }}" alt=""></span>
                                 </div>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                                {{-- {{ url('wallet/disconnect') }} --}}
-                                <li><a class="dropdown-item" href="javascript:;">Disconnect</a></li>
-                                <li><a class="dropdown-item" href="javascript:;" onclick="copy('GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P')"><i class="fa fa-copy"></i> Copy address</a></li>
+                                <li><a class="dropdown-item" href="{{ url('wallet/disconnect') }}">Disconnect</a></li>
+                                <li><a class="dropdown-item" href="javascript:;" onclick="copy('{{$_COOKIE['public']}}')"><i class="fa fa-copy"></i> Copy address</a></li>
                             </ul>
                         </div>
                     </div>

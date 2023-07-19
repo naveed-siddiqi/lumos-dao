@@ -11,6 +11,7 @@ Route::get('/', [AppController::class, 'home'])->name('home');
 Route::prefix('dao')->name('dao')->group(function () {
     Route::get('/', [DaoController::class, 'index'])->name('');
     Route::get('create', [DaoController::class, 'create'])->name('.create');
+    Route::get('search', [DaoController::class, 'search'])->name('.search');
     Route::post('store', [DaoController::class, 'store'])->name('.store');
 });
 Route::prefix('proposal')->name('proposal')->group(function () {

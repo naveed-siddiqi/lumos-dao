@@ -681,6 +681,12 @@ button#profileDropdown:focus {
     text-align: left;
 }
 
+.gray-div-logo img {
+    width: 100%;
+    /* aspect-ratio: 14/9; */
+    height: 100%;
+}
+
 .gray-div img {
     max-width: 100%;
     height: auto;

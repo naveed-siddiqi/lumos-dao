@@ -4,16 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Staking;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 
 class AppController extends Controller
 {
     public function home()
     {
-        // $view = isset($_COOKIE['public']) ? 'index' : 'guest';
-        // temporary
-        $view = Route::currentRouteName()=='explore' ? 'index' : 'guest';
-
+        $view = isset($_COOKIE['public']) ? 'index' : 'guest';
         return view($view);
     }
     public function invest()

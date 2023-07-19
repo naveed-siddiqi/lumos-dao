@@ -61,10 +61,9 @@
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="cont-btn">
-                                            {{-- onclick="connectWallet()" --}}
                                             <a type="button"
                                                 class="walletconnect-btn btn dope mt-0"
-                                                href="javascript::void()">Connect
+                                                href="javascript::void()" onclick="connectWallet()">Connect
                                                 Wallet</a>
                                             <a type="button" style="display:none"
                                                 class="connectLoading-btn btn dope mt-0"
