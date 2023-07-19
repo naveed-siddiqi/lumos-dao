@@ -65,7 +65,9 @@
                         <img src="{{ asset('images/third.png') }}" alt="">
                     </div>
                     <div class="videoBox">
-                        <iframe width="" height="" src="https://www.youtube.com/embed/tgbNymZ7vqY"></iframe>
+                        <video controls autoplay muted playsinline>
+                            <source src="{{asset('video.mp4')}}" type="video/mp4">
+                        </video>
                     </div>
                 </div>
             </div>
