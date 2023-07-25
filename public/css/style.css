@@ -1203,7 +1203,7 @@ button#profileDropdown:focus {
     margin-left: 50px;
 }
 
-.videoBox video {
+.videoBox iframe {
     width: 550px;
     /* height: 400px; */
     position: relative;
@@ -2044,7 +2044,7 @@ a.btn.dope {
         margin-left: 20px;
     }
 
-    .videoBox video {
+    .videoBox iframe {
         width: 350px;
         height: 300px;
     }
@@ -2193,7 +2193,7 @@ a.btn.dope {
         margin-left: 10px;
     }
 
-    .videoBox video {
+    .videoBox iframe {
         width: 350px;
         height: 300px;
     }
@@ -2241,7 +2241,7 @@ a.btn.dope {
         left: 26.7%;
     }
 
-    /* .videoBox video {
+    /* .videoBox iframe {
         width: 450px;
     } */
 
