@@ -9,7 +9,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Session;
-use Soneso\StellarSDK\AssetTypeCreditAlphanum4;
+use Soneso\StellarSDK\AssetTypeCreditAlphanum12;
 use Soneso\StellarSDK\Crypto\KeyPair;
 use Soneso\StellarSDK\Memo;
 use Soneso\StellarSDK\Network;
@@ -50,7 +50,7 @@ class WalletController extends Controller
         $lowAmount = null;
 
         foreach ($account->getBalances() as $bal) {
-            if ($bal->getAssetCode() == 'DOPE') {
+            if ($bal->getAssetCode() == 'LUMOS') {
                 $lumos = 1;
                 if ($bal->getBalance() < $this->minAmount) {
                     $lowAmount = 1;
@@ -59,7 +59,7 @@ class WalletController extends Controller
         }
 
         if (!$lumos) {
-            return response()->json(['status' => 0, 'msg' => 'Account does not have DOPE trusline!']);
+            return response()->json(['status' => 0, 'msg' => 'Account does not have LUMOS trusline!']);
         }
 
         $data = [
@@ -100,7 +100,7 @@ class WalletController extends Controller
         $lowAmount = null;
 
         foreach ($account->getBalances() as $bal) {
-            if ($bal->getAssetCode() == 'DOPE') {
+            if ($bal->getAssetCode() == 'LUMOS') {
                 $lumos = 1;
                 if ($bal->getBalance() < $this->minAmount) {
                     $lowAmount = 1;
@@ -109,7 +109,7 @@ class WalletController extends Controller
         }
 
         if (!$lumos) {
-            return response()->json(['status' => 0, 'msg' => 'Account does not have DOPE trusline!']);
+            return response()->json(['status' => 0, 'msg' => 'Account does not have LUMOS trusline!']);
         }
 
         $data = [
@@ -207,11 +207,9 @@ class WalletController extends Controller
 
             $account = $this->sdk->requestAccount($wallet->public);
 
-            // $assetCode = 'LUMOS';
-            // $assetIssuer = 'GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P';
-            $assetCode = 'DOPE';
-            $assetIssuer = 'GA6XXNKX5LYLZGZ2QM5CHLZ4R66P4OC6UD7APNLRWRHSILUNIVZ7B4YB';
-            $asset = new AssetTypeCreditAlphanum4($assetCode, $assetIssuer);
+            $assetCode = 'LUMOS';
+            $assetIssuer = 'GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P';
+            $asset = new AssetTypeCreditAlphanum12($assetCode, $assetIssuer);
             // Payment Operation
             $paymentOperation = (new PaymentOperationBuilder($mainPair->getAccountId(), $asset, $amount))->build();
             $txbuilder = new TransactionBuilder($account);
@@ -239,7 +237,7 @@ class WalletController extends Controller
 
             $assetCode = 'LUMOS';
             $assetIssuer = 'GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P';
-            $asset = new AssetTypeCreditAlphanum4($assetCode, $assetIssuer);
+            $asset = new AssetTypeCreditAlphanum12($assetCode, $assetIssuer);
             // Payment Operation
             $paymentOperation = (new PaymentOperationBuilder($mainPair->getAccountId(), $asset, $amount))->build();
             $txbuilder = new TransactionBuilder($account);
@@ -316,9 +314,9 @@ class WalletController extends Controller
             $mainAccount = $this->sdk->requestAccount($mainPair->getAccountId());
             $account = $this->sdk->requestAccount($invest->public);
 
-            $assetCode = 'DOPE';
-            $assetIssuer = 'GA6XXNKX5LYLZGZ2QM5CHLZ4R66P4OC6UD7APNLRWRHSILUNIVZ7B4YB';
-            $asset = new AssetTypeCreditAlphanum4($assetCode, $assetIssuer);
+            $assetCode = 'LUMOS';
+            $assetIssuer = 'GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P';
+            $asset = new AssetTypeCreditAlphanum12($assetCode, $assetIssuer);
             // Payment Operation
             $paymentOperation = (new PaymentOperationBuilder($account->getAccountId(), $asset, $amount))->build();
             $txbuilder = new TransactionBuilder($mainAccount);
