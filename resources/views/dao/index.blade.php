@@ -85,7 +85,7 @@
                 <div class="col-12">
                     <div class="propFilterInner">
                         <div class="heading">Proposals</div>
-                        <a href="{{ route('proposal.create') }}" class="btn btnCreate">
+                        <a href="{{ route('dao.proposal.create', 1) }}" class="btn btnCreate">
                             Create Proposal <img class="plu" src="{{ asset('images/11.png') }}" alt="">
                         </a>
                     </div>
@@ -99,7 +99,7 @@
             <div class="row">
                 <div class="cardEndDiv">
                     <div class="col-12">
-                        <a href="{{ route('proposal') }}" class="text-decoration-none">
+                        <a href="{{ route('dao.proposal', [1,1]) }}" class="text-decoration-none">
                             <div class="d-flex justify-content-between">
                                 <div class="cardEndDetail">
                                     <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="Profile Image" class="image">
@@ -127,7 +127,7 @@
             </div>
             <div class="row">
                 <div class="cardEndDiv">
-                    <a href="{{ route('proposal') }}" class="text-decoration-none">
+                    <a href="{{ route('dao.proposal', [1,1]) }}" class="text-decoration-none">
                         <div class="d-flex justify-content-between">
                             <div class="cardEndDetail">
                                 <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="Profile Image" class="image">
@@ -154,7 +154,7 @@
             </div>
             <div class="row">
                 <div class="cardEndDiv">
-                    <a href="{{ route('proposal') }}" class="text-decoration-none">
+                    <a href="{{ route('dao.proposal', [1,1]) }}" class="text-decoration-none">
                         <div class="d-flex justify-content-between">
                             <div class="cardEndDetail">
                                 <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="Profile Image" class="image">

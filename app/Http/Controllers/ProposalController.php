@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dao;
+use App\Models\Proposal;
+use DateInterval;
+use DateTime;
 use Illuminate\Http\Request;
 
 class ProposalController extends Controller
@@ -21,9 +25,10 @@ class ProposalController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($dao_id)
     {
-        return view('proposal.create');
+        $dao = Dao::findOrFail($dao_id);
+        return view('proposal.create', compact('dao'));
     }
 
     /**
@@ -32,9 +37,24 @@ class ProposalController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($dao_id, Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required',
+            'about' => 'required',
+            'start_date' => 'required|date'
+        ]);
+        $request['dao_id'] = $dao_id;
+
+        $startDate = new DateTime($request->start_date);
+
+        // Add 10 days to the start date
+        $startDate->add(new DateInterval('P10D'));
+
+        $request['end_date'] = $startDate->format('Y-m-d');
+
+        Proposal::create($request->all());
+        return redirect()->route('dao', $dao_id);
     }
 
     /**

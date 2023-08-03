@@ -59,7 +59,7 @@
             <div class="row">
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="card-join cardShow">
-                        <a href="{{ route('dao') }}" class="text-decoration-none">
+                        <a href="{{ route('dao', 1) }}" class="text-decoration-none">
                             <div class="lblJoin">
                                 <p class="mb-0">join</p>
                             </div>
@@ -93,7 +93,7 @@
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="card-join cardShow">
-                        <a href="{{ route('dao') }}" class="text-decoration-none">
+                        <a href="{{ route('dao', 1) }}" class="text-decoration-none">
                             <div class="lblJoin">
                                 <p class="mb-0">join</p>
                             </div>
@@ -127,7 +127,7 @@
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="card-join cardShow">
-                        <a href="{{ route('dao') }}" class="text-decoration-none">
+                        <a href="{{ route('dao', 1) }}" class="text-decoration-none">
                             <div class="lblJoin">
                                 <p class="mb-0">join</p>
                             </div>

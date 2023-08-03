@@ -46,21 +46,21 @@ class WalletController extends Controller
             return response()->json(['status' => 0, 'msg' => 'Deposit 5 XLM lumens into your wallet!']);
         }
 
-        $dope = null;
+        $lumos = null;
         $lowAmount = null;
 
-        // foreach ($account->getBalances() as $bal) {
-        //     if ($bal->getAssetCode() == 'DOPE') {
-        //         $dope = 1;
-        //         if ($bal->getBalance() < $this->minAmount) {
-        //             $lowAmount = 1;
-        //         }
-        //     }
-        // }
+        foreach ($account->getBalances() as $bal) {
+            if ($bal->getAssetCode() == 'DOPE') {
+                $lumos = 1;
+                if ($bal->getBalance() < $this->minAmount) {
+                    $lowAmount = 1;
+                }
+            }
+        }
 
-        // if (!$dope) {
-        //     return response()->json(['status' => 0, 'msg' => 'Account does not have DOPE trusline!']);
-        // }
+        if (!$lumos) {
+            return response()->json(['status' => 0, 'msg' => 'Account does not have DOPE trusline!']);
+        }
 
         $data = [
             'public' => $request->public,
@@ -96,19 +96,19 @@ class WalletController extends Controller
             return response()->json(['status' => 0, 'msg' => 'Deposit 5 XLM lumens into your wallet!']);
         }
 
-        $dope = null;
+        $lumos = null;
         $lowAmount = null;
 
         foreach ($account->getBalances() as $bal) {
             if ($bal->getAssetCode() == 'DOPE') {
-                $dope = 1;
+                $lumos = 1;
                 if ($bal->getBalance() < $this->minAmount) {
                     $lowAmount = 1;
                 }
             }
         }
 
-        if (!$dope) {
+        if (!$lumos) {
             return response()->json(['status' => 0, 'msg' => 'Account does not have DOPE trusline!']);
         }
 
@@ -154,24 +154,24 @@ class WalletController extends Controller
             return response()->json(['status' => 0, 'msg' => 'Deposit 5 XLM lumens into your wallet!']);
         }
 
-        $dope = null;
+        $lumos = null;
         $lowAmount = null;
 
         foreach ($account->getBalances() as $bal) {
-            if ($bal->getAssetCode() == 'DOPE') {
-                $dope = 1;
+            if ($bal->getAssetCode() == 'LUMOS') {
+                $lumos = 1;
                 if ($bal->getBalance() < $request->amount) {
                     $lowAmount = 1;
                 }
             }
         }
 
-        if (!$dope) {
-            return response()->json(['status' => 0, 'msg' => 'Account does not have DOPE trusline!']);
+        if (!$lumos) {
+            return response()->json(['status' => 0, 'msg' => 'Account does not have LUMOS trusline!']);
         }
 
         if ($lowAmount) {
-            return response()->json(['status' => 0, 'msg' => 'Not enough DOPE Tokens!']);
+            return response()->json(['status' => 0, 'msg' => 'Not enough LUMOS Tokens!']);
         }
 
         $data = array(
@@ -207,6 +207,8 @@ class WalletController extends Controller
 
             $account = $this->sdk->requestAccount($wallet->public);
 
+            // $assetCode = 'LUMOS';
+            // $assetIssuer = 'GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P';
             $assetCode = 'DOPE';
             $assetIssuer = 'GA6XXNKX5LYLZGZ2QM5CHLZ4R66P4OC6UD7APNLRWRHSILUNIVZ7B4YB';
             $asset = new AssetTypeCreditAlphanum4($assetCode, $assetIssuer);
@@ -214,7 +216,7 @@ class WalletController extends Controller
             $paymentOperation = (new PaymentOperationBuilder($mainPair->getAccountId(), $asset, $amount))->build();
             $txbuilder = new TransactionBuilder($account);
             $txbuilder->setMaxOperationFee($this->maxFee);
-            $transaction = $txbuilder->addOperation($paymentOperation)->addMemo(new Memo(1, 'DOPE staking'))->build();
+            $transaction = $txbuilder->addOperation($paymentOperation)->addMemo(new Memo(1, 'DAO creating'))->build();
             $signer = Signer::preAuthTx($transaction, Network::public());
             $sk = new XdrSigner($signer, 1);
             $transaction->addSignature(new XdrDecoratedSignature('sign', $sk->encode()));
@@ -228,7 +230,6 @@ class WalletController extends Controller
     private function stakeSecret($wallet, $amount)
     {
         try {
-
             // Destination Account
             $mainSecret = env('MAIN_WALLET');
             $mainPair = KeyPair::fromSeed($mainSecret);
@@ -236,14 +237,14 @@ class WalletController extends Controller
             $account = $this->sdk->requestAccount($wallet->public);
             $sourcePair = KeyPair::fromSeed($wallet->secret);
 
-            $assetCode = 'DOPE';
-            $assetIssuer = 'GA6XXNKX5LYLZGZ2QM5CHLZ4R66P4OC6UD7APNLRWRHSILUNIVZ7B4YB';
+            $assetCode = 'LUMOS';
+            $assetIssuer = 'GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P';
             $asset = new AssetTypeCreditAlphanum4($assetCode, $assetIssuer);
             // Payment Operation
             $paymentOperation = (new PaymentOperationBuilder($mainPair->getAccountId(), $asset, $amount))->build();
             $txbuilder = new TransactionBuilder($account);
             $txbuilder->setMaxOperationFee($this->maxFee);
-            $transaction = $txbuilder->addOperation($paymentOperation)->addMemo(new Memo(1, 'DOPE staking'))->build();
+            $transaction = $txbuilder->addOperation($paymentOperation)->addMemo(new Memo(1, 'DAO creating'))->build();
             $transaction->sign($sourcePair, Network::public());
             $response = $transaction->toEnvelopeXdrBase64();
 

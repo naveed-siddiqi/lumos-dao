@@ -778,17 +778,19 @@ button#profileDropdown:focus {
     color: var(--primary-color);
 }
 
-.textProp textarea {
+.textProp .input-filed {
     width: 100%;
-    /* Adjust the width as needed */
-    height: 200px;
-    /* Adjust the height as needed */
     resize: none;
     border: 0px;
     padding: 10px;
     font-size: 16px;
     color: var(--primary-color);
     font-family: "MontReg";
+    margin-bottom: 2px;
+}
+
+.textProp textarea {
+    height: 200px;
 }
 
 /* options div */
@@ -1904,7 +1906,7 @@ a.btn.dope {
         font-size: 25px;
     }
 
-    .textProp textarea {
+    .textProp .input-filed {
         font-size: 14px;
     }
 

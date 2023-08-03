@@ -81,37 +81,55 @@
                         <p>Create DAO</p>
                         <p class="lumostext">(10,000 LUMOS)</p>
                     </button>
+                    <button style="display: none" class="btn btnCreateD" id="loadStaking" disabled>
+                        <div class="spinner-grow spinner-grow-sm" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                        Wait
+                    </button>
                 </div>
             </div>
         </div>
     </section>
-    @endif
-
-    <section class="errorDao d-none">
+    @elseif (Session::has('error_key'))
+    <section class="errorDao">
         <div class="container">
             <div class="innerError">
                 <div class="row">
                     <div class="col-12">
                         <div class="emoiDiv">
                             <img src="{{ asset('images/emoji.png') }}" alt="">
-                            <p>Your Wallet is not aproved in the TOML</p>
+                            <p>
+                                @if (Session::get('error_key') == 'blank')
+                                Please fill both fileds
+                                @elseif (Session::get('error_key') == 'domain')
+                                The domain you entered is incorrect or not having a TOML
+                                @elseif (Session::get('error_key') == 'permission')
+                                Your Wallet is not aproved in the TOML
+                                @elseif (Session::get('error_key') == 'code')
+                                The asset code is not exist in TOML
+                                @endif
+                            </p>
                         </div>
                     </div>
+                    @if (Session::get('error_key') == 'permission')
                     <div class="col-12">
                         <div class="guideWallet">
                             <p><span><img src="{{ asset('images/dot.png') }}" alt=""></span>Add you wallter
-                                address here: example.com/.well-known/stellar.toml, OR</p>
+                                address here: {{Session::get('domain')}}/.well-known/stellar.toml, OR</p>
                             <p><span><img src="{{ asset('images/dot.png') }}" alt=""></span>Try again with
                                 any other approved account.</p>
                         </div>
                         <div class="guideLink">
                             <h6>Tutorial</h6>
-                            <p><a href="">Click here </a>to learn how to approve you Stellar walltet address
+                            <p><a href="javascript:;">Click here </a>to learn how to approve you Stellar walltet address
                                 through toml.</p>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
     </section>
+    @endif
 @endsection

@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('domain');
             $table->bigInteger('holders');
             $table->json('approved_wallets');
+            $table->bigInteger('required_tokens');
             $table->timestamps();
         });
     }

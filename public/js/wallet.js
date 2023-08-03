@@ -180,13 +180,13 @@ function storeWalletPublic(public, wallet) {
                 $('.range-value').html('<span>10k</span>');
 
                 if (response.lowAmount) {
-                    $('#stake-btn').attr('disabled', true);
+                    $('#create-dao').attr('disabled', true);
                     $('#slider_single').attr('disabled', true);
                     $('#eligibleError').removeAttr('hidden');
                     $('.rangeP').text('Below 10k');
                     $('#maxRange').text('Below 10k');
                 } else {
-                    $('#stake-btn').removeAttr('disabled');
+                    $('#create-dao').removeAttr('disabled');
                     $('#slider_single').removeAttr('disabled');
                     $('#eligibleError').attr('hidden', true);
                     // var accVal = Math.round((parseInt((response.balance).replace(/,/g, '')) / 1000));
@@ -239,13 +239,13 @@ function storePublic(key) {
                 $('.range-value').html('<span>10k</span>');
 
                 if (response.lowAmount) {
-                    $('#stake-btn').attr('disabled', true);
+                    $('#create-dao').attr('disabled', true);
                     $('#slider_single').attr('disabled', true);
                     $('#eligibleError').removeAttr('hidden');
                     $('.rangeP').text('Below 10k');
                     $('#maxRange').text('Below 10k');
                 } else {
-                    $('#stake-btn').removeAttr('disabled');
+                    $('#create-dao').removeAttr('disabled');
                     $('#slider_single').removeAttr('disabled');
                     $('#eligibleError').attr('hidden', true);
                     // var accVal = Math.round((parseInt((response.balance).replace(/,/g, '')) / 1000));
@@ -278,38 +278,44 @@ function storePublic(key) {
 }
 
 function btnLoaderHide() {
-    $('#stake-btn').show();
+    $('#create-dao').show();
     $('#loadStaking').hide();
 }
 
-function invest() {
-    var bal = parseFloat($('#selected-dope').text());
-    // bal = (parseFloat(bal.replace(' K', "")) * 1000).toFixed(0);
-    $('#stake-btn').hide();
-    $('#loadStaking').show();
-    $.ajax({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        url: base_url + '/wallet/invest',
-        type: "post",
-        data: {
-            amount: bal,
-        },
-        success: function (response) {
-            if (response.status == 1) {
-                signXdr(response.xdr, response.staking_id);
-            } else {
+$('#create-dao').click(() => {
+    let validate = $('#required-tokens').val() ? true : false;
+    $('.wallet-name.active').each(function(){
+        $(this).val() || (validate = false);
+    })
+    if (validate) {
+        $('#create-dao').hide();
+        $('#loadStaking').show();
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: base_url + '/wallet/invest',
+            type: "post",
+            data: {
+                amount: 0.0001,
+            },
+            success: function (response) {
+                if (response.status == 1) {
+                    signXdr(response.xdr, response.staking_id);
+                } else {
+                    btnLoaderHide();
+                    toastr.error(response.msg, "DAO Creating Error");
+                }
+            },
+            error: function (xhr, status, error) {
                 btnLoaderHide();
-                toastr.error(response.msg, "Staking Error");
+                toastr.error('Something went wrong!', "DAO Creating Error");
             }
-        },
-        error: function (xhr, status, error) {
-            btnLoaderHide();
-            toastr.error('Something went wrong!', "Staking Error");
-        }
-    });
-}
+        });
+    } else {
+        toastr.warning('Please fill the form');
+    }
+});
 
 function signXdr(xdr, staking_id) {
     switch (wallet) {
@@ -376,17 +382,52 @@ function submitStakingXdr(xdr, staking_id) {
         success: function (response) {
             console.log(response);
             if (response.status == 1) {
-                toastr.success("Successful", "Staking");
-                location.reload();
+                createDao();
             } else {
-                toastr.error(response.msg, "Staking Error");
+                toastr.error(response.msg, "DAO Creating Error");
             }
             btnLoaderHide();
         },
         error: function (xhr, status, error) {
             console.log(xhr.responseText);
             btnLoaderHide();
-            toastr.error('Something went wrong!', "Staking Error");
+            toastr.error('Something went wrong!', "DAO Creating Error");
+        }
+    });
+}
+
+const createDao = () => {
+    let project = $('#dao-project').html();
+    let asset = $('#dao-asset').html();
+    let logo = $('#dao-logo').attr('src');
+    let accounts = [];
+    let wallets_checkbox = '.approved-wallets input[type=checkbox]';
+    $(wallets_checkbox).each(function () {
+        accounts.push(this.value);
+    });
+    let description = $('#dao-description').val();
+    let domain = $('#dao-domain').html();
+    let holders = $('#dao-holders').html();
+    let required_tokens = $('#required-tokens').val();
+    let approved_wallets = {};
+    $(wallets_checkbox + ':checked').each(function (key) {
+        let index = $(`.wallet-name:eq(${key + 1})`).val();
+        approved_wallets[index] = this.value;
+    });
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url: '/dao/store',
+        type: "post",
+        data: { project, asset, logo, accounts, description, domain, holders, required_tokens, 'approved_wallets': JSON.stringify(approved_wallets) },
+        success: function (response) {
+            if (response.status == 1) {
+                toastr.success(response.msg)
+            }
+        },
+        error: function (xhr, status, error) {
+            toastr.error('Something went wrong!', "DAO Creating Error");
         }
     });
 }

@@ -9,7 +9,7 @@ class Dao extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['project', 'asset', 'logo', 'accounts', 'description', 'domain', 'holders', 'approved_wallets'];
+    protected $fillable = ['project', 'asset', 'logo', 'accounts', 'description', 'domain', 'holders', 'approved_wallets', 'required_tokens'];
     protected $casts = [
         'accounts' => 'array'
     ];
