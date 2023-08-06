@@ -49,18 +49,18 @@ class WalletController extends Controller
         $lumos = null;
         $lowAmount = null;
 
-        foreach ($account->getBalances() as $bal) {
-            if ($bal->getAssetCode() == 'LUMOS') {
-                $lumos = 1;
-                if ($bal->getBalance() < $this->minAmount) {
-                    $lowAmount = 1;
-                }
-            }
-        }
+        // foreach ($account->getBalances() as $bal) {
+        //     if ($bal->getAssetCode() == 'LUMOS') {
+        //         $lumos = 1;
+        //         if ($bal->getBalance() < $this->minAmount) {
+        //             $lowAmount = 1;
+        //         }
+        //     }
+        // }
 
-        if (!$lumos) {
-            return response()->json(['status' => 0, 'msg' => 'Account does not have LUMOS trusline!']);
-        }
+        // if (!$lumos) {
+        //     return response()->json(['status' => 0, 'msg' => 'Account does not have LUMOS trusline!']);
+        // }
 
         $data = [
             'public' => $request->public,
