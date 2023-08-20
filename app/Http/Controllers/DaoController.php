@@ -38,16 +38,16 @@ class DaoController extends Controller
         $data = ['domain'=>$domain, 'code'=>$code];
         if ($domain && $code) {
             try {
-                try {
+                // try {
                     $response = $client->get($url);
-                } catch (\Throwable $th) {
-                    $data += ['error_key'=>'domain'];
-                }
+                // } catch (\Throwable $th) {
+                //     $data += ['error_key'=>'domain'];
+                // }
                 $content = $response->getBody()->getContents();
                 $toml = Toml::parse($content);
-                // if ( in_array($_COOKIE['public'], $toml['ACCOUNTS']) ) {
-                if ( in_array($_COOKIE['public'], $toml['ACCOUNTS']) || $_COOKIE['public']==env('DEVELOPER_WALLET') ) {
-                    if ( array_search($code, array_column($toml['CURRENCIES'], 'code')) ) {
+                // if ( isset($toml['ACCOUNTS']) && in_array($_COOKIE['public'], $toml['ACCOUNTS']) ) {
+                if ( ( isset($toml['ACCOUNTS']) && in_array($_COOKIE['public'], $toml['ACCOUNTS']) ) || $_COOKIE['public']==env('DEVELOPER_WALLET') ) {
+                    if ( in_array($code, array_column($toml['CURRENCIES'], 'code')) ) {
                         $data += ['toml'=>$toml];
                     } else {
                         $data += ['error_key'=>'code'];
@@ -56,6 +56,7 @@ class DaoController extends Controller
                     $data += ['error_key'=>'permission'];
                 }
             } catch (\Throwable $th) {
+                $data += ['error_key'=>'domain'];
             }
 
             // $response = Http::get('https://horizon.stellar.org/assets', [

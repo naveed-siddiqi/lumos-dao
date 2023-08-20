@@ -38,7 +38,7 @@
                             <label class="label">Tokens Required to Create Proposal</label>
                         </div>
                         <div class="ScDiv">
-                            <p id="dao-project">{{ Session::get('toml')['DOCUMENTATION']['ORG_NAME'] }}</p>
+                            <p id="dao-project"> {{ isset(Session::get('toml')['DOCUMENTATION']['ORG_NAME']) ? Session::get('toml')['DOCUMENTATION']['ORG_NAME'] : '-'}} </p>
                             <p id="dao-asset">{{ Session::get('code') }}</p>
                             <p id="dao-domain">{{ Session::get('domain') }}</p>
                             <p id="dao-holders">999</p>
@@ -51,21 +51,23 @@
                         <p>*Check the wallets that you want to make vissible. *</p>
                     </div>
                     <div class="checkboxWallet">
-                        @foreach (Session::get('toml')['ACCOUNTS'] as $key => $account)
-                        <div class="approved-wallets form-group row">
-                            @php $connected_account = $_COOKIE['public']; @endphp
-                            <div class="col-lg-8 col-md-8 col-sm-12">
-                                <input type="checkbox" id="wallet{{$key}}" value="{{$account}}" {{$account==$connected_account ? 'checked disabled' : ''}}>
-                                <label for="wallet{{$key}}" class="col-form-label text-break">
-                                    {{$account}}
-                                    @if($account==$connected_account) (<span class="text-success">connected</span>) @endif
-                                </label>
+                        @isset(Session::get('toml')['ACCOUNTS'])
+                            @foreach (Session::get('toml')['ACCOUNTS'] as $key => $account)
+                            <div class="approved-wallets form-group row">
+                                @php $connected_account = $_COOKIE['public']; @endphp
+                                <div class="col-lg-8 col-md-8 col-sm-12">
+                                    <input type="checkbox" id="wallet{{$key}}" value="{{$account}}" {{$account==$connected_account ? 'checked disabled' : ''}}>
+                                    <label for="wallet{{$key}}" class="col-form-label text-break">
+                                        {{$account}}
+                                        @if($account==$connected_account) (<span class="text-success">connected</span>) @endif
+                                    </label>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <input type="text" class="wallet-name form-control mb-1 {{$account!=$connected_account ? 'd-none' : 'active'}}" placeholder="Wallet name">
+                                </div>
                             </div>
-                            <div class="col-lg-4 col-md-4 col-sm-12">
-                                <input type="text" class="wallet-name form-control mb-1 {{$account!=$connected_account ? 'd-none' : 'active'}}" placeholder="Wallet name">
-                            </div>
-                        </div>
-                        @endforeach
+                            @endforeach
+                        @endisset
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-12 order1">
