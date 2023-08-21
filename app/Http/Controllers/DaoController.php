@@ -45,8 +45,8 @@ class DaoController extends Controller
                 // }
                 $content = $response->getBody()->getContents();
                 $toml = Toml::parse($content);
-                // if ( isset($toml['ACCOUNTS']) && in_array($_COOKIE['public'], $toml['ACCOUNTS']) ) {
-                if ( ( isset($toml['ACCOUNTS']) && in_array($_COOKIE['public'], $toml['ACCOUNTS']) ) || $_COOKIE['public']==env('DEVELOPER_WALLET') ) {
+                if ( isset($toml['ACCOUNTS']) && in_array($_COOKIE['public'], $toml['ACCOUNTS']) ) {
+                // if ( ( isset($toml['ACCOUNTS']) && in_array($_COOKIE['public'], $toml['ACCOUNTS']) ) || $_COOKIE['public']==env('DEVELOPER_WALLET') ) {
                     if ( in_array($code, array_column($toml['CURRENCIES'], 'code')) ) {
                         $data += ['toml'=>$toml];
                     } else {

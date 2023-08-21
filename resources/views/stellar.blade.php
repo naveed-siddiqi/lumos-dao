@@ -4,7 +4,7 @@ header("Access-Control-Allow-Origin: *");
 
 [[CURRENCIES]]
 code = "LUMOS"
-issuer = "GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P"
+issuer = "GDI7OP3X7BMEOXRVJ2CKGRQS2SXJWV7BYTZPDYZ6BZFE3LSTWEIG3X4R"
 display_decimals = 2
 name = "LumosDAO Token"
 desc = "LumosDAO is a decentralized platform built on the Stellar blockchain, designed as a launching pad for other DAOs. Powered by the native LUMOS token, it provides an array of features including staking, airdrops, and seamless token swaps. LumosDAO is paving the way for democratic and innovative growth within the Stellar ecosystem."
