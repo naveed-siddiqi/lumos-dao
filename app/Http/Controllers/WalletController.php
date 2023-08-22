@@ -39,15 +39,15 @@ class WalletController extends Controller
             return response()->json(['status' => 0, 'msg' => 'Something went wrong!']);
         }
 
-        // Check Stellar Account
-        try {
-            $account = $this->sdk->requestAccount($request->public);
-        } catch (Exception $th) {
-            return response()->json(['status' => 0, 'msg' => 'Deposit 5 XLM lumens into your wallet!']);
-        }
-
         $lumos = null;
         $lowAmount = null;
+
+        // Check Stellar Account
+        // try {
+        //     $account = $this->sdk->requestAccount($request->public);
+        // } catch (Exception $th) {
+        //     return response()->json(['status' => 0, 'msg' => 'Deposit 5 XLM lumens into your wallet!']);
+        // }
 
         // foreach ($account->getBalances() as $bal) {
         //     if ($bal->getAssetCode() == 'LUMOS') {
@@ -78,7 +78,13 @@ class WalletController extends Controller
         setcookie('public', $request->public, time() + (86400 * 30), "/");
         setcookie('wallet', $request->wallet, time() + (86400 * 30), "/");
 
-        return response()->json(['lowAmount' => $lowAmount, 'balance' => balanceComma(dopeBalance($request->public)), 'public' => $request->public, 'msg' => 'Connection successfull!', 'status' => 1]);
+        try {
+            $balance = balanceComma(dopeBalance($request->public));
+        } catch (\Throwable $th) {
+            $balance = 0;
+        }
+
+        return response()->json(['lowAmount' => $lowAmount, 'balance' => $balance, 'public' => $request->public, 'msg' => 'Connection successfull!', 'status' => 1]);
     }
 
     public function secret(Request $request)
