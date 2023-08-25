@@ -22,6 +22,175 @@
             </div>
         </div>
     </section>
+    <section class="container">
+            <div>
+                <div class=" py-3">
+                    <span class="asset-stellar-p">New to Stellar blockchain?</span>
+                    <div class=" d-flex gap-2">
+                         <span class="asset-steller-span">Issue a new asset in seconds!</span>
+                         <a style="font-size:14px;" href="#">
+                            Click here
+                         </a>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-2">
+            <span class="asset-stellar-p ">Deo Details:</span>
+            </div>
+
+            <div class="assetCode-deo-deatail">
+               <div class="d-flex align-items-center gap-2">
+               <span class="asset-stellar-p">Note:</span>
+                <span class="asset-details-text">Deposit 3 XLM in each of the wallets to cover the fees</span>
+               </div>
+               <div style="overflow:scroll;" class="">
+               <div style="min-width:600px; overflow:scroll;"  class="">
+
+<div class="">
+    <div class="d-flex justify-content-between py-3">
+    <div class="flex-fill">
+        <span class="asset-stellar-p">Issuing account:</span>
+        <span class="asset-details-text">1234....5435</span>
+    </div>
+    <div style="text-align:center;"  class="flex-fill">
+        <a class="deo-details-link" href="#">
+            <span class="asset-details-text">
+            <span class="asset-details-text"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width=18px>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
+            </svg>
+            </span>
+            <span class="asset-details-text">copy</span>
+        </a>
+    </div>
+    <div style="justify-content:end;"   class="d-flex gap-2 flex-fill">
+        <div class="dot-spinner">
+            <!-- Dot spinner content -->
+            <div class="dot-spinner">
+                <div class="dot-spinner__dot"></div>
+                <div class="dot-spinner__dot"></div>
+                <div class="dot-spinner__dot"></div>
+                <div class="dot-spinner__dot"></div>
+                <div class="dot-spinner__dot"></div>
+                <div class="dot-spinner__dot"></div>
+                <div class="dot-spinner__dot"></div>
+                <div class="dot-spinner__dot"></div>
+            </div>
+        </div>
+        <span class="asset-details-text">Waiting for the payment</span>
+    </div>
+    <div style="justify-content:end;"   class="d-flex gap-2 flex-fill">
+        <span class="asset-details-text">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="18px" >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+        </span>
+        <span class="asset-details-text">Download secret key</span>
+    </div>
+</div>
+
+<div  class="d-flex justify-content-between ">
+
+    <div class="flex-fill">
+        <span class="asset-stellar-p ">Disturbing account:</span>
+        <span class="asset-details-text">1234....5435</span>
+    </div>
+    <div style="text-align:center;"  class="flex-fill">
+        <a class="deo-details-link" href="#">
+            <span class="asset-details-text">
+            <span class="asset-details-text"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width=18px>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
+            </svg>
+            </span>
+            <span class="asset-details-text">copy</span>
+        </a>
+    </div>
+    <div style="justify-content:end;"  class="d-flex gap-2 flex-fill">
+        <div class="dot-spinner">
+            <!-- Dot spinner content -->
+            <div class="dot-spinner">
+                <div class="dot-spinner__dot"></div>
+                <div class="dot-spinner__dot"></div>
+                <div class="dot-spinner__dot"></div>
+                <div class="dot-spinner__dot"></div>
+                <div class="dot-spinner__dot"></div>
+                <div class="dot-spinner__dot"></div>
+                <div class="dot-spinner__dot"></div>
+                <div class="dot-spinner__dot"></div>
+            </div>
+        </div>
+        <span class="asset-details-text">Waiting for the payment</span>
+    </div>
+    <div style="justify-content:end;"  class="d-flex gap-2 flex-fill">
+        <span class="asset-details-text">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="18px" >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+        </span>
+        <span class="asset-details-text">Download secret key</span>
+    </div>
+</div>
+               </div>
+
+               </div>
+                    </div>
+
+                    <div class="mt-5">
+                <form action="">
+                    <div class="grid-form">
+                        <div class="form-group">
+                            <label for="">
+                                <span class="asset-stellar-p">Add logo:</span>
+                            </label>
+                            <div class="container_custom_file_input">
+                                <div class="custom-file" style="position: relative;">
+                                    <input type="file" class="custom-file-input" id="customFile">
+                                    <label class="custom-file-label" for="customFile">
+                                        <span>Browse Computer</span>
+                                        <div class="">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="24px">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                            </svg>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="">
+                                <span class="asset-details-text">Project name:</span>
+                            </label>
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="">
+                                <span class="asset-details-text">Ticker:</span>
+                            </label>
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="">
+                                <span class="asset-details-text">Supply:</span>
+                            </label>
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="form-group">
+                        <button type="submit" class="btn deo-details_btn">
+                            <span>Create DAO</span>
+                            <span class="deo-details_btn_num">(10,000 LUMOS)</span>
+                        </button>
+
+                        </div>
+                    </div>
+                </form>
+             </div>
+            </div>
+
+
+
+
+
+        </section>
+
 
     @if (Session::has('toml'))
     <section class="project_Description ">

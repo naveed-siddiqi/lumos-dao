@@ -12,6 +12,15 @@
                         <span class="rightArrow"> > </span>
                         <p class="apple-text">Create proposal</p>
                     </div>
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -23,8 +32,8 @@
             <div class="container">
                 <div class="row">
                     <div class="innerPropText">
-                        <div class="col-12 ">
-                            <div class="warning-box">
+                        <div style="display:none;" class="col-12 ">
+                            <div  class="warning-box">
                                 <span class="warning-icon"><img src="{{ asset('images/war.png') }}" alt=""></span>
                                 <p>You need to have a minimum of {{$dao->required_tokens}} {{$dao->asset}} in order to submit a proposal.</p>
                             </div>
@@ -84,22 +93,7 @@
                             <input id="endDate" class="form-control" type="date" disabled/>
                         </div>
                     </div>
-                    <div class="row mt-3">
-                        <div class="col-12">
-                            {{-- <div class="warning-box warRed">
-                                <span class="warning-icon"><img src="{{ asset('images/warRed.png') }}" alt=""></span>
-                                <p>You dont have enough balance to create a proposal</p>
-                            </div> --}}
-                            @if ($errors->any())
-                                <div class="warning-box warRed">
-                                    <span class="warning-icon"><img src="{{ asset('images/warRed.png') }}" alt=""></span>
-                                    @foreach ($errors->all() as $error)
-                                        <p>{{ $error }}</p>
-                                    @endforeach
-                                </div>
-                            @endif
-                        </div>
-                    </div>
+
                 </div>
                 <div class="row mb-2 mt-3">
                     <div class="col-12 propbtn">

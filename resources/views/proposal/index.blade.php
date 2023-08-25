@@ -115,7 +115,7 @@
                                 <tr>
                                     <th scope="col">Address</th>
                                     <th scope="col">Vote</th>
-                                    <th scope="col">Amount</th>
+                                    <th scope="col">Voting Power</th>
                                     <th scope="col">Date</th>
                                 </tr>
                             </thead>
@@ -123,19 +123,19 @@
                                 <tr>
                                     <td>GCXY...VTJ6</td>
                                     <td>Yes</td>
-                                    <td>1 LUMOS</td>
+                                    <td>24</td>
                                     <td>3 months ago</td>
                                 </tr>
                                 <tr>
                                     <td>GCXY...VTJ6</td>
                                     <td>No</td>
-                                    <td>1 LUMOS</td>
+                                    <td>24</td>
                                     <td>3 months ago</td>
                                 </tr>
                                 <tr>
                                     <td>GCXY...VTJ6</td>
                                     <td>No</td>
-                                    <td>1 LUMOS</td>
+                                    <td>24</td>
                                     <td>3 months ago</td>
                                 </tr>
                                 <tr>
@@ -147,13 +147,13 @@
                                 <tr>
                                     <td>GCXY...VTJ6</td>
                                     <td>Yes</td>
-                                    <td>1 LUMOS</td>
+                                    <td>43</td>
                                     <td>3 months ago</td>
                                 </tr>
                                 <tr>
                                     <td>GCXY...VTJ6</td>
                                     <td>No</td>
-                                    <td>1 LUMOS</td>
+                                    <td>98</td>
                                     <td>3 months ago</td>
                                 </tr>
                             </tbody>
@@ -162,5 +162,41 @@
                 </div>
             </div>
         </div>
+    </section>
+    <section class="DescPer">
+        <div class="container">
+            <div style="text-align:right;" class="pb-3">
+                <button style="border:1px solid #e5e7eb; background-color:white; padding:8px; border-radius:10px;font-weight:500; " type="button">Add Comments</button>
+            </div>
+            <div class="row">
+                <div class="DescPerSec">
+                    <h1>Comments</h1>
+                    <div  class="col-12">
+                          <div class="col-12">
+                        <div class="d-flex align-items-center justify-center gap-2">
+                            <img style="width:40px; height:40px; border-radius:50%;" src="https://images.unsplash.com/photo-1683009680116-b5c04463551d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwcm9maWxlLXBhZ2V8MTh8fHxlbnwwfHx8fHw%3D&auto=format&fit=crop&w=500&q=60" alt="">
+                            <span>BQEH.....OHBPS</span>
+                        </div>
+                        </div>
+                        <div style="border-bottom: 1px solid #e5e7eb; " class="col-12 my-2">
+                            <p>We propose an initiative to expand and strengthen the LumosDAO community, fostering greater engagement, collaboration, and participation. Our goal is to attract new members, promote awareness of LumosDAO's capabilities, and enhance the overall user experience within the platform.</p>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                          <div class="col-12">
+                        <div class="d-flex align-items-center justify-center gap-2">
+                            <img style="width:40px; height:40px; border-radius:50%;" src="https://images.unsplash.com/photo-1683009680116-b5c04463551d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwcm9maWxlLXBhZ2V8MTh8fHxlbnwwfHx8fHw%3D&auto=format&fit=crop&w=500&q=60" alt="">
+                            <span>BQEH.....OHBPS</span>
+                        </div>
+                        </div>
+                        <div style="border-bottom: 1px solid #e5e7eb; " class="col-12 my-2">
+                            <p>We propose an initiative to expand and strengthen the LumosDAO community, fostering greater engagement, collaboration, and participation. Our goal is to attract new members, promote awareness of LumosDAO's capabilities, and enhance the overall user experience within the platform.</p>
+                        </div>
+                    </div>
+                        <a style="color:black; text-decoration:none; font-weight:500; display:flex; align-items:center; justify-content:center;" href="">
+                            See all Comments
+                        </a>
+                </div>
+            </div>
     </section>
 @endsection
