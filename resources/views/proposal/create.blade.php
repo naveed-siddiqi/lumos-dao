@@ -12,15 +12,6 @@
                         <span class="rightArrow"> > </span>
                         <p class="apple-text">Create proposal</p>
                     </div>
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
                 </div>
             </div>
         </div>
@@ -95,10 +86,18 @@
                     </div>
                     <div class="row mt-3">
                         <div class="col-12">
-                            <div class="warning-box warRed">
+                            {{-- <div class="warning-box warRed">
                                 <span class="warning-icon"><img src="{{ asset('images/warRed.png') }}" alt=""></span>
                                 <p>You dont have enough balance to create a proposal</p>
-                            </div>
+                            </div> --}}
+                            @if ($errors->any())
+                                <div class="warning-box warRed">
+                                    <span class="warning-icon"><img src="{{ asset('images/warRed.png') }}" alt=""></span>
+                                    @foreach ($errors->all() as $error)
+                                        <p>{{ $error }}</p>
+                                    @endforeach
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
