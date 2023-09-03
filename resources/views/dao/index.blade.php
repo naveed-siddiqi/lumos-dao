@@ -39,7 +39,7 @@
                             allows you to swap and trade assets using a friendly, minimal interface.
                         </div>
 
-                        <div class="d-flex">
+                        <div class="d-flex flex-col-links">
                             <div class="card-small-div">
                                 <span class="card-bold-word">Assets:</span>
                                 <a href="#" class="card-link">AAPL<img src="{{ asset('images/topright.png') }}" alt=""></a>
