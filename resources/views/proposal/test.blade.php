@@ -21,26 +21,25 @@
         <div class="container">
             <div class="row">
                 <div class="progeBarWhite">
-                    <h1>Expansion of LumosDAO Community</h1>
+                    <div class="d-flex align-items-center justify-content-between">
+                         <h1>Expansion of LumosDAO Community</h1>
+                         <div class="d-flex align-items-baseline justify-content-center gap-2">
+                                        <span style="font-family: 'MontSem';" class="text-secondary">Voting Power:</span>
+                                        <span class="text-secondary">4.85</span>
+                                    </div>
+                    </div>
+                   
                     <div class="col-12">
                         <div class="progresInner">
                             <div class="ProgText">
                                 <div class="left d-flex align-items-baseline justify-content-center gap-2">
-                                    <p>Yes</p>
-                                    <div class="d-flex align-items-center justify-content-center ProgFinal-text">
-                                        Final Result
+                                    <div class="">
+                                       <button class="ProgText-btn"><p>Yes</p></button> 
                                     </div>
+                                    
+                                    
                                 </div>
-                                <div class="right ">
-                                    <div class="d-flex align-items-baseline justify-content-center gap-2">
-                                        <span style="font-family: 'MontSem';" class="">Voting Power:</span>
-                                        <span>4.85</span>
-                                    </div>
-                                    <div class="d-flex align-items-baseline justify-content-end gap-2">
-                                        <span style="font-family: 'MontSem';" class="">Votes:</span>
-                                        <span>4.85</span>
-                                    </div>
-                                </div>
+                                
                             </div>
                             <div class="progress-bar">
                                 <div class="progress"></div>
@@ -51,18 +50,9 @@
                         <div class="progresInner">
                             <div class="ProgText">
                                 <div class="left">
-                                    <p>No</p>
+                                <button class="ProgText-btn"><p>No</p></button> 
                                 </div>
-                                <div class="right">
-                                        <div class="d-flex align-items-baseline justify-content-center gap-2">
-                                            <span style="font-family: 'MontSem';" class="">Voting Power:</span>
-                                            <span>4.85</span>
-                                        </div>
-                                        <div class="d-flex align-items-baseline justify-content-end gap-2 text-sm">
-                                            <span style="font-family: 'MontSem';" class="">Votes:</span>
-                                            <span>4.85</span>
-                                        </div>
-                                </div>
+                               
                             </div>
                             <div class="progress-bar">
                                 <div class="progress"></div>
@@ -80,24 +70,16 @@
                 <div class="DescPerSec">
                     <h1>Description</h1>
                     <div class="col-12">
-                        <p>We propose an initiative to expand and strengthen the LumosDAO community, fostering greater engagement, collaboration, and participation. Our goal is to attract new members, promote awareness of LumosDAO's capabilities, and enhance the overall user experience within the platform.</p>
+                        <p>
+                                Aquarius provide rewards to liquidity pairs inside their rewards zone. Any pool can become incentivized if the liquidity pair can reach 0.5% in votes. I propose that we bribe the community to vote for the NUNA/AQUA liquidity pair.
+                                <p>300K per week is around the minimum allowed according to Aquarius</p><br><br><br>
+                                <p>For more information on Aquarius rewards and bribes: https://medium.com/aquarius-aqua</p>
+                                </p>
                     </div>
                 </div>
             </div>
     </section>
-    <section class="DescPer">
-        <div class="container">
-            <div class="row">
-                <div style="gap:50px;" class="DescPerSec d-flex align-items-center ">
-                    <h1>Attached files</h1>
-                    <div class="d-flex align-items-start justify-content-center gap-4 ">
-                        <h6 style="color:#00b2fb;">Document 1.pdf</h6>
-                    <h6 style="color:#00b2fb;">Document 2.pdf</h6>
-                    </div>
-                    
-                </div>
-            </div>
-    </section>
+
 
     <section class="PropId">
         <div class="container">
@@ -233,7 +215,7 @@
     <section class="DescPer">
         <div class="container">
             <div style="text-align:right;" class="pb-3">
-                <button class=" add-comments-btn " type="button">Add Comments</button>
+                <button style="border:1px solid #e5e7eb; background-color:white; padding:8px; border-radius:10px;font-weight:500; " type="button">Add Comments</button>
             </div>
             <div class="row">
                 <div class="DescPerSec">
@@ -260,7 +242,7 @@
                             <p>We propose an initiative to expand and strengthen the LumosDAO community, fostering greater engagement, collaboration, and participation. Our goal is to attract new members, promote awareness of LumosDAO's capabilities, and enhance the overall user experience within the platform.</p>
                         </div>
                     </div>
-                        <a class=" see-more-comment-btn" href="">
+                        <a style="color:black; text-decoration:none; font-weight:500; display:flex; align-items:center; justify-content:center;" href="">
                             See all Comments
                         </a>
                 </div>

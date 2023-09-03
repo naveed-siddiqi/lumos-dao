@@ -65,14 +65,14 @@
                         <button class="btn btnReg" data-bs-toggle="modal" data-bs-target="#ConnectWallet">Connect Wallet</button>
                     </div>
                     @endif
-                    <div class="themeSwitcher">
-                        <input type="checkbox" class="checkbox" id="checkbox">
-                        <label for="checkbox" class="checkbox-label">
-                            <img class="fa-moon" src="{{ asset('images/dark.png') }}" alt="">
-                            <img class="fa-sun" src="{{ asset('images/light.png') }}" alt="">
-                            <span class="ball"></span>
-                        </label>
-                    </div>
+                        <div class="themeSwitcher">
+                            <input type="checkbox" class="checkbox" id="checkbox">
+                            <label for="checkbox" class="checkbox-label">
+                                <img class="fa-moon" src="{{ asset('images/light.png') }}" alt="">
+                                <img class="fa-sun" src="{{ asset('images/dark.png') }}" alt="">
+                                <span class="ball"></span>
+                            </label>
+                        </div>
                 </div>
 
             </div>
@@ -116,6 +116,41 @@
     {{-- <script src="{{ asset('js/custom.js?v='.time()) }}"></script> --}}
     <script src="{{ asset('js/wallet.js?v='.time()) }}"></script>
     <script src="{{ asset('js/sandox.js?v='.time()) }}"></script>
+    <script>
+const checkbox = document.getElementById('checkbox');
+const body = document.body;
+
+// Function to set the mode based on user preference stored in localStorage
+function setModePreference() {
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+
+    if (isDarkMode) {
+        body.classList.add('dark-mode');
+        checkbox.checked = true;
+    } else {
+        body.classList.add('light-mode');
+        checkbox.checked = false;
+    }
+}
+
+// Function to toggle the mode and update localStorage
+function toggleMode() {
+    if (body.classList.contains('dark-mode')) {
+        body.classList.remove('dark-mode');
+        body.classList.add('light-mode');
+        localStorage.setItem('darkMode', 'false');
+    } else {
+        body.classList.remove('light-mode');
+        body.classList.add('dark-mode');
+        localStorage.setItem('darkMode', 'true');
+    }
+}
+
+checkbox.addEventListener('change', toggleMode);
+setModePreference(); // Call this function to set the initial mode based on localStorage
+
+        
+    </script>
     {{-- <script>
         @if (!isset($_COOKIE['public']))
             $(window).load(function() {

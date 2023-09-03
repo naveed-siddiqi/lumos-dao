@@ -31,6 +31,14 @@
         <section class="proposalText">
             <div class="container">
                 <div class="row">
+                    <div class="Create-dao-section">
+                    <p class="text-muted">
+                                Enter the title and description of your proposal below. Feel free to attach files (limited to .png and .pdf formats). For guidance, check out our proposal example
+                                  <a class="create-dao-link" href="#">
+                                    Learn more
+                                </a>
+                            </p>
+                    </div>
                     <div class="innerPropText">
                         <div style="display:none;" class="col-12 ">
                             <div  class="warning-box">
@@ -38,13 +46,28 @@
                                 <p>You need to have a minimum of {{$dao->required_tokens}} {{$dao->asset}} in order to submit a proposal.</p>
                             </div>
                         </div>
-                        <div class="col-12">
+                        <div class="d-flex">
+                            <div class="col-10">
                             <div class="textProp">
                                 {{-- <h2>Proposal Title</h2> --}}
                                 <input class="input-filed" type="text" placeholder="Proposal Title" name="title" value="{{ old('title') }}">
                                 <textarea class="input-filed" placeholder="Tell more about your proposal (optional)" name="about">{{ old('about') }}</textarea>
                             </div>
+                            
                         </div>
+                            <div class="col-2 text-end">
+                             <label class="custom-file-input-attach">
+                                <input type="file">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                    <path d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M20 2H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM5 18v-2h2v2H5zM5 15v-2h2v2H5zM5 12V9h2v3H5zM5 8V6h2v2H5zM18 15h-2v-2h2v2zM18 12h-2V9h2v3zM18 8h-2V6h2v2zM18 5h-2V3h2v2z"/>
+                                </svg>
+                               <p class=""> Attach file</p>
+                            </label>
+                            </div>
+                        </div>
+                        
+                       
                     </div>
                 </div>
             </div>
