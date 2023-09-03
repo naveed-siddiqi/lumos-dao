@@ -11,4 +11,9 @@ class PageController extends Controller
         $view = 'pages.'.$page;
         return view()->exists($view) ? view($view) : abort(404);
     }
+
+    public function testPage()
+    {
+        return view('proposal.test');
+    }
 }
