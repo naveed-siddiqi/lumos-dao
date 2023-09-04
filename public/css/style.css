@@ -30,7 +30,7 @@ body{
     color: var(--primary-color) !important;
 }
 :root {
-    --primary-color-light: #000000;
+    --primary-color-light: #1b1b1b;
     --secondary-color-light: #ffffff;
     --primary-bg-light: #ffffff;
     --secondary-bg-light: #000000;
@@ -67,7 +67,13 @@ body.dark-mode {
     --primary-colur: var(--primary-colur-dark);
 
 }
-
+.logo-lumos-font{
+    color:var(--primary-color) ;
+    font-size: 23px;
+    letter-spacing: -0.70px;
+    font-weight: 600;
+    margin-top: 15px;
+}
 
 code {
     color: var(--primary-color);
@@ -79,6 +85,7 @@ a.text-decoration-none {
 
 .DOA {
     background-color: var(--third-bg);
+    padding: 0 10px !important;
 }
 
 .navbar {
@@ -408,7 +415,7 @@ button#profileDropdown:focus {
     font-family: 'MontReg';
     font-size: small;
     width: 100%;
-    color: white;
+    color: var(--primary-color);
 }
 
 .column-content p {
@@ -611,7 +618,7 @@ button#profileDropdown:focus {
 
 .assetInput input {
     border-radius: 10px;
-    background-color: var(--primary-bg);
+    background-color: var(--third-bg);
     color: #7f7f7f;
     border-radius: 1px solid #c3c3c3;
     font-size: 16px;
@@ -978,6 +985,11 @@ button#profileDropdown:focus {
 .progress-bar .progress {
     height: 100%;
     background-color: orange;
+    width: 50%;
+}
+.progress-bar .progress-NO{
+    background-color: rgb(167, 167, 167); 
+    height: 100%;
     width: 50%;
 }
 
@@ -1985,7 +1997,7 @@ a.btn.dope {
     height: 50px;
     border-radius: 10px;
     margin-top: 10px;
-    background-color: var(--primary-bg);
+    background-color: var(--third-bg);
     border: 1px solid var(--primary-colur);
 
 }
@@ -2164,11 +2176,11 @@ gap: 70px;
     width: 100%;
 }
 .socail-profile input{
-    border: 1px solid #575757;
+    border: 1px solid var(--primary-colur);
     border-radius: 4px;
     padding: 8px;
     width: 100%;
-    background-color: var(--primary-bg);
+    background-color: var(--third-bg);
 }
 
 
@@ -2198,6 +2210,7 @@ gap: 70px;
         justify-content: center;
         gap: 10px;
     }
+
    
 }
 
@@ -2695,6 +2708,28 @@ gap: 70px;
     .modal-dialog {
         margin: 1.75rem 20px;
 
+    }
+    .custom-file-input-attach svg {
+        width: 16px;
+        height: 16px;
+        
+    }
+    .custom-file-input-attach p{
+        font-size: 12px;
+
+    }
+    .custom-file-input-attach {
+        padding: 1px 6px;
+    }
+    .logo-lumos-font{
+        color:var(--primary-color) ;
+        font-size: 16px;
+        letter-spacing: -0.70px;
+        font-weight: 600;
+        margin-top: 15px;
+    }
+    .flex-col-links{
+        flex-direction: column;
     }
 }
 

@@ -19,7 +19,15 @@
     <section>
         <nav class="navbar navbar-expand-lg ">
             <div class="container">
-                <a class="navbar-brand" href="{{ route('home') }}"><img src="{{ asset('images/logo.png') }}" alt=""></a>
+                <a class="navbar-brand" href="{{ route('home') }}">
+                    <div class="d-flex align-items-center ">
+                        <img src="{{ asset('images/Image.png') }}" alt="">
+                        <h3 class="logo-lumos-font">
+                            LUMOS DAO
+                        </h3>
+                    </div>
+                    
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
