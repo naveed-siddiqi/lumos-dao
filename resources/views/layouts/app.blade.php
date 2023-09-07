@@ -40,7 +40,7 @@
                             <a class="nav-link" href="{{ route('page', 'how-it-works') }}">How it works</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="https://github.com/lumosdao/app" target="_blank">Github</a>
+                            <a class="nav-link" href="https://github.com/naveed-siddiqi/lumos-dao" target="_blank">Github</a>
                         </li>
                     </ul>
                     @if (isset($_COOKIE['public']))
@@ -149,7 +149,7 @@ function toggleMode() {
 checkbox.addEventListener('change', toggleMode);
 setModePreference(); // Call this function to set the initial mode based on localStorage
 
-        
+
     </script>
     {{-- <script>
         @if (!isset($_COOKIE['public']))

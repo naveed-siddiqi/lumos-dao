@@ -8,7 +8,7 @@
                     <div class="heading-board">
                         <p class="headingBoard">Board</p>
                         <span class="rightArrow"> > </span>
-                        <p class="apple-text">Apple</p>
+                        <p class="apple-text">StellarBuds</p>
                     </div>
                 </div>
             </div>
@@ -31,22 +31,22 @@
                         <div class="card-imgflex">
                             <img src="{{ asset('images/demi.jpg') }}" alt="Image">
                             <div class="cardHeading">
-                                <p class="card-heading">Apple</p>
+                                <p class="card-heading">StellarBuds</p>
                                 <p class="card-subheading">6,296 members</p>
                             </div>
                         </div>
-                        <div class="card-paragraph">Apple is a decentralized exchange built on the Stellar network that
-                            allows you to swap and trade assets using a friendly, minimal interface.
+                        <div class="card-paragraph">
+                            A community-driven initiative bringing together cannabis enthusiasts to discuss cultivation, legalization, and responsible usage.
                         </div>
 
                         <div class="d-flex">
                             <div class="card-small-div">
                                 <span class="card-bold-word">Assets:</span>
-                                <a href="#" class="card-link">AAPL<img src="{{ asset('images/topright.png') }}" alt=""></a>
+                                <a href="#" class="card-link">BUDS<img src="{{ asset('images/topright.png') }}" alt=""></a>
                             </div>
                             <div class="card-small-div">
                                 <span class="card-bold-word">Website:</span>
-                                <a href="#" class="card-link">apple.com</a>
+                                <a href="#" class="card-link">www.stellarbudscommunity.com</a>
                             </div>
                             <div style="margin-left:20px;" class="d-flex align-items-center gap-3 py-3">
                                 <div class="card-imgflex-social-link ">
@@ -57,14 +57,14 @@
                                 <div class="card-imgflex-social-link">
                                     <a href="">
                                     <img  src="{{ asset('images/instagram.jpeg') }}" alt="">
-                                </a> 
+                                </a>
                                 </div>
                                <div class="card-imgflex-social-link">
                                  <a href="">
                                     <img  src="{{ asset('images/discord.png') }}" alt="">
                                 </a>
                                </div>
-                               
+
                             </div>
                         </div>
                     </div>
@@ -77,14 +77,14 @@
             <div class="row">
                 <div class="col">
                     <div class="d-flex align-items-center gap-2">
-                         <h2 class="heading">Approve Wallet </h2>
-                    <button style="margin-bottom: 0.5rem;" type="button" class="border-0 bg-transparent d-flex align-items-center py-1 justify-content-center  text-secondary" data-toggle="tooltip" data-placement="right" title="Tooltip on top">
+                         <h2 class="heading">Approved Wallets </h2>
+                    <button style="margin-bottom: 0.5rem;" type="button" class="border-0 bg-transparent d-flex align-items-center py-1 justify-content-center  text-secondary" data-toggle="tooltip" data-placement="right" title="Approved wallets are managed by the project team and listed in the project's toml file. They ensure transparency in governance and decision-making.">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="22px" height="22px">
                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                       </svg>
                     </button>
                     </div>
-                   
+
                 </div>
             </div>
             <div class="addressLink">
@@ -118,7 +118,7 @@
                     <div class="propFilterInner">
                             <div class="d-flex align-items-center gap-2">
                                 <h2 class="heading">Proposals</h2>
-                                <button style="margin-bottom: 0.5rem;" type="button" class="border-0 bg-transparent d-flex align-items-center py-1 justify-content-center  text-secondary" data-toggle="tooltip" data-placement="right" title="Tooltip on top">
+                                <button style="margin-bottom: 0.5rem;" type="button" class="border-0 bg-transparent d-flex align-items-center py-1 justify-content-center  text-secondary" data-toggle="tooltip" data-placement="right" title="Browse through the proposals created by DAO members. Each proposal represents an idea or initiative that the community can vote on.">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="22px" height="22px">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                                 </svg>
@@ -254,16 +254,16 @@
                      <div style="margin: top 15px; " class="proposal_status-card">
                         <div class="proposal_status-SideCard">
                             <div class="d-flex align-items-start justify-content-start gap-2">
-                               <h2 class="heading">Top Voters</h2> 
-                               <button style="margin-bottom: 0.5rem;" type="button" class="border-0 bg-transparent d-flex align-items-center  justify-content-center  text-secondary" data-toggle="tooltip" data-placement="right" title="Tooltip on top">
+                               <h2 class="heading">Top Voters</h2>
+                               <button style="margin-bottom: 0.5rem;" type="button" class="border-0 bg-transparent d-flex align-items-center  justify-content-center  text-secondary" data-toggle="tooltip" data-placement="right" title="Discover the active members of this DAO who consistently participate in voting on proposals. Their engagement drives the decision-making process.">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="22px" height="22px">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                                 </svg>
                                 </button>
                             </div>
-                                
+
                                 <div class="paragraph">
-                                    <p>Partipacipated <br> in Proposal</p>
+                                    <p>Participated <br> in Proposal</p>
                                 </div>
                         </div>
                         <div class="">
@@ -368,16 +368,16 @@
                                 <div class="">
                                         <div class="d-flex align-items-center gap-2 EditModal-title">
                                                 <span   class="asset-stellar-p w-60">Project Name:</span>
-                                                <span class="asset-details-text w-40">LUSOMDAO</span>
+                                                <span class="asset-details-text w-40">StellarBuds</span>
                                         </div>
                                         <div class="d-flex align-items-center gap-2 EditModal-title">
                                                 <span class="asset-stellar-p w-60">Asset Code:</span>
-                                                    <span class="asset-details-text w-40">LSP</span>
+                                                    <span class="asset-details-text w-40">BUDS</span>
                                         </div>
                                         <div class="d-flex align-items-center gap-2 EditModal-title">
                                                 <span style=" font-family: 'MontReg';" class="asset-stellar-p w-60">Home Domian:</span>
                                                     <a style="text-decoration:none; color:blue;" href="">
-                                                    <span style="color: #578aff;" class="asset-details-text w-40">lumenswap.io</span>
+                                                    <span style="color: #578aff;" class="asset-details-text w-40">stellarbudscommunity.com</span>
                                                  </a>
                                         </div>
                                         <div class="d-flex align-items-center gap-2 EditModal-title">
@@ -399,7 +399,7 @@
                                                  </svg>
                                              </div>
                                     </div>
-                                        <span style="font-family:'MontReg';" class="asset-details-text ">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Non inventore repudiandae consequuntur alias impedit! Et eaque ex quam deserunt mollitia quidem nobis quasi reiciendis exercitationem at, ducimus incidunt aliquid sed?</span>
+                                        <span style="font-family:'MontReg';" class="asset-details-text ">A community-driven initiative bringing together cannabis enthusiasts to discuss cultivation, legalization, and responsible usage.</span>
                             </div>
                             <div class="">
                                     <div class="d-flex align-items-center asset-stellar-p">Approved Wallets:
@@ -495,12 +495,12 @@
                                             </div>
                                         </div>
 
-                                       
+
                                     </div>
-                                   
-                                
-                                   
-                              </div>       
+
+
+
+                              </div>
                         </div>
                     </div>
 

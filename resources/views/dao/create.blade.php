@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="Create-dao-section">
                     <h4>1.Create DAO for an exitting Steller project</h4>
-                    <p class="text-muted">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Facilis fugit quam ducimus sapiente? Veritatis vitae tempore sequi officia eos repudiandae ullam, amet a molestias, impedit dolores tenetur totam. Beatae, ad!</p>
+                    <p class="text-muted">Easily create a dedicated DAO for your existing token on Stellar. Build a hub for collaborative decision-making and project development.</p>
                 </div>
                 <div class="col-12">
                     <form action="{{ route('dao.search') }}">
@@ -14,26 +14,26 @@
                         <div class="assetInput">
                             <div class=" d-flex align-items-start">
                                <label for="assetCode" class="form-label">Assest Code</label>
-                                  <button style="padding-top:0.2rem;" type="button" class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary " data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+                                  <button style="padding-top:0.2rem;" type="button" class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary " data-toggle="tooltip" data-placement="top" title="Asset code represents a unique identifier for your token within the Stellar network.">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                                 </svg>
-                                  </button> 
+                                  </button>
                             </div>
-                            
+
                             <input type="text" class="form-control"  placeholder="LUMOS" id="assetCode"
                                 aria-describedby="emailHelp" name="asset_code" value="{{Session::get('code')}}">
                         </div>
                         <div class="assetInput">
                             <div class="d-flex align-items-start">
                                  <label  for="homeDomain" class="form-label">Home Domain</label>
-                            <button style="padding-top:0.2rem;" type="button" class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary " data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+                            <button style="padding-top:0.2rem;" type="button" class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary " data-toggle="tooltip" data-placement="top" title="Home domain is the URL where your asset's Stellar.toml file is hosted, containing essential information about your token.">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                                 </svg>
-                                  </button> 
+                                  </button>
                             </div>
-                           
+
                             <input type="text" class="form-control" id="homeDomain" name="home_domain" placeholder="lomusdao.io" value="{{Session::get('domain')}}">
                         </div>
                         <button type="submit" class="btn assetSearch">Search</button>
@@ -46,11 +46,11 @@
             <div>
                 <div class=" my-5">
                         <div class="Create-dao-section">
-                            <h4>2.Create DAO for an new Steller project</h4>              
-                            <p class="text-muted">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Facilis fugit quam ducimus sapiente? Veritatis vitae tempore sequi officia eos repudiandae ullam, amet a molestias, impedit dolores tenetur totam. Beatae, ad!
-                                  <a class="create-dao-link" href="#">
+                            <h4>2.Create DAO for an new Steller project</h4>
+                            <p class="text-muted">Start fresh by generating a new token on LumosDAO and instantly create its DAO. Foster community engagement, discussions, and decisions for your unique concept.
+                                  {{-- <a class="create-dao-link" href="#">
                                     Learn more
-                                </a>
+                                </a> --}}
                             </p>
                         </div>
                 </div>
@@ -71,8 +71,8 @@
                             <div class="d-flex justify-content-between py-3">
                             <div class="d-flex align-items-center justify-content-start gap-3">
                                     <div class="d-flex align-items-center justify-content-start">
-                                            <span class="asset-stellar-p">Issuing account:</span>
-                                            <button type="button" class="border-0 bg-transparent d-flex align-items-start justify-content-center p-2 text-secondary" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+                                            <span class="asset-stellar-p">Issuing address:</span>
+                                            <button type="button" class="border-0 bg-transparent d-flex align-items-start justify-content-center p-2 text-secondary" data-toggle="tooltip" data-placement="top" title="Issuing address is where new tokens are created and sent from. It's a crucial part of your token's ecosystem.">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                                             </svg>
@@ -86,15 +86,15 @@
 
                             <div class="d-flex align-items-center justify-content-start gap-3">
                                 <div class="d-flex align-items-center justify-content-start">
-                                    <span class="asset-stellar-p ">Disturbing account:</span>
-                                    <button type="button" class="border-0 bg-transparent d-flex align-items-start justify-content-center p-2 text-secondary" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+                                    <span class="asset-stellar-p ">Disturbing address:</span>
+                                    <button type="button" class="border-0 bg-transparent d-flex align-items-start justify-content-center p-2 text-secondary" data-toggle="tooltip" data-placement="top" title="Distributing address is where tokens are sent to before being distributed to holders. It's essential for controlled distribution.">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                                     </svg>
                                     </button>
                                 </div>
                                 <button style="font-weight: 500; background: transparent; font-family: 'MontSem';"  class="create-dao-link border-0 " data-bs-toggle="modal" data-bs-target="#ConnectWallet">Connect Wallet</button>
-    
+
                             </div>
                         </div>
                     </div>
