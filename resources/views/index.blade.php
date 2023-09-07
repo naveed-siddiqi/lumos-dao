@@ -74,8 +74,8 @@
                             <span class="sort-by">Sort by</span>
                             <select>
                                 <option disabled selected value value="">Sort by Proposals</option>
-                                <option value="asc">Ascending</option>
-                                <option value="desc">Descending</option>
+                                <option value="asc">Date added</option>
+                                <option value="desc">Number of Proposals</option>
                             </select>
                             <a href="{{ route('dao.create') }}" class="btn btnCreate">
                                 Create DAO <img class="plu" src="{{ asset('images/11.png') }}" alt="">

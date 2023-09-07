@@ -65,7 +65,7 @@
                                 </div>
                             </div>
                             <div class="progress-bar">
-                                <div class="progress"></div>
+                                <div class="progress-NO"></div>
                             </div>
                         </div>
                     </div>
