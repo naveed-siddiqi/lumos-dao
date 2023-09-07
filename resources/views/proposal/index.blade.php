@@ -8,7 +8,7 @@
                     <div class="heading-board">
                         <p class="headingBoard">Board</p>
                         <span class="rightArrow"> > </span>
-                        <p class="headingBoard"> Apple</p>
+                        <p class="headingBoard"> StellarBuds</p>
                         <span class="rightArrow"> > </span>
                         <p class="apple-text">proposal Info</p>
                     </div>
