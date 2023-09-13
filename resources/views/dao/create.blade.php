@@ -5,7 +5,7 @@
         <div class="container">
             <div class="row">
                 <div class="Create-dao-section">
-                    <h4>1.Create DAO for an exitting Steller project</h4>
+                    <h4>1.Create DAO for an existing Steller project</h4>
                     <p class="text-muted">Easily create a dedicated DAO for your existing token on Stellar. Build a hub for collaborative decision-making and project development.</p>
                 </div>
                 <div class="col-12">
@@ -34,7 +34,7 @@
                                   </button>
                             </div>
 
-                            <input type="text" class="form-control" id="homeDomain" name="home_domain" placeholder="lomusdao.io" value="{{Session::get('domain')}}">
+                            <input type="text" class="form-control" id="homeDomain" name="home_domain" placeholder="lumosdao.io" value="{{Session::get('domain')}}">
                         </div>
                         <button type="submit" class="btn assetSearch">Search</button>
                     </form>
@@ -78,7 +78,8 @@
                                             </svg>
                                             </button>
                                     </div>
-                                <span class="asset-details-text text-secoundary">GCEV......MA6R</span>
+                                    <button style="font-weight: 500; background: transparent; font-family: 'MontSem';"  class="create-dao-link border-0 " data-bs-toggle="modal" data-bs-target="#ConnectWallet">Connect Wallet</button>
+                                <!--<span class="asset-details-text text-secoundary">GCEV......MA6R</span>-->
                             </div>
                         </div>
 
@@ -93,7 +94,8 @@
                                     </svg>
                                     </button>
                                 </div>
-                                <button style="font-weight: 500; background: transparent; font-family: 'MontSem';"  class="create-dao-link border-0 " data-bs-toggle="modal" data-bs-target="#ConnectWallet">Connect Wallet</button>
+                                <!--<button style="font-weight: 500; background: transparent; font-family: 'MontSem';"  class="create-dao-link border-0 " data-bs-toggle="modal" data-bs-target="#ConnectWallet">Connect Wallet</button>-->
+                                <span class="asset-details-text text-secoundary">GCEV......MA6R</span>
 
                             </div>
                         </div>

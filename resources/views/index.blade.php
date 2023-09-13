@@ -5,7 +5,7 @@
         <div class="container">
             <div class="row">
                 <div class="Platfarm-stats_title">
-                        <div class="heading">Platfarm Stats</div>
+                        <div class="heading">Platform Stats</div>
                        <p class="text-muted">Discover the impressive reach of LumosDAO through key statistics: from the number of thriving DAOs to engaged users, proposals submitted, and the collective voice of votes cast.</p>
                     </div>
                 <div class="col-lg-3 col-md-6 col-sm-6">
@@ -113,7 +113,7 @@
                             <div class="cardCircle">
                                 <p>15</p>
                             </div>
-                            <p class="circleP">Active propsal</p>
+                            <p class="circleP">Active proposal</p>
 
                             <div class="d-flex justify-content-around">
                                 <div class="card-small-div cardShowSmall">
@@ -147,7 +147,7 @@
                             <div class="cardCircle">
                                 <p>15</p>
                             </div>
-                            <p class="circleP">Active propsal</p>
+                            <p class="circleP">Active proposal</p>
 
                             <div class="d-flex justify-content-around">
                                 <div class="card-small-div cardShowSmall">
@@ -181,7 +181,7 @@
                             <div class="cardCircle">
                                 <p>15</p>
                             </div>
-                            <p class="circleP">Active propsal</p>
+                            <p class="circleP">Active proposal</p>
 
                             <div class="d-flex justify-content-around">
                                 <div class="card-small-div cardShowSmall">

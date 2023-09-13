@@ -117,12 +117,12 @@
                             <p>Ended</p>
                         </div>
                         <div class="col-lg-2 col-md-2 col-sm-12">
-                            <h6>Total voter</h6>
+                            <h6>Total voters</h6>
                             <p>6</p>
                         </div>
                         <div class="col-lg-2 col-md-2 col-sm-12">
-                            <h6>Total votes</h6>
-                            <p>6 LUMOS</p>
+                            <h6>Total voting power</h6>
+                            <p>19.5</p>
                         </div>
                         <div class="col-lg-2 col-md-2 col-sm-12">
                             <h6>Proposer</h6>
@@ -190,37 +190,37 @@
                                 <tr>
                                     <td>GCXY...VTJ6</td>
                                     <td>Yes</td>
-                                    <td>24</td>
+                                    <td>2</td>
                                     <td>3 months ago</td>
                                 </tr>
                                 <tr>
                                     <td>GCXY...VTJ6</td>
                                     <td>No</td>
-                                    <td>24</td>
+                                    <td>2.5</td>
                                     <td>3 months ago</td>
                                 </tr>
                                 <tr>
                                     <td>GCXY...VTJ6</td>
                                     <td>No</td>
-                                    <td>24</td>
+                                    <td>3</td>
                                     <td>3 months ago</td>
                                 </tr>
                                 <tr>
                                     <td>GCXY...VTJ6</td>
                                     <td>Yes</td>
-                                    <td>1 LUMOS</td>
+                                    <td>3.5</td>
                                     <td>3 months ago</td>
                                 </tr>
                                 <tr>
                                     <td>GCXY...VTJ6</td>
                                     <td>Yes</td>
-                                    <td>43</td>
+                                    <td>4</td>
                                     <td>3 months ago</td>
                                 </tr>
                                 <tr>
                                     <td>GCXY...VTJ6</td>
                                     <td>No</td>
-                                    <td>98</td>
+                                    <td>4.5</td>
                                     <td>3 months ago</td>
                                 </tr>
                             </tbody>

@@ -383,7 +383,7 @@
                                         <div class="d-flex align-items-center gap-2 EditModal-title">
                                                 <span style=" font-family: 'MontReg';" class="asset-stellar-p w-60">Toml:</span>
                                                     <a style="text-decoration:none; color:blue;" href="">
-                                                    <span style="color: #578aff;" class="asset-details-text w-40">LUMOSDAO</span>
+                                                    <span style="color: #578aff;" class="asset-details-text w-40">stellarbuds.lumosdao.io/.well-known/stellar.toml</span>
                                                  </a>
                                         </div>
                                 </div>
