@@ -42,6 +42,74 @@
             </div>
         </div>
     </section>
+    <section class="container my-3">
+       <div class="assetCode-deo-deatail ">
+        <div class="d-flex flex-md-row flex-column align-items-start justify-content-between">
+           <div class="w-100">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="asset-stellar-p w-25 font-">Project</span>
+                    <span class="create-dao-note text-secondary w-25">Lumos DAO</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="asset-stellar-p w-25">Ticker</span>
+                    <span class="create-dao-note text-secondary w-25">LUMOS</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="asset-stellar-p w-25">Home domain</span>
+                    <span class="create-dao-note text-secondary w-25">LumosDAO.io</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="asset-stellar-p w-25">Holders</span>
+                    <span class="create-dao-note text-secondary w-25">999</span>
+                </div> 
+            </div>
+            <div class="project-logo d-flex align-items-center justify-content-end">
+                <div class="container_custom_file_input  mt-0 w-100">
+                    <div class="w-100">
+                    <div class="d-flex flex-column align-items-start gap-2 p-2 w-100">
+                            <span class="asset-stellar-p text-left">Project Logo</span>
+                            <div class="d-flex align-items-center justify-content-center w-100">
+                                <img src="../images/Layer 10.png" alt="">
+                            </div>
+                            
+                        </div>  
+                    </div>
+                </div>
+            </div> 
+        </div>
+        <div class="">
+            <div class="d-flex flex-column flex-md-row align-items-center gap-2">
+                <span class="asset-stellar-p">Approved wallets</span>
+                <span class="create-dao-note text-muted">*Check the wallets that you make want to make visible.*</span>
+            </div>
+            <div class="my-3">
+                <div class="d-flex flex-column align-items-start gap-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <input type="checkbox" id="wallet1" name="wallet1" value="wallet1">
+                        <label for="wallet1" class="col-form-label text-break">GCEV7283NDSJKFHSD847437NBMA6R</label>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <input type="checkbox" id="wallet2" name="wallet2" value="wallet2">
+                        <label for="wallet2" class="col-form-label text-break">GCEV283NDSJKFHSD847437NMA6R</label>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <input type="checkbox" id="wallet3" name="wallet3" value="wallet3">
+                        <label for="wallet3" class="col-form-label text-break">GCEV283NDSJKFHSD847437NMA6R</label>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <input type="checkbox" id="wallet4" name="wallet4" value="wallet4">
+                        <label for="wallet4" class="col-form-label text-break">GCEV283NDSJKFHSD847437NMA6R</label>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+            <button style="margin-left:0px !important;" type="submit" class="btn assetSearch">Create DAO</button>
+            </div>
+        </div>
+            
+          
+       </div>
+    </section>
     <section class="container">
             <div>
                 <div class=" my-5">
@@ -245,7 +313,7 @@
                                 @elseif (Session::get('error_key') == 'domain')
                                 The domain you entered is incorrect or not having a TOML
                                 @elseif (Session::get('error_key') == 'permission')
-                                Your Wallet is not aproved in the TOML
+                               <span class="text-danger"> Your Wallet is not aproved in the TOML</span>
                                 @elseif (Session::get('error_key') == 'code')
                                 The asset code is not exist in TOML
                                 @endif
@@ -267,6 +335,24 @@
                         </div>
                     </div>
                     @endif
+                   
+                </div>
+                <div style="margin-top: 40px;" class="">
+                    <div class="d-flex align-items-center justify-content-start gap-2">
+                        <div class="background-linear-gradient"></div>
+                        <span class="create-dao-note text-muted">Add you waiter address here:example.com/.well-Known/stellar.toml.  OR</span>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-start gap-2 my-2">
+                        <div class="background-linear-gradient"></div>
+                        <span class="create-dao-note text-muted">Try again with any other approved you Stellar wallet address through toml.</span>
+                    </div>
+                </div>
+                <div class="d-flex flex-column align-items-start gap-2">
+                    <span class="asset-stellar-p">Tutorial</span>
+                    <span class="create-dao-note text-muted">
+                            <a class="create-dao-link border-0" href="">Click here</a>
+                            to learn how to approve you Stellar wallet address through toml.
+                    </span>
                 </div>
             </div>
         </div>
