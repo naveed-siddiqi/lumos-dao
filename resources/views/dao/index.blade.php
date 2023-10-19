@@ -8,7 +8,7 @@
                     <div class="heading-board">
                         <p class="headingBoard">Board</p>
                         <span class="rightArrow"> > </span>
-                        <p class="apple-text">StellarBuds</p>
+                        <p id='dao_name_head' class="apple-text"></p>
                     </div>
                 </div>
             </div>
@@ -29,24 +29,27 @@
                          </button>
 
                         <div class="card-imgflex">
-                            <img src="{{ asset('images/demi.jpg') }}" alt="Image">
+                            <img id='dao_image' src="{{ asset('images/demi.jpg') }}" alt="Image">
                             <div class="cardHeading">
-                                <p class="card-heading">StellarBuds</p>
-                                <p class="card-subheading">6,296 members</p>
+                                <p id='dao_name' class="card-heading"></p>
+                                <p id='dao_members' class="card-subheading"></p>
                             </div>
                         </div>
-                        <div class="card-paragraph">
-                            A community-driven initiative bringing together cannabis enthusiasts to discuss cultivation, legalization, and responsible usage.
+                        <div id='dao_about' class="card-paragraph">
                         </div>
 
                         <div class="d-flex flex-col-links">
                             <div class="card-small-div">
                                 <span class="card-bold-word">Assets:</span>
-                                <a href="#" class="card-link">BUDS<img src="{{ asset('images/topright.png') }}" alt=""></a>
+                                <a id='asset_name' href="#" class="card-link" ><span id='dao_token_name'></span><img id='dao_token_img' src="{{ asset('images/topright.png') }}" style='max-width:50px;max-height:50px' alt=""></a>
                             </div>
                             <div class="card-small-div">
                                 <span class="card-bold-word">Website:</span>
-                                <a href="#" class="card-link">www.stellarbudscommunity.com</a>
+                                <a id='dao_website' target='_blank' href="#" class="card-link"></a>
+                            </div>
+                            <div class="card-small-div">
+                                <span class="card-bold-word">Toml url:</span>
+                                <a id='dao_token_url' target='_blank' href="#" class="card-link"></a>
                             </div>
                             <div style="margin-left:20px;" class="d-flex align-items-center gap-3 py-3">
                                 <div class="card-imgflex-social-link ">
@@ -88,25 +91,20 @@
                 </div>
             </div>
             <div class="addressLink">
-                <div class="row">
-                    <div class="col-lg-4 col-md-12 col-sm-12">
-                        <strong class="text-success">Treasury</strong>
+                <div class="row" style='flex-direction:column'>
+                    <div class="col-lg-4 col-md-12 col-sm-12" style='width:100%'>
+                        <strong class="text-success">Issuing Address</strong>
                         <div class="column-content">
-                            <p>FGDKXQTCPOJVVBBY...2MRK2DXKZANU3I</p>
+                            <p id='dao_token_issuer'></p>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-12 col-sm-12">
-                        <strong class="text-success">Team</strong>
+                    <div class="col-lg-4 col-md-12 col-sm-12" style='width:100%'>
+                        <strong class="text-success">Distributing Address</strong>
                         <div class="column-content">
-                            <p>FGDKXQTCPOJVVBBY...2MRK2DXKZANU3I</p>
+                            <p id='dao_token_distributing'></p>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-12 col-sm-12">
-                        <strong class="text-success">Marketing</strong>
-                        <div class="column-content">
-                            <p>FGDKXQTCPOJVVBBY...2MRK2DXKZANU3I</p>
-                        </div>
-                    </div>
+                     
                 </div>
             </div>
         </div>
@@ -136,120 +134,8 @@
     <section class="endedCard">
         <div class="container">
             <div class="d-flex proposal_card_container">
-                <div  class="proposal_right_card_container">
-                <div class="row">
-                <div class="cardEndDiv">
-                    <div class="col-12">
-                        <a href="{{ route('dao.proposal', [1,1]) }}" class="text-decoration-none">
-                            <div class="d-flex justify-content-between align-items-center cardEndDetail_container">
-                                    <div class="cardEndDetail">
-                                        <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="Profile Image" class="image">
-                                        <div class="text">ByGBV6...SYEN</div>
-                                    </div>
-
-                                <div class="text">
-                                        <span>Proposal ID:</span>
-                                        <span>ByGBV6...SYEN</span>
-                                    </div>
-
-                                <div class="small-card">
-                                    <div class="small-card-text">Ended</div>
-                                </div>
-                            </div>
-                            <div class="cardendHeading">
-                                <h2 class="heading">Incentivized Referral Program</h2>
-                                <div class="paragraph">
-                                    <p>We will introduce an incentivized referral program, rewarding existing LumosDAO members for bringing in new users. This program will encourage community growth while rewarding loyal members who contribute to expanding our user base.</p>
-                                </div>
-                            </div>
-                            <div class="carendBottom d-flex align-items-center">
-                            <div class="small-card">
-                                <img src="{{ asset('images/Layer 13.png') }}" alt="Small Image" class="small-image">
-                                <div class="small-card-text">Yes</div>
-                            </div>
-                            <div class="text">
-                                    <span>Voted by:</span>
-                                   <span>123 members</span>
-                                </div>
-                        </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="cardEndDiv">
-                    <a href="{{ route('dao.proposal', [1,1]) }}" class="text-decoration-none">
-                        <div class="d-flex justify-content-between align-items-center cardEndDetail_container">
-                            <div class="cardEndDetail">
-                                <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="Profile Image" class="image">
-                                <div class="text">ByGBV6...SYEN</div>
-                            </div>
-                            <div class="">
-                                <div class="text">
-                                    <span>Proposal ID:</span>
-                                   <span>ByGBV6...SYEN</span>
-                                </div>
-                            </div>
-                            <div class="small-card">
-                                <div class="small-card-text">Ended</div>
-                            </div>
-                        </div>
-                        <div class="cardendHeading">
-                            <h2 class="heading">Incentivized Referral Program</h2>
-                            <div class="paragraph">
-                                <p>We will introduce an incentivized referral program, rewarding existing LumosDAO members for bringing in new users. This program will encourage community growth while rewarding loyal members who contribute to expanding our user base.</p>
-                            </div>
-                        </div>
-                        <div class="carendBottom d-flex align-items-center">
-                            <div class="small-card">
-                                <img src="{{ asset('images/Layer 13.png') }}" alt="Small Image" class="small-image">
-                                <div class="small-card-text">Yes</div>
-                            </div>
-                            <div class="text">
-                                    <span>Voted by:</span>
-                                   <span>123 members</span>
-                                </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="row">
-                <div class="cardEndDiv">
-                    <a href="{{ route('dao.proposal', [1,1]) }}" class="text-decoration-none">
-                        <div class="d-flex justify-content-between align-items-center cardEndDetail_container">
-                            <div class="cardEndDetail">
-                                <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="Profile Image" class="image">
-                                <div class="text">ByGBV6...SYEN</div>
-                            </div>
-                            <div class="">
-                                <div class="text">
-                                    <span>Proposal ID:</span>
-                                   <span>ByGBV6...SYEN</span>
-                                </div>
-                            </div>
-                            <div class="small-card">
-                                <div class="small-card-text">Ended</div>
-                            </div>
-                        </div>
-                        <div class="cardendHeading">
-                            <h2 class="heading">Incentivized Referral Program</h2>
-                            <div class="paragraph">
-                                <p>We will introduce an incentivized referral program, rewarding existing LumosDAO members for bringing in new users. This program will encourage community growth while rewarding loyal members who contribute to expanding our user base.</p>
-                            </div>
-                        </div>
-                        <div class="carendBottom d-flex align-items-center">
-                            <div class="small-card">
-                                <img src="{{ asset('images/Layer 13.png') }}" alt="Small Image" class="small-image">
-                                <div class="small-card-text">Yes</div>
-                            </div>
-                            <div class="text">
-                                 <span>Voted by:</span>
-                                   <span>123 members</span>
-                                </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
+                <div  class="proposal_right_card_container" id="proposal_views">
+                    <div style='font-size:20px; margin:60px;'><center>Loading Proposals...</center></div>
                 </div>
                      <div style="margin: top 15px; " class="proposal_status-card">
                         <div class="proposal_status-SideCard">
@@ -510,4 +396,117 @@
     </div>
     </div>
     </section>
+    <script>
+        /* INDEX FUNCTIONS GO HERE */
+        /* RETRIEVE THE DAO SPECIFIC INFORMATION */
+        const indexMain = async () => { 
+           let dao = (window.location + "").substring((window.location + "").lastIndexOf("/") + 1)
+           dao = await getDao(dao) ;  
+           if(dao['proposals'] != undefined) {
+               E('dao_name').innerHTML = dao.name || "no name"
+               E('dao_name_head').innerHTML = dao.name || "no name"
+               E('dao_about').innerHTML = dao.description || "Your friendly Lumos DAO community"
+               E('dao_members').innerHTML = dao.members.toLocaleString() + ((dao.members * 1 > 1) ? " members" : " member")
+               //get token info name
+               const token = await getTokenInfo(dao.token)
+               let code = await getTokenInfo(dao.token, "symbol");
+               E('dao_token_name').innerHTML = (token.length > 7) ? token.substring(0, 6) + "..." : token
+               //get asset info from toml
+               if(dao.url != ""){
+                   const aToml = await readAssetToml(dao.url)
+                   E('dao_token_url').innerHTML = dao.url
+                   E('dao_token_url').href = dao.url
+                   E('dao_website').innerHTML = (aToml.DOCUMENTATION != undefined) ? aToml.DOCUMENTATION.ORG_URL : ""
+                   E('dao_website').href = (aToml.DOCUMENTATION != undefined) ? aToml.DOCUMENTATION.ORG_URL : ""
+                   if(aToml.CURRENCIES){ 
+                       code = code.replace(/[^a-z0-9A-Z]/g,"")
+                        for(let i=0; i<aToml.CURRENCIES.length;i++) {
+                            const cur = aToml.CURRENCIES[i];  
+                            if(cur.code == code) {
+                                //have found our code
+                                E('dao_token_img').src = cur.image || ""
+                                E('dao_image').src = cur.image || ""
+                                E('dao_token_issuer').innerHTML = cur.issuer || ""
+                                E('dao_token_distributing').innerHTML = cur.issuer || ""
+                                break;
+                            }
+                        }
+                    } 
+               }
+               //load info of all the proposals
+               let prop;
+               if(dao.proposals != undefined){
+                   if(dao.proposals.length > 0) {
+                        E('proposal_views').innerHTML = ""
+                        const tmr = setInterval(async () => {
+                        prop = dao.proposal_list.pop()
+                            if(prop != undefined && prop != "") {
+                                prop = await getProposal(prop)  
+                                if(prop['name'] != undefined) {
+                                    //append
+                                    E('proposal_views').appendChild(drawProposal(prop))
+                                }
+                            }
+                            //stop timer if all dao data has been read
+                            if(dao.proposal_list.length == 0) clearInterval(tmr)
+                        }, 5)
+                   }
+                   else {
+                       E('proposal_views').innerHTML = "<div style='font-size:20px; margin:60px;'><center>No proposal created yet<br>Be the first to create a proposal.</center></div>"
+                   }
+               }
+               else {
+                   E('proposal_views').innerHTML = "<div style='font-size:20px; margin:60px;'><center>No proposal created yet<br>Be the first to create a proposal.</center></div>"
+               }
+           }
+        }
+     
+        const drawProposal = (prop) => {
+            let _div = document.createElement('div')
+            let n = prop.creator.substring(0,4) + "..." + prop.creator.substring(prop.creator.length - 5)
+            let h = prop.voters.length.toLocaleString() + ((prop.voters.length * 1 > 1) ? " members" : " member")
+            _div.innerHTML = ` <div class="row">
+                <div class="cardEndDiv">
+                    <div class="col-12">
+                        <a href="/proposal/${prop.proposalId}" class="text-decoration-none">
+                            <div class="d-flex justify-content-between align-items-center cardEndDetail_container">
+                                    <div class="cardEndDetail">
+                                        <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="Profile Image" class="image">
+                                        <div class="text">Created by: ${n}</div>
+                                    </div>
+
+                                <div class="text">
+                                        <span>Proposal ID:</span>
+                                        <span>${prop.proposalId}</span>
+                                    </div>
+
+                                <div class="small-card">
+                                    <div class="small-card-text">${(prop.executed) ? "Ended" : "Active"}</div>
+                                </div>
+                            </div>
+                            <div class="cardendHeading">
+                                <h2 class="heading">Incentivized Referral Program</h2>
+                                <div class="paragraph">
+                                    <p>${prop.description}</p>
+                                </div>
+                            </div>
+                            <div class="carendBottom d-flex align-items-center">
+                            <div class="small-card">
+                                <img src="{{ asset('images/Layer 13.png') }}" alt="Small Image" class="small-image">
+                                <div class="small-card-text">Yes</div>
+                            </div>
+                            <div class="text">
+                                    <span>Voted by:</span>
+                                   <span>${h}</span>
+                                </div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
+            </div>`
+            return _diV.firstElementChild
+                
+        }
+        indexMain() //run the main function
+    </script>
 @endsection

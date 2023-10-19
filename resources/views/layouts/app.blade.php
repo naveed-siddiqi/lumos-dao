@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" crossorigin="anonymous"
         integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGKaWeNxWA8yrx5v3SaVpMvR3CA==" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{{ asset('css/style.css?v='.time()) }}">
+ @include('components.scripts')
 </head>
 
 <body class="DOA">
@@ -119,7 +120,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
         integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 
-    @include('components.scripts')
+   
 
     {{-- <script src="{{ asset('js/custom.js?v='.time()) }}"></script> --}}
     <script src="{{ asset('js/wallet.js?v='.time()) }}"></script>
