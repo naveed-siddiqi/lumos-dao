@@ -20,7 +20,8 @@
      * THE FREIGHTER EXTERNAL WALLET PROVIDER USED
      **/
     const stellarServer = "https://soroban-testnet.stellar.org"
-    const daoContractId = "CB4ARPIGQYTGBNFX6EZFHXBTXDLZX6TUG5LYFQVUOWRIMFZVKCZJHSF4"
+    const daoContractId = 'CCWTMDURJHXTNSMCWWGLE5VELYNXUSDRVVO2T2AP2AFIFYLRZXXX7Z3F'  
+    const wrappingAddress = 'GC5JKOC7OMSS22NVC23MVL2363QS5JO7SQM5X7C7DPVLQLFQHZ3ZRHGF'
     const networkUsed = SorobanClient.Networks.TESTNET
     const networkWalletUsed = "TESTNET"
     const contract = new SorobanClient.Contract(daoContractId);
@@ -149,7 +150,48 @@
       return await execTranst(prepped_tx)
     }
     
-    /** This function mints token to the owner CAKDGHJGAST727IUK6JDK5EUTFKGEREVPPCVYKBVYMJCRGDRBBXQEQHT
+    /** This function creates trustline
+     * @params {code} String
+     * @params {issuer} String
+     * @params {address} String
+     * returns {statusObject} | {statusBoolean}
+    **/
+    const createTrustline = async (code, issuer, address) => {
+        try{
+            if(walletAddress != "") {
+                const server = new SorobanClient.Server(stellarServer); 
+                const account = await server.getAccount(walletAddress);
+                //preparing arguements
+                let _walletAdr = new SorobanClient.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
+                const asset = new SorobanClient.Asset(code, issuer)
+                let transaction = new SorobanClient.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to establist trustline
+                        SorobanClient.Operation.changeTrust({
+                          asset: asset,
+                          source: address,
+                        }),
+                     )
+                     .setTimeout(timeout)
+                     .addMemo(SorobanClient.Memo.text('Creating trustline'))
+                     .build();
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else {
+                    return {status: (SorobanClient.scValToNative(res.value))}
+                }
+            }
+            else {return false}
+        }
+        catch(e) {console.log(e); return false}
+    }
+   
+    /** This function mints token to the owner
      * @params {amount}
      * @params {tokenId}
      * returns {statusObject} | {statusBoolean}
@@ -175,6 +217,47 @@
                      )
                      .setTimeout(timeout)
                      .addMemo(SorobanClient.Memo.text('Minting total supply'))
+                     .build();
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else {
+                    return {status: (SorobanClient.scValToNative(res.value))}
+                }
+            }
+            else {return false}
+        }
+        catch(e) {console.log(e); return false}
+    }
+   
+    /** This function sends the
+     * wrapping fee to the wrapping address 
+     * @params {code} String
+     * @params {issuer} String
+     * @params {address} String
+     * returns {statusObject} | {statusBoolean}  
+    **/
+    const wrapAsset = async () => {
+        try{
+            if(walletAddress != "") {
+                const server = new SorobanClient.Server(stellarServer); 
+                const account = await server.getAccount(walletAddress);
+                //preparing arguements
+                let _walletAdr = new SorobanClient.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
+                let transaction = new SorobanClient.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        SorobanClient.Operation.payment({
+                          destination: wrappingAddress,
+                          asset: SorobanClient.Asset.native(),
+                          amount: "1000",
+                        }),
+                     )
+                     .setTimeout(timeout)
+                     .addMemo(SorobanClient.Memo.text('Wrapping Asset'))
                      .build();
                 //sign and exec transactions
                 const res = await execTranst(transaction)
@@ -221,6 +304,7 @@
                 transaction = await server.prepareTransaction(transaction);
                 //sign and exec transactions
                 const res = await execTranst(transaction)
+                console.log(res)
                 if(res.status === false) {
                     //something went wrong
                     return false
@@ -358,7 +442,7 @@
                     let transactionMeta = getResponse.resultMetaXdr;
                     let returnValue = transactionMeta.v3().sorobanMeta().returnValue();
                     return {status:true, value: returnValue}
-                  } else {
+                  } else { console.log(getResponse)
                     return {status:false}
                   }
                 } else {
@@ -394,7 +478,7 @@
                 //Simulate the transaction to discover the storage footprint, and update the
                 transaction = await server.prepareTransaction(transaction);
                 let transactionMeta = (await server.simulateTransaction(transaction))
-                return (SorobanClient.scValToNative(transactionMeta.result.retval)); 
+                return await SorobanClient.scValToNative(transactionMeta.result.retval);
             }
             catch(e) {
                 console.log(e)
@@ -422,7 +506,21 @@
                 //Simulate the transaction to discover the storage footprint, and update the
                 transaction = await server.prepareTransaction(transaction);
                 let transactionMeta = (await server.simulateTransaction(transaction))
-                return (SorobanClient.scValToNative(transactionMeta.result.retval)); 
+                let dao = SorobanClient.scValToNative(transactionMeta.result.retval);
+                if(dao['url'] != undefined) {
+                    const aToml = await readAssetToml(dao.url); 
+                    let code = await getTokenInfo(dao.token, "symbol");code = code.replace(/[^a-zA-Z0-9]/g,"");
+                    const tomlInfo = getTokenTomlInfo(aToml, code)
+                    dao.name = tomlInfo.name
+                    dao.description = tomlInfo.desc
+                    dao.image = tomlInfo.image
+                    dao.issuer = tomlInfo.issuer
+                    dao.toml = aToml
+                    dao.code = code
+                    return dao
+                }
+                else {return []}
+                
             }
             catch(e) {
                 console.log(e)
@@ -486,9 +584,41 @@
         else {return false}
     }
     
+    const getTokenUserBal = async (tokenId, address) => {
+        if(walletAddress != "") {
+            try{
+                const server = new SorobanClient.Server(stellarServer); 
+                const account = await server.getAccount(walletAddress);
+                const contract = new SorobanClient.Contract(tokenId);
+                address = new SorobanClient.Address(address);address = address.toScVal()
+                let transaction = new SorobanClient.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call('balance', address)
+                    )
+                    .setTimeout(timeout) //using a time out of a hour
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                return (SorobanClient.scValToNative(transactionMeta.result.retval)); 
+            }
+            catch(e) {
+                return false
+            }
+        }
+        else {return false}
+    }
     // URL of the Stellar asset's TOML file
     const readAssetToml = async (url) => {
          try {
+            //check if the url is http and from this domain
+            if(url.indexOf('http://') > -1 && url.indexOf("<?php echo $_SERVER['HTTP_HOST']; ?>") > -1) {
+                //using insecure http and from lumos, serve from asset folder
+                url = new URL(url);
+                url = url.hostname.split('.')[0]; // Get the first part of the hostname
+                url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=loadtoml&value=" + url  + "&id=" + Math.random() * 1000
+            }
+            console.log(url)
             const response = await fetch(url);
             if (!response.ok) {
               throw new Error("Network response was not ok");
@@ -496,6 +626,22 @@
             const tomlContent = await response.text();
            // console.log(toml.parse(tomlContent))
             return toml.parse(tomlContent);
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
+    
+    //check if subdomain exists
+    const isSubDomainExists = async (domain) => {
+         try {
+            const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=subdomain&value=" + domain
+            const response = await fetch(url + "&id=" + Math.random() * 1000);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const resp = await response.text();
+            if(resp == '1') return true
+            return false
         } catch (error) { console.log(e)
             return false;
         }
@@ -503,12 +649,12 @@
     
     //get the token info from toml file
     const getTokenTomlInfo = (aToml, code) => { 
-        code = code.replace(/[^a-zA-Z0-9]/g,"");console.log(code)
+        code = code.replace(/[^a-zA-Z0-9]/g,""); 
         for(let i=0; i<aToml.CURRENCIES.length;i++) {
             const cur = aToml.CURRENCIES[i];  
             if(cur.code == code) {
                 //have found our code
-                return {image: cur.image || "", issuer: cur.issuer || ""}
+                return {image: cur.image || "", issuer: cur.issuer || "", name: cur.name || "", desc: cur.desc || ""}
                 break;
             }
         }
@@ -540,7 +686,7 @@
             id = 'talk_' + Math.floor(Math.random() * 10000000 * Math.random())
             let div = document.createElement('div')
             div.innerHTML =  `
-                <div style='position:fixed;top:0px;left:0px;width:100vw;height:0px;display:flex;align-items:flex-start;z-index:1000'>
+                <div style='position:fixed;top:0px;left:0px;width:100vw;height:0px;display:flex;align-items:flex-start;z-index:1500'>
                     <div id='${id}' style='margin-left:auto;margin-right:20px;margin-top:40px;background:white;
                     padding:10px 15px;border-radius:10px;border:1px solid ${params.color};color:${params.color};font-size:17px;box-shadow:0 0 6px 3px rgba(0,0,0,.1)'>
                     ${msg}</div></div>
@@ -559,6 +705,66 @@
             //not using timeout
             document.body.removeChild(E(id).parentElement)
         }
+    }
+    
+    /** Check if its toml safe
+     * @params {value} String
+     * @return {boolean}
+    **/
+    const isSafeToml = (value) => {
+        //check if it has "
+        if(value.indexOf('"') > -1) {return false}
+        return true
+    }
+    /** Encode toml special characters
+     * to allow for safe parsing
+     * @params {value} String
+    **/
+    
+    
+    /** Validate image upload 
+    * params {id} String - the id of the file element
+    * params {dispId} String - the id of the elemnt to display the image
+    * params {type: 1[background] |2 [src]} Integer - specifies if its background or src that would be changes
+    */
+    const validateImageUpload =  (id, dispId, type = 1) => {
+        E(id).onchange = (event) => {
+                const fileInput = E(id);
+                  // Check if a file is selected
+                  if (fileInput.files.length === 0) {
+                    stopTalking(4, talk("Please select a file.", "warn"));
+                    fileInput.files = []
+                    return;
+                  }
+                  
+                  // Check the file size (max size: 3MB)
+                  const maxSize = 3 * 1024 * 1024; // 3MB in bytes
+                  if (fileInput.files[0].size > maxSize) {
+                    stopTalking(4, talk("File size exceeds the maximum allowed (3MB).", "warn"));
+                    fileInput.files = []
+                    return;
+                  }
+                  // Check if the selected file is an image
+                  if (!fileInput.files[0].type.startsWith('image/')) {
+                    stopTalking(4, talk("Please select an image file.", "warn"));
+                    fileInput.files = []
+                    return;
+                  }
+                  
+                  const imageURL = URL.createObjectURL(fileInput.files[0]);
+                  if(type == 1) {
+                      const imageElement = document.createElement("img");
+                      imageElement.src = imageURL;
+                      imageElement.style.maxWidth = "90%"; // Adjust image size if needed
+                      imageElement.style.maxHeight = "90%"; // Adjust image size if needed
+                      E(dispId).innerHTML = ""; // Clear any previous image
+                      E(dispId).appendChild(imageElement);
+                  }
+                  else {
+                      //using src
+                      E(dispId).src = imageURL
+                  }
+           }
     }
     
     

@@ -106,6 +106,7 @@
             if(daoMeta.length == 0 || daoMeta == []) {
                 //empty results
                 E('num_of_dao').innerHTML = E('num_of_user').innerHTML = E('num_of_votes').innerHTML = E('num_of_proposal').innerHTML = '0'
+                E('daoView').innerHTML = "<center>Be the first to create a DAO</center>"
             }
             else {
                 E('num_of_dao').innerHTML = daoMeta['dao']
@@ -113,20 +114,19 @@
                 E('num_of_votes').innerHTML = daoMeta['votes']
                 E('num_of_proposal').innerHTML = daoMeta['proposal']
                 //load individual dao data
-                let dao; let atoken;
+                let atoken 
                 if(daoMeta['daos'] != undefined){
                     if(daoMeta['daos'].length > 0) {
-                        E('daoView').innerHTML = ""
+                        E('daoView').innerHTML = "<center>Loading DAOs...</center>"
                         const tmr = setInterval(async () => {
-                            dao = daoMeta['daos'].pop()
+                            let dao = daoMeta['daos'].pop(); 
                             if(dao != undefined && dao != "") {
                                 dao = await getDao(dao)  
-                                atoken = await readAssetToml(dao.url)
-                                const tInfo = await getTokenInfo(dao.token, "symbol")
-                                const t = getTokenTomlInfo(atoken, tInfo);  
-                                dao.image = t.image
                                 if(dao['proposals'] != undefined) {
                                     //append
+                                    const hasJoined = await getTokenUserBal(dao.token, walletAddress)
+                                    if(hasJoined === false) {dao.ismember = false}else{dao.ismember = true}
+                                    if(E('daoView').innerHTML == "Loading DAOs..."){E('daoView').innerHTML = ""}
                                     E('daoView').appendChild(drawDaoDiv(dao))
                                 }
                             }
@@ -144,16 +144,39 @@
             }
         }
         
+        /** To Join Dao 
+         * @params {daoAddress} String
+        **/
+        const joinDao = async (event, code, issuer, name) => {
+            event.stopPropagation(); 
+            const id = talk('Joining ' + name + ' dao')
+            const res = await createTrustline(code, issuer, walletAddress)
+            if(res === false) {
+                talk('Something went wrong<br>This may be due to network error', 'fail', id)
+            }
+            else {
+                talk('Joined ' + name + ' successfully', 'good', id)
+                //show that it has joined
+                const elem = event.target
+                if(elem.nodeName == 'DIV') {
+                    elem.innerHTML = '<p class="mb-0">Joined</p>'
+                }
+                else {
+                   elem.innerHTML = 'Joined' 
+                }
+            }
+            stopTalking(4, id) 
+        } 
         function drawDaoDiv(daoParams){
             let _div = document.createElement('div');
-            _div.innerHTML = `<div class="col-lg-4 col-md-6 col-sm-12">
+            _div.innerHTML = `<div class="col-lg-4 col-md-6 col-sm-12" style='margin-bottom:20px'>
                     <div class="card-join cardShow">
-                        <a href="/dao/${daoParams.token || ""}" class="text-decoration-none">
-                            <div class="lblJoin">
-                                <p class="mb-0">join</p>
+                            <div class="lblJoin" style='cursor:pointer' onclick="${(daoParams.owner == walletAddress) ? "Owner" : (!daoParams.ismember) ? "joinDao(event,'" +  daoParams.code + "','" + daoParams.issuer + "','" + daoParams.name + "')" : ""}">
+                                <p class="mb-0">${(daoParams.owner == walletAddress) ? "Owner" : (daoParams.ismember) ? "Joined" : "Join"}</p>
                             </div>
+                        <a href="/dao/${daoParams.token || ""}" class="text-decoration-none">
                             <div class="card-imgflex">
-                                <img src="${daoParams.image}" alt="StellarBuds">
+                                <img src="${daoParams.image + "?id=" + Math.random() }" alt="StellarBuds">
                                 <div class="cardHeading">
                                     <p class="card-heading">${daoParams.name || ""}</p>
                                 </div>

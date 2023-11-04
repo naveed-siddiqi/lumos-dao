@@ -1,12 +1,16 @@
-ACCOUNTS=[""]
+ACCOUNTS=[]
 
 [DOCUMENTATION]
 ORG_NAME="Lumos DAO"
 ORG_URL="https://lumosdao.io"
 ORG_DESCRIPTION="Lumos DAO Assets"
-ORG_SUPPORT_EMAIL=""
 ORG_LOGO="https://lumosdao.io/public/images/logo.png"
-
+ORG_TWITTER=""
+ORG_INSTAGRAM=""
+ORG_DISCORD=""
+ORG_TELEGRAM="Telegramx'"
+ORG_REDDIT=""
+ORG_SUPPORT_EMAIL=""
 
 
 [[CURRENCIES]]
@@ -14,7 +18,7 @@ code="nbhb"
 issuer="GCTDGADX3DTGM734T5WOCBDLXJH2KP7FCV2K5WCHQSPZ74SUDYAONTMH"
 display_decimals=1
 name="yu"
-desc="yyu"
+desc="jyesp"
 status="live"
 image="https://lumosdao.io/.well-known/images/nbhbGCTDGADX3DTGM734T5WOCBDLXJH2KP7FCV2K5WCHQSPZ74SUDYAONTMH.png"
 
@@ -23,7 +27,7 @@ code="nbgty"
 issuer="GCTDGADX3DTGM734T5WOCBDLXJH2KP7FCV2K5WCHQSPZ74SUDYAONTMH"
 display_decimals=1
 name="yu"
-desc="fgh"
+desc="What is here"
 status="live"
 image="https://lumosdao.io/.well-known/images/nbgtyGCTDGADX3DTGM734T5WOCBDLXJH2KP7FCV2K5WCHQSPZ74SUDYAONTMH.png"
 
@@ -32,7 +36,7 @@ code="nbgt"
 issuer="GCTDGADX3DTGM734T5WOCBDLXJH2KP7FCV2K5WCHQSPZ74SUDYAONTMH"
 display_decimals=1
 name="yu"
-desc="fgh"
+desc="is working proprly"
 status="live"
 image="https://lumosdao.io/.well-known/images/nbgtGCTDGADX3DTGM734T5WOCBDLXJH2KP7FCV2K5WCHQSPZ74SUDYAONTMH.png"
 
@@ -41,7 +45,7 @@ code="okl"
 issuer="GCTDGADX3DTGM734T5WOCBDLXJH2KP7FCV2K5WCHQSPZ74SUDYAONTMH"
 display_decimals=1
 name="yu"
-desc="9000"
+desc="jyesp"
 status="live"
 image="https://lumosdao.io/.well-known/images/oklGCTDGADX3DTGM734T5WOCBDLXJH2KP7FCV2K5WCHQSPZ74SUDYAONTMH.png"
 
@@ -50,7 +54,7 @@ code="BUR"
 issuer="GBEE7ZVICFZCO6EGB4RTUBUIUJ4FKQOS7VGDJXGGNEUPD5O326OF6UOS"
 display_decimals=1
 name="Burger"
-desc="Burger (BUR) is the sizzling new meme token on the Soroban blockchain, serving up delicious gains and juicy community engagement. Don't miss out, or you might be left with an empty plate!"
+desc="jye[DATA]sp"
 status="live"
 image="https://lumosdao.io/.well-known/images/BURGBEE7ZVICFZCO6EGB4RTUBUIUJ4FKQOS7VGDJXGGNEUPD5O326OF6UOS.png"
 
@@ -59,7 +63,7 @@ code="CAL"
 issuer="GBEE7ZVICFZCO6EGB4RTUBUIUJ4FKQOS7VGDJXGGNEUPD5O326OF6UOS"
 display_decimals=1
 name="Calculator"
-desc="Calculator (CAL) is the latest digital asset on the Soroban blockchain, adding up to be the next big thing in the crypto sphere. Crunch the numbers and get on board before the totals skyrocket!"
+desc="jyesp"
 status="live"
 image="https://lumosdao.io/.well-known/images/CALGBEE7ZVICFZCO6EGB4RTUBUIUJ4FKQOS7VGDJXGGNEUPD5O326OF6UOS.png"
 
@@ -68,7 +72,7 @@ code="JNY"
 issuer="GCTDGADX3DTGM734T5WOCBDLXJH2KP7FCV2K5WCHQSPZ74SUDYAONTMH"
 display_decimals=1
 name="JES"
-desc="What we have is an issue"
+desc="jyesp"
 status="live"
 image="https://lumosdao.io/.well-known/images/JNYGCTDGADX3DTGM734T5WOCBDLXJH2KP7FCV2K5WCHQSPZ74SUDYAONTMH.png"
 
@@ -77,7 +81,7 @@ code="DND"
 issuer="GCTDGADX3DTGM734T5WOCBDLXJH2KP7FCV2K5WCHQSPZ74SUDYAONTMH"
 display_decimals=1
 name="DND"
-desc="nothing"
+desc="jyesp"
 status="live"
 image="https://lumosdao.io/.well-known/images/DNDGCTDGADX3DTGM734T5WOCBDLXJH2KP7FCV2K5WCHQSPZ74SUDYAONTMH.png"
 
@@ -86,7 +90,7 @@ code="JOP"
 issuer="GCTDGADX3DTGM734T5WOCBDLXJH2KP7FCV2K5WCHQSPZ74SUDYAONTMH"
 display_decimals=1
 name="JOP"
-desc="Just there"
+desc="jyesp"
 status="live"
 image="https://lumosdao.io/.well-known/images/JOPGCTDGADX3DTGM734T5WOCBDLXJH2KP7FCV2K5WCHQSPZ74SUDYAONTMH.png"
 
@@ -95,6 +99,18 @@ code="PZZ"
 issuer="GBEE7ZVICFZCO6EGB4RTUBUIUJ4FKQOS7VGDJXGGNEUPD5O326OF6UOS"
 display_decimals=1
 name="Pizza"
-desc="Pizza (PIZZ) is the sizzling new meme token on the Soroban blockchain, serving up delicious gains and juicy community engagement. Don't miss out, or you might be left with an empty plate!"
+desc="jyesp"
 status="live"
 image="https://lumosdao.io/.well-known/images/PZZGBEE7ZVICFZCO6EGB4RTUBUIUJ4FKQOS7VGDJXGGNEUPD5O326OF6UOS.png"
+
+[[CURRENCIES]]
+code="CAP"
+issuer="GBEE7ZVICFZCO6EGB4RTUBUIUJ4FKQOS7VGDJXGGNEUPD5O326OF6UOS"
+display_decimals=1
+name="Capstan"
+desc="jyesp"
+status="live"
+image="https://lumosdao.io/.well-known/images/CAPGBEE7ZVICFZCO6EGB4RTUBUIUJ4FKQOS7VGDJXGGNEUPD5O326OF6UOS.png"
+
+
+

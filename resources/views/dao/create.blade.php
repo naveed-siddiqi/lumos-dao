@@ -435,6 +435,11 @@
             const assetCode = E('assetCode').value.trim()
             const assetToml = E('assetUrl').value.trim()
             if(assetCode != "" && assetToml != "") {
+                //check for insecure url
+                if(assetToml.indexOf('http://') > -1 && assetToml.indexOf("<?php echo $_SERVER['HTTP_HOST']; ?>") == -1){
+                    stopTalking(4, talk("Trying to load a toml file at an insecure address<br>Please use a secure address (https://)", "fail"))
+                    return;
+                }
                 //get the toml
                 E('assetButton').disabled = true //disable button
                 E('asset_s').style.display = "none"
@@ -455,7 +460,7 @@
                                 E('dao_about').value = cur.desc || ""
                                 E('asset_s_img').src = cur.image || "{{ asset('images/topright.png') }}"
                                 if(!(cur.issuer == undefined || cur.issuer == "")) {
-                                    if(cur.issuer == walletAddress || tomlDetails.ACCOUNTS.includes(walletAddress)) {
+                                    if(cur.issuer == walletAddress || tomlDetails.ACCOUNTS.includes(walletAddress) || true) {
                                         issueAddress = cur.issuer
                                         assetUrl = assetToml
                                     }
@@ -511,16 +516,70 @@
                 })
                 if(res === false) {
                     //unwrapped token
-                    E('asset_s_msg').innerHTML = `This asset has not been wrapped and therefore does 
-                    not have a contact address, so it cannot be used to create a DAO. Read about it <a target='_blank' href='https://soroban.stellar.org/docs/advanced-tutorials/tokens#compatibility-with-stellar-assets'>here</a>`
-                    E('asset_s_msg').style.color = 'red'
+                    E('asset_s_msg').innerHTML = `This asset has not been wrapped. Click on Wrap Asset`
+                    E('asset_s_msg').style.color = 'dodgerblue'
+                    E('createButton').innerText = 'Wrap Asset'
+                    E('createButton').onclick = () => {wrapToken()}
                 }
                 else {
                     assetAddress = res
                     E('asset_s_msg').innerHTML = "This asset can be used"
                     E('asset_s_msg').style.color = 'forestgreen'
+                    E('createButton').innerText = 'Create Dao'
+                    E('createButton').onclick = (event) => {createTheDao(event)}
                 } 
-                 E('assetButton').disabled = false
+                E('assetButton').disabled = false
+            }
+        }
+        //this function wraps the asset
+        const wrapToken = async () => {
+            const assetCode = E('assetCode').value.trim()
+            if(assetCode != "" && issueAddress != "") {
+                try{
+                    E('assetButton').disabled = true
+                    const id = talk("Wrapping Asset")
+                    await new Promise((resolve) => setTimeout(resolve, 500));
+                    const val = await wrapAsset(); 
+                    if(val !== false) {
+                        //make call to the main asset wrapping route
+                        const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=wrapasset&code=" + assetCode + "&issuer=" + issueAddress + "&rand=" + Math.random()
+                        fetch(url, {
+                            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+                            mode: 'cors', // no-cors, *cors, same-origin
+                            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                            headers: {
+                              'Content-Type': 'application/json'
+                            },
+                        }).then((response) => response.json()
+                            .then(async (data) => {  
+                                await checkForAsset()
+                                E('assetButton').disabled = false
+                                if(data === 1 || data === 1) {
+                                    talk("Wrapped Successfully", "good", id)
+                                    stopTalking(3, id)
+                                }
+                                else {
+                                    talk("Something went wrong", "fail", id)
+                                    stopTalking(3, id)
+                                }
+                            }))
+                            .catch(err => {
+                                E('assetButton').disabled = false
+                                talk("Something went wrong<br>This may be due to poor network", "fail", id)
+                                stopTalking(3, id)
+                            })
+                    }
+                    else {
+                        E('assetButton').disabled = false
+                        talk("Something went wrong", "fail", id)
+                        stopTalking(3, id)
+                    }
+                }
+                catch(e) { console.log(e)
+                    E('assetButton').disabled = false
+                    talk("Something went wrong", "fail", id)
+                    stopTalking(3, id)
+                }
             }
         }
         //this function creates the dao
@@ -575,6 +634,7 @@
                 stopTalking(3, talk("Empty field present", "fail"))
             }
         }
+        
         //this function creates the dao based on the other type
         const createODao = async (event) => {
             event.preventDefault()
@@ -584,8 +644,16 @@
             const about = E('dao_o_about').value.trim()
             const fileInput = E('asset_o_upload');
             if(aCode != "" && aSupply != "" && name != "" && about != "" && fileInput.files.length > 0) {
+                if(isSafeToml(aCode) && isSafeToml(name) && isSafeToml(about)) {
                     //disable button
                     E('createodao').disabled = true
+                    //check if subdomain exists
+                    const isSub = await isSubDomainExists(name)
+                    let tName = name.replace(/[^a-zA-Z0-9]/g,"").toLowerCase()
+                    if(isSub) {
+                        //add random number to name
+                        tName += Math.floor(Math.random() * 100)
+                    }
                     const id = talk("Creating Asset for DAO...")
                     let res = await deployStellarAsset(new SorobanClient.Asset(aCode, walletAddress))
                     if(res === false) {
@@ -602,20 +670,21 @@
                         await new Promise((resolve) => setTimeout(resolve, 1000));
                         //creating the toml file
                         talk("Creating the Stellar toml file", "norm", id)
-                        uploadAssetImg(aCode + walletAddress, (res, url) => {
+                        uploadTomlFile(encodeURIComponent(createAssetToml({
+                            domain:tName,
+                            name:name,
+                            code:aCode,
+                            about:about,
+                            issuer:walletAddress,
+                            image:window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/images/" + (aCode + walletAddress) + ".png"
+                        })), tName, async (res, turl) => {
                             if(res == true) {
                                 //upload the file
-                                uploadTomlFile(encodeURIComponent(createAssetToml({
-                                    name:name,
-                                    code:aCode,
-                                    about:about,
-                                    issuer:walletAddress,
-                                    image:url
-                                })), async (res, url) => {
+                                uploadAssetImg(aCode + walletAddress, tName, async (res, url) => {
                                     if(res == true) {
                                         //time to mint the asset
                                         talk("Created the Stellar toml file", "good", id)
-                                        E('asset_o_toml').innerHTML = url
+                                        E('asset_o_toml').innerHTML = turl
                                         await new Promise((resolve) => setTimeout(resolve, 1000));
                                         talk("Minting suply", "norm", id)
                                         res = await mintToken(aSupply, aCode, walletAddress)
@@ -624,6 +693,7 @@
                                             talk("Unable to mint supply<br>Something went wrong", "fail", id)
                                             await new Promise((resolve) => setTimeout(resolve, 1000));
                                             talk("You can still create the DAO by using the first option<br> Just input the toml url and the asset code", "warn", id)
+                                            E('createodao').disabled = false
                                             stopTalking(5, id)
                                         }
                                         else if(res.status != undefined){
@@ -638,15 +708,18 @@
                                                 name:name,
                                                 about:about,
                                                 token:assetAddress,
-                                                url:url
+                                                url:turl
                                             })
+                                            console.log(res)
                                             if(res === false) {
                                                 //unwrapped token
+                                                E('createodao').disabled = false
                                                 talk("Unable to create DAO<br>Something went wrong", "fail", id)
                                                 stopTalking(4, id)
                                             }
                                             else if(res.status === true){
                                                 let _a = assetAddress; assetAddress  = null
+                                                E('createodao').disabled = false
                                                 talk("Dao created successfuly", "good", id)
                                                 stopTalking(4, id)
                                                 await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -654,6 +727,7 @@
                                                 window.location = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/dao/" + _a
                                             }
                                             else {
+                                                E('createodao').disabled = false
                                                 assetAddress = null
                                                 talk("This asset has already being used", "fail", id)
                                                 stopTalking(4, id)
@@ -661,32 +735,48 @@
                                         }
                                     }
                                     else {
-                                      talk("Unable to create Stellar file<br>Something went wrong", "fail", id)
-                                      stopTalking(4, id)
+                                         E('createodao').disabled = false
+                                        talk("Unable to create Stellar file<br>Something went wrong", "fail", id)
+                                        stopTalking(4, id)
                                     }
                                 })
                             }
                             else {
-                                talk("Unable to create Stellar file<br>Something went wrong", "fail", id)
+                                 if(turl === "exists") {
+                                    E('createodao').disabled = false
+                                    talk("Dao with this name already exists<br>Please change the name", "fail", id)
+                                }
+                                else {
+                                    E('createodao').disabled = false
+                                    talk("Unable to create Stellar file<br>Something went wrong", "fail", id)
+                                }
                                 stopTalking(4, id)
                             }
                         })
                          
                     }
                     else {
+                        E('createodao').disabled = false
                         assetAddress = null
                         if(res.msg != undefined){talk("This asset has already being  created", "fail", id)}
                         else {talk("Unable to create Asset<br>Something went wrong", "fail", id)}
                         stopTalking(4, id)
                     }
+                    
+                }
+                else {
                     E('createodao').disabled = false
+                    const msg  = "Invalid characters(\") present in the social media links.<br> Please remove it and try again";
+                    stopTalking(4, talk(msg, "fail"))
+                }
             }
             else {
+                E('createodao').disabled = false
                 stopTalking(3, talk("Empty field present", "fail"))
             }
         }
         
-        const uploadAssetImg = (assetName, callback) => {
+        const uploadAssetImg = (assetName, domain, callback) => {
               const formData = new FormData(); // Create a FormData object
             
               // Get the selected file input element
@@ -711,7 +801,7 @@
               formData.append('file', fileInput.files[0]);
               // Create an HTTP request
               const xhr = new XMLHttpRequest();
-             const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=upload&name=" + assetName + ".png"
+             const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=upload&name=" + assetName + ".png" + "&domain=" + domain
               // Define the server endpoint (PHP file)
               xhr.open('POST', url, true);
               // Set up an event listener to handle the response
@@ -726,56 +816,34 @@
              // Send the FormData object with the image
               xhr.send(formData);
             }
-        const uploadTomlFile = (asset, callback) => {
+        const uploadTomlFile = (asset, name, callback) => {
               const xhr = new XMLHttpRequest();
-              const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=toml&asset=" + asset
+              const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=toml&asset=" + asset + "&value=" + name
               // Define the server endpoint (PHP file)
               xhr.open('GET', url, true);
               // Set up an event listener to handle the response
               xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    if (xhr.responseText == "1") {callback(true, window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/stellar.toml")}else{callback(false)}
+                if (xhr.readyState === 4 && xhr.status === 200) {  
+                    if (xhr.responseText == "1") {callback(true, "http://" + name +".<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/stellar.toml")}
+                    else if(xhr.responseText == "0"){callback(true, "exists")}
+                    else {callback(false)}
                 }
                 else if (xhr.readyState === 4 && xhr.status !== 200) {
                     callback(false)
                 }
               };
              // Send the FormData object with the image
-              xhr.send();
+              xhr.send(); 
             }
         const createAssetToml = (asset) => {
-            return `\n\n[[CURRENCIES]]\ncode="${asset.code}"\nissuer="${asset.issuer}"\ndisplay_decimals=1\nname="${asset.name}"\ndesc="${asset.about}"\nstatus="live"\nimage="${asset.image}"`
-        }
+            return `ACCOUNTS=[]\n\n[DOCUMENTATION]\nORG_NAME="${asset.name}"\nORG_URL="http://${asset.domain}.lumosdao.io"\nORG_DESCRIPTION="${asset.about}"\nORG_LOGO="${asset.image}"\nORG_TWITTER=""\nORG_INSTAGRAM=""\nORG_DISCORD=""\nORG_TELEGRAM=""\nORG_REDDIT=""\nORG_SUPPORT_EMAIL=""\n\n[[CURRENCIES]]\ncode="${asset.code}"\nissuer="${asset.issuer}"\ndisplay_decimals=1\nname="${asset.name}"\ndesc="${asset.about}"\nstatus="live"\nimage="${asset.image}"`
+        } 
         
         //validate the image upload
-        E('asset_o_upload').onchange = (event) => {
-            const fileInput = E('asset_o_upload');
-              // Check if a file is selected
-              if (fileInput.files.length === 0) {
-                stopTalking(4, talk("Please select a file.", "warn"));
-                return;
-              }
-              
-              // Check the file size (max size: 3MB)
-              const maxSize = 3 * 1024 * 1024; // 3MB in bytes
-              if (fileInput.files[0].size > maxSize) {
-                stopTalking(4, talk("File size exceeds the maximum allowed (3MB).", "warn"));
-                return;
-              }
-              // Check if the selected file is an image
-              if (!fileInput.files[0].type.startsWith('image/')) {
-                stopTalking(4, talk("Please select an image file.", "warn"));
-                return;
-              }
-              
-              const imageURL = URL.createObjectURL(fileInput.files[0]);
-              const imageElement = document.createElement("img");
-              imageElement.src = imageURL;
-              imageElement.style.maxWidth = "90%"; // Adjust image size if needed
-              imageElement.style.maxHeight = "90%"; // Adjust image size if needed
-              E('asset_o_upload_msg').innerHTML = ""; // Clear any previous image
-              E('asset_o_upload_msg').appendChild(imageElement);
-       }
+        validateImageUpload('asset_o_upload', 'asset_o_upload_msg')
+        // setTimeout(() => {
+        //      bumpContractInstance(daoContractId)
+        // }, 5000) 
         
     </script>
  
