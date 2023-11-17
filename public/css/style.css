@@ -2208,7 +2208,249 @@ gap: 70px;
 .project-logo .container_custom_file_input{
     width: 75%;
 }
+.logo-Img-container{
+    width: 200px;
+    height: 160px;
+    object-fit: cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.coounter-modal {
+    margin: 0%;
+    padding: 2%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #00000052;
+  }
 
+  .modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.29)141;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+  }
+
+  .modal-content {
+    max-width: 800px;
+    margin: 0 auto;
+    height: auto;
+  }
+
+  .modal-close {
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+  }
+  .ul{
+    counter-reset:step;
+  }
+  
+  .step_li{
+    width: 100%;
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+  }
+  .step_li_border{
+   width: 100%;
+   height: 7px;
+   background-color: yellowgreen;
+   border-radius: 20px;
+  }
+  .step_li_border-pending{
+    width: 100%;
+    height: 7px;
+    background-color: rgb(212, 212, 212);
+    backdrop-filter: blur(64px);
+    border-radius: 20px;
+   }
+  .step_li_check{
+    width: 40px;
+    height: 40px;
+    color: yellowgreen;
+   }
+
+   .loading{
+    font-size:14px;
+    margin-bottom: 0px !important;
+   }
+   .loading-done{
+    font-size:14px;
+    margin-bottom: 0px !important;
+    color: yellowgreen;
+   }
+   .loading-pending{
+    font-size: 14px;
+    color: #7c7c7d;
+    margin-bottom: 0px !important;
+   }
+   .step_success{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    max-width: 400px;
+   }
+   .step_success svg{
+    width: 100px;
+    height: 100px;
+    color: yellowgreen;
+    }
+    .step_success h1{
+        font-size: larger;
+    }
+    .step_success p{
+        font-size: 14px;
+    }
+    .step_success button{
+        width: 100%;
+        height: 50px;
+        background:yellowgreen;
+        color: white;
+        font-weight: 400;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        }
+    .share-modal-img{
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 10px;
+        border: 1px solid #5055b1;
+        padding: 2px !important;
+        }
+        .share-modal-img img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+
+        }
+        .share-social-links p{
+            font-size: 16px;
+            font-family: "MontSem";
+            color: var(--primary-color);
+            margin-bottom: 0px;
+        }
+        .share-copy-links p{
+            font-size: 16px;
+            font-family: "MontSem";
+            color: var(--primary-color);
+            margin-bottom: 0px;
+        }
+        .share-social-links{
+            margin-top:10px !important;
+        }
+        .share-social-links ul{
+            list-style-type: none;
+            margin-top: 5px !important;
+        }
+        .share-social-links ul li svg{
+            border-radius: 50px;
+            border: 1px solid #5099b1;
+            padding: 5px !important;
+
+        }
+        .share-copy-links{
+            margin: 20px 0px !important;
+        }
+        .share-copy-links ul{
+            list-style-type: none;
+            padding: 5px !important;
+            border: 1px solid #d7d7d7;
+            border-radius: 10px;
+            margin-top: 5px !important;
+
+        }
+        .share-modal-content{
+            border-radius: 1.3rem !important;
+            padding: 40px ;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            pointer-events: auto;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid rgba(0,0,0,.2);
+            border-radius: 0.3rem;
+            outline: 0
+
+        }
+        .share-social-links button{
+            font-size: 16px;
+            font-family: "MontSem";
+            border: 0;
+        }
+        .share-social-links .copybutton{
+            font-size: 16px;
+            font-family: "MontSem";
+            color:white;
+            background-color: #5055b1;
+            border: 1px solid #5055b1;
+            border-radius: 10px;
+            margin-bottom: 0px;
+            padding:5px 10px;
+        }
+        .share-copy-links button{
+            font-size: 16px;
+            font-family: "MontSem";
+            color:white;
+            background-color: #5055b1;
+            border: 1px solid #5055b1;
+            border-radius: 10px;
+            margin-bottom: 0px;
+            padding:5px 10px;
+        }
+        .share-proceed button{
+            font-size: 16px;
+            font-family: "MontSem";
+            color:rgb(0, 0, 0);
+            background-color: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 10px;
+            margin-bottom: 0px;
+            padding:5px 10px;
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+   .loading:after {
+    content: ' .';
+    animation: dots 1s steps(5, end) infinite;}
+  @keyframes dots {
+    0%, 20% {
+      color: rgba(0,0,0,0);
+      text-shadow:
+        .25em 0 0 rgba(0,0,0,0),
+        .5em 0 0 rgba(0,0,0,0);}
+    40% {
+      color: #333;
+      text-shadow:
+        .25em 0 0 rgba(0,0,0,0),
+        .5em 0 0 rgba(0,0,0,0);}
+    60% {
+      text-shadow:
+        .25em 0 0 #333,
+        .5em 0 0 rgba(0,0,0,0);}
+    80%, 100% {
+      text-shadow:
+        .25em 0 0 #333,
+        .5em 0 0 #333;}}
+  
 /* wallet conenction */
 @media (min-width: 780px) {
     .grid-form {
@@ -2258,6 +2500,10 @@ gap: 70px;
         align-items: center;
         justify-content: center;
         text-align: start;
+    }
+    .share-modal-content {
+        border-radius: 1.3rem !important;
+        padding: 20px ;
     }
     .w-60{
         width: 100%;

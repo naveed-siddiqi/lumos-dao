@@ -670,31 +670,44 @@
      * @return {int} ModalId
     **/
     const talk = (msg = "", type = "norm", id = "") => {
-        //config stylings
-        let params = {color:"black"}
-        if(type == "good") {params.color = "forestgreen"}
-        else if(type == "fail") {params.color = "red"}
-        else if(type == "warn") {params.color = "#ffa101"}
-        if(id != "") {
-            //performing modifications
-            E(id).style.color = params.color
-            E(id).style.borderColor = params.color
-            E(id).innerHTML = msg
-        }
-        else {
-            //generate id
-            id = 'talk_' + Math.floor(Math.random() * 10000000 * Math.random())
-            let div = document.createElement('div')
-            div.innerHTML =  `
-                <div style='position:fixed;top:0px;left:0px;width:100vw;height:0px;display:flex;align-items:flex-start;z-index:1500'>
-                    <div id='${id}' style='margin-left:auto;margin-right:20px;margin-top:40px;background:white;
-                    padding:10px 15px;border-radius:10px;border:1px solid ${params.color};color:${params.color};font-size:17px;box-shadow:0 0 6px 3px rgba(0,0,0,.1)'>
-                    ${msg}</div></div>
-            `
-            document.body.appendChild(div.firstElementChild)
-        }
-        return id
+    // Config stylings
+    let params = { color: "black" };
+    let icon = '<svg xmlns="http://www.w3.org/2000/svg" "width="24" height="24" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clip-rule="evenodd" /></svg>';
+
+    if (type == "good") {
+        params.color = "forestgreen";
+        icon = '<svg xmlns="http://www.w3.org/2000/svg"width="24" height="24" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>';
+    } else if (type == "fail") {
+        params.color = "red";
+        icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" /></svg>';
+    } else if (type == "warn") {
+        params.color = "#ffa101";
+        icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" /></svg>';
     }
+
+    if (id != "") {
+        // Performing modifications
+        E(id).style.color = params.color;
+        E(id).style.borderColor = params.color;
+        E(id).innerHTML = `<div style='display:flex;align-items:center' gap:10px;>${icon}${msg}</div>`;
+    } else {
+        // Generate id
+        id = 'talk_' + Math.floor(Math.random() * 10000000 * Math.random());
+        let div = document.createElement('div');
+        div.innerHTML = `
+            <div style='position:fixed;top:0px;left:0px;width:100vw;height:0px;display:flex;align-items:flex-start;z-index:1500'>
+                <div class="talk  ${type}-message" id='${id}' style='margin-left:auto;margin-right:20px;margin-top:40px;background:white;
+                padding:10px 5px;border-radius:5px 0px 0px 5px;border-left:5px solid ${params.color};border-top:1px #cbd5e1 solid;border-right:1px #cbd5e1 solid;border-bottom:1px #cbd5e1 solid;font-family: "MontReg";color:${params.color};font-size:14px;box-shadow:0 0 6px 3px rgba(0,0,0,.1)'>
+                    <div style='display:flex;align-items:center;gap:20px;' >${icon}${msg}</div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(div.firstElementChild);
+    }
+
+    return id;
+};
+
     //Remove
     const stopTalking = (_timeout, id) => {
         if(_timeout > 0) {
