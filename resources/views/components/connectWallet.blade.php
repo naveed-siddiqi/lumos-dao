@@ -33,7 +33,7 @@
                                         <a href="#" wallet="rabet"><img src="{{ asset('images/rabet.png') }}">
                                             Rabet</a>
                                     </li>
-                                    <li class="item-drop wallet-drop-items d-none">
+                                    <li class="item-drop wallet-drop-items">
                                         <a href="#" wallet="frighter"><img
                                                 src="{{ asset('images/frighter.png') }}">Frighter</a>
                                     </li>
