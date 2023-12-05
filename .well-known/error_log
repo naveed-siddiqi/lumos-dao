@@ -1,0 +1,4 @@
+[17-Oct-2023 01:40:02 UTC] PHP Warning:  move_uploaded_file(uploads/test.png): Failed to open stream: No such file or directory in /home/lumohdgu/public_html/.well-known/asset.php on line 21
+[17-Oct-2023 01:40:02 UTC] PHP Warning:  move_uploaded_file(): Unable to move &quot;/tmp/php6meG6s&quot; to &quot;uploads/test.png&quot; in /home/lumohdgu/public_html/.well-known/asset.php on line 21
+[17-Oct-2023 03:45:42 UTC] PHP Warning:  Undefined variable $dataToAppend in /home/lumohdgu/public_html/.well-known/asset.php on line 39
+[17-Oct-2023 03:46:20 UTC] PHP Warning:  Undefined variable $dataToAppend in /home/lumohdgu/public_html/.well-known/asset.php on line 39

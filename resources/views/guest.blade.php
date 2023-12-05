@@ -9,10 +9,10 @@
                         <h1>Build Better, <br>Together</h1>
                         <p>Welcome to LumosDAO - Revolutionizing Decentralized Governance on the Stellar Network. Create, manage, and participate in DAOs seamlessly, with transparency and efficiency.</p>
                     </div>
-                    <div class="mainIntroBtn">
+                    {{-- <div class="mainIntroBtn">
                         <a class="firstBtn" href="javascript:;">What is a DAO?</a>
                         <a class="SecondBtn" href="javascript:;" data-bs-toggle="modal" data-bs-target="#ConnectWallet">Launch your DAO</a>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <div class="firstImg">
@@ -33,12 +33,12 @@
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <div class="ScndIntro">
-                        <h1>About Lumos DAO</h1>
-                        <p>LumosDAO is a powerful and user-friendly platform designed to bridge Stellar-based projects with the world of decentralized autonomous organizations (DAOs). Our platform empowers DAO creators and members to actively participate in shaping the future of their projects. LumosDAO is more than just a platform—it's the catalyst for Stellar's decentralized revolution.</p>
+                        <h1>Why LumosDAO?</h1>
+                        <p>LumosDAO shines with its fair decision-making system. We calculate voting power considering user activity, token holdings, and wallet factors, setting us apart from others. Plus, our easy platform welcomes all projects, making DAO creation hassle-free.</p>
                     </div>
-                    <div class="sndIntroBtn">
+                    {{-- <div class="sndIntroBtn">
                         <a class="bgBtn" href="javascript:;" data-bs-toggle="modal" data-bs-target="#ConnectWallet">Launch your DAO</a>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -49,16 +49,16 @@
             <div class="row">
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <div class="ScndIntro third">
-                        <h1>The best way to<br>build your DAO</h1>
-                        <p>With LumosDAO, creating and managing a DAO is simple and straightforward. Here are some features that set us apart:</p>
-
-                        <strong>1. Seamless DAO Creation:</strong> <p>Set up your DAO within minutes using our intuitive interface. Pay a one-time fee with our native LUMOS tokens.</p>
-                        <strong>2. Transparent Voting:</strong> <p>Empower your DAO members to propose and vote on initiatives. All votes are recorded on the Stellar blockchain for ultimate transparency.</p>
-                        <strong>3. Coming Soon:</strong> <p>We're constantly innovating. Get ready for a dedicated discussion forum, crowdfunding features, Airdrops and Bounty panel, and customizable themes.</p>
+                        <h1>For DAO Creators</h1>
+                        <strong>1. Effortless DAO Creation:</strong> <p>Quickly set up your project's DAO, whether it's an existing Stellar token or a new token generated on LumosDAO.</p>
+                        <strong>2. Fair Governance:</strong> <p>Ensure fair decision-making with a sophisticated voting power algorithm that considers user activity, token holdings, and wallet factors.</p>
+                        <strong>3. Token Issuance:</strong> <p>Generate new tokens directly on LumosDAO and seamlessly set up their corresponding DAO.</p>
+                        <strong>4. Transparency:</strong> <p>Highlight approved wallets in the project's toml, fostering transparency in governance.</p>
+                        <strong>5. Customization:</strong> <p>Personalize your DAO with project details, logo, and description to reflect your identity.</p>
                     </div>
-                    <div class="sndIntroBtn">
+                    {{-- <div class="sndIntroBtn">
                         <a class="bgBtn tBg" href="javascript:;" data-bs-toggle="modal" data-bs-target="#ConnectWallet">Launch your DAO</a>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <div class="thirdImg">
@@ -85,12 +85,16 @@
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <div class="ScndIntro Last">
-                        <h1>LUMOS Token</h1>
-                        <p>Our native LUMOS tokens are central to the LumosDAO ecosystem. With a total supply of 10 billion, LUMOS tokens are used for DAO creation, voting, and accessing future platform features. LumosDAO and the LUMOS token—designed to drive the Stellar DAO revolution.</p>
+                        <h1>For DAO Members:</h1>
+                        <strong>1. Engagement:</strong> <p>Participate in discussions, vote on proposals, and influence your project's future.</p>
+                        <strong>2. Transparent Proposals:</strong> <p>Explore proposals created by fellow members, each representing ideas for the community's consideration.</p>
+                        <strong>3. Inclusive Decision-Making:</strong> <p>Experience a balanced voting system that factors in your activity and token holdings, ensuring your voice is heard.</p>
+                        <strong>4. Transparency:</strong> <p>Get recognized as a top voter for your active participation in shaping the DAO's direction.</p>
+                        <strong>5. Simple Interface:</strong> <p>Navigate a user-friendly platform that enables smooth interaction and engagement within your DAO.</p>
                     </div>
-                    <div class="mainIntroBtn">
+                    {{-- <div class="mainIntroBtn">
                         <a class="SecondBtn" href="javascript:;" data-bs-toggle="modal" data-bs-target="#ConnectWallet">Launch your DAO</a>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
