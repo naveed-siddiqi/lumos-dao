@@ -100,27 +100,31 @@
                             <div class="lblJoin">
                                 <p class="mb-0">join</p>
                             </div>
+                            <div style="margin: -20px !important;" class="">
+                                <img  class="h-100 w-100 rounded" src="https://plus.unsplash.com/premium_photo-1700984292453-732e26d205fa?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8" alt="">
+                            </div>
                             <div class="card-imgflex">
                                 <img src="{{ asset('images/demi.jpg') }}" alt="Apple">
-                                <div class="cardHeading">
-                                    <p class="card-heading">Apple</p>
-                                </div>
                             </div>
+                            <div class="cardHeading">
+                                    <p class="card-heading">Apple</p>
+                             </div>
                             <div class="card-paragraph">
                                 A tech giant renowned for its iconic products like iPhones, iPads, and Macs, Apple combines cutting-edge technology with elegant design to shape the consumer electronics industry.
                             </div>
 
-                            <div class="cardCircle">
+                           <div class="d-flex justify-content-center align-items-center gap-2">
+                           <div class="cardCircle">
                                 <p>15</p>
                             </div>
                             <p class="circleP">Active propsal</p>
-
-                            <div class="d-flex justify-content-around">
-                                <div class="card-small-div cardShowSmall">
+                           </div>
+                            <div class="d-flex justify-content-between">
+                                <div class="card-small-div cardShowSmall w-100">
                                     <p class="card-bold-word">17,23</p>
                                     <p class="card-link">Members</p>
                                 </div>
-                                <div class="card-small-div cardShowSmall">
+                                <div class="card-small-div cardShowSmall w-100">
                                     <p class="card-bold-word">17,23</p>
                                     <p class="card-link">Members</p>
                                 </div>
@@ -134,27 +138,33 @@
                             <div class="lblJoin">
                                 <p class="mb-0">join</p>
                             </div>
+                            <div style="margin: -20px !important;" class="">
+                                <img  class="h-100 w-100 rounded" src="https://plus.unsplash.com/premium_photo-1700984292453-732e26d205fa?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8" alt="">
+                            </div>
                             <div class="card-imgflex">
                                 <img src="{{ asset('images/demi.jpg') }}" alt="Google">
-                                <div class="cardHeading">
+                               
+                            </div>
+                            <div class="cardHeading">
                                     <p class="card-heading">Google</p>
                                 </div>
-                            </div>
                             <div class="card-paragraph">
                                 Google offers a range of services including its renowned search engine, Google Search, along with popular platforms like Google Maps, Gmail, and YouTube, revolutionizing the way people access information and connect online.
                             </div>
 
-                            <div class="cardCircle">
+                            <div class="d-flex justify-content-center align-items-center gap-2">
+                           <div class="cardCircle">
                                 <p>15</p>
                             </div>
                             <p class="circleP">Active propsal</p>
+                           </div>
 
                             <div class="d-flex justify-content-around">
-                                <div class="card-small-div cardShowSmall">
+                                <div class="card-small-div cardShowSmall w-100">
                                     <p class="card-bold-word">17,23</p>
                                     <p class="card-link">Members</p>
                                 </div>
-                                <div class="card-small-div cardShowSmall">
+                                <div class="card-small-div cardShowSmall w-100">
                                     <p class="card-bold-word">17,23</p>
                                     <p class="card-link">Members</p>
                                 </div>
@@ -168,27 +178,32 @@
                             <div class="lblJoin">
                                 <p class="mb-0">join</p>
                             </div>
+                            <div style="margin: -20px !important;" class="">
+                                <img  class="h-100 w-100 rounded" src="https://plus.unsplash.com/premium_photo-1700984292453-732e26d205fa?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8" alt="">
+                            </div>
                             <div class="card-imgflex">
                                 <img src="{{ asset('images/demi.jpg') }}" alt="Amazon">
-                                <div class="cardHeading">
+                            </div>
+                            <div class="cardHeading">
                                     <p class="card-heading">Amazon</p>
                                 </div>
-                            </div>
                             <div class="card-paragraph">
                                 The world's largest online retailer, Amazon has transformed the retail landscape with its vast product selection, convenient shopping experience, and fast delivery services.
                             </div>
 
-                            <div class="cardCircle">
+                            <div class="d-flex justify-content-center align-items-center gap-2">
+                           <div class="cardCircle">
                                 <p>15</p>
                             </div>
                             <p class="circleP">Active propsal</p>
+                           </div>
 
                             <div class="d-flex justify-content-around">
-                                <div class="card-small-div cardShowSmall">
+                                <div class="card-small-div cardShowSmall w-100">
                                     <p class="card-bold-word">17,23</p>
                                     <p class="card-link">Members</p>
                                 </div>
-                                <div class="card-small-div cardShowSmall">
+                                <div class="card-small-div cardShowSmall w-100">
                                     <p class="card-bold-word">17,23</p>
                                     <p class="card-link">Members</p>
                                 </div>
