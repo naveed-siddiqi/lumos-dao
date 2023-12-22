@@ -68,7 +68,7 @@
                         {{-- <video controls autoplay muted playsinline>
                             <source src="{{asset('video.mp4')}}" type="video/mp4">
                         </video> --}}
-                        <iframe width="810" height="440" src="https://www.youtube.com/embed/xf4TuOZlDgI?autoplay=1&controls=0">
+                        <iframe width="810" height="440" src="https://www.youtube.com/embed/Ast0ZsIsQl4?autoplay=1&controls=0">
                         </iframe>
                     </div>
                 </div>

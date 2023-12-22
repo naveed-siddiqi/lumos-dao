@@ -15,9 +15,9 @@ class DaoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($dao_id)
     {
-        return view('dao.index');
+       return view('dao.index', compact('dao_id'));
     }
 
     /**

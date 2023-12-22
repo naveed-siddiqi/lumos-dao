@@ -1,7 +1,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" crossorigin="anonymous"
     integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" referrerpolicy="no-referrer"></script>
 <script src="https://unpkg.com/@albedo-link/intent"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/soroban-client/1.0.0-beta.2/soroban-client.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/soroban-client/1.0.0-beta.4/soroban-client.js"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/11.1.0/stellar-sdk.min.js'></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-freighter-api/1.7.1/index.min.js"></script>
 <script type="module"> import n from 'https://cdn.jsdelivr.net/npm/toml@3.0.0/+esm' ; window.toml = n</script>
 
@@ -15,45 +16,50 @@
     const E = (id) => {return document.getElementById(id)}
 </script>
 <script>
+
     /**
      * CONTAINS ALL FUNCTIONS NEEDED TO INTERACT WITH THE DAO VIA 
      * THE FREIGHTER EXTERNAL WALLET PROVIDER USED
      **/
     const stellarServer = "https://soroban-testnet.stellar.org"
-    const daoContractId = 'CCWTMDURJHXTNSMCWWGLE5VELYNXUSDRVVO2T2AP2AFIFYLRZXXX7Z3F'  
+    const daoContractId = 'CCQ472BLOLFC3HT4QCSSQDHQXIC67TWYTV7TGBFCLDLVAJBD3GOMUXUE'  
     const wrappingAddress = 'GC5JKOC7OMSS22NVC23MVL2363QS5JO7SQM5X7C7DPVLQLFQHZ3ZRHGF'
-    const networkUsed = SorobanClient.Networks.TESTNET
+    const networkUsed = StellarSdk.Networks.TESTNET
     const networkWalletUsed = "TESTNET"
-    const contract = new SorobanClient.Contract(daoContractId);
+    const contract = new StellarSdk.Contract(daoContractId);
     const timeout = 86400 //using a timeout of one day
     const fee = 100;
+    const floatingConstant = 1E10;
+    const S = SorobanClient;
+    SorobanClient = StellarSdk.SorobanRpc
                         
     @if (isset($_COOKIE['wallet']))
-        const walletAddress = "{{ $_COOKIE['public']  }}"
+        const walletAddress = "{{ $_COOKIE['public']  }}" //; 
+        const walletKey = "SDWGPCFEKAPULQCQGT34CZKE3MOYTUK2PIMAO62KCR4JCTZMTSH7DEED"
     @else
         const walletAddress = ""
     @endif
  
     //SETTER FUNCTION
-    //'SCWFXEQXLIAH4VZ2TJFU4I27ZVXLSBP65O3S3JDLO3VNOGGJTVUEWSV4' TESTING PURPOSES
+    //'GAND2QCNSNCRIQELQIB7FJU6XETRMCV7EW3PAJEIEM2IEITT7SQOF5WW' TESTING PURPOSES
             
     /** This function increase a contract lifetime by a year
      * @params {address}
      * returns {statusObject} | {statusBoolean}
     **/
     const bumpContractInstance =  async (address) => {
-      address = SorobanClient.Address.fromString(address);
+      address = S.Address.fromString(address);
       console.log('bumping contract instance: ', address.toString());
-      const contractInstanceXDR = SorobanClient.xdr.LedgerKey.contractData(
-        new SorobanClient.xdr.LedgerKeyContractData({
+      const contractInstanceXDR = S.xdr.LedgerKey.contractData(
+        new S.xdr.LedgerKeyContractData({
           contract: address.toScAddress(),
-          key: SorobanClient.xdr.ScVal.scvLedgerKeyContractInstance(),
-          durability: SorobanClient.xdr.ContractDataDurability.persistent(),
+          key: S.xdr.ScVal.scvLedgerKeyContractInstance(),
+          durability: S.xdr.ContractDataDurability.persistent(),
         })
       );
-      const bumpTransactionData = new SorobanClient.xdr.SorobanTransactionData({
-        resources: new SorobanClient.xdr.SorobanResources({
-          footprint: new SorobanClient.xdr.LedgerFootprint({
+      const bumpTransactionData = new S.xdr.SorobanTransactionData({
+        resources: new S.xdr.SorobanResources({
+          footprint: new S.xdr.LedgerFootprint({
             readOnly: [contractInstanceXDR],
             readWrite: [],
           }),
@@ -61,14 +67,14 @@
           readBytes: 0,
           writeBytes: 0,
         }),
-        refundableFee: SorobanClient.xdr.Int64.fromString('0'),
+        refundableFee: S.xdr.Int64.fromString('0'),
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        ext: new SorobanClient.xdr.ExtensionPoint(0),
+        ext: new S.xdr.ExtensionPoint(0),
       });
 
       const txBuilder = await createTxBuilder();
-      txBuilder.addOperation(SorobanClient.Operation.bumpFootprintExpiration({ ledgersToExpire: 100000 })); // 1 year 535670
+      txBuilder.addOperation(S.Operation.bumpFootprintExpiration({ ledgersToExpire: 100000 })); // 1 year 535670
       txBuilder.setSorobanData(bumpTransactionData);
       const result = await invokeTransaction(txBuilder.build(), false, () => undefined);
       return result;
@@ -83,28 +89,28 @@
           const xdrAsset = asset.toXDRObject();
           const encoder = new TextEncoder(); 
           const encodedData = encoder.encode(networkUsed);
-          const networkId = SorobanClient.hash(encodedData.buffer);
-          const preimage = SorobanClient.xdr.HashIdPreimage.envelopeTypeContractId(
-             new SorobanClient.xdr.HashIdPreimageContractId({
+          const networkId = S.hash(encodedData.buffer);
+          const preimage = S.xdr.HashIdPreimage.envelopeTypeContractId(
+             new S.xdr.HashIdPreimageContractId({
                networkId: networkId,
-               contractIdPreimage: SorobanClient.xdr.ContractIdPreimage.contractIdPreimageFromAsset(xdrAsset),
+               contractIdPreimage: S.xdr.ContractIdPreimage.contractIdPreimageFromAsset(xdrAsset),
              })
            );
-           const contractId = SorobanClient.StrKey.encodeContract(SorobanClient.hash(preimage.toXDR()));
-           const deployFunction = SorobanClient.xdr.HostFunction.hostFunctionTypeCreateContract(
-             new SorobanClient.xdr.CreateContractArgs({
-               contractIdPreimage: SorobanClient.xdr.ContractIdPreimage.contractIdPreimageFromAsset(xdrAsset),
-               executable: SorobanClient.xdr.ContractExecutable.contractExecutableToken(),
+           const contractId = S.StrKey.encodeContract(S.hash(preimage.toXDR()));
+           const deployFunction = S.xdr.HostFunction.hostFunctionTypeCreateContract(
+             new S.xdr.CreateContractArgs({
+               contractIdPreimage: S.xdr.ContractIdPreimage.contractIdPreimageFromAsset(xdrAsset),
+               executable: S.xdr.ContractExecutable.contractExecutableToken(),
              })
            );
            const res = await invokeAndUnwrap(
-             SorobanClient.Operation.invokeHostFunction({
+             S.Operation.invokeHostFunction({
                func: deployFunction,
                auth: [],
              }),
              () => undefined
            );
-           if(res.status) {res.value = SorobanClient.scValToNative(res.value)}
+           if(res.status) {res.value = StellarSdk.scValToNative(res.value)}
            return res
         }
         catch(e) {
@@ -119,7 +125,7 @@
     const invoke = async (operation,sim,parse) => {
       const txBuilder = await createTxBuilder();
       if (typeof operation === 'string') {
-        operation = SorobanClient.xdr.Operation.fromXDR(operation, 'base64');
+        operation = S.xdr.Operation.fromXDR(operation, 'base64');
       }
       txBuilder.addOperation(operation);
       const tx = txBuilder.build();
@@ -127,9 +133,9 @@
     }
     const createTxBuilder = async () => {
       try {
-        const server = new SorobanClient.Server(stellarServer); 
+        const server = new SorobanClient.Server(stellarServer);  
         const account = await server.getAccount(walletAddress);
-        return new SorobanClient.TransactionBuilder(account, {
+        return new S.TransactionBuilder(account, {
           fee: '10000',
           networkPassphrase: networkUsed
         }).setTimeout(timeout);
@@ -142,14 +148,64 @@
       const server = new SorobanClient.Server(stellarServer);
       const hash = tx.hash().toString('hex');
       const simulation_resp = await server.simulateTransaction(tx);
-      if (sim || SorobanClient.SorobanRpc.isSimulationError(simulation_resp)) {
+      if (sim || S.SorobanRpc.isSimulationError(simulation_resp)) {
         // allow the response formatter to fetch the error or return the simulation results
         return {status:false, msg:'simulation fail'};
       }
-      const prepped_tx = SorobanClient.assembleTransaction(tx, networkUsed, simulation_resp).build();
-      return await execTranst(prepped_tx)
+      const prepped_tx = S.assembleTransaction(tx, networkUsed, simulation_resp).build();
+      return await exeTranst(prepped_tx)
     }
-    
+     
+    /** For asset deployment only **/
+    const exeTranst = async (transaction = "") => {
+        if(transaction !== "") {
+            //prepare xdr
+            const server = new SorobanClient.Server(stellarServer); 
+            let xdr = await transaction.toXDR();
+            try {
+                if(wallet.toLowerCase() == "freighter" || wallet.toLowerCase() == 'frighter') xdr = await window.freighterApi.signTransaction(xdr, networkWalletUsed) //sign with freighter
+                if(wallet.toLowerCase() == "rabet") xdr = window.rabet.sign(xdr, networkWalletUsed.toLowerCase())
+                if(wallet.toLowerCase() == "albedo") xdr = window.albedo.tx({xdr:xdr, network:networkWalletUsed.toLowerCase()})
+                if(wallet.toLowerCase() == "xbull") xdr = window.sign({xdr:xdr})
+                
+                //recreate signed transaction
+                transaction = new S.Transaction(xdr, networkUsed)
+                //transaction.sign(S.Keypair.fromSecret(walletKey));
+                let sendResponse = await server.sendTransaction(transaction);
+                console.log(`Sent transaction: ${JSON.stringify(sendResponse)}`);
+                if (sendResponse.status === "PENDING") {
+                  let getResponse = await server.getTransaction(sendResponse.hash);
+                  // Poll `getTransaction` until the status is not "NOT_FOUND"
+                  while (getResponse.status === "NOT_FOUND") {
+                    console.log("Waiting for transaction confirmation...");
+                    // See if the transaction is complete
+                    getResponse = await server.getTransaction(sendResponse.hash);
+                    // Wait one second
+                    await new Promise((resolve) => setTimeout(resolve, 1000));
+                  }
+                  if (getResponse.status === "SUCCESS") {
+                    // Make sure the transaction's resultMetaXDR is not empty
+                    if (!getResponse.resultMetaXdr) {
+                       return {status:true, msg:""}
+                    }
+                    // Find the return value from the contract and return it
+                    let transactionMeta = getResponse.resultMetaXdr;
+                    let returnValue = transactionMeta.v3().sorobanMeta().returnValue();
+                    return {status:true, value: returnValue}
+                  } else {  
+                    return {status:false}
+                  }
+                } else {
+                   return {status:false}
+                }
+          } catch (err) {
+            // Catch and report any errors we've thrown
+            console.log("Sending transaction failed", err);
+            return {status:false}
+        }
+    }
+    }
+   
     /** This function creates trustline
      * @params {code} String
      * @params {issuer} String
@@ -162,28 +218,27 @@
                 const server = new SorobanClient.Server(stellarServer); 
                 const account = await server.getAccount(walletAddress);
                 //preparing arguements
-                let _walletAdr = new SorobanClient.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
-                const asset = new SorobanClient.Asset(code, issuer)
-                let transaction = new SorobanClient.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
+                const asset = new StellarSdk.Asset(code, issuer)
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
                     .addOperation(
                         // An operation to establist trustline
-                        SorobanClient.Operation.changeTrust({
+                        StellarSdk.Operation.changeTrust({
                           asset: asset,
                           source: address,
                         }),
                      )
                      .setTimeout(timeout)
-                     .addMemo(SorobanClient.Memo.text('Creating trustline'))
+                     .addMemo(StellarSdk.Memo.text('Creating trustline'))
                      .build();
                 //sign and exec transactions
                 const res = await execTranst(transaction)
-                
                 if(res.status === false) {
                     //something went wrong
                     return false
                 }
                 else {
-                    return {status: (SorobanClient.scValToNative(res.value))}
+                    return {status: true}
                 }
             }
             else {return false}
@@ -202,13 +257,12 @@
                 const server = new SorobanClient.Server(stellarServer); 
                 const account = await server.getAccount(walletAddress);
                 //preparing arguements
-                let _walletAdr = new SorobanClient.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
-                const asset = new SorobanClient.Asset(code, issuer)
-                let transaction = new SorobanClient.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
+                const asset = new StellarSdk.Asset(code, issuer)
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
                     .addOperation(
                         // An operation to call mint on the contract
-                        //contract.call("mint", _walletAdr, amount)
-                        SorobanClient.Operation.payment({
+                        StellarSdk.Operation.payment({
                           amount: amount,
                           asset: asset,
                           destination: walletAddress,
@@ -216,7 +270,7 @@
                         })
                      )
                      .setTimeout(timeout)
-                     .addMemo(SorobanClient.Memo.text('Minting total supply'))
+                     .addMemo(StellarSdk.Memo.text('Minting total supply'))
                      .build();
                 //sign and exec transactions
                 const res = await execTranst(transaction)
@@ -226,7 +280,7 @@
                     return false
                 }
                 else {
-                    return {status: (SorobanClient.scValToNative(res.value))}
+                    return {status: true}
                 }
             }
             else {return false}
@@ -247,17 +301,17 @@
                 const server = new SorobanClient.Server(stellarServer); 
                 const account = await server.getAccount(walletAddress);
                 //preparing arguements
-                let _walletAdr = new SorobanClient.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
-                let transaction = new SorobanClient.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
                     .addOperation(
-                        SorobanClient.Operation.payment({
+                        StellarSdk.Operation.payment({
                           destination: wrappingAddress,
-                          asset: SorobanClient.Asset.native(),
-                          amount: "1000",
+                          asset: StellarSdk.Asset.native(),
+                          amount: "500",
                         }),
                      )
                      .setTimeout(timeout)
-                     .addMemo(SorobanClient.Memo.text('Wrapping Asset'))
+                     .addMemo(StellarSdk.Memo.text('Wrapping Asset'))
                      .build();
                 //sign and exec transactions
                 const res = await execTranst(transaction)
@@ -267,7 +321,7 @@
                     return false
                 }
                 else {
-                    return {status: (SorobanClient.scValToNative(res.value))}
+                    return {status: true}
                 }
             }
             else {return false}
@@ -285,32 +339,31 @@
                 const server = new SorobanClient.Server(stellarServer); 
                 const account = await server.getAccount(walletAddress);
                 //preparing arguements
-                let _walletAdr = new SorobanClient.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
-                let _tokenAdr = new SorobanClient.Address(params.token); _tokenAdr = _tokenAdr.toScVal()
-                const _name = SorobanClient.nativeToScVal(params.name)
-                const about = SorobanClient.nativeToScVal(params.about)
-                const _url = SorobanClient.nativeToScVal(params.url)
-                const dte = SorobanClient.nativeToScVal(Date.now())
-                console.log(account)
-                let transaction = new SorobanClient.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
+                let _tokenAdr = new StellarSdk.Address(params.token); _tokenAdr = _tokenAdr.toScVal()
+                const _name = StellarSdk.nativeToScVal(params.name)
+                const about = StellarSdk.nativeToScVal(params.about)
+                const _url = StellarSdk.nativeToScVal(params.url)
+                const dte = StellarSdk.nativeToScVal(Date.now())
+                console.log(params)
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
                     .addOperation(
                         // An operation to call create on the contract
                         contract.call("create", _walletAdr, _tokenAdr, _name, about, _url, dte)
                      )
                      .setTimeout(timeout)
-                     .addMemo(SorobanClient.Memo.text('Creating Dao'))
+                     .addMemo(StellarSdk.Memo.text('Creating Dao'))
                      .build();
                 // Simulate the transaction to discover the storage footprint, and update the
                 transaction = await server.prepareTransaction(transaction);
                 //sign and exec transactions
                 const res = await execTranst(transaction)
-                console.log(res)
                 if(res.status === false) {
                     //something went wrong
                     return false
                 }
                 else {
-                    return {status: (SorobanClient.scValToNative(res.value))}
+                    return {status: (S.scValToNative(res.value))}
                 }
             }
             else {return false}
@@ -319,7 +372,7 @@
     }
     
     /** This function creates the proposal
-     * @params {paramsObject {creator, dao, name, about, start, end}
+     * @params {paramsObject {creator, dao, name, about, start, links}
      * returns {daoId} | {statusBoolean}
     **/
     const createProposal = async (params = {}) => {
@@ -328,21 +381,20 @@
                 const server = new SorobanClient.Server(stellarServer); 
                 const account = await server.getAccount(walletAddress);
                 //preparing arguements
-                params.creator = new SorobanClient.Address(params.creator);params.creato = params.creato.toScVal()
-                params.dao = new SorobanClient.Address(params.dao); params.dao = params.dao.toScVal()
-                const _name = SorobanClient.nativeToScVal(params.name)
-                const about = SorobanClient.nativeToScVal(params.about)
-                start = SorobanClient.nativeToScVal(params.start)
-                end = SorobanClient.nativeToScVal(params.end)
+                params.creator = new StellarSdk.Address(params.creator);params.creator = params.creator.toScVal()
+                params.dao = new StellarSdk.Address(params.dao); params.dao = params.dao.toScVal()
+                const _name = StellarSdk.nativeToScVal(params.name)
+                const about = StellarSdk.nativeToScVal(params.about)
+                let start = StellarSdk.nativeToScVal(params.start)
+                let links = StellarSdk.nativeToScVal(params.links)
                 
-                console.log(account)
-                let transaction = new SorobanClient.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
                     .addOperation(
                         // An operation to call create on the contract
-                        contract.call("create_proposal", params.creator, params.dao, _name, about, start, end)
+                        contract.call("create_proposal", params.creator, params.dao, _name, about, start, links)
                      )
                      .setTimeout(timeout)
-                     .addMemo(SorobanClient.Memo.text('Creating Proposal'))
+                     .addMemo(StellarSdk.Memo.text('Creating Proposal'))
                      .build();
                 // Simulate the transaction to discover the storage footprint, and update the
                 transaction = await server.prepareTransaction(transaction);
@@ -353,7 +405,47 @@
                     return false
                 }
                 else {
-                    return {status: (SorobanClient.scValToNative(res.value))}
+                    return {status: (StellarSdk.scValToNative(res.value))}
+                }
+            }
+            else {return false}
+        }
+        catch(e) {console.log(e); return false}
+    }
+    
+    /** This function creates the proposal
+     * @params {paramsObject {proposalId, voters, vote_type, voting_power}
+     * returns {daoId} | {statusBoolean}
+    **/
+    const voteProposal = async (params = {}) => {
+        try{
+            if(walletAddress != "") {
+                const server = new SorobanClient.Server(stellarServer); 
+                const account = await server.getAccount(walletAddress);
+                //preparing arguements
+                params.voters = new StellarSdk.Address(params.voters);params.voters = params.voters.toScVal()
+                const propId = StellarSdk.nativeToScVal(params.proposalId)
+                const vote_type = StellarSdk.nativeToScVal(params.vote_type)
+                const voting_power = StellarSdk.nativeToScVal(Math.round(params.voting_power * floatingConstant))
+                
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to call create on the contract
+                        contract.call("vote_on_proposal", propId, params.voters, vote_type, voting_power)
+                     )
+                     .setTimeout(timeout)
+                     .addMemo(StellarSdk.Memo.text('Creating Proposal'))
+                     .build();
+                // Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else {
+                    return {status: (StellarSdk.scValToNative(res.value))}
                 }
             }
             else {return false}
@@ -372,14 +464,13 @@
                 const account = await server.getAccount(walletAddress);
                 let asset; let contract;
                 if(params.code.length == 56) {
-                    contract = new SorobanClient.Contract(params.code);
-                    console.log(contract, params.code)
+                    contract = new StellarSdk.Contract(params.code);
                 }
                 else {
-                    asset = new SorobanClient.Asset(params.code, params.issuer)
-                    contract = new SorobanClient.Contract(asset.contractId(networkUsed));
+                    asset = new StellarSdk.Asset(params.code, params.issuer)
+                    contract = new StellarSdk.Contract(asset.contractId(networkUsed));
                 }
-                let transaction = new SorobanClient.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
                     .addOperation(
                         contract.call("symbol")
                     )
@@ -410,17 +501,16 @@
     const execTranst = async (transaction = "") => {
         if(transaction !== "") {
             //prepare xdr
-            const server = new SorobanClient.Server(stellarServer); 
+            const server = new StellarSdk.SorobanRpc.Server(stellarServer); 
             let xdr = await transaction.toXDR();
             try {
-                console.log(wallet)
                 if(wallet.toLowerCase() == "freighter" || wallet.toLowerCase() == 'frighter') xdr = await window.freighterApi.signTransaction(xdr, networkWalletUsed) //sign with freighter
                 if(wallet.toLowerCase() == "rabet") xdr = window.rabet.sign(xdr, networkWalletUsed.toLowerCase())
                 if(wallet.toLowerCase() == "albedo") xdr = window.albedo.tx({xdr:xdr, network:networkWalletUsed.toLowerCase()})
                 if(wallet.toLowerCase() == "xbull") xdr = window.sign({xdr:xdr})
-                
+                //transaction.sign(StellarSdk.Keypair.fromSecret(walletKey));
                 //recreate signed transaction
-                transaction = new SorobanClient.Transaction(xdr, networkUsed)
+                transaction = new StellarSdk.Transaction(xdr, networkUsed)
                 let sendResponse = await server.sendTransaction(transaction);
                 console.log(`Sent transaction: ${JSON.stringify(sendResponse)}`);
                 if (sendResponse.status === "PENDING") {
@@ -439,10 +529,11 @@
                        return {status:true, msg:""}
                     }
                     // Find the return value from the contract and return it
-                    let transactionMeta = getResponse.resultMetaXdr;
-                    let returnValue = transactionMeta.v3().sorobanMeta().returnValue();
+                    console.log(getResponse); 
+                    //let transactionMeta = getResponse.resultMetaXdr;
+                    let returnValue = getResponse.returnValue
                     return {status:true, value: returnValue}
-                  } else { console.log(getResponse)
+                  } else { 
                     return {status:false}
                   }
                 } else {
@@ -455,11 +546,14 @@
         }
     }
     }
-   
-   // setTimeout(() => {createDaos()}, 6000)
+    //xyu
+    //setTimeout(async () => {console.log(1);console.log(await deployStellarAsset(new S.Asset('GYN', walletAddress)))}, 5000)
+    // setTimeout(async () => {console.log(1);console.log(await createDaos(
+    //     {
+    //             token:walletAddress,name::"JUI", about:"Here", url:"yes"
+    //     }))}, 5000)
     
     /* GETTER FUNCTIONS */
-    
     /** This function retrieves
      * the DAO GENERAL INFORMATIONS
      * returns @map | []
@@ -469,7 +563,7 @@
             try{
                 const server = new SorobanClient.Server(stellarServer); 
                 const account = await server.getAccount(walletAddress);
-                let transaction = new SorobanClient.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
                     .addOperation(
                         contract.call("get_metadata")
                     )
@@ -478,7 +572,7 @@
                 //Simulate the transaction to discover the storage footprint, and update the
                 transaction = await server.prepareTransaction(transaction);
                 let transactionMeta = (await server.simulateTransaction(transaction))
-                return await SorobanClient.scValToNative(transactionMeta.result.retval);
+                return await StellarSdk.scValToNative(transactionMeta.result.retval);
             }
             catch(e) {
                 console.log(e)
@@ -487,8 +581,40 @@
         else {return []}
     }
     
-    /** This function retrieves
-     *  DAO SPECIFIC INFO
+    /** This function checks
+     *  if DAO exists
+     * @params {daoId: Address}
+     * returns @map | []
+     **/ 
+    const isDao =  async (daoId) => {
+        if(walletAddress != "" && daoId != undefined && daoId != "") {
+            try{
+                const server = new SorobanClient.Server(stellarServer); 
+                const account = await server.getAccount(walletAddress);
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call("get_dao", (new StellarSdk.Address(daoId)).toScVal())
+                    )
+                    .setTimeout(timeout) //using a time out of a hour
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                let dao = StellarSdk.scValToNative(transactionMeta.result.retval);
+                if(dao['url'] != undefined) {  
+                    return true
+                }
+                else {return false}
+                
+            }
+            catch(e) {
+                //console.log(e)
+                return false}
+        }
+        else {return []}
+    }
+    
+    /**  DAO SPECIFIC INFO
      * @params {daoId: Address}
      * returns @map | []
      **/ 
@@ -497,17 +623,17 @@
             try{
                 const server = new SorobanClient.Server(stellarServer); 
                 const account = await server.getAccount(walletAddress);
-                let transaction = new SorobanClient.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
                     .addOperation(
-                        contract.call("get_dao", (new SorobanClient.Address(daoId)).toScVal())
+                        contract.call("get_dao", (new StellarSdk.Address(daoId)).toScVal())
                     )
                     .setTimeout(timeout) //using a time out of a hour
                     .build();
                 //Simulate the transaction to discover the storage footprint, and update the
                 transaction = await server.prepareTransaction(transaction);
                 let transactionMeta = (await server.simulateTransaction(transaction))
-                let dao = SorobanClient.scValToNative(transactionMeta.result.retval);
-                if(dao['url'] != undefined) {
+                let dao = StellarSdk.scValToNative(transactionMeta.result.retval);
+                if(dao['url'] != undefined) { console.log(dao.url)
                     const aToml = await readAssetToml(dao.url); 
                     let code = await getTokenInfo(dao.token, "symbol");code = code.replace(/[^a-zA-Z0-9]/g,"");
                     const tomlInfo = getTokenTomlInfo(aToml, code)
@@ -534,20 +660,20 @@
      * returns @map | []
      **/ 
     const getProposal =  async (propId) => {
-        if(walletAddress != "" && propId != undefined && propId * 1 !== 0) {
+        if(walletAddress != "" && propId != undefined && propId !== 0) {   
             try{
                 const server = new SorobanClient.Server(stellarServer); 
                 const account = await server.getAccount(walletAddress);
-                let transaction = new SorobanClient.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
                     .addOperation(
-                        contract.call("get_proposal", (SorobanClient.nativeToScVal(propId)))
+                        contract.call("get_proposal", (StellarSdk.nativeToScVal(propId)))
                     )
                     .setTimeout(timeout) //using a time out of a hour
                     .build();
                 //Simulate the transaction to discover the storage footprint, and update the
                 transaction = await server.prepareTransaction(transaction);
                 let transactionMeta = (await server.simulateTransaction(transaction))
-                return (SorobanClient.scValToNative(transactionMeta.result.retval)); 
+                return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
             }
             catch(e) {
                 console.log(e)
@@ -555,7 +681,62 @@
         }
         else {return []}
     }
-  
+    
+    /** This function retrieves the proposal voter info
+     * @params {propId: int}
+     * returns @map | []
+    **/ 
+    const getProposalVotersInfo =  async (propId) => {
+        if(walletAddress != "" && propId != undefined && propId !== 0) {   
+            try{
+                const server = new SorobanClient.Server(stellarServer); 
+                const account = await server.getAccount(walletAddress);
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call("get_proposal_voters", (StellarSdk.nativeToScVal(propId)))
+                    )
+                    .setTimeout(timeout) //using a time out of a hour
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
+            }
+            catch(e) {
+                console.log(e)
+                return []}
+        }
+        else {return []}
+    }
+    
+    /** This function retrieves the proposal specific voter info
+     * @params {propId: int}
+     * returns @map | []
+    **/ 
+    const getProposalVoterInfo =  async (propId, address) => {
+        if(walletAddress != "" && propId != undefined && propId !== 0) {   
+            try{
+                const server = new SorobanClient.Server(stellarServer); 
+                const account = await server.getAccount(walletAddress);
+                address = new StellarSdk.Address(address);address = address.toScVal()
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call("get_vote_type_proposal", (StellarSdk.nativeToScVal(propId)), address)
+                    )
+                    .setTimeout(timeout) //using a time out of a hour
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
+            }
+            catch(e) {
+                console.log(e)
+                return []}
+        }
+        else {return []}
+    }
+    
     /** To retreive token info
      * @params {tokenId}
     **/
@@ -564,8 +745,8 @@
             try{
                 const server = new SorobanClient.Server(stellarServer); 
                 const account = await server.getAccount(walletAddress);
-                const contract = new SorobanClient.Contract(tokenId);
-                let transaction = new SorobanClient.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                const contract = new StellarSdk.Contract(tokenId);
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
                     .addOperation(
                         contract.call(info)
                     )
@@ -574,7 +755,7 @@
                 //Simulate the transaction to discover the storage footprint, and update the
                 transaction = await server.prepareTransaction(transaction);
                 let transactionMeta = (await server.simulateTransaction(transaction))
-                return (SorobanClient.scValToNative(transactionMeta.result.retval)); 
+                return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
             }
             catch(e) {
                 console.log(e)
@@ -589,9 +770,9 @@
             try{
                 const server = new SorobanClient.Server(stellarServer); 
                 const account = await server.getAccount(walletAddress);
-                const contract = new SorobanClient.Contract(tokenId);
-                address = new SorobanClient.Address(address);address = address.toScVal()
-                let transaction = new SorobanClient.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                const contract = new StellarSdk.Contract(tokenId);
+                address = new StellarSdk.Address(address);address = address.toScVal()
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
                     .addOperation(
                         contract.call('balance', address)
                     )
@@ -600,13 +781,105 @@
                 //Simulate the transaction to discover the storage footprint, and update the
                 transaction = await server.prepareTransaction(transaction);
                 let transactionMeta = (await server.simulateTransaction(transaction))
-                return (SorobanClient.scValToNative(transactionMeta.result.retval)); 
+                return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
             }
             catch(e) {
                 return false
             }
         }
         else {return false}
+    }
+    
+    //calculate voting power of an address
+    const getVotingPower = async (asset = {}, address, total_voter = []) => {
+        //get the holders score
+        const url = `https://api.stellar.expert/explorer/${networkWalletUsed.toLowerCase()}/asset/${asset.asset.toUpperCase() +'-' + asset.address}/position/${address}`
+        try{
+            let holder_pos;let response;
+            if(address != asset.issuer) {
+                response = await fetch(window.location.protocol + `//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=asset_holder&url=` + encodeURIComponent(url));
+               if (!response.ok) {
+                  throw new Error("Network response was not ok");
+                }
+                holder_pos = await response.text() * 1;//console.log(holder_pos)
+            }
+            else {
+                holder_pos = 1; //making issuer account be in top 1 automatically
+            }
+            //calculate holders rank
+            if(holder_pos >= 1 && holder_pos <= 5) {holder_pos = 5}
+            else if(holder_pos >= 6 && holder_pos <= 50) {holder_pos = 4}
+            else if(holder_pos >= 51 && holder_pos <= 100) {holder_pos = 3}
+            else if(holder_pos >= 101 && holder_pos <= 500) {holder_pos = 2}
+            else {holder_pos = 1}
+            
+            //calculate activity using proposal
+            let act_pos = 1;
+            for(let i=0;i<total_voter.length;i++) {
+                if(total_voter[i].voter == address) {
+                    if(total_voter[i].vote > 1 && total_voter[i].vote <= 5){act_pos = 2}
+                    else if(total_voter[i].vote > 5 && total_voter[i].vote <= 25){act_pos = 3}
+                    else if(total_voter[i].vote > 25 && total_voter[i].vote <= 50){act_pos = 4}
+                    else if(total_voter[i].vote > 50){act_pos = 5}
+                    break;
+                }
+            }
+            //using comment
+            response = await fetch(window.location.protocol + `//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=wallet_comment&address=` + address + "&dao_id=" + asset.dao + "&id=" + Math.random());
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            let comt_act = await response.text() * 1;  
+            if(comt_act < 1) {comt_act = 1}
+            else if(comt_act >= 1 && comt_act <= 25) {comt_act = 2}
+            else if(comt_act >= 26 && comt_act <= 100) {comt_act = 3}
+            else if(comt_act >= 101 && comt_act <= 500) {comt_act = 4}
+            else {comt_act = 5}
+            //calculate the average
+            act_pos = (act_pos + comt_act) / 2
+            //get the age
+            response = await fetch(window.location.protocol + `//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=wallet_age&address=` + address);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            let age_pos = await response.text() * 1; 
+            if(age_pos < 1) {age_pos = 5}
+            else if(age_pos >= 1 && age_pos <= 6) {age_pos = 2}
+            else if(age_pos >= 6 && age_pos <= 12) {age_pos = 3}
+            else if(age_pos >= 12 && age_pos <= 24) {age_pos = 4}
+            else {age_pos = 5}
+            //get no of trades
+            response = await fetch(window.location.protocol + `//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=wallet_trade&address=` + address);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            let trade_pos = await response.text() * 1; 
+            if(trade_pos < 1) {trade_pos = 1}
+            else if(trade_pos >= 1 && trade_pos <= 100) {trade_pos = 2}
+            else if(trade_pos >= 101 && trade_pos <= 500) {trade_pos = 3}
+            else if(trade_pos >= 501 && trade_pos <= 1000) {trade_pos = 4}
+            else {trade_pos = 5}
+            
+            //fetch user xlm balances
+            response = await fetch(window.location.protocol + `//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=xlm_usd&address=` + address);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }   
+            let xlm_act = await response.text() * 1;
+            if(xlm_act >= 0 && xlm_act <= 50) {xlm_act = 1}
+            else if(xlm_act >= 51 && xlm_act <= 100) {xlm_act = 2}
+            else if(xlm_act >= 101 && xlm_act <= 500) {xlm_act = 3}
+            else if(xlm_act >= 501 && xlm_act <= 1000) {xlm_act = 4}
+            else {xlm_act = 5}
+            
+            //do the overall calculation
+            const wal_act = (age_pos + trade_pos + xlm_act) / 3
+            const res =  ((0.5 * holder_pos) + (0.25 * act_pos) + (0.25 * wal_act))
+            if(((res % 1) + "").length > 7) return res.toFixed(5)
+            return res
+        } catch (error) { console.log(error)
+            return false;
+        }
     }
     // URL of the Stellar asset's TOML file
     const readAssetToml = async (url) => {
@@ -618,7 +891,6 @@
                 url = url.hostname.split('.')[0]; // Get the first part of the hostname
                 url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=loadtoml&value=" + url  + "&id=" + Math.random() * 1000
             }
-            console.log(url)
             const response = await fetch(url);
             if (!response.ok) {
               throw new Error("Network response was not ok");
@@ -630,11 +902,44 @@
             return false;
         }
     }
+    // get comments for a proposal
+    const getProposalComment = async (propId, dao = "") => {
+         try {
+            //check if the url is http and from this domain
+           url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_comment&proposal_id=" + propId  + "&dao=" + dao + "&id=" + Math.random() * 1000 
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const commt = await response.text();  console.log(commt, propId, dao)
+            return (commt != "") ? JSON.parse(commt) : ""
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
+    // send proposal comment
+    const sendProposalComment = async (propId, daoId, msg = "", address) => {
+         try {
+             if(msg.trim() != "" && address != "") {
+                //check if the url is http and from this domain
+                url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=add_comment&proposal_id=" + propId  + "&dao_id=" + daoId  + "&msg=" + encodeURIComponent(msg) + "&address=" + encodeURIComponent(address)
+                const response = await fetch(url);
+                if (!response.ok) {
+                  throw new Error("Network response was not ok");
+                }
+                const res = await response.text();
+                return res * 1;
+            }
+            else {return 2}
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
     
     //check if subdomain exists
     const isSubDomainExists = async (domain) => {
          try {
-            const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=subdomain&value=" + domain
+            const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=subdomain&value=" + domain.replace(/[^a-zA-Z0-9]/g,"").toLowerCase()
             const response = await fetch(url + "&id=" + Math.random() * 1000);
             if (!response.ok) {
               throw new Error("Network response was not ok");
@@ -643,6 +948,22 @@
             if(resp == '1') return true
             return false
         } catch (error) { console.log(e)
+            return false;
+        }
+    }
+    
+    //check if proposal exists
+    const isProposalExists = async (proposal, dao) => {
+         try {
+            const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=proposal&value=" + encodeURIComponent(proposal.replace(/ /g,"")) + "&dao=" + encodeURIComponent(dao.toLowerCase())
+            const response = await fetch(url + "&id=" + Math.random() * 1000);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const resp = await response.text();  
+            if(resp == '1') return true
+            return false
+        } catch (error) { 
             return false;
         }
     }
@@ -669,54 +990,56 @@
      * @params {type} String [good|fail|warn|norm]
      * @return {int} ModalId
     **/
-    const talk = (msg = "", type = "norm", id = "") => {
-    // Config stylings
-    let params = { color: "black" };
-    let icon = '<svg xmlns="http://www.w3.org/2000/svg" "width="24" height="24" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clip-rule="evenodd" /></svg>';
-
-    if (type == "good") {
-        params.color = "forestgreen";
-        icon = '<svg xmlns="http://www.w3.org/2000/svg"width="24" height="24" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>';
-    } else if (type == "fail") {
-        params.color = "red";
-        icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" /></svg>';
-    } else if (type == "warn") {
-        params.color = "#ffa101";
-        icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" /></svg>';
+    const talk = (msg = "", type = "norm", id = "", pgress=0) => {
+        //config stylings
+        let params = {color:"black", 'class':"talk_spin fas fa-spinner"}
+        if(type == "good") {params.color = "forestgreen"; params.class='fas fa-check-circle'}
+        else if(type == "fail") {params.color = "red"; params.class='fas fa-times'}
+        else if(type == "warn") {params.color = "#ffa101"; params.class='fas fa-info'}
+        if(id != "") {
+            //performing modifications
+            E(id).style.color = params.color
+            E(id).style.borderColor = params.color
+            E('talk_msg' + id).innerHTML = msg
+            E('talk_icon' + id).classList = params.class
+            E('talk_loader' + id).style.width = pgress + '%'
+        }
+        else {
+            //generate id
+            id = 'talk_' + Math.floor(Math.random() * 10000000 * Math.random())
+            let div = document.createElement('div')
+            div.innerHTML =  `<di><style>
+            .talk_spin{animation:talk_spin 700ms infinite;}
+                        @keyframes talk_spin{
+                            0%{
+                                transform:rotate(0deg);
+                            }
+                            100%{
+                                transform:rotate(720deg);
+                            }
+                        }
+                </style>
+                <div style='position:fixed;top:0px;left:0px;width:100vw;height:0px;display:flex;align-items:flex-start;z-index:1500'>
+                    <div id='${id}' style='margin-left:auto;margin-right:20px;margin-top:40px;background:white;display:flex;overflow:hidden;
+                    border-radius:10px;border:1px solid ${params.color};color:${params.color};font-size:17px;box-shadow:0 0 6px 3px rgba(0,0,0,.1)'>
+                    <div style='padding:10px 15px;text-align:center;z-index:2'><span id='talk_icon${id}' class='${params.class}' style='margin-right:5px'></span>
+                    <span id='talk_msg${id}' style='margin-right:5px'>${msg}</span></div>
+                    <div name='loader' style='margin-left:-100%;width:100%'><div id='talk_loader${id}' style='transition:all 200ms;background:linear-gradient(to right, #FFA500, #FF4500, #FF0000); width:${pgress}%;height:100%'></div></div>
+                    </div></div></div>
+            `
+            document.body.appendChild(div.firstElementChild)
+        }
+        return id
     }
-
-    if (id != "") {
-        // Performing modifications
-        E(id).style.color = params.color;
-        E(id).style.borderColor = params.color;
-        E(id).innerHTML = `<div style='display:flex;align-items:center' gap:10px;>${icon}${msg}</div>`;
-    } else {
-        // Generate id
-        id = 'talk_' + Math.floor(Math.random() * 10000000 * Math.random());
-        let div = document.createElement('div');
-        div.innerHTML = `
-            <div style='position:fixed;top:0px;left:0px;width:100vw;height:0px;display:flex;align-items:flex-start;z-index:1500'>
-                <div class="talk  ${type}-message" id='${id}' style='margin-left:auto;margin-right:20px;margin-top:40px;background:white;
-                padding:10px 5px;border-radius:5px 0px 0px 5px;border-left:5px solid ${params.color};border-top:1px #cbd5e1 solid;border-right:1px #cbd5e1 solid;border-bottom:1px #cbd5e1 solid;font-family: "MontReg";color:${params.color};font-size:14px;box-shadow:0 0 6px 3px rgba(0,0,0,.1)'>
-                    <div style='display:flex;align-items:center;gap:20px;' >${icon}${msg}</div>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(div.firstElementChild);
-    }
-
-    return id;
-};
-
     //Remove
     const stopTalking = (_timeout, id) => {
         if(_timeout > 0) {
             //using timeout
-            setTimeout(() => {document.body.removeChild(E(id).parentElement)}, _timeout * 1000)
+            setTimeout(() => {document.body.removeChild(E(id).parentElement.parentElement)}, _timeout * 1000)
         }
         else {
             //not using timeout
-            document.body.removeChild(E(id).parentElement)
+            document.body.removeChild(E(id).parentElement.parentElement)
         }
     }
     
@@ -740,13 +1063,15 @@
     * params {dispId} String - the id of the elemnt to display the image
     * params {type: 1[background] |2 [src]} Integer - specifies if its background or src that would be changes
     */
-    const validateImageUpload =  (id, dispId, type = 1) => {
+    const validateImageUpload =  (id, dispId, type = 1, callback = (e)=>{}) => {
         E(id).onchange = (event) => {
-                const fileInput = E(id);
+            try{
+                const fileInput = E(id); 
                   // Check if a file is selected
                   if (fileInput.files.length === 0) {
                     stopTalking(4, talk("Please select a file.", "warn"));
                     fileInput.files = []
+                    callback(null)
                     return;
                   }
                   
@@ -755,15 +1080,18 @@
                   if (fileInput.files[0].size > maxSize) {
                     stopTalking(4, talk("File size exceeds the maximum allowed (3MB).", "warn"));
                     fileInput.files = []
+                    callback(null)
                     return;
                   }
                   // Check if the selected file is an image
                   if (!fileInput.files[0].type.startsWith('image/')) {
                     stopTalking(4, talk("Please select an image file.", "warn"));
                     fileInput.files = []
+                    callback(null)
                     return;
                   }
                   
+                  callback(fileInput.files[0])
                   const imageURL = URL.createObjectURL(fileInput.files[0]);
                   if(type == 1) {
                       const imageElement = document.createElement("img");
@@ -777,9 +1105,54 @@
                       //using src
                       E(dispId).src = imageURL
                   }
+            }
+            catch(e) {callback(null)}
            }
     }
     
+    /** To validate a document file
+     * params {file} A file object
+     * returns {boolean}
+    */
+    function isDocument(file) {
+        // You can customize this based on the document file types you want to support
+        return (
+            file.type.startsWith('application/pdf') ||
+            file.type.startsWith('application/msword') ||
+            file.type.startsWith('application/vnd.openxmlformats-officedocument.wordprocessingml.document') ||
+            file.type.startsWith('text/plain') ||
+            file.type.startsWith('application/rtf') ||
+            file.type.startsWith('application/vnd.ms-excel') ||
+            file.type.startsWith('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') ||
+            file.type.startsWith('application/vnd.ms-powerpoint') ||
+            file.type.startsWith('application/vnd.openxmlformats-officedocument.presentationml.presentation')
+        );
+    }
     
+    /** To check if an image url is valid
+     * params {url}
+     * returns {boolean}
+    */
+   async function isImageURLValid(url) {
+        //structure url
+        try {
+            url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=valid_image&value=" + encodeURIComponent(url)
+            const response = await fetch(url + "&id=" + Math.random() * 1000);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const resp = await response.text();  
+            if(resp == '1') return true
+            return false
+        } catch (error) { console.log(e)
+            return false;
+        }
+    }
+    
+     /** To convert a number to bigInt
+     * params {num}
+     * returns {BigInt}
+    */
+    const N = (num) => {return (num.toString() * 1)}
     
 </script>

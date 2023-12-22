@@ -35,9 +35,10 @@ class ProposalController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        return view('proposal.index');
+    public function index($dao_id, $proposal_id)
+    {   
+        $prop = ["proposal_id" => $proposal_id, "dao_id" => $dao_id];
+        return view('proposal.index', compact('prop'));
     }
 
     /**
@@ -47,7 +48,13 @@ class ProposalController extends Controller
      */
     public function create($dao_id)
     {
-        $dao = Dao::findOrFail($dao_id);
+        $dao = explode(":", $dao_id); 
+        if(sizeof($dao) > 1) {
+            $dao = ["name"=>$dao[0], "asset"=> $dao[1]];
+        }
+        else if(sizeof($dao) <= 1) {
+            $dao = ["name"=>$dao[0], "asset"=> ""];
+        }
         return view('proposal.create', compact('dao'));
     }
 

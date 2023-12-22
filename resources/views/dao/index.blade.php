@@ -1,7 +1,7 @@
 @extends('layouts.app')
-
+ 
 @section('content')
-    <section class="leadingBoard">
+<section class="leadingBoard">
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -14,7 +14,7 @@
             </div>
         </div>
     </section>
-    <section class="main-card-link">
+<section class="main-card-link">
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -28,10 +28,10 @@
                         </div>
                          </button>
                          <div style="margin:-45px -20px -30px !important; height:230px;" class="">
-                                <img style="object-fit: cover; object-fit:center;" class="h-100 w-100 rounded object-cover" src="https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
+                                <img id='dao_cover_image' style="object-fit: cover; object-fit:center;" class="h-100 w-100 rounded object-cover" data="https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
                             </div>
                         <div class="card-imgflex">
-                            <img id='dao_image' src="{{ asset('images/demi.jpg') }}" alt="Image">
+                            <img id='dao_image' data="{{ asset('images/demi.jpg') }}" alt="">
                             <div class="cardHeading">
                                 <p id='dao_name' class="card-heading"></p>
                                 <p id='dao_members' class="card-subheading"></p>
@@ -86,7 +86,7 @@
             </div>
         </div>
     </section>
-    <section class="approveWallet">
+<section class="approveWallet">
         <div class="container">
             <div class="row">
                 <div class="col">
@@ -124,7 +124,7 @@
             </div>
         </div>
     </section>
-    <section class="propFilter">
+<section class="propFilter">
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -137,7 +137,7 @@
                                 </svg>
                                 </button>
                             </div>
-                        <a href="{{ route('dao.proposal.create', 1) }}" style="width:200px; whitespace:no-wrap; "  class="btn btnCreate">
+                        <a id='createProposal' href="{{ route('dao.proposal.create', 'PROPOSAL_CREATE') }}" style="width:200px; whitespace:no-wrap;display:none "  class="btn btnCreate">
                             Create Proposal <img class="plu" src="{{ asset('images/11.png') }}" alt="">
                         </a>
                     </div>
@@ -146,13 +146,13 @@
         </div>
     </section>
 
-    <section class="endedCard">
+<section class="endedCard">
         <div class="container">
             <div class="d-flex proposal_card_container">
                 <div  class="proposal_right_card_container" id="proposal_views">
                     <div style='font-size:20px; margin:60px;'><center>Loading Proposals...</center></div>
                 </div>
-                     <div style="margin: top 15px; " class="proposal_status-card">
+                     <div id='topVoters' style="margin: top 15px; display:none" class="proposal_status-card">
                         <div class="proposal_status-SideCard">
                             <div class="d-flex align-items-start justify-content-start gap-2">
                                <h2 class="heading">Top Voters</h2>
@@ -167,7 +167,7 @@
                                     <p>Participated <br> in Proposal</p>
                                 </div>
                         </div>
-                        <div class="">
+                        <div id='topVotersView' class="">
                         <div class="d-flex justify-content-between align-items-baseline py-2">
                                 <div class="proposal_sideCard_banner">
                                     <img src="https://images.unsplash.com/photo-1682685797661-9e0c87f59c60?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60" alt="">
@@ -405,7 +405,8 @@
         </div>
     </div>
     </div>
-    </section>
+</section>
+   
     <script>
         /* INDEX FUNCTIONS GO HERE */
         var dao;
@@ -413,32 +414,40 @@
         const indexMain = async () => { 
            let _dao = (window.location + "").substring((window.location + "").lastIndexOf("/") + 1)
            dao = await getDao(_dao) ;  
+         
+           E('createProposal').href = E('createProposal').href.replace('PROPOSAL_CREATE', `${dao.name}:${dao['token']}`)
+           E('createProposal').style.display = 'block'
            if(dao['proposals'] != undefined) {
                setUp(); 
-               //check if this asset was hosted here
+               //check if this asset was hosted here 
                if(dao.toml.DOCUMENTATION.ORG_URL.indexOf("<?php echo $_SERVER['HTTP_HOST']; ?>") > -1 ) {
                    //check if its an approved wallet
                    if(dao.issuer == walletAddress || dao.toml.ACCOUNTS.includes(walletAddress)) E('dao_setting').style.display = 'block'
                }
                //load info of all the proposals
-               let prop;
+               let prop; 
+                
                if(dao.proposals != undefined){
-                   if(dao.proposals.length > 0) {
-                        E('proposal_views').innerHTML = ""
-                        const tmr = setInterval(async () => {
-                        prop = dao.proposal_list.pop()
+                   if(dao.proposals.length > 0) {  
+                        //declaring the function
+                        const dispProposal = async () => {
+                            prop = dao.proposals.pop(); 
                             if(prop != undefined && prop != "") {
-                                prop = await getProposal(prop)  
+                                let propId = prop;  
+                                prop = await getProposal(prop);
                                 if(prop['name'] != undefined) {
+                                    prop.proposalId = propId; //attach id
                                     //append 
-                                    E('proposal_views').appendChild(drawProposal(prop))
+                                    temPropView.appendChild(drawProposal(prop)) 
                                 }
                             }
                             //stop timer if all dao data has been read
-                            if(dao.proposal_list.length == 0) clearInterval(tmr)
-                        }, 5)
+                            if(dao.proposals.length != 0) {setTimeout(dispProposal, 5)}else{E('proposal_views').innerHTML = temPropView.innerHTML;temPropView.innerHTML = "";temPropView = null}
+                        }
+                        let temPropView = document.createElement('div') //hold proposal views, till they are done loading
+                        const tmr = setTimeout(dispProposal, 10)
                    }
-                   else {
+                   else { 
                        E('proposal_views').innerHTML = "<div style='font-size:20px; margin:60px;'><center>No proposal created yet<br>Be the first to create a proposal.</center></div>"
                    }
                }
@@ -451,7 +460,7 @@
             if(dao['proposals'] != undefined) {
                E('dao_name').innerHTML = E('dao_name_head').innerHTML = E('dao_save_name').innerHTML = dao.name || "no name"
                E('dao_about').innerHTML = E('dao_save_about').innerHTML = dao.description || "Your friendly Lumos DAO community"
-               E('dao_members').innerHTML = dao.members.toLocaleString() + ((dao.members * 1 > 1) ? " members" : " member")
+               E('dao_members').innerHTML = dao.members.toLocaleString() + ((dao.members > 1) ? " members" : " member")
                //get token info name
                E('dao_token_name').innerHTML = E('dao_save_code').innerHTML =  dao.code
                //get asset info from toml
@@ -460,7 +469,11 @@
                    E('dao_token_url').innerHTML = E('dao_save_toml').innerHTML = E('dao_token_url').href = E('dao_save_toml_url').href = dao.url
                    E('dao_website').innerHTML = E('dao_website').href = E('dao_save_domain').innerHTML = E('dao_save_domain_href').href = (aToml.DOCUMENTATION != undefined) ? aToml.DOCUMENTATION.ORG_URL : ""
                    if(aToml.CURRENCIES){ 
+                       const imgx = (dao.image || "");const coverImgx = imgx.replace((dao.code + dao.owner), "cover_" + (dao.code + dao.owner)); 
+                       const isCoverValid = await isImageURLValid(coverImgx)
+                       if(isCoverValid) {E('dao_cover_image').src = coverImgx + "?id=" + Math.random() * 1000}
                        E('dao_token_img').src = E('dao_save_img').src = E('dao_image').src = (dao.image || "") + "?id=" + Math.random() * 1000
+                       //verify cover image
                        E('dao_token_issuer').innerHTML = E('dao_token_distributing').innerHTML = dao.issuer || ""
                     } 
                     //load approved address
@@ -482,7 +495,20 @@
                         if(flg) E('dao_others_address').style.display = 'block' //show others
                     }
                     E('dao_save_address_view').style.display = 'none'
-                    
+                    //show top voters
+                    //console.log(dao.top_voters)
+                    //sort in descending order
+                    dao.top_voters.sort((a, b) => N(b.vote - a.vote));
+                    if(dao.top_voters.length > 0) {
+                        E('topVotersView').innerHTML = ""
+                        for(let i =0;i<dao.top_voters.length && i < 20;i++) {
+                            E('topVotersView').appendChild(drawTopVoters(dao.top_voters[i]))
+                        }
+                        E('topVoters').style.display = "block"
+                    }
+                    else {
+                        E('topVoters').style.display = "none"
+                    }
                     //display links
                     const socials = aToml.DOCUMENTATION
                     if(socials.ORG_TWITTER != "") {
@@ -754,47 +780,47 @@
         const drawProposal = (prop) => {
                 let _div = document.createElement('div')
                 let n = prop.creator.substring(0,4) + "..." + prop.creator.substring(prop.creator.length - 5)
-                let h = prop.voters.length.toLocaleString() + ((prop.voters.length * 1 > 1) ? " members" : " member")
+                let h = prop.voters + ((prop.voters > 1) ? " members" : " member")
                 _div.innerHTML = ` <div class="row">
                     <div class="cardEndDiv">
                         <div class="col-12">
-                            <a href="/proposal/${prop.proposalId}" class="text-decoration-none">
+                            <a href="{{ route('dao.proposal', ['proposal_id' => " ", "dao_id"=> $dao_id]) }}${prop.proposalId}" class="text-decoration-none">
                                 <div class="d-flex justify-content-between align-items-center cardEndDetail_container">
                                         <div class="cardEndDetail">
-                                            <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="Profile Image" class="image">
+                                            <img style='display:none' alt="Profile Image" class="image">
                                             <div class="text">Created by: ${n}</div>
                                         </div>
     
                                     <div class="text">
                                             <span>Proposal ID:</span>
-                                            <span>${prop.proposalId}</span>
+                                            <span>PROP_${prop.proposalId}</span>
                                         </div>
     
                                     <div class="small-card">
-                                        <div class="small-card-text">${(prop.executed) ? "Ended" : "Active"}</div>
+                                        <div class="small-card-text">${(prop.status == 0) ? "Ended" : "Active"}</div>
                                     </div>
                                 </div>
                                 <div class="cardendHeading">
-                                    <h2 class="heading">Incentivized Referral Program</h2>
+                                    <h2 class="heading">${prop.name}</h2>
                                     <div class="paragraph">
                                         <p>${prop.description}</p>
                                     </div>
                                 </div>
                                 <div class="carendBottom d-flex align-items-center">
-                                <div class="small-card">
+                                <div class="small-card" style='display:${(prop.status == 0) ? "" : "none"}'>
                                     <img src="{{ asset('images/Layer 13.png') }}" alt="Small Image" class="small-image">
-                                    <div class="small-card-text">Yes</div>
+                                    <div class="small-card-text">${(prop.yes_votes > prop.no_votes) ? "Yes" : "No"}</div>
                                 </div>
                                 <div class="text">
                                         <span>Voted by:</span>
                                        <span>${h}</span>
-                                    </div>
+                                </div>
                             </div>
                             </a>
                         </div>
                     </div>
                 </div>`
-                return _diV.firstElementChild
+                return _div.firstElementChild
                     
             }
         const drawAddress = (addr, name = "") => {
@@ -807,6 +833,19 @@
             tm.innerHTML = `<div class="column-content"><p>${addr}</p></div>`
             return tm.firstElementChild
         } 
+        const drawTopVoters = (param = {voter:"", vote:""}) => {
+            let tm = document.createElement('div')
+            tm.innerHTML = ` <div class="d-flex justify-content-between align-items-baseline py-2">
+                                <div class="proposal_sideCard_banner">
+                                    <img style='display:none' src="" alt="">
+                                    <span class="">${param.voter.substring(0, 6) + "..." + param.voter.substring(param.voter.length - 6)}</span>
+                                </div>
+                                <div class="proposal_status-SideCard">
+                                    <h2 class="heading">${param.vote}</h2>
+                                </div>
+                        </div>`
+            return tm.firstElementChild
+        }
         indexMain() //run the main function
     </script>
 @endsection

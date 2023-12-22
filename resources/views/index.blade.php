@@ -93,125 +93,6 @@
 
     <section id='daoViewParent' class="cardDisplay">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="card-join cardShow">
-                        <a href="{{ route('dao', 1) }}" class="text-decoration-none">
-                            <div class="lblJoin">
-                                <p class="mb-0">join</p>
-                            </div>
-                            <div style="margin: -20px !important;" class="">
-                                <img  class="h-100 w-100 rounded" src="https://plus.unsplash.com/premium_photo-1700984292453-732e26d205fa?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8" alt="">
-                            </div>
-                            <div class="card-imgflex">
-                                <img src="{{ asset('images/demi.jpg') }}" alt="Apple">
-                            </div>
-                            <div class="cardHeading">
-                                    <p class="card-heading">Apple</p>
-                             </div>
-                            <div class="card-paragraph">
-                                A tech giant renowned for its iconic products like iPhones, iPads, and Macs, Apple combines cutting-edge technology with elegant design to shape the consumer electronics industry.
-                            </div>
-
-                           <div class="d-flex justify-content-center align-items-center gap-2">
-                           <div class="cardCircle">
-                                <p>15</p>
-                            </div>
-                            <p class="circleP">Active propsal</p>
-                           </div>
-                            <div class="d-flex justify-content-between">
-                                <div class="card-small-div cardShowSmall w-100">
-                                    <p class="card-bold-word">17,23</p>
-                                    <p class="card-link">Members</p>
-                                </div>
-                                <div class="card-small-div cardShowSmall w-100">
-                                    <p class="card-bold-word">17,23</p>
-                                    <p class="card-link">Members</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="card-join cardShow">
-                        <a href="{{ route('dao', 1) }}" class="text-decoration-none">
-                            <div class="lblJoin">
-                                <p class="mb-0">join</p>
-                            </div>
-                            <div style="margin: -20px !important;" class="">
-                                <img  class="h-100 w-100 rounded" src="https://plus.unsplash.com/premium_photo-1700984292453-732e26d205fa?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8" alt="">
-                            </div>
-                            <div class="card-imgflex">
-                                <img src="{{ asset('images/demi.jpg') }}" alt="Google">
-                               
-                            </div>
-                            <div class="cardHeading">
-                                    <p class="card-heading">Google</p>
-                                </div>
-                            <div class="card-paragraph">
-                                Google offers a range of services including its renowned search engine, Google Search, along with popular platforms like Google Maps, Gmail, and YouTube, revolutionizing the way people access information and connect online.
-                            </div>
-
-                            <div class="d-flex justify-content-center align-items-center gap-2">
-                           <div class="cardCircle">
-                                <p>15</p>
-                            </div>
-                            <p class="circleP">Active propsal</p>
-                           </div>
-
-                            <div class="d-flex justify-content-around">
-                                <div class="card-small-div cardShowSmall w-100">
-                                    <p class="card-bold-word">17,23</p>
-                                    <p class="card-link">Members</p>
-                                </div>
-                                <div class="card-small-div cardShowSmall w-100">
-                                    <p class="card-bold-word">17,23</p>
-                                    <p class="card-link">Members</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="card-join cardShow">
-                        <a href="{{ route('dao', 1) }}" class="text-decoration-none">
-                            <div class="lblJoin">
-                                <p class="mb-0">join</p>
-                            </div>
-                            <div style="margin: -20px !important;" class="">
-                                <img  class="h-100 w-100 rounded" src="https://plus.unsplash.com/premium_photo-1700984292453-732e26d205fa?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8" alt="">
-                            </div>
-                            <div class="card-imgflex">
-                                <img src="{{ asset('images/demi.jpg') }}" alt="Amazon">
-                            </div>
-                            <div class="cardHeading">
-                                    <p class="card-heading">Amazon</p>
-                                </div>
-                            <div class="card-paragraph">
-                                The world's largest online retailer, Amazon has transformed the retail landscape with its vast product selection, convenient shopping experience, and fast delivery services.
-                            </div>
-
-                            <div class="d-flex justify-content-center align-items-center gap-2">
-                           <div class="cardCircle">
-                                <p>15</p>
-                            </div>
-                            <p class="circleP">Active propsal</p>
-                           </div>
-
-                            <div class="d-flex justify-content-around">
-                                <div class="card-small-div cardShowSmall w-100">
-                                    <p class="card-bold-word">17,23</p>
-                                    <p class="card-link">Members</p>
-                                </div>
-                                <div class="card-small-div cardShowSmall w-100">
-                                    <p class="card-bold-word">17,23</p>
-                                    <p class="card-link">Members</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
             <div class="row" id='daoView'>
                 <div style='font-size:20px; margin:60px 0px; '><center>Getting DAOs...</center></div>
             </div>
@@ -245,8 +126,9 @@
                                     //append
                                     const hasJoined = await getTokenUserBal(dao.token, walletAddress)
                                     if(hasJoined === false) {dao.ismember = false}else{dao.ismember = true}
-                                    if(E('daoView').innerHTML == "Loading DAOs..."){E('daoView').innerHTML = ""}
-                                    E('daoView').appendChild(drawDaoDiv(dao))
+                                    if(E('daoView').innerHTML == "<center>Loading DAOs...</center>"){E('daoView').innerHTML = ""}
+                                    dao = await drawDaoDiv(dao)
+                                    E('daoView').appendChild(dao)
                                 }
                             }
                             //stop timer if all dao data has been read
@@ -286,42 +168,49 @@
             }
             stopTalking(4, id) 
         } 
-        function drawDaoDiv(daoParams){
+        async function drawDaoDiv(daoParams){
             let _div = document.createElement('div');
-            _div.innerHTML = `<div class="col-lg-4 col-md-6 col-sm-12" style='margin-bottom:20px'>
-                    <div class="card-join cardShow">
+            const coverImgx = daoParams.image.replace((daoParams.code + daoParams.owner), "cover_" + (daoParams.code + daoParams.owner)); 
+            const isCoverValid = await isImageURLValid(coverImgx)
+            const defCoverImg = 'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+            _div.innerHTML = `<div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card-join cardShow" onclick='window.location = "{{ route('dao', '') }}/${daoParams.token || ""}"' style='cursor:pointer'>
                             <div class="lblJoin" style='cursor:pointer' onclick="${(daoParams.owner == walletAddress) ? "Owner" : (!daoParams.ismember) ? "joinDao(event,'" +  daoParams.code + "','" + daoParams.issuer + "','" + daoParams.name + "')" : ""}">
                                 <p class="mb-0">${(daoParams.owner == walletAddress) ? "Owner" : (daoParams.ismember) ? "Joined" : "Join"}</p>
                             </div>
-                        <a href="/dao/${daoParams.token || ""}" class="text-decoration-none">
-                            <div class="card-imgflex">
-                                <img src="${daoParams.image + "?id=" + Math.random() }" alt="StellarBuds">
-                                <div class="cardHeading">
-                                    <p class="card-heading">${daoParams.name || ""}</p>
-                                </div>
+                            <div style="margin: -20px !important;" class="">
+                                <img  class="h-100 w-100 rounded" src="${((isCoverValid) ? coverImgx : defCoverImg) + "?id=" + Math.random() }" alt="">
                             </div>
+                            <div class="card-imgflex">
+                                <img src="${daoParams.image + "?id=" + Math.random() }" alt="Apple">
+                            </div>
+                            <div class="cardHeading">
+                                    <p class="card-heading">${daoParams.name || ""}</p>
+                             </div>
                             <div class="card-paragraph">
-                               ${daoParams.description || ""}
+                                ${daoParams.description || ""}
                             </div>
 
-                            <div class="cardCircle">
+                           <div class="d-flex justify-content-center align-items-center gap-2">
+                           <div class="cardCircle">
                                 <p>${daoParams.active_proposals || 0}</p>
                             </div>
-                            <p class="circleP">Active proposal</p>
-
-                            <div class="d-flex justify-content-around">
-                                <div class="card-small-div cardShowSmall">
+                            <p class="circleP">Active ${(daoParams.proposals || 0) > 1 ? "proposal" : "proposals"}</p>
+                           </div>
+                            <div class="d-flex justify-content-between">
+                                <div class="card-small-div cardShowSmall w-100">
                                     <p class="card-bold-word">${daoParams.members || 0}</p>
-                                    <p class="card-link">Members</p>
+                                    <p class="card-link">${(daoParams.members || 0) > 1 ? "Members" : "Member"}</p>
                                 </div>
-                                <div class="card-small-div cardShowSmall">
+                                <div class="card-small-div cardShowSmall w-100">
                                     <p class="card-bold-word">${daoParams.proposals.length || 0}</p>
-                                    <p class="card-link">Proposals</p>
+                                    <p class="card-link">${(daoParams.proposals || 0) > 1 ? "Proposal" : "Proposals"}</p>
                                 </div>
                             </div>
-                        </a>
+                    
                     </div>
-                </div>`
+                </div>
+                `
             return _div.firstElementChild
         }
         indexMain() //run main function

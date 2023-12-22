@@ -22,14 +22,11 @@
                             <!-- Dropdown -->
                             <label class="drop">
                                 <input type="checkbox" id="mainWalletList"> <!-- Toggle Drop -->
-                                <span id="selectedWallet" class="control">
-                                <span class="text-muted" wallet="frighter"><img
-                                                src="{{ asset('images/frighter.png') }}">Frighter</span>
-                                </span> <!-- Fake button -->
+                                <span id="selectedWallet" class="control">Choose your Wallet</span> <!-- Fake button -->
 
                                 <!-- Items -->
                                 <ul class="drop-items " id="walltetList">
-                                    <li class="item-drop wallet-drop-items d-none">
+                                    <li class="item-drop wallet-drop-items">
                                         <a href="#" wallet="rabet"><img src="{{ asset('images/rabet.png') }}">
                                             Rabet</a>
                                     </li>
@@ -37,11 +34,11 @@
                                         <a href="#" wallet="frighter"><img
                                                 src="{{ asset('images/frighter.png') }}">Frighter</a>
                                     </li>
-                                    <li class="item-drop wallet-drop-items d-none">
+                                    <li class="item-drop wallet-drop-items">
                                         <a href="#" wallet="albeto"><img
                                                 src="{{ asset('images/albeto.png') }}">Albedo</a>
                                     </li>
-                                    <li class="item-drop wallet-drop-items d-none">
+                                    <li class="item-drop wallet-drop-items">
                                         <a href="#" wallet="xbull"><img
                                                 src="{{ asset('images/xbull.png') }}">Xbull</a>
                                     </li>
