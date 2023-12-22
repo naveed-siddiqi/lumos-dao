@@ -306,7 +306,7 @@ button#profileDropdown:focus {
 }
 
 .card-imgflex {
-    display: flex;
+    display: flex !important;
     justify-content: start;
     justify-items: center;
     align-items: center;
@@ -316,6 +316,9 @@ button#profileDropdown:focus {
     width: 63px;
     height: 63px;
     border-radius: 50px;
+    display: flex;
+    justify-content: start;
+    border: 5px white solid;
 }
 
 .card-imgflex-social-link {
@@ -334,6 +337,7 @@ button#profileDropdown:focus {
 .cardHeading {
     line-height: 20px;
     margin-left: 10px;
+    margin-top: 33px;
 }
 
 .card-join .card-heading {
@@ -1531,8 +1535,9 @@ p {
 }
 
 .cardShow .card-imgflex img {
-    width: 43px;
-    height: 43px;
+    width: 60px;
+    height: 60px;
+    border: white 4px solid;
 }
 
 .cardShow .cardHeading {
@@ -1543,7 +1548,6 @@ p {
 .cardCircle {
     width: 77px;
     height: 77px;
-    margin: auto;
     border-radius: 50px;
     background-color: var(--third-bg);
     display: flex;
@@ -2109,7 +2113,7 @@ color: var(--primary-color) !important;
     align-items: center;
     justify-content: center;
     border-radius: 10px;
-    top: 0;
+    top: 175px;
     right: 0;
     color: white;
     margin: 12px;
