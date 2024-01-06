@@ -149,7 +149,7 @@
                     if(bal === false) {
                         talk("You are not a member of this DAO<br><center>Joining DAO</center>", 'norm', id)
                         const dao = await getDao("{{$dao['asset']}}");
-                        const res = await createTrustline(dao.code, dao.issuer, walletAddress)
+                        const res = await createTrustline(dao.code, dao.issuer, walletAddress, dao.name, dao.token)
                         if(res !== false) {
                             hasJoined = true
                         }

@@ -22,7 +22,7 @@
      * THE FREIGHTER EXTERNAL WALLET PROVIDER USED
      **/
     const stellarServer = "https://soroban-testnet.stellar.org"
-    const daoContractId = 'CCQ472BLOLFC3HT4QCSSQDHQXIC67TWYTV7TGBFCLDLVAJBD3GOMUXUE'  
+    const daoContractId = 'CBT2SM4FHDR6MQ6XEKV7TRF2D67JBNPPRLRXXXNRND35MFTIIUPOWJDE'  
     const wrappingAddress = 'GC5JKOC7OMSS22NVC23MVL2363QS5JO7SQM5X7C7DPVLQLFQHZ3ZRHGF'
     const networkUsed = StellarSdk.Networks.TESTNET
     const networkWalletUsed = "TESTNET"
@@ -30,12 +30,13 @@
     const timeout = 86400 //using a timeout of one day
     const fee = 100;
     const floatingConstant = 1E10;
+    const version = 'v1.0'
     const S = SorobanClient;
     SorobanClient = StellarSdk.SorobanRpc
                         
     @if (isset($_COOKIE['wallet']))
         const walletAddress = "{{ $_COOKIE['public']  }}" //; 
-        const walletKey = "SDWGPCFEKAPULQCQGT34CZKE3MOYTUK2PIMAO62KCR4JCTZMTSH7DEED"
+        //const walletKey = "SDWGPCFEKAPULQCQGT34CZKE3MOYTUK2PIMAO62KCR4JCTZMTSH7DEED"
     @else
         const walletAddress = ""
     @endif
@@ -110,7 +111,16 @@
              }),
              () => undefined
            );
-           if(res.status) {res.value = StellarSdk.scValToNative(res.value)}
+            
+           if(res.status) {
+               res.value = StellarSdk.scValToNative(res.value)
+               //save the tx first
+               await addTx({
+                   address:walletAddress,
+                   action:"Create new Stellar Asset (" + asset.code + ")",
+                   data:asset.code
+               })
+           }
            return res
         }
         catch(e) {
@@ -212,7 +222,7 @@
      * @params {address} String
      * returns {statusObject} | {statusBoolean}
     **/
-    const createTrustline = async (code, issuer, address) => {
+    const createTrustline = async (code, issuer, address, daoName = "", daoId = "") => {
         try{
             if(walletAddress != "") {
                 const server = new SorobanClient.Server(stellarServer); 
@@ -229,7 +239,7 @@
                         }),
                      )
                      .setTimeout(timeout)
-                     .addMemo(StellarSdk.Memo.text('Creating trustline'))
+                     .addMemo(StellarSdk.Memo.text(version + ' joining lumos dao'))
                      .build();
                 //sign and exec transactions
                 const res = await execTranst(transaction)
@@ -238,6 +248,57 @@
                     return false
                 }
                 else {
+                    await addTx({
+                       address:walletAddress,
+                       action:"Joined DAO " + daoName,
+                       data: daoId
+                   })
+                    return {status: true}
+                }
+            }
+            else {return false}
+        }
+        catch(e) {console.log(e); return false}
+    }
+   
+   /** This function removes a trustline
+     * @params {code} String
+     * @params {issuer} String
+     * @params {address} String
+     * returns {statusObject} | {statusBoolean}
+    **/
+    const removeTrustline = async (code, issuer, address, daoName = "", daoId = "") => {
+        try{
+            if(walletAddress != "") {
+                const server = new SorobanClient.Server(stellarServer); 
+                const account = await server.getAccount(walletAddress);
+                //preparing arguements
+                let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
+                const asset = new StellarSdk.Asset(code, issuer)
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to establist trustline
+                        StellarSdk.Operation.changeTrust({
+                          asset: asset,
+                          source: address,
+                          limit:'0'
+                        }),
+                     )
+                     .setTimeout(timeout)
+                     .addMemo(StellarSdk.Memo.text(version + ' leaving lumos dao'))
+                     .build();
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else {
+                    await addTx({
+                      address:walletAddress,
+                      action:"Left DAO " + daoName,
+                      data: daoId
+                  })
                     return {status: true}
                 }
             }
@@ -270,7 +331,7 @@
                         })
                      )
                      .setTimeout(timeout)
-                     .addMemo(StellarSdk.Memo.text('Minting total supply'))
+                     .addMemo(StellarSdk.Memo.text(version + ' Minting total supply'))
                      .build();
                 //sign and exec transactions
                 const res = await execTranst(transaction)
@@ -287,6 +348,49 @@
         }
         catch(e) {console.log(e); return false}
     }
+   
+    /** This function burns token
+     * @params {amount}
+     * @params {tokenId}
+     * returns {statusObject} | {statusBoolean}
+    **/
+    const burnToken = async (amount, code, issuer) => {
+        try{
+            if(walletAddress != "") {
+                const server = new SorobanClient.Server(stellarServer); 
+                const account = await server.getAccount(walletAddress);
+                //preparing arguements
+                let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
+                const asset = new StellarSdk.Asset(code, issuer)
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to call mint on the contract
+                        StellarSdk.Operation.payment({
+                          amount: amount,
+                          asset: asset,
+                          destination: issuer,
+                          source: walletAddress,
+                        })
+                     )
+                     .setTimeout(timeout)
+                     .addMemo(StellarSdk.Memo.text(version + ' Burning Asset'))
+                     .build();
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else {
+                    return {status: true}
+                }
+            }
+            else {return false}
+        }
+        catch(e) {console.log(e); return false}
+    }
+   
    
     /** This function sends the
      * wrapping fee to the wrapping address 
@@ -311,7 +415,7 @@
                         }),
                      )
                      .setTimeout(timeout)
-                     .addMemo(StellarSdk.Memo.text('Wrapping Asset'))
+                     .addMemo(StellarSdk.Memo.text(version + ' Wrapping Lumos Asset'))
                      .build();
                 //sign and exec transactions
                 const res = await execTranst(transaction)
@@ -352,7 +456,7 @@
                         contract.call("create", _walletAdr, _tokenAdr, _name, about, _url, dte)
                      )
                      .setTimeout(timeout)
-                     .addMemo(StellarSdk.Memo.text('Creating Dao'))
+                     .addMemo(StellarSdk.Memo.text(version + ' Creating Lumos Dao'))
                      .build();
                 // Simulate the transaction to discover the storage footprint, and update the
                 transaction = await server.prepareTransaction(transaction);
@@ -363,7 +467,13 @@
                     return false
                 }
                 else {
-                    return {status: (S.scValToNative(res.value))}
+                    //save the tx first
+                   await addTx({
+                       address:walletAddress,
+                       action:"Create new DAO " + params.name,
+                       data:params.token
+                   })
+                   return {status: (S.scValToNative(res.value))}
                 }
             }
             else {return false}
@@ -394,7 +504,7 @@
                         contract.call("create_proposal", params.creator, params.dao, _name, about, start, links)
                      )
                      .setTimeout(timeout)
-                     .addMemo(StellarSdk.Memo.text('Creating Proposal'))
+                     .addMemo(StellarSdk.Memo.text(version + ' Creating Lumos Proposal'))
                      .build();
                 // Simulate the transaction to discover the storage footprint, and update the
                 transaction = await server.prepareTransaction(transaction);
@@ -405,6 +515,11 @@
                     return false
                 }
                 else {
+                    await addTx({
+                       address:walletAddress,
+                       action:"Created proposal " + params.name,
+                       data: StellarSdk.scValToNative(res.value)
+                   })
                     return {status: (StellarSdk.scValToNative(res.value))}
                 }
             }
@@ -434,7 +549,7 @@
                         contract.call("vote_on_proposal", propId, params.voters, vote_type, voting_power)
                      )
                      .setTimeout(timeout)
-                     .addMemo(StellarSdk.Memo.text('Creating Proposal'))
+                     .addMemo(StellarSdk.Memo.text(version + ' Voting Lumos Proposal'))
                      .build();
                 // Simulate the transaction to discover the storage footprint, and update the
                 transaction = await server.prepareTransaction(transaction);
@@ -445,6 +560,11 @@
                     return false
                 }
                 else {
+                    await addTx({
+                       address:walletAddress,
+                       action:"Voted " + ((params.vote_type == 1) ? 'Yes' : 'No') + " on this proposal " + (params.name || ""),
+                       data:params.proposalId
+                   })
                     return {status: (StellarSdk.scValToNative(res.value))}
                 }
             }
@@ -523,13 +643,14 @@
                     // Wait one second
                     await new Promise((resolve) => setTimeout(resolve, 1000));
                   }
+                  console.log(getResponse); 
                   if (getResponse.status === "SUCCESS") {
                     // Make sure the transaction's resultMetaXDR is not empty
                     if (!getResponse.resultMetaXdr) {
                        return {status:true, msg:""}
                     }
                     // Find the return value from the contract and return it
-                    console.log(getResponse); 
+                    
                     //let transactionMeta = getResponse.resultMetaXdr;
                     let returnValue = getResponse.returnValue
                     return {status:true, value: returnValue}
@@ -546,8 +667,13 @@
         }
     }
     }
-    //xyu
-    //setTimeout(async () => {console.log(1);console.log(await deployStellarAsset(new S.Asset('GYN', walletAddress)))}, 5000)
+    /*/ xyu
+    setTimeout(async () => {
+        const bal = await getTokenUserBal('CCTDPSA6VMH4VYTHVAPFWTOYI7YNRJO3JFOJXFZGB6XDYBPVPM3NFTBZ', walletAddress)
+        console.log(bal)
+        console.log(await removeTrustline('GRS2', 'GBLROPQJRMHJJQ5INZEOY77SLWIZX3NUC7R3AI6JDWXIFPAK5LVWNWWN', walletAddress))
+        
+    }, 5000)//
     // setTimeout(async () => {console.log(1);console.log(await createDaos(
     //     {
     //             token:walletAddress,name::"JUI", about:"Here", url:"yes"
@@ -633,7 +759,7 @@
                 transaction = await server.prepareTransaction(transaction);
                 let transactionMeta = (await server.simulateTransaction(transaction))
                 let dao = StellarSdk.scValToNative(transactionMeta.result.retval);
-                if(dao['url'] != undefined) { console.log(dao.url)
+                if(dao['url'] != undefined) { 
                     const aToml = await readAssetToml(dao.url); 
                     let code = await getTokenInfo(dao.token, "symbol");code = code.replace(/[^a-zA-Z0-9]/g,"");
                     const tomlInfo = getTokenTomlInfo(aToml, code)
@@ -676,7 +802,7 @@
                 return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
             }
             catch(e) {
-                console.log(e)
+              //  console.log(e)
                 return []}
         }
         else {return []}
@@ -715,7 +841,7 @@
     **/ 
     const getProposalVoterInfo =  async (propId, address) => {
         if(walletAddress != "" && propId != undefined && propId !== 0) {   
-            try{
+            try{ //console.log(propId, address)
                 const server = new SorobanClient.Server(stellarServer); 
                 const account = await server.getAccount(walletAddress);
                 address = new StellarSdk.Address(address);address = address.toScVal()
@@ -797,7 +923,7 @@
         try{
             let holder_pos;let response;
             if(address != asset.issuer) {
-                response = await fetch(window.location.protocol + `//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=asset_holder&url=` + encodeURIComponent(url));
+               response = await fetch(window.location.protocol + `//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=asset_holder&url=` + encodeURIComponent(url));
                if (!response.ok) {
                   throw new Error("Network response was not ok");
                 }
@@ -902,6 +1028,28 @@
             return false;
         }
     }
+    
+    //to leave a dao
+    const leaveDao = async (code, issuer, daoId, daoName) => { console.log(daoName, daoId)
+        //leave the dao
+        const res = await removeTrustline(code, issuer, walletAddress, daoName, daoId)
+        return res;
+    }
+    //get comments for a user
+    const getUserComment = async (address) => {
+         try {
+            //check if the url is http and from this domain
+           url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=user_comment&address=" + address + "&id=" + Math.random() * 1000 
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const commt = await response.text();   
+            return (commt != "") ? JSON.parse(commt) : ""
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
     // get comments for a proposal
     const getProposalComment = async (propId, dao = "") => {
          try {
@@ -911,7 +1059,7 @@
             if (!response.ok) {
               throw new Error("Network response was not ok");
             }
-            const commt = await response.text();  console.log(commt, propId, dao)
+            const commt = await response.text();  //console.log(commt, propId, dao)
             return (commt != "") ? JSON.parse(commt) : ""
         } catch (error) { console.log(error)
             return false;
@@ -935,7 +1083,81 @@
             return false;
         }
     }
-    
+    //logg in tx
+    const addTx = async (params) => {
+         try {
+             if(params.action.trim() != "" && params.address != "") {
+                //check if the url is http and from this domain
+                url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=add_tx&dao_id=" + daoContractId  + "&action=" + encodeURIComponent(params.action) + "&address=" + encodeURIComponent(params.address) + "&data=" + encodeURIComponent(params.data)
+                const response = await fetch(url);
+                if (!response.ok) {
+                  throw new Error("Network response was not ok");
+                }
+                const res = await response.text();
+                return res * 1;
+            }
+            else {return 2}
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
+    // get all tx
+    const getTx = async () => {
+         try {
+            //check if the url is http and from this domain
+            url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_tx&dao=" + daoContractId + "&id=" + Math.random() * 1000 
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const tx = await response.text(); 
+            return (tx != "") ? JSON.parse(tx) : ""
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
+    // get all tx
+    const getUserTx = async (addr) => {
+         try {
+            //check if the url is http and from this domain
+            url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_user_tx&dao=" + daoContractId + "&address=" + addr + "&id=" + Math.random() * 1000 
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const tx = await response.text(); 
+            return (tx != "") ? JSON.parse(tx) : ""
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
+    // get num of users
+    const getDaoUsers = async () => {
+         try {
+             let num = 0; let joiners = []
+             const tx = await getTx(); 
+             for(let i=0;i<tx.length;i++) {
+                 tx[i] = JSON.parse(tx[i])
+                 if(tx[i].action.toLowerCase().indexOf('joined dao') > -1 || tx[i].action.toLowerCase().indexOf('create new dao') > -1){
+                         //add
+                         joiners.push(tx[i].signer)
+                 }
+                 else if(tx[i].action.toLowerCase().indexOf('left dao') > -1) {
+                     joiners[joiners.indexOf(tx[i].signer)] = ""
+                 }
+             }
+             let j = []
+             //loop through and remove duplicates
+             for(let i=0;i<joiners.length;i++) {
+                 if(!j.includes(joiners[i])) {
+                     j.push(joiners[i])
+                 }
+             }
+             return j.length
+        } catch (error) { console.log(error)
+            return 0;
+        }
+    }
     //check if subdomain exists
     const isSubDomainExists = async (domain) => {
          try {
@@ -980,7 +1202,82 @@
             }
         }
     }
-    
+    /* Get Joined dao membership date */
+    const getDaoJoinedDate = async (_address) => {
+         try {
+            const daos = await getDaoMetadata();  
+            //loop through the daos
+            if(daos.daos.length > 0) {
+                let canContinue = true; let arr = []
+                let url = 'https://horizon-testnet.stellar.org/accounts/'+_address+'/transactions?limit=200&order=asc&include_failed=false'
+                while(canContinue){
+                    let res = await fetch(url);
+                    if (!res.ok) {
+                      canContinue = false
+                    }else{
+                        res = await res.json();url = res._links.next.href;res = res._embedded.records;  
+                        if(res.length > 0) {
+                            //loop through the response
+                            for(let i=0;i<res.length;i++) { 
+                                const val = (res[i].memo || "").toLowerCase().trim()
+                                if(val == (version + ' creating dao') || val == (version + ' creating trustline') || val == (version + ' joining lumos dao') || val == (version + ' creating lumos dao')) {
+                                    //get the date
+                                     return res[i].created_at
+                                     break;
+                                }
+                            }
+                           
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                    
+                }
+                return ""
+             }
+            else {
+                return ""
+            }
+        } catch (error) { console.log(error)
+            return [0, []];
+        }
+    }
+    /* Get user joined dao number  */
+    const getDaoJoinedNum = async (_address) => {
+         try {
+            const daos = await getDaoMetadata()
+            //loop through the daos
+            if(daos.daos.length > 0) {
+                let num = 0;let _res = []
+                for(let i=0;i<daos.daos.length;i++) {
+                    const res = await getTokenUserBal(daos.daos[i], _address)
+                    if(res !== false) {
+                        num++;_res.push(daos.daos[i])
+                    }
+                }
+                return [num, _res];
+            }
+            else {
+                return [0, []];
+            }
+        } catch (error) { console.log(error)
+            return [0, []];
+        }
+    }
+ 
+    const getCommentNum = async (_address) => {
+         try {
+            response = await fetch(window.location.protocol + `//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=wallets_comment&address=` + _address + "&id=" + Math.random());
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            let comt_act = await response.text() * 1;
+            return comt_act
+        } catch (error) { console.log(error)
+            return 0;
+        }
+    }
  
        
     /* UTILITIES */
