@@ -69,7 +69,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="d-flex align-items-center justify-content-end gap-3 py-3 w-25">
+                        <div class="d-flex align-items-center justify-content-end gap-3 py-3 w-md-25">
                             <button class="btn btn-danger whitespace-nowrap" data-toggle="modal"
                                 data-target="#manageAdmin">Manage
                                 Admins</button>
@@ -346,7 +346,7 @@
                                             <div class="cardEndDetail">
                                                 <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
                                                     alt="Profile Image" class="image">
-                                                <div class="text text-center">FGDKXQTCPOJVVBBYTCPOJVVBBY2MRK2DXKZANU3I
+                                                <div class="text text-center text-truncate inline-block text-break text-wrap">FGDKXQTCPOJVVBBYTCPOJVVBBY2MRK2DXKZANU3I
                                                 </div>
                                             </div>
                                             <div class="text text-muted">12/02/2023</div>
@@ -416,7 +416,7 @@
                                                         <div class="cardEndDetail d-flex justify-content-between gap-3">
                                                             <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
                                                                 alt="Profile Image" class="image w-img">
-                                                            <div class="text text-center">
+                                                            <div class="text text-center text-truncate inline-block text-break text-wrap">
                                                                 FGDKXQTCP.....DXKZANU3I
                                                             </div>
                                                         </div>
@@ -513,7 +513,7 @@
                                             <div class="cardEndDetail d-flex justify-content-between gap-3">
                                                 <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
                                                     alt="Profile Image" class="image w-img">
-                                                <div class="text text-center">
+                                                <div class="text text-center text-truncate inline-block text-break text-wrap">
                                                     FGDKXQTCPDXKZANU3IFGDKXQTCPDXKZANU3I
                                                 </div>
                                             </div>

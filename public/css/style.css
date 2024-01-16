@@ -2459,7 +2459,9 @@ width: 100%;
 
 
 @media (max-width: 1000px){
-
+    .proposal_status-card{
+        margin-left: 0%;
+    }
     .proposal_card_container{
         flex-direction: column;
         align-items: center;
