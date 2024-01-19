@@ -53,8 +53,10 @@
                     <div class="tab w-100 mt-5">
                         <button class="tablinks " onclick="openCity(event, 'London')"
                             id="defaultOpenMob">Activity</button>
-                        <button class="tablinks " onclick="openCity(event, 'Paris')">Joined <span id='wallet_dao_num'></span></button>
-                        <button class="tablinks " onclick="openCity(event, 'Tokyo')">Comments <span id='wallet_comment_num'></span></button>
+                        <button class="tablinks " onclick="openCity(event, 'Paris')">Joined <span
+                                id='wallet_dao_num'></span></button>
+                        <button class="tablinks " onclick="openCity(event, 'Tokyo')">Comments <span
+                                id='wallet_comment_num'></span></button>
                     </div>
                 </div>
             </div>
@@ -114,6 +116,37 @@
                             </div>
                         </div>
                         
+                    </div>
+                </div>
+                <div id="newYork1" class="tabcontent col-sm">
+                    <div class="tab-pane explorer_card text-left h-auto px-3 px-sm-4 pt-4 pb-4 mt-4">
+                        <div class="row mt-0 w-100">
+                            <div class="cardEndDiv p-0">
+                                <div class="">
+                                    <div class="mb-2">
+                                        <span class="text text-sm text-secondary text-start">Delegates</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="cardEndDetail">
+                                            <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
+                                                alt="Profile Image" class="image">
+                                            <div class="text text-center">FGDKXQTCPOJVVBBYTCPOJVVBBY2MRK2DXKZANU3I
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            <button type="button"
+                                                class="btn btn-danger text-white text d-flex align-items-center gap-2 mb-0">
+                                                Stop Delegation
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                </svg>
+
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
