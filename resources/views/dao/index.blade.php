@@ -43,7 +43,7 @@
                         <div class="d-flex flex-col-links">
                             <div class="card-small-div">
                                 <span class="card-bold-word">Assets:</span>
-                                <a id='asset_name' href="#" class="card-link" ><span id='dao_token_name'></span><img id='dao_token_img' src="{{ asset('images/topright.png') }}" style='max-width:50px;max-height:50px' alt=""></a>
+                                <a id='asset_name' href="#" target='_blank' class="card-link" ><span id='dao_token_name'></span><img id='dao_token_img' src="{{ asset('images/topright.png') }}" style='max-width:50px;max-height:50px' alt=""></a>
                             </div>
                             <div class="card-small-div">
                                 <span class="card-bold-word">Website:</span>
@@ -81,6 +81,8 @@
                                </div>
                             </div>
                         </div>
+                        
+                        <button class='btn' id='leaveDao' style='border:2px solid grey;margin-top:10px;display:none'>Leave Dao</button>
                     </div>
                 </div>
             </div>
@@ -417,6 +419,15 @@
          
            E('createProposal').href = E('createProposal').href.replace('PROPOSAL_CREATE', `${dao.name}:${dao['token']}`)
            E('createProposal').style.display = 'block'
+           //check if ts a member of this dao
+           const isMember = await getTokenUserBal(dao.token, walletAddress)
+           if(isMember !== false && dao.owner != walletAddress) {
+              E('leaveDao').style.display = 'block'
+           }
+           else {
+              E('leaveDao').style.display = 'none'
+           }
+           E('asset_name').href = 'https://stellar.expert/explorer/testnet/asset/' + dao.code + "-" + dao.issuer 
            if(dao['proposals'] != undefined) {
                setUp(); 
                //check if this asset was hosted here 
@@ -424,9 +435,9 @@
                    //check if its an approved wallet
                    if(dao.issuer == walletAddress || dao.toml.ACCOUNTS.includes(walletAddress)) E('dao_setting').style.display = 'block'
                }
+              
                //load info of all the proposals
                let prop; 
-                
                if(dao.proposals != undefined){
                    if(dao.proposals.length > 0) {  
                         //declaring the function
@@ -454,6 +465,28 @@
                else {
                    E('proposal_views').innerHTML = "<div style='font-size:20px; margin:60px;'><center>No proposal created yet<br>Be the first to create a proposal.</center></div>"
                }
+           }
+           E('leaveDao').onclick = async() => {
+              const id = talk("Getting ready")
+              //first burn all the tokens
+              const bal = await getTokenUserBal(dao.token, walletAddress)
+              if(bal > 0) {
+                 talk("First burning asset balance", 'norm', id)
+                 //burn tokens first
+                 await burnToken(bal, code, issuer)
+              }
+              talk("Leaving Dao", 'norm', id)
+              const res = await leaveDao(dao.code, dao.issuer, _dao, dao.name)
+              if(res.status === true) {
+                  talk("You have left this Dao", 'good', id)
+                  //hide button
+                  E('leaveDao').style.display = 'none'
+              }
+              else {
+                  talk("Something went wrong", 'fail', id)
+              }
+              stopTalking(4, id)
+                  
            }
         }
         const setUp = async () => {

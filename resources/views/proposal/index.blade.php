@@ -244,7 +244,7 @@
             dao = await getDao("{{ $prop['dao_id'] }}");
             E('dao_name').innerText = dao.name
             //get prop info
-            prop = await getProposal(propId); console.log(prop)
+            prop = await getProposal(propId); //console.log(prop)
             //display info
             E('prop_name').innerText = prop.title || ""
             E('prop_about').innerText = prop.description || ""
@@ -466,7 +466,8 @@
                 proposalId: propId,
                 voters: walletAddress,
                 vote_type:voteType,
-                voting_power:vote_power
+                voting_power:vote_power,
+                name:prop.name
             })
             if(res) {
                 if(res.status == 'voted') {

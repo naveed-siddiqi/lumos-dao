@@ -110,7 +110,8 @@
             }
             else {
                 E('num_of_dao').innerHTML = daoMeta['dao']
-                E('num_of_user').innerHTML = daoMeta['users']
+                const num = await getDaoUsers()
+                E('num_of_user').innerHTML = num 
                 E('num_of_votes').innerHTML = daoMeta['votes']
                 E('num_of_proposal').innerHTML = daoMeta['proposal']
                 //load individual dao data
@@ -148,10 +149,10 @@
         /** To Join Dao 
          * @params {daoAddress} String
         **/
-        const joinDao = async (event, code, issuer, name) => {
+        const joinDao = async (event, code, issuer, name, daoId) => {
             event.stopPropagation(); 
             const id = talk('Joining ' + name + ' dao')
-            const res = await createTrustline(code, issuer, walletAddress)
+            const res = await createTrustline(code, issuer, walletAddress, name, daoId)
             if(res === false) {
                 talk('Something went wrong<br>This may be due to network error', 'fail', id)
             }
@@ -175,7 +176,7 @@
             const defCoverImg = 'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
             _div.innerHTML = `<div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="card-join cardShow" onclick='window.location = "{{ route('dao', '') }}/${daoParams.token || ""}"' style='cursor:pointer'>
-                            <div class="lblJoin" style='cursor:pointer' onclick="${(daoParams.owner == walletAddress) ? "Owner" : (!daoParams.ismember) ? "joinDao(event,'" +  daoParams.code + "','" + daoParams.issuer + "','" + daoParams.name + "')" : ""}">
+                            <div class="lblJoin" style='cursor:pointer' onclick="${(daoParams.owner == walletAddress) ? "Owner" : (!daoParams.ismember) ? "joinDao(event,'" +  daoParams.code + "','" + daoParams.issuer + "','" + daoParams.name + "','" + daoParams.token + "')" : ""}">
                                 <p class="mb-0">${(daoParams.owner == walletAddress) ? "Owner" : (daoParams.ismember) ? "Joined" : "Join"}</p>
                             </div>
                             <div style="margin: -20px !important;" class="">
