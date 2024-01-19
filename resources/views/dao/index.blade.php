@@ -73,7 +73,9 @@
                             <button class="btn btn-danger whitespace-nowrap" data-toggle="modal"
                                 data-target="#manageAdmin">Manage
                                 Admins</button>
-                            <button class="btn btn-secondary">Inbox</button>
+                            <a href="{{route('proposal.inbox')}}">
+                                <button class="btn btn-secondary">Inbox</button>
+                            </a>
                         </div>
                     </div>
                 </div>
