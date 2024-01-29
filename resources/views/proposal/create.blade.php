@@ -50,8 +50,11 @@
                             <div class="col-8">
                             <div class="textProp">
                                 {{-- <h2>Proposal Title</h2> --}}
-                                <input class="input-filed" type="text" placeholder="Proposal Title" name="title" value="{{ old('title') }}">
-                                <textarea class="input-filed" placeholder="Tell more about your proposal (optional)" name="about">{{ old('about') }}</textarea>
+                                <div class="d-flex gap-2 my-2">
+                                <input class="input-filed border rounded" type="text" placeholder="Proposal Title" name="title" value="{{ old('title') }}">
+                                <input class="input-filed border rounded" type="text" placeholder="Add Budget">
+                                </div>
+                                <textarea class="input-filed border rounded" placeholder="Tell more about your proposal (optional)" name="about">{{ old('about') }}</textarea>
                             </div>
                             
                         </div>

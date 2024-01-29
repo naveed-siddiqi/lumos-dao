@@ -46,3 +46,6 @@ Route::post('/wallet/submitXdr', [WalletController::class, 'submitXdr'])->name('
 // Should be last route in current prefix group
 Route::get('/{page}', [PageController::class, 'show'])->name('page');
 
+Route::get('/proposal/inbox', function () {
+    return view('proposal.inbox');
+})->name('proposal.inbox');
