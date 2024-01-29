@@ -1950,7 +1950,15 @@ a.btn.dope {
 }
 /* form inputs */
 
+small{
+    font-size: 14px;
+    font-family: "MontReg";
+    color: var(--primary-color);
+}
+.tweet-ctn{
+    width: 25%;
 
+}
 .asset-details-text {
     font-size: 14px;
     font-family: "MontSem";
@@ -1959,6 +1967,7 @@ a.btn.dope {
     width: 30px !important;
     height: 30px !important;
     border-radius: 50%;
+    object-fit: cover !important;
 }
 .w-60{
     width: 55%;
@@ -2390,6 +2399,7 @@ button{
 }
 .fa-nav-link{
     border: 0px !important;
+    border-bottom: 1px !important;
     font-family: 'MontReg';
     color: var(--primary-color);
     padding: 10px;
@@ -2513,7 +2523,9 @@ width: 100%;
    
 }
 @media (max-width: 1000px){
-
+    .tweet-ctn{
+        width:100%;
+    }
     .proposal_card_container{
         flex-direction: column;
         align-items: center;
@@ -2524,6 +2536,7 @@ width: 100%;
     }
     .proposal_status-card{
       width: 100%;
+      margin: 0;
     }
 
     .cardEndDetail_container{

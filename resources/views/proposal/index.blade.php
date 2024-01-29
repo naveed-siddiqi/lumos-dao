@@ -289,6 +289,21 @@
                                 </th>
                                 <th scope="col">
                                     <div class="d-flex align-items-center">
+                                        <span>Reason</span>
+                                        <button type="button"
+                                            class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary "
+                                            data-toggle="tooltip" data-placement="top"
+                                            title="The influence of this vote, determined by a calculated voting power algorithm. Learn more">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    <div class="d-flex align-items-center">
                                         <span>Date</span>
                                         <button type="button"
                                             class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary "
@@ -308,37 +323,43 @@
                             <tr>
                                 <td>GCXY...VTJ6</td>
                                 <td>Yes</td>
-                                <td>2</td>
+                                <td>2 <span class="badge badge-pill bg-info">delegated</span> </td>
+                                <td>Lorem ipsum dolor sit amet. </td>
                                 <td>3 months ago</td>
                             </tr>
                             <tr>
                                 <td>GCXY...VTJ6</td>
                                 <td>No</td>
                                 <td>2.5</td>
+                                <td>Lorem ipsum dolor sit amet. </td>
                                 <td>3 months ago</td>
                             </tr>
                             <tr>
                                 <td>GCXY...VTJ6</td>
                                 <td>No</td>
                                 <td>3</td>
+                                <td>Lorem ipsum dolor sit amet. </td>
                                 <td>3 months ago</td>
                             </tr>
                             <tr>
                                 <td>GCXY...VTJ6</td>
                                 <td>Yes</td>
                                 <td>3.5</td>
+                                <td>Lorem ipsum dolor sit amet. </td>
                                 <td>3 months ago</td>
                             </tr>
                             <tr>
                                 <td>GCXY...VTJ6</td>
                                 <td>Yes</td>
                                 <td>4</td>
+                                <td>Lorem ipsum dolor sit amet. </td>
                                 <td>3 months ago</td>
                             </tr>
                             <tr>
                                 <td>GCXY...VTJ6</td>
                                 <td>No</td>
                                 <td>4.5</td>
+                                <td>Lorem ipsum dolor sit amet. </td>
                                 <td>3 months ago</td>
                             </tr>
                         </tbody>
