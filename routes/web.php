@@ -8,12 +8,6 @@ use App\Http\Controllers\WalletController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/test', [PageController::class, 'testPage']);
-Route::get('/lumosdao-explorer', function(){
-    return view('dao.lumosdao-explorer');
-});
-Route::get('/lumosdao-joined', function(){
-    return view('dao.lumosdao-joined');
-});
 Route::get('/', [AppController::class, 'home'])->name('home');
 Route::prefix('dao')->name('dao')->group(function () {
     Route::get('create', [DaoController::class, 'create'])->name('.create');
@@ -51,3 +45,7 @@ Route::post('/wallet/submitXdr', [WalletController::class, 'submitXdr'])->name('
 
 // Should be last route in current prefix group
 Route::get('/{page}', [PageController::class, 'show'])->name('page');
+
+Route::get('/proposal/inbox', function () {
+    return view('proposal.inbox');
+})->name('proposal.inbox');

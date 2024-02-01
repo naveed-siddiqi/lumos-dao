@@ -49,12 +49,14 @@
                         <div class="d-flex">
                             <div class="col-8">
                             <div class="textProp">
-                                {{-- <h2>Proposal Title</h2> --}}
-                                <input class="input-filed" id='title' type="text" required placeholder="Proposal Title" name="title" value="{{ old('title') }}">
-                                <textarea class="input-filed" id='about' required placeholder="Tell more about your proposal (optional)" name="about">{{ old('about') }}</textarea>
-                            </div>
-                            
-                        </div>
+                                <div class="d-flex gap-2 my-2">
+                                <input class="input-filed border rounded" id='title' type="text" placeholder="Proposal Title" name="title" value="{{ old('title') }}">
+                                <input class="input-filed border rounded" id='about' type="text" placeholder="Add Budget">
+                                </div>
+                                <textarea class="input-filed border rounded" placeholder="Tell more about your proposal (optional)" name="about">{{ old('about') }}</textarea>
+                          
+                               </div>
+                         </div>
                             <div class="col-4 text-end ">
                              <label class="custom-file-input-attach">
                                 <input id='selectFile' type="file" multiple>

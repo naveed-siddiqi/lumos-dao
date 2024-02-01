@@ -579,6 +579,24 @@
 	    }
 	    else {echo "";}
     }
+    if($_GET['type'] == 'get_dao_users') {  
+        require('./db.php');
+        $daoId = $_GET['dao'];
+        $query = "SELECT * FROM tx WHERE dao_id ='$daoId' AND (LOWER(action) LIKE LOWER('%create new dao%') OR LOWER(action) LIKE LOWER('%joined dao%') OR LOWER(action) LIKE LOWER('%left dao%')) ORDER BY ID DESC";
+	    $result = mysqli_query($conn, $query);
+	    if(mysqli_num_rows($result)>0){
+	        $res = array(); $i=0;
+	        while($row= mysqli_fetch_array($result)){
+	            $tmp = array(); //declare array
+	            //structure result
+	            $tmp['user'] = $row['signer']; $tmp['action'] = $row['action']; 
+	            $res[$i] = json_encode($tmp);
+	            $i++;
+	        }
+	        echo json_encode($res);
+	    }
+	    else {echo "";}
+    }
     
     //get user tx
     if($_GET['type'] == 'get_user_tx') { 
@@ -745,6 +763,29 @@
     	 	else {
     	 	    echo 0;
     	 	}
+    }
+    //to send message  
+    if($_GET['type'] == 'send_msg') {  
+        //do the msyql connection
+        require('./db.php');
+        //insert into the database
+            $sender = $_GET['sender'];
+            $receiver = $_GET['receiver'];
+            $msg = $_GET['msg'];
+            $daoId = $_GET['dao_id'];
+            $query = "INSERT INTO message (sender, receiver, msg, dao) 
+    	               VALUES ('$sender', '$receiver', '$msg', '$daoId')";
+    	 	$res = mysqli_query($conn, $query);
+    	 	if($res){
+    	 		echo 1;
+    	 	}  
+    	 	else {
+    	 	    echo 0;
+    	 	}
+    }
+    //to verify admin  
+    if($_GET['type'] == 'isadmin') { 
+         echo 1;
     }
     
 ?>

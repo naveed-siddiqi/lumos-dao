@@ -80,6 +80,100 @@
         </div>
     </section>
 
+ <div class="modal fade" id="reasonVote" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content cardEndDiv p-0 fa-ctn fa-modal-content">
+            <div class="d-flex justify-content-end w-100">
+                <button type="button" class="close p-3 pb-0 m-0 border-0 bg-transparent" data-dismiss="modal"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-4 pt-0 w-100 font-sm">
+                <p class="">Reason</p>
+                <form class="d-flex flex-column align-items-left justify-content-start gap-3" action="">
+                    <div class="">
+                        <input type="radio" id="1" name="reasons" value="1">
+                        <label class="font-sm" for="">Alignment with Project Goals</label>
+                    </div>
+                    <div class="">
+                        <input type="radio" id="2" name="reasons" value="2">
+                        <label class="font-sm" for="">Beneficial Impact</label>
+                    </div>
+                    <div class="">
+                        <input type="radio" id="3" name="reasons" value="3">
+                        <label class="font-sm" for="">Feasibility and Sustainability</label>
+                    </div>
+                    <div class="">
+                        <input type="radio" id="otherReason" name="reasons" value="other">
+                        <label class="font-sm" for="">Other</label>
+                    </div>
+                    <div id="otherReasonCtn">
+                        <label class="font-sm" for="">Mention the Reason here:</label>
+                        <input class="form-control" type="text" maxlength="50">
+                        <div class="text-end">
+                            <small class="text-danger text-left w-100 font-sm">-Max 50 characters</small>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="d-flex align-items-center justify-content-end gap-3 modal-footer m-0 p-0 py-3 px-3 w-100">
+                <button type="button" class="btn btn-danger text-white font-sm">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="reasonVoteNo" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content cardEndDiv p-0 fa-ctn fa-modal-content">
+            <div class="d-flex justify-content-end w-100">
+                <button type="button" class="close p-3 pb-0 m-0 border-0 bg-transparent" data-dismiss="modal"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-4 pt-0 w-100 font-sm">
+                <p class="">Reason</p>
+                <form class="d-flex flex-column align-items-left justify-content-start gap-3" action="">
+                    <div class="">
+                        <input type="radio" id="1" name="reasonsNo" value="1">
+                        <label class="font-sm" for="">Lack of Alignment with Goals</label>
+                    </div>
+                    <div class="">
+                        <input type="radio" id="2" name="reasonsNo" value="2">
+                        <label class="font-sm" for="">High budget</label>
+                    </div>
+                    <div class="">
+                        <input type="radio" id="3" name="reasonsNo" value="3">
+                        <label class="font-sm" for="">Feasibility Concerns</label>
+                    </div>
+                    <div class="">
+                        <input type="radio" id="otherReasonNo" name="reasonsNo" value="other">
+                        <label class="font-sm" for="">Other</label>
+                    </div>
+                    <div id="otherReasonCtnNo">
+                        <label class="font-sm" for="">Mention the Reason here:</label>
+                        <input class="form-control" type="text" maxlength="50">
+                        <div class="text-end">
+                            <small class="text-danger text-left w-100 font-sm">-Max 50 characters</small>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="d-flex align-items-center justify-content-end gap-3 modal-footer m-0 p-0 py-3 px-3 w-100">
+                <button type="button" class="btn btn-danger text-white font-sm">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
     <section class="DescPer">
         <div class="container">
             <div class="row">
@@ -149,46 +243,81 @@
                             <thead>
                                 <tr>
                                     <th clas="" scope="col">
-                                        <div class="d-flex align-items-center">
-                                            <span>Address</span>
-                                            <button  type="button" class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary " data-toggle="tooltip" data-placement="top" title="The public Stellar wallet address that cast this vote.">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                    <div class="d-flex align-items-center">
+                                        <span>Address</span>
+                                        <button type="button"
+                                            class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary "
+                                            data-toggle="tooltip" data-placement="top"
+                                            title="The public Stellar wallet address that cast this vote.">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                                             </svg>
-                                            </button>
-                                        </div>
+                                        </button>
+                                    </div>
 
-                                    </th>
+                                </th>
+                                     <th scope="col">
+                                    <div class="d-flex align-items-center">
+                                        <span>Vote</span>
+                                        <button type="button"
+                                            class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary "
+                                            data-toggle="tooltip" data-placement="top"
+                                            title="The decision made by the user: Yes or No.">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </th>
+                                   <th scope="col">
+                                    <div class="d-flex align-items-center">
+                                        <span>Voting Power</span>
+                                        <button type="button"
+                                            class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary "
+                                            data-toggle="tooltip" data-placement="top"
+                                            title="The influence of this vote, determined by a calculated voting power algorithm. Learn more">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </th>
                                     <th scope="col">
                                     <div class="d-flex align-items-center">
-                                            <span>Vote</span>
-                                            <button  type="button" class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary " data-toggle="tooltip" data-placement="top" title="The decision made by the user: Yes or No.">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                        <span>Reason</span>
+                                        <button type="button"
+                                            class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary "
+                                            data-toggle="tooltip" data-placement="top"
+                                            title="The influence of this vote, determined by a calculated voting power algorithm. Learn more">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                                             </svg>
-                                            </button>
-                                        </div>
-                                    </th>
+                                        </button>
+                                    </div>
+                                </th>
                                     <th scope="col">
                                     <div class="d-flex align-items-center">
-                                            <span>Voting Power</span>
-                                            <button  type="button" class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary " data-toggle="tooltip" data-placement="top" title="The influence of this vote, determined by a calculated voting power algorithm. Learn more">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                        <span>Date</span>
+                                        <button type="button"
+                                            class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary "
+                                            data-toggle="tooltip" data-placement="top"
+                                            title="The timestamp indicating when this vote was cast.">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                                             </svg>
-                                            </button>
-                                        </div>
-                                    </th>
-                                    <th scope="col">
-                                    <div class="d-flex align-items-center">
-                                            <span>Date</span>
-                                            <button  type="button" class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary " data-toggle="tooltip" data-placement="top" title="The timestamp indicating when this vote was cast.">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                                            </svg>
-                                            </button>
-                                        </div>
-                                    </th>
+                                        </button>
+                                    </div>
+                                </th>
                                 </tr>
                             </thead>
                             <tbody id='voters_info'>
@@ -232,6 +361,30 @@
                 </div>
             </div>
     </section>
+    <script>
+        var otherReason = document.getElementById('otherReason');
+        var otherReasonCtn = document.getElementById('otherReasonCtn');
+        var otherReasonNo = document.getElementById('otherReasonNo');
+        var otherReasonCtnNo = document.getElementById('otherReasonCtnNo');
+        otherReasonCtn.style.display = 'none';
+        otherReasonCtnNo.style.display = 'none';
+        
+        otherReason.addEventListener('input', function() {
+            if (otherReason.checked) {
+                otherReasonCtn.style.display = 'block';
+            } else {
+                otherReasonCtn.style.display = 'none';
+            }
+        });
+        
+        otherReasonNo.addEventListener('input', function() {
+            if (otherReasonNo.checked) {
+                otherReasonCtnNo.style.display = 'block';
+            } else {
+                otherReasonCtnNo.style.display = 'none';
+            }
+        });
+    </script>
     <script>
     var prop;var dao;
     var propId = ("{{ $prop['proposal_id'] }}");propId = propId.trim() * 1;
@@ -523,4 +676,28 @@
         setUp()
         loadComment()
     </script>
+    <script>
+        var otherReason = document.getElementById('otherReason');
+        var otherReasonCtn = document.getElementById('otherReasonCtn');
+        var otherReasonNo = document.getElementById('otherReasonNo');
+        var otherReasonCtnNo = document.getElementById('otherReasonCtnNo');
+        otherReasonCtn.style.display = 'none';
+        otherReasonCtnNo.style.display = 'none';
+        
+        otherReason.addEventListener('input', function() {
+            if (otherReason.checked) {
+                otherReasonCtn.style.display = 'block';
+            } else {
+                otherReasonCtn.style.display = 'none';
+            }
+        });
+        
+        otherReasonNo.addEventListener('input', function() {
+            if (otherReasonNo.checked) {
+                otherReasonCtnNo.style.display = 'block';
+            } else {
+                otherReasonCtnNo.style.display = 'none';
+            }
+        });
+</script>
 @endsection

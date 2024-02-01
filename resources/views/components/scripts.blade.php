@@ -7,6 +7,7 @@
 <script type="module"> import n from 'https://cdn.jsdelivr.net/npm/toml@3.0.0/+esm' ; window.toml = n</script>
 
 <script>
+
     @if (isset($_COOKIE['wallet']))
         var wallet = "{{ $_COOKIE['wallet'] }}";
     @else
@@ -22,7 +23,7 @@
      * THE FREIGHTER EXTERNAL WALLET PROVIDER USED
      **/
     const stellarServer = "https://soroban-testnet.stellar.org"
-    const daoContractId = 'CCDWCMRUW74PFS5NL3LIJA73BBAIJF3HMGFO25DLADQ3N6Y2KY22APAJ'  
+    const daoContractId = 'CBD6DLZEWPFBQKMSCQ2FRHTMUJ4BOWHC66ANLSPU6KV6HJ4I6DAAMG2P'  
     const wrappingAddress = 'GC5JKOC7OMSS22NVC23MVL2363QS5JO7SQM5X7C7DPVLQLFQHZ3ZRHGF'
     const networkUsed = StellarSdk.Networks.TESTNET
     const networkWalletUsed = "TESTNET"
@@ -741,6 +742,7 @@
      * @params {daoId: Address}
      * returns @map | []
      **/ 
+     
     const getDao =  async (daoId) => {
         if(walletAddress != "" && daoId != undefined && daoId != "") {
             try{
@@ -1117,22 +1119,53 @@
     const getUserTx = async (addr) => {
          try {
             //check if the url is http and from this domain
-            url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_user_tx&dao=" + daoContractId + "&address=" + addr + "&id=" + Math.random() * 1000 
+            url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_dao_users&dao=" + daoContractId + "&id=" + Math.random() * 1000 
             const response = await fetch(url);
             if (!response.ok) {
               throw new Error("Network response was not ok");
             }
-            const tx = await response.text(); 
+            const tx = await response.text();  
             return (tx != "") ? JSON.parse(tx) : ""
         } catch (error) { console.log(error)
             return false;
         }
     }
     // get num of users
+    const getDaoUsersP = async (daoName) => { 
+         try {
+             let num = 0; let joiners = []
+             const tx = await getUserTx();  
+             daoName = daoName.toLowerCase()
+             for(let i=0;i<tx.length;i++) {
+                 tx[i] = JSON.parse(tx[i])
+                 if(tx[i].action.toLowerCase().indexOf(daoName) > -1) {
+                     if(tx[i].action.toLowerCase().indexOf('joined dao') > -1 || tx[i].action.toLowerCase().indexOf('create new dao') > -1){
+                        //add
+                        joiners.push(tx[i].user)
+                     }
+                     else if(tx[i].action.toLowerCase().indexOf('left dao') > -1) {
+                        joiners[joiners.indexOf(tx[i].signer)] = ""
+                     }
+                 }
+             }
+             let j = []
+             //loop through and remove duplicates
+             for(let i=0;i<joiners.length;i++) {
+                 if(!j.includes(joiners[i])) {
+                     j.push(joiners[i])
+                 }
+             }
+             return j
+        } catch (error) { console.log(error)
+            return 0;
+        }
+    }
+    
+    // get num of users
     const getDaoUsers = async () => {
          try {
              let num = 0; let joiners = []
-             const tx = await getTx(); 
+             const tx = await getUserTx(); 
              for(let i=0;i<tx.length;i++) {
                  tx[i] = JSON.parse(tx[i])
                  if(tx[i].action.toLowerCase().indexOf('joined dao') > -1 || tx[i].action.toLowerCase().indexOf('create new dao') > -1){
@@ -1155,6 +1188,7 @@
             return 0;
         }
     }
+    
     //check if subdomain exists
     const isSubDomainExists = async (domain) => {
          try {

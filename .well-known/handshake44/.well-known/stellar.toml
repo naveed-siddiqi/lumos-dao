@@ -1,0 +1,22 @@
+ACCOUNTS=[]
+
+[DOCUMENTATION]
+ORG_NAME="handshake"
+ORG_URL="http://handshake44.lumosdao.io"
+ORG_DESCRIPTION="hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake"
+ORG_LOGO="https://testing.lumosdao.io/.well-known/images/SHAKEGBEE7ZVICFZCO6EGB4RTUBUIUJ4FKQOS7VGDJXGGNEUPD5O326OF6UOS.png"
+ORG_TWITTER=""
+ORG_INSTAGRAM=""
+ORG_DISCORD=""
+ORG_TELEGRAM=""
+ORG_REDDIT=""
+ORG_SUPPORT_EMAIL=""
+
+[[CURRENCIES]]
+code="SHAKE"
+issuer="GBEE7ZVICFZCO6EGB4RTUBUIUJ4FKQOS7VGDJXGGNEUPD5O326OF6UOS"
+display_decimals=1
+name="handshake"
+desc="hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake hand shake"
+status="live"
+image="https://testing.lumosdao.io/.well-known/images/SHAKEGBEE7ZVICFZCO6EGB4RTUBUIUJ4FKQOS7VGDJXGGNEUPD5O326OF6UOS.png"

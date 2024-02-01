@@ -26,10 +26,9 @@
 }
 
 /* navbar */
-body {
+body{
     color: var(--primary-color) !important;
 }
-
 :root {
     --primary-color-light: #1b1b1b;
     --secondary-color-light: #ffffff;
@@ -55,7 +54,7 @@ body.light-mode {
     --secondary-bg: var(--secondary-bg-light);
     --third-bg: var(--third-bg-light);
     --primary-colur: var(--primary-colur-light);
-
+    
 
 }
 
@@ -68,9 +67,8 @@ body.dark-mode {
     --primary-colur: var(--primary-colur-dark);
 
 }
-
-.logo-lumos-font {
-    color: var(--primary-color);
+.logo-lumos-font{
+    color:var(--primary-color) ;
     font-size: 23px;
     letter-spacing: -0.70px;
     font-weight: 600;
@@ -138,57 +136,6 @@ button.navbar-toggler:focus {
 .profile-dropdown .dropdown-menu {
     right: 0;
     left: auto;
-}
-
-.tabs-logo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0px auto;
-}
-
-.tabs-logo img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 50%;
-    margin: 20px auto 0px;
-}
-
-.tab button {
-    font-weight: 400;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    font-size: 16px;
-    height: 50px;
-    width: 100%;
-    margin: auto;
-    background: none;
-    border-radius: 10px;
-    border: none;
-    color: var(--primary-color);
-    font-family: "MontReg";
-    font-size: 18px;
-    padding: 0px 30px;
-}
-
-.tab button.active {
-    font-weight: 400;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    font-size: 16px;
-    width: 100%;
-    height: 50px;
-    margin: auto;
-    background: linear-gradient(to right, #FFA500, #FF4500, #FF0000);
-    color: white;
-    border-radius: 10px;
-    font-family: "MontReg";
-    font-size: 18px;
 }
 
 .profile-dropdown .profile-icon {
@@ -359,7 +306,7 @@ button#profileDropdown:focus {
 }
 
 .card-imgflex {
-    display: flex !important;
+    display: flex;
     justify-content: start;
     justify-items: center;
     align-items: center;
@@ -369,9 +316,6 @@ button#profileDropdown:focus {
     width: 63px;
     height: 63px;
     border-radius: 50px;
-    display: flex;
-    justify-content: start;
-    border: 5px white solid;
 }
 
 .card-imgflex-social-link {
@@ -380,7 +324,6 @@ button#profileDropdown:focus {
     justify-items: center;
     align-items: center;
 }
-
 .card-imgflex-social-link img {
     width: 30px;
     height: 30px;
@@ -391,15 +334,6 @@ button#profileDropdown:focus {
 .cardHeading {
     line-height: 20px;
     margin-left: 10px;
-    margin-top: 33px;
-}
-
-.text-left {
-    text-align: left !important;
-}
-
-.rounded-md {
-    border-radius: 10px !important;
 }
 
 .card-join .card-heading {
@@ -433,7 +367,7 @@ button#profileDropdown:focus {
     display: flex;
     align-items: center;
     margin-top: 10px;
-    background-color: var(--third-bg);
+    background-color:var(--third-bg);
     padding: 10px;
     border-radius: 10px;
     margin-right: 10px;
@@ -546,7 +480,7 @@ button#profileDropdown:focus {
     padding: 20px;
 }
 
-.cardEndDetail {
+.cardEndDetail{
     display: flex;
     align-items: center;
 
@@ -571,8 +505,7 @@ button#profileDropdown:focus {
     font-size: 16px;
     font-family: "MontReg";
     color-interpolation-filters: var(--primary-color);
-    color: var(--primary-color);
-    ;
+    color:var(--primary-color);
 }
 
 .cardEndDiv .small-card {
@@ -581,7 +514,7 @@ button#profileDropdown:focus {
     justify-content: start;
     width: fit-content;
     height: 48px;
-    background-color: var(--third-bg);
+    background-color:var(--third-bg);
     border-radius: 10px;
     padding: 10px;
 }
@@ -669,7 +602,7 @@ button#profileDropdown:focus {
     max-width: 266px;
     height: 50px;
     background: linear-gradient(to right, #FFA500, #FF4500, #FF0000);
-    color: white;
+    color:white ;
     border-radius: 10px;
     font-size: 16px;
     margin-top: 44px;
@@ -1054,9 +987,8 @@ button#profileDropdown:focus {
     background-color: orange;
     width: 50%;
 }
-
-.progress-bar .progress-NO {
-    background-color: rgb(167, 167, 167);
+.progress-bar .progress-NO{
+    background-color: rgb(167, 167, 167); 
     height: 100%;
     width: 50%;
 }
@@ -1084,40 +1016,35 @@ button#profileDropdown:focus {
     font-family: "MontReg";
     color: var(--primary-color);
 }
-
-.add-comments-btn {
-    border: 1px solid var(--primary-colur);
-    background-color: var(--primary-bg);
-    padding: 8px;
-    border-radius: 10px;
-    font-weight: 500;
-    color: var(--primary-color);
+.add-comments-btn{
+    border:1px solid var(--primary-colur);
+    background-color:var(--primary-bg); 
+     padding:8px;
+      border-radius:10px;
+      font-weight:500;
+      color: var(--primary-color);
 }
-
-.see-more-comment-btn {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.see-more-comment-btn{
+    color:var(--primary-color); 
+    text-decoration:none; 
+    font-weight:500;
+     display:flex;
+      align-items:center;
+       justify-content:center;
 }
-
-.ProgText-btn {
-    border: 1px solid var(--primary-colur);
+.ProgText-btn{
+    border:1px solid var(--primary-colur);
     background-color: var(--primary-bg);
-    padding: 5px 20px;
+    padding: 5px  20px;
     border-radius: 10px;
     margin-bottom: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
-.ProgText-btn p {
+.ProgText-btn p{
     margin-bottom: 0px !important;
 }
-
 /* PropId */
 .PropId {
     margin-top: 15px;
@@ -1177,7 +1104,7 @@ button#profileDropdown:focus {
 }
 
 .InnerTable .table thead {
-    background-color: var(--third-bg);
+    background-color:var(--third-bg);
     font-size: 18px;
     font-family: "MontSem";
     color: var(--primary-color);
@@ -1491,7 +1418,6 @@ p {
     margin-top: 50px;
     text-align: center;
 }
-
 .socialLinks a {
     margin-left: 10px;
     text-decoration: none;
@@ -1500,7 +1426,6 @@ p {
     color: var(--primary-color);
     line-height: 30px;
 }
-
 /* .socialLinks ul {
     list-style: none;
     padding-left: 0px;
@@ -1579,7 +1504,6 @@ p {
     align-items: center;
     justify-content: space-around;
 }
-
 .btnCreate:hover {
     color: var(--secoundry-color);
 }
@@ -1607,21 +1531,8 @@ p {
 }
 
 .cardShow .card-imgflex img {
-    width: 60px;
-    height: 60px;
-    border: white 4px solid;
-}
-
-.cardShow .card-joined img {
-    width: 80px;
-    height: 80px;
-    border: white 4px solid;
-    object-fit: cover;
-    margin: auto;
-    border-radius: 50%;
-    margin-top: -20px !important;
-    text-align: center !important;
-
+    width: 43px;
+    height: 43px;
 }
 
 .cardShow .cardHeading {
@@ -1632,6 +1543,7 @@ p {
 .cardCircle {
     width: 77px;
     height: 77px;
+    margin: auto;
     border-radius: 50px;
     background-color: var(--third-bg);
     display: flex;
@@ -1748,31 +1660,25 @@ p {
     position: relative;
     text-align: center;
 }
-
 .drop input[type=checkbox] {
     display: none;
 }
-
 .drop input[type=checkbox]:checked~.drop-items {
     opacity: 1;
     max-height: 400px;
     padding: 0.6rem 0;
 }
-
 .drop input[type=checkbox]:checked~.control {
     z-index: 99;
     box-shadow: 0 0 0 2px #5055b1;
 }
-
 .drop input[type=checkbox]:checked~.control:after {
     transform: rotate(180deg);
 }
-
 .drop input[type=checkbox]:checked~.overlay-close {
     transform: none;
     pointer-events: initial;
 }
-
 .drop .control {
     position: relative;
     color: #898989;
@@ -1784,7 +1690,6 @@ p {
     transition: all 0.3s ease;
     border: 1px solid #eaeaea;
 }
-
 .drop .control:after {
     content: "";
     display: inline-block;
@@ -1797,7 +1702,6 @@ p {
     background-size: contain;
     transition: transform 0.3s ease;
 }
-
 .drop .drop-items {
     position: absolute;
     top: calc(100% + .4rem);
@@ -1813,11 +1717,9 @@ p {
     opacity: 0;
     z-index: 99;
 }
-
 .drop .drop-items .item-drop {
     list-style: none;
 }
-
 .drop .drop-items .item-drop a {
     display: flex;
     text-align: left;
@@ -1828,11 +1730,9 @@ p {
     padding: 0.9rem;
     transition: all 0.3s ease;
 }
-
-.drop .drop-items .item-drop a:hover {
-    background-color: #f5f5f5;
+.drop .drop-items .item-drop a:hover{
+     background-color: #f5f5f5;
 }
-
 .drop .overlay-close {
     position: fixed;
     top: 0;
@@ -1843,36 +1743,40 @@ p {
     transform: translate(100%, 0);
     pointer-events: none;
 }
-
+.fa-modal-content{
+    max-width: 500px;
+    height: 100%;
+    border: 1px solid rgb(212, 212, 212);
+    border-radius: 1rem !important;
+    background: var(--primary-bg);
+}
 .modal-content {
-    height: 400px;
+    height: 100%;
+    border: 1px solid rgb(212, 212, 212);
     border-radius: 1rem !important;
 }
-
+.fa-nav-link .active{
+    border: 3px solid gray !important;
+}
 .modal-body {
     padding: 4rem;
 }
-
 .modal-dialog {
     top: 5%;
     max-width: 700px;
     margin: 1.75rem auto;
 }
-
-.modal-content {
+.modal-content{
     border-radius: 1.3rem;
 }
-
-.modal-body h3 {
+.modal-body h3{
     font-weight: 600;
     margin-bottom: 30px;
 }
-
 .cont-btn {
     padding: 0px 33px;
     margin-top: 15px;
 }
-
 a.btn.dope {
     font-size: 18px;
     font-weight: 500;
@@ -1883,38 +1787,34 @@ a.btn.dope {
     border-radius: 50px;
     margin-top: 40px;
 }
-
 /* create dao */
-.asset-stellar {}
+.asset-stellar{
 
-.assetCode-deo-deatail {
+}
+.assetCode-deo-deatail{
     background-color: var(--primary-bg);
     padding: 20px 30px;
     border-radius: 10px;
 }
-
-.asset-stellar-p {
+.asset-stellar-p{
     font-size: 16px;
-    font-weight: 400;
-    margin-bottom: 0rem !important;
-    font-family: "MontSem";
+     font-weight: 400;
+     margin-bottom: 0rem !important;
+     font-family: "MontSem";
 }
-
-.asset-steller-span {
+.asset-steller-span{
     color: rgb(138, 138, 138);
     margin-bottom: 0rem !important;
     font-size: 14px;
 }
 
-.deo-details-link {
+.deo-details-link{
     text-decoration: none;
 
 }
-
-.flex-fill {
+.flex-fill{
     width: 25%;
 }
-
 /* dot-spinner loader */
 .dot-spinner {
     --uib-size: 1.1rem;
@@ -1926,9 +1826,9 @@ a.btn.dope {
     justify-content: flex-start;
     height: var(--uib-size);
     width: var(--uib-size);
-}
+  }
 
-.dot-spinner__dot {
+  .dot-spinner__dot {
     position: absolute;
     top: 0;
     left: 0;
@@ -1937,9 +1837,9 @@ a.btn.dope {
     justify-content: flex-start;
     height: 100%;
     width: 100%;
-}
+  }
 
-.dot-spinner__dot::before {
+  .dot-spinner__dot::before {
     content: '';
     height: 20%;
     width: 20%;
@@ -1949,81 +1849,79 @@ a.btn.dope {
     opacity: 0.5;
     animation: pulse0112 calc(var(--uib-speed) * 1.111) ease-in-out infinite;
     box-shadow: 0 0 20px rgba(18, 31, 53, 0.3);
-}
+  }
 
-.dot-spinner__dot:nth-child(2) {
+  .dot-spinner__dot:nth-child(2) {
     transform: rotate(45deg);
-}
+  }
 
-.dot-spinner__dot:nth-child(2)::before {
+  .dot-spinner__dot:nth-child(2)::before {
     animation-delay: calc(var(--uib-speed) * -0.875);
-}
+  }
 
-.dot-spinner__dot:nth-child(3) {
+  .dot-spinner__dot:nth-child(3) {
     transform: rotate(90deg);
-}
+  }
 
-.dot-spinner__dot:nth-child(3)::before {
+  .dot-spinner__dot:nth-child(3)::before {
     animation-delay: calc(var(--uib-speed) * -0.75);
-}
+  }
 
-.dot-spinner__dot:nth-child(4) {
+  .dot-spinner__dot:nth-child(4) {
     transform: rotate(135deg);
-}
+  }
 
-.dot-spinner__dot:nth-child(4)::before {
+  .dot-spinner__dot:nth-child(4)::before {
     animation-delay: calc(var(--uib-speed) * -0.625);
-}
+  }
 
-.dot-spinner__dot:nth-child(5) {
+  .dot-spinner__dot:nth-child(5) {
     transform: rotate(180deg);
-}
+  }
 
-.dot-spinner__dot:nth-child(5)::before {
+  .dot-spinner__dot:nth-child(5)::before {
     animation-delay: calc(var(--uib-speed) * -0.5);
-}
+  }
 
-.dot-spinner__dot:nth-child(6) {
+  .dot-spinner__dot:nth-child(6) {
     transform: rotate(225deg);
-}
+  }
 
-.dot-spinner__dot:nth-child(6)::before {
+  .dot-spinner__dot:nth-child(6)::before {
     animation-delay: calc(var(--uib-speed) * -0.375);
-}
+  }
 
-.dot-spinner__dot:nth-child(7) {
+  .dot-spinner__dot:nth-child(7) {
     transform: rotate(270deg);
-}
+  }
 
-.dot-spinner__dot:nth-child(7)::before {
+  .dot-spinner__dot:nth-child(7)::before {
     animation-delay: calc(var(--uib-speed) * -0.25);
-}
+  }
 
-.dot-spinner__dot:nth-child(8) {
+  .dot-spinner__dot:nth-child(8) {
     transform: rotate(315deg);
-}
+  }
 
-.dot-spinner__dot:nth-child(8)::before {
+  .dot-spinner__dot:nth-child(8)::before {
     animation-delay: calc(var(--uib-speed) * -0.125);
-}
+  }
 
-@keyframes pulse0112 {
-
+  @keyframes pulse0112 {
     0%,
     100% {
-        transform: scale(0);
-        opacity: 0.5;
+      transform: scale(0);
+      opacity: 0.5;
     }
 
     50% {
-        transform: scale(1);
-        opacity: 1;
+      transform: scale(1);
+      opacity: 1;
     }
-}
-
-/* img input */
-.container_custom_file_input {
-    background-color: var(--third-bg);
+  }
+  /* img input */
+  .container_custom_file_input{
+    background-color:var(--third-bg);
     border-radius: 10px;
     padding: 10px;
     display: flex;
@@ -2031,9 +1929,8 @@ a.btn.dope {
     justify-content: center;
     margin-top: 10px;
 
-}
-
-.custom-file-input {
+  }
+  .custom-file-input {
     position: absolute;
     left: 0;
     top: 0;
@@ -2041,7 +1938,6 @@ a.btn.dope {
     height: 100%;
     opacity: 0;
 }
-
 .custom-file-label {
     cursor: pointer;
     display: flex;
@@ -2052,39 +1948,47 @@ a.btn.dope {
     text-align: center;
     padding: 15px 0px;
 }
-
 /* form inputs */
 
+small{
+    font-size: 14px;
+    font-family: "MontReg";
+    color: var(--primary-color);
+}
+.tweet-ctn{
+    width: 25%;
 
+}
 .asset-details-text {
     font-size: 14px;
     font-family: "MontSem";
 }
-
-.w-60 {
+.w-img{
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 50%;
+    object-fit: cover !important;
+}
+.w-60{
     width: 55%;
     white-space: nowrap;
     margin-left: 10px;
 }
-
-.w-40 {
+.w-40{
     width: 45%;
     white-space: nowrap;
     font-family: "MontReg";
 }
-
 .asset-details-label {
     font-size: 16px;
     font-family: "MontReg";
 }
-
 .asset-details-text_a {
     font-size: 13px;
     color: rgb(58, 58, 255);
 
 }
-
-.create-dao-note {
+.create-dao-note{
     font-weight: 500;
     font-size: 15px;
     font-family: "MontReg";
@@ -2094,8 +1998,7 @@ a.btn.dope {
 .custom-file-label {
     cursor: pointer;
 }
-
-.deo-details_btn {
+.deo-details_btn{
     font-weight: 400;
     display: flex;
     flex-direction: column;
@@ -2111,13 +2014,11 @@ a.btn.dope {
     border-radius: 10px;
     font-size: 16px;
 }
-
-.deo-details_btn_num {
+.deo-details_btn_num{
     font-size: 12px !important;
     color: #c3c3c3;
 }
-
-.form-control {
+.form-control{
     height: 50px;
     border-radius: 10px;
     margin-top: 10px;
@@ -2125,48 +2026,41 @@ a.btn.dope {
     border: 1px solid var(--primary-colur);
 
 }
-
-.form-control:disabled, .form-control[readonly] {
+.form-control:disabled, .form-control[readonly]{
     background-color: var(--primary-bg) !important;
     border: 1px solid var(--primary-colur);
 }
-
-.Platfarm-stats_title div {
+.Platfarm-stats_title div{
     font-size: 35px;
     font-family: "MontSem";
     color: var(--primary-color);
 
 }
-
-.Platfarm-stats_title p {
-
-    font-size: 16px;
-    line-height: 1.5;
-    margin-bottom: 10px;
-    margin-top: 10px;
-    font-family: "MontReg";
+.Platfarm-stats_title p{
+    
+        font-size: 16px;
+        line-height: 1.5;
+        margin-bottom: 10px;
+        margin-top: 10px;
+        font-family: "MontReg";
 }
-
-.Create-dao-section h4 {
-    font-size: 25px;
+.Create-dao-section h4{
+    font-size:25px;
     font-family: "MontSem";
     color: var(--primary-color);
 }
-
-.Create-dao-section p {
+.Create-dao-section p{
     font-size: 16px;
     line-height: 1.5;
     margin-bottom: 10px;
     margin-top: 10px;
     font-family: "MontReg";
 }
-
-.create-dao-link {
-    font-size: 14px;
-    color: #00b2fb;
-    text-decoration: none;
+.create-dao-link{ 
+font-size: 14px;
+color: #00b2fb;
+text-decoration: none;
 }
-
 /* Responsive grid */
 .custom-file-input-attach {
     display: inline-flex;
@@ -2185,58 +2079,109 @@ a.btn.dope {
     width: 24px;
     height: 24px;
     margin-right: 8px;
-    fill: #333;
-    /* Change the fill color of the SVG icon */
+    fill: #333; /* Change the fill color of the SVG icon */
 }
-
+.proposal-inbox{
+    font-family: "MontReg";
+   
+}
+.inbox-msg{
+    color: rgb(98, 98, 98);
+}
+.font-weight-bold-inbox{
+    font-family: "MontSem";
+    color: var(--primary-color) !important;
+}
+.border-right-inbox{
+    border-right: 1px solid var(--primary-colur);
+}
+.font-xs{
+    font-size: 14px;
+}
 .custom-file-input-attach:hover {
     background-color: #f0f0f0;
 }
+.chat-online {
+    color: #34ce57
+}
 
-.custom-file-input-attach p {
+.chat-offline {
+    color: #e4606d
+}
+
+.chat-messages {
+    display: flex;
+    flex-direction: column;
+    max-height: 800px;
+    overflow-y: scroll
+}
+
+.chat-message-left,
+.chat-message-right {
+    display: flex;
+    flex-shrink: 0
+}
+
+.chat-message-left {
+    margin-right: auto
+}
+
+.chat-message-right {
+    flex-direction: row-reverse;
+    margin-left: auto
+}
+.py-3-inbox {
+    padding-top: 1rem!important;
+    padding-bottom: 1rem!important;
+}
+.px-4-inbox {
+    padding-right: 1.5rem!important;
+    padding-left: 1.5rem!important;
+}
+.flex-grow-0 {
+    flex-grow: 0!important;
+}
+.border-top-inbox {
+    border-top: 1px solid #dee2e6!important;
+}
+.custom-file-input-attach p{
     font-size: 16px;
     margin-bottom: 10px;
     margin-top: 10px;
     font-family: "MontReg";
 }
-
 /* proposal card */
-.proposal_status-card {
+.proposal_status-card{
     background-color: var(--primary-bg);
     border-radius: 10px;
     padding: 20px;
     margin-left: 25px;
-    margin-top: 15px;
+    margin-top:15px ;
     width: 30%;
 }
-
-.proposal_status-SideCard {
+.proposal_status-SideCard{
     display: flex;
     align-items: start;
     justify-content: space-between;
 
 
 }
-
-.proposal_sideCard_banner img {
+.proposal_sideCard_banner img{
     width: 40px;
     height: 40px;
     border-radius: 50%;
 
 }
+.proposal_sideCard_banner span{
+        font-size: 16px;
+        font-family: "MontReg";
+        color-interpolation-filters: var(--primary-color);
+        color: var(--primary-color);
 
-.proposal_sideCard_banner span {
-    font-size: 16px;
-    font-family: "MontReg";
-    color-interpolation-filters: var(--primary-color);
-    color: var(--primary-color);
-
+} 
+.text-muted{
+color: var(--primary-color) !important;
 }
-
-.text-muted {
-    color: var(--primary-color) !important;
-}
-
 .Deo_setting_btn {
     background-color: #333257;
     padding: 10px;
@@ -2248,27 +2193,24 @@ a.btn.dope {
     align-items: center;
     justify-content: center;
     border-radius: 10px;
-    top: 175px;
+    top: 0;
     right: 0;
     color: white;
     margin: 12px;
 }
-
-.Deo_setting_btn p {
+.Deo_setting_btn p{
     color: var(--secoundry-color);
     font-size: 18px;
     font-family: "MontSem";
 }
-
 /*  */
-.proposal_status-SideCard h2 {
+.proposal_status-SideCard h2{
     font-size: 20px;
     font-family: "MontSem";
     margin-bottom: 10px;
     color: var(--primary-color);
 }
-
-.proposal_status-SideCard p {
+.proposal_status-SideCard p{
     font-size: 16px;
     font-family: "MontReg";
     margin-bottom: 10px;
@@ -2276,16 +2218,13 @@ a.btn.dope {
     /* width: 60%; */
     margin-left: auto;
 }
-
-.proposal_right_card_container {
+.proposal_right_card_container{
     width: 70%;
 }
-
-.carendBottom {
-    gap: 70px;
+.carendBottom{
+gap: 70px;
 }
-
-.modal_edit_btn {
+.modal_edit_btn{
     background-color: white;
     border-radius: 50%;
     color: #000000;
@@ -2297,33 +2236,30 @@ a.btn.dope {
     right: -5px;
 }
 
-.proposal_modal-body {
+.proposal_modal-body{
     padding: 2.5rem !important;
     background-color: var(--primary-bg);
     border-radius: 20px;
 
 
 }
-
-.proposal_modal-content {
+.proposal_modal-content{
     height: auto !important;
 }
 
-.modal-code-editor {
+.modal-code-editor{
     background-color: rgb(226, 226, 226);
     padding: 10px;
     font-size: 14px;
     color: black;
     border-radius: 15px;
     width: 90%;
-    margin: 0px 10px;
+    margin:0px 10px;
 }
-
-.socail-profile {
+.socail-profile{
     width: 100%;
 }
-
-.socail-profile input {
+.socail-profile input{
     border: 1px solid var(--primary-colur);
     border-radius: 4px;
     padding: 8px;
@@ -2333,7 +2269,7 @@ a.btn.dope {
 
 
 /* DARK MODE CLASSES */
-.ProgFinal-text {
+.ProgFinal-text{
     border: 2px solid orange;
     padding: 0px 10px;
     font-family: "MontSem";
@@ -2344,392 +2280,229 @@ a.btn.dope {
     max-height: 25px;
 }
 
-.background-linear-gradient {
+.background-linear-gradient{
     background: linear-gradient(to right, #FFA500, #FF4500, #FF0000);
     width: 15px;
     height: 15px;
     border-radius: 3px;
 }
-
-.project-logo {
-    width: 25%;
-}
-
-.project-logo .container_custom_file_input {
-    width: 75%;
-}
-
-.logo-Img-container {
-    width: 200px;
-    height: 160px;
-    object-fit: cover;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.coounter-modal {
-    margin: 0%;
-    padding: 2%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #00000052;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(255, 255, 255, 0.29)141;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    z-index: 9999;
-}
-
-.modal-content {
-    max-width: 800px;
-    margin: 0 auto;
-    height: auto;
-}
-
-.modal-close {
-    cursor: pointer;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 20px;
-}
-
-.ul {
-    counter-reset: step;
-}
-
-.step_li {
-    width: 100%;
-    list-style-type: none;
-    display: flex;
-    align-items: center;
-}
-
-.step_li_border {
-    width: 100%;
-    height: 7px;
-    background-color: yellowgreen;
-    border-radius: 20px;
-}
-
-.step_li_border-pending {
-    width: 100%;
-    height: 7px;
-    background-color: rgb(212, 212, 212);
-    backdrop-filter: blur(64px);
-    border-radius: 20px;
-}
-
-.step_li_check {
-    width: 40px;
-    height: 40px;
-    color: yellowgreen;
-}
-
-.loading {
-    font-size: 14px;
-    margin-bottom: 0px !important;
-}
-
-.loading-done {
-    font-size: 14px;
-    margin-bottom: 0px !important;
-    color: yellowgreen;
-}
-
-.loading-pending {
-    font-size: 14px;
-    color: #7c7c7d;
-    margin-bottom: 0px !important;
-}
-
-.step_success {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    max-width: 400px;
-}
-
-.step_success svg {
-    width: 100px;
-    height: 100px;
-    color: yellowgreen;
-}
-
-.step_success h1 {
-    font-size: larger;
-}
-
-.step_success p {
-    font-size: 14px;
-}
-
-.step_success button {
-    width: 100%;
-    height: 50px;
-    background: yellowgreen;
-    color: white;
+.pro-nav-tabs .pro-nav-link.active{
+    background: linear-gradient(to right, #FFA500, #FF4500, #FF0000) !important;
+    border-radius:10px 10px 0px 0px !important;
+    color: white !important;
+    font-size: 16px;
     font-weight: 400;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-}
-
-.share-modal-img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 10px;
-    border: 1px solid #5055b1;
-    padding: 2px !important;
-}
-
-.share-modal-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-
-}
-
-.share-social-links p {
-    font-size: 16px;
+    margin-bottom: 0rem !important;
     font-family: "MontSem";
-    color: var(--primary-color);
-    margin-bottom: 0px;
+    border: 0px !important;
+    color: white !important;
 }
-
-.share-copy-links p {
+.pro-nav-tabs .pro-nav-link{
+    border-radius: 3px !important;
+    color: var(--primary-color-light);
     font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 0rem !important;
     font-family: "MontSem";
-    color: var(--primary-color);
-    margin-bottom: 0px;
+    border: 0px;
 }
-
-.share-social-links {
-    margin-top: 10px !important;
-}
-
-.share-social-links ul {
-    list-style-type: none;
-    margin-top: 5px !important;
-}
-
-.share-social-links ul li svg {
-    border-radius: 50px;
-    border: 1px solid #5099b1;
-    padding: 5px !important;
-
-}
-
-.share-copy-links {
-    margin: 20px 0px !important;
-}
-
-.share-copy-links ul {
-    list-style-type: none;
-    padding: 5px !important;
-    border: 1px solid #d7d7d7;
-    border-radius: 10px;
-    margin-top: 5px !important;
-
-}
-
-.share-modal-content {
-    border-radius: 1.3rem !important;
-    padding: 40px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    pointer-events: auto;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid rgba(0, 0, 0, .2);
-    border-radius: 0.3rem;
-    outline: 0
-}
-
-.share-social-links button {
-    font-size: 16px;
-    font-family: "MontSem";
-    border: 0;
-}
-
-.share-social-links .copybutton {
-    font-size: 16px;
-    font-family: "MontSem";
-    color: white;
-    background-color: #5055b1;
-    border: 1px solid #5055b1;
-    border-radius: 10px;
-    margin-bottom: 0px;
-    padding: 5px 10px;
-}
-
-.share-copy-links button {
-    font-size: 16px;
-    font-family: "MontSem";
-    color: white;
-    background-color: #5055b1;
-    border: 1px solid #5055b1;
-    border-radius: 10px;
-    margin-bottom: 0px;
-    padding: 5px 10px;
-}
-
-.share-proceed button {
-    font-size: 16px;
-    font-family: "MontSem";
-    color: rgb(0, 0, 0);
-    background-color: #ffffff;
-    border: 1px solid #000000;
-    border-radius: 10px;
-    margin-bottom: 0px;
-    padding: 5px 10px;
-    margin-top: 20px;
-    width: 100%;
-}
-
-.Explorer_p {
+.bultin_description{
     font-size: 16px;
     font-family: "MontReg";
     color: var(--primary-color);
-    margin-top: auto;
-    margin-bottom: auto;
-    padding: 5px 0px;
-    text-align: left;
+    margin-bottom: 0px;
+    border: 1px solid var(--primary-colur);
+    border-radius: 10px;
+    padding: 15px;
+    margin:10px auto;
+    width: 90%;
 }
-
-.Explorer_p_a {
-    font-size: 16px;
-    font-family: "MontSem";
-    color: #0075fb;
-    margin-top: auto;
-    margin-bottom: auto;
-    padding: 5px 0px;
-    text-align: left;
-    text-decoration: none;
+.bullet-icon{
+    margin-left: 40px;
 }
-
-.Explorer_span {
-    font-size: 14px;
-    font-family: "MontSem";
-    color: #7f7f7f;
-    margin-top: auto;
-    margin-bottom: auto;
-    padding: 5px 0px;
-    text-align: left;
+.bullet-icon-i{
+    color: rgb(128, 128, 128);
+    font-size: 25px;
+}
+.like-active{
+    color: #FFA500 !important;
+    font-size: 25px;
+}
+#comment-pl{
+min-width: 50% !important;
+width: fit-content !important;
+}
+#comment-pl small{
+  font-size: 14px !important;
+}
+#comment-input:focus{
+    outline:none !important;
+}
+button{
+    font-family: 'MontReg';
+}
+.whitespace-nowrap{
     white-space: nowrap;
 }
-
-.explorer_card {
-    background-color: var(--primary-bg);
+/* polling */
+.poll-card{
+	max-width: 100%;
+    width: 100%;
+    padding: 20px;
+}
+.question{
+	font-weight: 700;
+	margin-bottom: 1rem;
+}
+.option{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 0.4rem 1.5rem;
+	border-radius: 4px;
+	position: relative;
+    font-size: 16px;
+    font-family: "MontReg";
+    color:var(--primary-color);
+}
+.bar{
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	background: #e9e9e9;
+	border-radius: 4px;
+}
+.member-ban-ctn{
+    position: relative;
+}
+.member-ban-modal{
+    position: absolute;
+    top: 10;
+    right: 0;
+    width: 200px;
+    border: 1px solid rgb(215, 215, 215);
     border-radius: 10px;
+    background-color: white;
+    padding: 10px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    margin: 20px;
+    align-items: start;
+    gap: 10px;
 }
-
-.h-screen {
-    min-height: 100vh;
-    height: 100% !important;
+.member-ban-modal button{
+    width: 100%;
+    font-family: "MontReg";
 }
-
-.h-65 {
-    height: 65vh;
+.fa-nav-tabs{
+    padding: 0px !important;
 }
-
-#sideover-btn {
-    margin-left: 20px;
+.fa-nav-link{
+    border: 0px !important;
+    border-bottom: 1px !important;
+    font-family: 'MontReg';
+    color: var(--primary-color);
+    padding: 10px;
+} 
+.fa-nav-tabs .fa-nav-link .active{
+    background-color: red !important;
+}
+a:hover{
+    color: var(--primary-color) !important;
+}
+.nav-tabs .nav-link.active{
+    /* color: gray !important; */
+    background-color: var(--primary-bg) !important;
+}
+.fa-ctn{
     display: flex;
-    align-self: center;
+    align-items: center;
+    gap: 10px;
+    font-family: "MontReg";
+    padding: 20px;
+}
+.fa-profile-sett{
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    background: var(--primary-bg);
+}
+.fa-ctn h1{
+    font-size: large;
+    font-family: "MontSem";
+    text-align: left;
+}
+.fa-ctn ol{
+    padding-left: 0% !important;
+}
+
+.fa-ctn li{
+    font-size: small;
+    font-family: "MontReg";
+    text-align: left;
+}
+.fa-ctn button{
+    display: flex;
+    align-items: center;
     justify-content: end;
 }
-
-#sideover_menubar {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    height: 100vh;
-    width: 300px;
-    background: white;
-    z-index: 9999;
-    padding: 0px 20px;
-    border-right: 1px solid rgb(206, 206, 206);
+.new-admin-ctn{
+    margin: 5px 0px ;
+}
+.manage-admin-heading{
+    font-size: medium;
+    font-family:'MontSem';
+}
+.new-admin-note{
+    font-family: 'MontReg';
+    font-size: 12px !important;
+    padding: 0px 10px;
+    color: --var(primary-color);
+}
+.new-admin-ctn img{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
-#sideover_close_btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    z-index: 9999;
-    border: 0;
-    background: transparent;
-    color: #FF4500;
-    border: 2px solid #FFA500;
-    border-radius: 5px;
+.font-sm{
+    font-size: 14px;
 }
-.breadcrumbs {
-    font-size: 16px;
-    font-family: "MontSem";
-    color: #9b9b9b;
-    text-decoration: none;
-    word-break: break-all;
+.dropdown-item{
+    font-family: "MontReg";
 }
-.breadcrumbs.active {
-    font-size: 16px;
-    font-family: "MontSem";
-    color: var(--primary-color);
-    text-decoration: none;
+.member-ban-modal button:hover{
+background-color: rgb(204, 202, 202);
+width: 100%;
 }
-.loading:after {
-    content: ' .';
-    animation: dots 1s steps(5, end) infinite;
+.input{
+	width: 100%;
 }
-
-@keyframes dots {
-    0%, 20% {
-        color: rgba(0, 0, 0, 0);
-        text-shadow:
-            .25em 0 0 rgba(0, 0, 0, 0),
-            .5em 0 0 rgba(0, 0, 0, 0);
-    }
-
-    40% {
-        color: #333;
-        text-shadow:
-            .25em 0 0 rgba(0, 0, 0, 0),
-            .5em 0 0 rgba(0, 0, 0, 0);
-    }
-
-    60% {
-        text-shadow:
-            .25em 0 0 #333,
-            .5em 0 0 rgba(0, 0, 0, 0);
-    }
-
-    80%, 100% {
-        text-shadow:
-            .25em 0 0 #333,
-            .5em 0 0 #333;
-    }
+.option-lable{
+	display: block;
+	cursor: pointer;
+	padding: 0.4rem;
+    position: relative;
+    border: 1px solid var(--primary-colur);
+    border-radius: 4px;
+}
+.percent{
+	position: absolute;
+	right: 7px;
+	top: 12px;
+	font-weight: 700;
+}
+.analytic,
+.tick{
+	display: none;
+}
+.project-logo{
+    width: 25%;
+}
+.project-logo .container_custom_file_input{
+    width: 75%;
 }
 
 /* wallet conenction */
@@ -2737,82 +2510,66 @@ a.btn.dope {
     .grid-form {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
-        gap: 20px;
+        gap: 20px;   
     }
-
-    .socail-profile_inputs {
+    .socail-profile_inputs{
         flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: 10px;
     }
+    
 
-
-
+   
 }
-
-
-
-
-
-@media (max-width: 1000px) {
-
-    .proposal_card_container {
+@media (max-width: 1000px){
+    .tweet-ctn{
+        width:100%;
+    }
+    .proposal_card_container{
         flex-direction: column;
         align-items: center;
         justify-content: center;
     }
-
-    .proposal_right_card_container {
+    .proposal_right_card_container{
         width: 100%;
     }
-
-    .proposal_status-card {
-        width: 100%;
+    .proposal_status-card{
+      width: 100%;
+      margin: 0;
     }
 
-    .cardEndDetail_container {
+    .cardEndDetail_container{
         flex-direction: column;
 
 
     }
+    .border-right-inbox{
+        border-right: 0px solid var(--primary-colur);
+    }
 }
 
 @media (max-width: 600px) {
-    .explorer_card {
-        margin: 0px;
-    }
-
-    .EditModal-title {
+    .EditModal-title{
         flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: start;
     }
-
-    .share-modal-content {
-        border-radius: 1.3rem !important;
-        padding: 20px;
-    }
-
-    .w-60 {
+    .w-60{
         width: 100%;
         margin-left: 0px;
     }
-
-    .w-40 {
+    .w-40{
         width: 100%;
     }
-
     .navbar-brand img {
         width: 65%;
     }
-
-    .modal-code-editor-container {
+    .modal-code-editor-container{
         flex-direction: column;
         gap: 12px;
     }
-
     svg.hum {
         width: 20px;
         height: 20px;
@@ -2908,8 +2665,7 @@ a.btn.dope {
         color: white !important;
 
     }
-
-    .sort-by-filter .sort-by {
+    .sort-by-filter .sort-by{
         color: white !important;
     }
 
@@ -3259,45 +3015,37 @@ a.btn.dope {
     .footer .right {
         justify-content: center;
     }
-
     .modal-dialog {
         margin: 1.75rem 20px;
 
     }
-
     .custom-file-input-attach svg {
         width: 16px;
         height: 16px;
-
+        
     }
-
-    .custom-file-input-attach p {
+    .custom-file-input-attach p{
         font-size: 12px;
 
     }
-
     .custom-file-input-attach {
         padding: 1px 6px;
     }
-
-    .logo-lumos-font {
-        color: var(--primary-color);
+    .logo-lumos-font{
+        color:var(--primary-color) ;
         font-size: 16px;
         letter-spacing: -0.70px;
         font-weight: 600;
         margin-top: 15px;
     }
-
-    .flex-col-links {
+    .flex-col-links{
         flex-direction: column;
     }
-
-    .project-logo {
+    .project-logo{
         width: 100%;
         margin: 30px 0px;
     }
-
-    .project-logo .container_custom_file_input {
+    .project-logo .container_custom_file_input{
         width: 100%;
     }
 }
@@ -3405,7 +3153,6 @@ a.btn.dope {
     .Create-dao-section p {
         font-size: 12px;
     }
-
     .Create-dao-section h4 {
         font-size: 16px;
     }
