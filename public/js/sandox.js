@@ -9,7 +9,7 @@ $(document).ready(function(){
         let startDateValue = $(this).val();
         if (startDateValue !== '') {
             let startDate = new Date(startDateValue);
-            startDate.setDate(startDate.getDate() + 10);
+            startDate.setDate(startDate.getDate() + 5);
 
             // Format the end date as 'yyyy-mm-dd'
             let endDateValue = startDate.toISOString().split('T')[0];

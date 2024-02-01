@@ -22,7 +22,7 @@
      * THE FREIGHTER EXTERNAL WALLET PROVIDER USED
      **/
     const stellarServer = "https://soroban-testnet.stellar.org"
-    const daoContractId = 'CBT2SM4FHDR6MQ6XEKV7TRF2D67JBNPPRLRXXXNRND35MFTIIUPOWJDE'  
+    const daoContractId = 'CCDWCMRUW74PFS5NL3LIJA73BBAIJF3HMGFO25DLADQ3N6Y2KY22APAJ'  
     const wrappingAddress = 'GC5JKOC7OMSS22NVC23MVL2363QS5JO7SQM5X7C7DPVLQLFQHZ3ZRHGF'
     const networkUsed = StellarSdk.Networks.TESTNET
     const networkWalletUsed = "TESTNET"
@@ -667,12 +667,9 @@
         }
     }
     }
-    /*/ xyu
+    // xyu
     setTimeout(async () => {
-        const bal = await getTokenUserBal('CCTDPSA6VMH4VYTHVAPFWTOYI7YNRJO3JFOJXFZGB6XDYBPVPM3NFTBZ', walletAddress)
-        console.log(bal)
-        console.log(await removeTrustline('GRS2', 'GBLROPQJRMHJJQ5INZEOY77SLWIZX3NUC7R3AI6JDWXIFPAK5LVWNWWN', walletAddress))
-        
+       // await bumpContractInstance(daoContractId)
     }, 5000)//
     // setTimeout(async () => {console.log(1);console.log(await createDaos(
     //     {

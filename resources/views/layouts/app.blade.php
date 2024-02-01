@@ -67,6 +67,8 @@
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                                 <li><a class="dropdown-item" href="{{ url('wallet/disconnect') }}">Disconnect</a></li>
                                 <li><a class="dropdown-item" href="javascript:;" onclick="copy('{{$_COOKIE['public']}}')"><i class="fa fa-copy"></i> Copy address</a></li>
+                                <li><a class="dropdown-item" href=" https://lumosdao.io/lumosdao-joined">Profile</a></li>
+                               
                             </ul>
                         </div>
                     </div>
@@ -102,6 +104,7 @@
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <div class="right">
                         <ul class="footer-links">
+                            <li><a href="https://lumosdao.io/lumosdao-explorer">Explorer</a></li>
                             <li><a href="{{ route('page', 'about') }}">About</a></li>
                             <li><a href="{{ route('page', 'terms-and-conditions') }}">Terms</a></li>
                             <li><a href="{{ route('page', 'privacy-policy') }}">Policy</a></li>
