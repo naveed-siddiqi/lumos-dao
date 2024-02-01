@@ -75,12 +75,15 @@
                                 </div>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                                <li><a class="dropdown-item" href="{{ url('wallet/disconnect') }}">Disconnect</a></li>
-                                <li><button id="settingProBtn" type="button" data-toggle="modal"
-                                        data-target="#exampleModalCenter" class="dropdown-item">Settings</button></li>
-                                <li><a class="dropdown-item" href="javascript:;"
+                            <li><a class="dropdown-item" href="javascript:;"
                                         onclick="copy('{{$_COOKIE['public']}}')"><i class="fa fa-copy"></i> Copy
                                         address</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('lumosdao-joined') }}">Profile</a></li>
+
+                                <li><button id="settingProBtn" type="button" data-toggle="modal"
+                                        data-target="#exampleModalCenter" class="dropdown-item">Settings</button></li>
+                                        <li><a class="dropdown-item" href="{{ url('wallet/disconnect') }}">Disconnect</a></li>
+
                             </ul>
                         </div>
                     </div>
@@ -138,7 +141,7 @@
                                         </label>
                                         <textarea class="form-control" name="" id="" cols="30" rows="10"></textarea>
                                     </div>
-                                    <div class="row gap-2">
+                                    <div class="row m-0 gap-2">
                                         <div class="d-flex align-items-center gap-1 col-sm form-control">
                                             <a class="d-flex align-items-center gap-1 col-sm text-black text-decoration-none"
                                                 href="">
