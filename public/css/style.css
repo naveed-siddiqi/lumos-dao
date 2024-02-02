@@ -3200,3 +3200,180 @@ width: 100%;
         left: 19.7%;
     }
 }
+.tabs-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0px auto;
+}
+
+.tabs-logo img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin: 20px auto 0px;
+}
+
+.tab button {
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 16px;
+    height: 50px;
+    width: 100%;
+    margin: auto;
+    background: none;
+    border-radius: 10px;
+    border: none;
+    color: var(--primary-color);
+    font-family: "MontReg";
+    font-size: 18px;
+    padding: 0px 30px;
+}
+
+.tab button.active {
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 16px;
+    width: 100%;
+    height: 50px;
+    margin: auto;
+    background: linear-gradient(to right, #FFA500, #FF4500, #FF0000);
+    color: white;
+    border-radius: 10px;
+    font-family: "MontReg";
+    font-size: 18px;
+}
+.text-left {
+    text-align: left !important;
+}
+
+.rounded-md {
+    border-radius: 10px !important;
+}
+.cardShow .card-joined img {
+    width: 80px;
+    height: 80px;
+    border: white 4px solid;
+    object-fit: cover;
+    margin: auto;
+    border-radius: 50%;
+    margin-top: -20px !important;
+    text-align: center !important;
+
+}
+
+.share-proceed button {
+    font-size: 16px;
+    font-family: "MontSem";
+    color: rgb(0, 0, 0);
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    margin-bottom: 0px;
+    padding: 5px 10px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.Explorer_p {
+    font-size: 16px;
+    font-family: "MontReg";
+    color: var(--primary-color);
+    margin-top: auto;
+    margin-bottom: auto;
+    padding: 5px 0px;
+    text-align: left;
+}
+
+.Explorer_p_a {
+    font-size: 16px;
+    font-family: "MontSem";
+    color: #0075fb;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding: 5px 0px;
+    text-align: left;
+    text-decoration: none;
+}
+
+.Explorer_span {
+    font-size: 14px;
+    font-family: "MontSem";
+    color: #7f7f7f;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding: 5px 0px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.explorer_card {
+    background-color: var(--primary-bg);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 20px;
+}
+
+.h-screen {
+    min-height: 100vh;
+    height: 100% !important;
+}
+
+.h-65 {
+    height: 65vh;
+}
+
+#sideover-btn {
+    margin-left: 20px;
+    display: flex;
+    align-self: center;
+    justify-content: end;
+}
+
+#sideover_menubar {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100vh;
+    width: 300px;
+    background: white;
+    z-index: 9999;
+    padding: 0px 20px;
+    border-right: 1px solid rgb(206, 206, 206);
+}
+
+#sideover_close_btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 9999;
+    border: 0;
+    background: transparent;
+    color: #FF4500;
+    border: 2px solid #FFA500;
+    border-radius: 5px;
+}
+.breadcrumbs {
+    font-size: 16px;
+    font-family: "MontSem";
+    color: #9b9b9b;
+    text-decoration: none;
+    word-break: break-all;
+}
+.breadcrumbs.active {
+    font-size: 16px;
+    font-family: "MontSem";
+    color: var(--primary-color);
+    text-decoration: none;
+}

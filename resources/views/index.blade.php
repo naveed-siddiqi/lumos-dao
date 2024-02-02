@@ -179,8 +179,8 @@
                             <div class="lblJoin" style='cursor:pointer' onclick="${(daoParams.owner == walletAddress) ? "Owner" : (!daoParams.ismember) ? "joinDao(event,'" +  daoParams.code + "','" + daoParams.issuer + "','" + daoParams.name + "','" + daoParams.token + "')" : ""}">
                                 <p class="mb-0">${(daoParams.owner == walletAddress) ? "Owner" : (daoParams.ismember) ? "Joined" : "Join"}</p>
                             </div>
-                            <div style="margin: -20px !important;" class="">
-                                <img  class="h-100 w-100 rounded" src="${((isCoverValid) ? coverImgx : defCoverImg) + "?id=" + Math.random() }" alt="">
+                            <div style="margin: -20px !important;   height: 250px;overflow-y: hidden;" class="">
+                                <img style="object-fit:cover;" class="h-100 w-100 rounded o" src="${((isCoverValid) ? coverImgx : defCoverImg) + "?id=" + Math.random() }" alt="">
                             </div>
                             <div class="card-imgflex">
                                 <img src="${daoParams.image + "?id=" + Math.random() }" alt="Apple">

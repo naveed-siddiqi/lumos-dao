@@ -82,6 +82,7 @@
                         <button class="tablinks " onclick="openCity(event, 'London')" id="defaultOpen">Activity</button>
                         <button class="tablinks " onclick="openCity(event, 'Paris')">Joined <span id='wallet_dao_num_res'></span></button>
                         <button class="tablinks " onclick="openCity(event, 'Tokyo')">Comments <span id='wallet_comment_num_res'></span></button>
+                        <button class="tablinks " onclick="openCity(event, 'newYork1')">Delegates <span id='wallet_comment_num_res'></span></button>
                     </div>
                 </div>
                 <div id="Paris" class="tabcontent col-sm">

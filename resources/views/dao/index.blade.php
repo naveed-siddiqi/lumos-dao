@@ -18,7 +18,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <div  class="card-join">
+                    <div  class="card-join w-100">
                         <div style="display:none;" class="lblJoin">
                             <p class="mb-0">join</p>
                         </div>
@@ -40,20 +40,25 @@
                         <div id='dao_about' class="card-paragraph">
                         </div>
 
-                        <div class="d-flex flex-col-links">
-                            <div class="card-small-div">
-                                <span class="card-bold-word">Assets:</span>
-                                <a id='asset_name' href="#" target='_blank' class="card-link" ><span id='dao_token_name'></span><img id='dao_token_img' src="{{ asset('images/topright.png') }}" style='max-width:50px;max-height:50px' alt=""></a>
+                       <div class="container">
+                       <div class="row d-flex">
+                            <div class="card-small-div col-sm">
+                                <span class="card-bold-word whitespace-nowrap">Assets:</span>
+                                <a id='asset_name' href="#" target='_blank' class="card-link whitespace-nowrap" ><span id='dao_token_name'></span><img id='dao_token_img' src="{{ asset('images/topright.png') }}" style='max-width:50px;max-height:50px' alt=""></a>
                             </div>
-                            <div class="card-small-div">
-                                <span class="card-bold-word">Website:</span>
-                                <a id='dao_website' target='_blank' href="#" class="card-link"></a>
+                            <div class="card-small-div col-sm">
+                                <span class="card-bold-word whitespace-nowrap">Website:</span>
+                                <a id='dao_website' target='_blank' href="#" class="card-link whitespace-nowrap d-inline-block text-truncate"></a>
                             </div>
-                            <div class="card-small-div">
-                                <span class="card-bold-word">Toml url:</span>
-                                <a id='dao_token_url' target='_blank' href="#" class="card-link"></a>
+                           
+                           
+                        </div>
+                        <div class="row">
+                            <div class="card-small-div col-sm">
+                                <span class="card-bold-word whitespace-nowrap">Toml url:</span>
+                                <a id='dao_token_url' target='_blank' href="#" class="card-link whitespace-nowrap text-truncate"></a>
                             </div>
-                            <div style="margin-left:20px;" class="d-flex align-items-center gap-3 py-3">
+                            <div style="margin-left:20px;" class="d-flex align-items-center gap-3 py-3 col-sm">
                                 <div class="card-imgflex-social-link " style='display:none'>
                                     <a id='dao_twitter' href="">
                                         <img src="{{ asset('images/twiter.png') }}" alt="">
@@ -82,7 +87,8 @@
                                
                             </div>
                         </div>
-                        <div class="d-flex align-items-center jus tify-content-end gap-3 py-3 w-25">
+                       </div>
+                        <div class="d-flex align-items-center justify-content-end gap-3 py-3 w-100">
                             <button class="btn btn-danger whitespace-nowrap" data-toggle="modal"
                                 data-target="#manageAdmin">Manage
                                 Admins</button>
@@ -252,15 +258,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="propFilterInner">
-                            <div class="d-flex align-items-center gap-2">
-                                <h2 class="heading">Proposals</h2>
-                                <button style="margin-bottom: 0.5rem;" type="button" class="border-0 bg-transparent d-flex align-items-center py-1 justify-content-center  text-secondary" data-toggle="tooltip" data-placement="right" title="Browse through the proposals created by DAO members. Each proposal represents an idea or initiative that the community can vote on.">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="22px" height="22px">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                                </svg>
-                                </button>
-                            </div>
-                        <a id='createProposal' href="{{ route('dao.proposal.create', 'PROPOSAL_CREATE') }}" style="width:200px; whitespace:no-wrap;display:none "  class="btn btnCreate">
+                        <a id='createProposal' href="{{ route('dao.proposal.create', 'PROPOSAL_CREATE') }}" style="width:200px; whitespace:no-wrap;display:none;margin-left:auto; "  class="btn btnCreate">
                             Create Proposal <img class="plu" src="{{ asset('images/11.png') }}" alt="">
                         </a>
                     </div>
@@ -889,11 +887,8 @@
                         </div>
                         </div>
                     </div>
-
-
             </div>
-
-            <div class="container mt-5">
+            <div class="">
 
 
         <!-- Modal -->

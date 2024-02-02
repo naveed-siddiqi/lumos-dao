@@ -6,7 +6,9 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\WalletController;
 use Illuminate\Support\Facades\Route;
-
+Route::get('/lumosdao-joined', function(){
+    return view('dao.lumosdao-joined');
+})->name('lumosdao-joined');
 Route::get('/test', [PageController::class, 'testPage']);
 Route::get('/', [AppController::class, 'home'])->name('home');
 Route::prefix('dao')->name('dao')->group(function () {
