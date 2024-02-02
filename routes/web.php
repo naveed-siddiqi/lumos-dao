@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/lumosdao-joined', function(){
     return view('dao.lumosdao-joined');
 })->name('lumosdao-joined');
+Route::get('/lumosdao-explorer', function(){
+    return view('dao.lumosdao-explorer');
+})->name('lumosdao-explorer');
 Route::get('/test', [PageController::class, 'testPage']);
 Route::get('/', [AppController::class, 'home'])->name('home');
 Route::prefix('dao')->name('dao')->group(function () {

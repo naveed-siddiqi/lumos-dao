@@ -58,10 +58,14 @@
 
                     @if (isset($_COOKIE['public']))
                     <span class="mx-3">
-                        <svg width="25px" height="25px" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5" />
-                    </svg>
-
+                        <ul class="navbar-nav mx-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{route('proposal.inbox')}}">Inbox <span class="text-danger">(12)</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="">Alerts <span class="text-danger">(12)</span></a>
+                            </li>
+                        </ul>
                     </span>
                     <div class="profile-dropdown">
                         <div class="dropdown">
@@ -251,6 +255,7 @@
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <div class="right">
                         <ul class="footer-links">
+                            <li><a href="{{ route('page', 'lumosdao-explorer') }}">Explorer</a></li>
                             <li><a href="{{ route('page', 'about') }}">About</a></li>
                             <li><a href="{{ route('page', 'terms-and-conditions') }}">Terms</a></li>
                             <li><a href="{{ route('page', 'privacy-policy') }}">Policy</a></li>
