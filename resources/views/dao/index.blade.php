@@ -30,9 +30,9 @@
                          <div style="margin:-45px -20px -30px !important; height:230px;" class="">
                                 <img id='dao_cover_image' style="object-fit: cover; object-fit:center;" class="h-100 w-100 rounded object-cover" data="https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
                             </div>
-                        <div class="card-imgflex">
+                        <div class="card-imgflex mt-1">
                             <img id='dao_image' data="{{ asset('images/demi.jpg') }}" alt="">
-                            <div class="cardHeading">
+                            <div class="cardHeading mt-4">
                                 <p id='dao_name' class="card-heading"></p>
                                 <p id='dao_members' class="card-subheading"></p>
                             </div>
@@ -40,25 +40,22 @@
                         <div id='dao_about' class="card-paragraph">
                         </div>
 
-                       <div class="container">
-                       <div class="row d-flex">
-                            <div class="card-small-div col-sm">
-                                <span class="card-bold-word whitespace-nowrap">Assets:</span>
-                                <a id='asset_name' href="#" target='_blank' class="card-link whitespace-nowrap" ><span id='dao_token_name'></span><img id='dao_token_img' src="{{ asset('images/topright.png') }}" style='max-width:50px;max-height:50px' alt=""></a>
+                       <div class="">
+                            <div class="d-flex">
+                                <div class="card-small-div">
+                                    <span class="card-bold-word whitespace-nowrap">Assets:</span>
+                                    <a id='asset_name' href="#" target='_blank' class="card-link whitespace-nowrap d-flex align-items-center gap-3" ><span id='dao_token_name'></span><img id='dao_token_img' src="{{ asset('images/topright.png') }}" style='' alt=""></a>
+                                </div>
+                                <div class="card-small-div flex-column align-items-start">
+                                    <span class="card-bold-word whitespace-nowrap">Website:</span>
+                                    <a id='dao_website' target='_blank' href="#" class="card-link whitespace-nowrap d-inline-block text-truncate"></a>
+                                </div>
+                                <div class="card-small-div flex-column align-items-start">
+                                    <span class="card-bold-word whitespace-nowrap">Toml url:</span>
+                                    <a id='dao_token_url' target='_blank' href="#" class="card-link whitespace-nowrap text-truncate"></a>
+                                </div>
                             </div>
-                            <div class="card-small-div col-sm">
-                                <span class="card-bold-word whitespace-nowrap">Website:</span>
-                                <a id='dao_website' target='_blank' href="#" class="card-link whitespace-nowrap d-inline-block text-truncate"></a>
-                            </div>
-                           
-                           
-                        </div>
-                        <div class="row">
-                            <div class="card-small-div col-sm">
-                                <span class="card-bold-word whitespace-nowrap">Toml url:</span>
-                                <a id='dao_token_url' target='_blank' href="#" class="card-link whitespace-nowrap text-truncate"></a>
-                            </div>
-                            <div style="margin-left:20px;" class="d-flex align-items-center gap-3 py-3 col-sm">
+                            <div class="d-flex align-items-center gap-3 py-3">
                                 <div class="card-imgflex-social-link " style='display:none'>
                                     <a id='dao_twitter' href="">
                                         <img src="{{ asset('images/twiter.png') }}" alt="">
@@ -86,7 +83,6 @@
                                </div>
                                
                             </div>
-                        </div>
                        </div>
                         <div class="d-flex align-items-center justify-content-end gap-3 py-3 w-100">
                             <button class="btn btn-danger whitespace-nowrap" data-toggle="modal"
@@ -214,45 +210,6 @@
         </div>
     </div>
 </section>
-
-<section class="approveWallet">
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    <div class="d-flex align-items-center gap-2">
-                         <h2 class="heading">Approved Wallets </h2>
-                    <button style="margin-bottom: 0.5rem;" type="button" class="border-0 bg-transparent d-flex align-items-center py-1 justify-content-center  text-secondary" data-toggle="tooltip" data-placement="right" title="Approved wallets are managed by the project team and listed in the project's toml file. They ensure transparency in governance and decision-making.">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="22px" height="22px">
-                       <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                      </svg>
-                    </button>
-                    </div>
-
-                </div>
-            </div>
-            <div class="addressLink">
-                <div class="row" style='flex-direction:column'>
-                    <div class="col-lg-4 col-md-12 col-sm-12" style='width:100%'>
-                        <strong class="text-success">Issuing Address</strong>
-                        <div class="column-content">
-                            <p id='dao_token_issuer'></p>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-12 col-sm-12" style='width:100%'>
-                        <strong class="text-success">Distributing Address</strong>
-                        <div class="column-content">
-                            <p id='dao_token_distributing'></p>
-                        </div>
-                    </div>
-                     <div id='dao_others_address' class="col-lg-4 col-md-12 col-sm-12" style='width:100%;display:none' >
-                        <strong class="text-success">Others</strong>
-                        
-                    </div>
-                     
-                </div>
-            </div>
-        </div>
-    </section>
 <section class="propFilter">
         <div class="container">
             <div class="row">
@@ -308,13 +265,25 @@
                          <div class="tab-pane fade show" id="content2">
                             <div class="row mt-0">
                                 <div class="cardEndDiv">
-
+                                <div class="d-flex flex-column align-items-end gap-2 px-1">
+                                        <div class="form-group w-100">
+                                            <label for="">
+                                                <span class="asset-details-label whitespace-nowrap">Add Bulletin:</span>
+                                            </label>
+                                            <textarea type="text" class="form-control h-auto" rows="4"></textarea>
+                                        </div>
+                                        <div class="">
+                                            <button type="button" class="btn btnCreate border-0 mb-1 mt-0">
+                                                <p class="mb-0 text-white">Submit</p>
+                                            </button>
+                                        </div>
+                                    </div>
                                     <div class="my-4">
-                                        <div class="d-flex justify-content-between">
+                                        <div class="d-flex flex-wrap justify-content-between">
                                             <div class="cardEndDetail">
                                                 <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
                                                     alt="Profile Image" class="image">
-                                                <div class="text text-center">FGDKXQTCPOJVVBBYTCPOJVVBBY2MRK2DXKZANU3I
+                                                <div class="text text-center">FGDKXQTCP.....DXKZANU3I
                                                 </div>
                                             </div>
                                             <div class="text text-muted">12/02/2023</div>
@@ -711,7 +680,7 @@
 
             </div>
           <div class="d-flex flex-column tweet-ctn">
-          <div style="margin-top: 40px; max-height:500px; overflow-y:scroll" class="proposal_status-card w-100 py-3">
+          <div style="margin-top: 40px; max-height:500px; overflow-y:scroll" class="proposal_status-card w-100 py-3 example">
                 <div class="proposal_status-SideCard sticky top-0">
                     <div class="d-flex align-items-start justify-content-start gap-2">
                         <h2 class="heading">Tweets</h2>
@@ -730,7 +699,7 @@
                 <div class="mt-3 border rounded p-3">
                     <div class="card-imgflex justify-content-between card-join">
                         <div class="card-imgflex">
-                            <img class="w-img" src="http://127.0.0.1:8001/images/demi.jpg" alt="Image">
+                            <img class="w-img" src="{{asset('/images/discord.png')}}" alt="Image">
                             <div class="cardHeading">
                                 <span class="card-heading"><small>Artisan Lsut</small></span>
                                 <p class="card-subheading">@asrtlust</p>
@@ -752,7 +721,7 @@
                 <div class="mt-3 border rounded p-3">
                     <div class="card-imgflex justify-content-between card-join">
                         <div class="card-imgflex">
-                            <img class="w-img" src="http://127.0.0.1:8001/images/demi.jpg" alt="Image">
+                            <img class="w-img" src="{{asset('/images/discord.png')}}" alt="Image">
                             <div class="cardHeading">
                                 <span class="card-heading"><small>Artisan Lsut</small></span>
                                 <p class="card-subheading">@asrtlust</p>
@@ -774,7 +743,7 @@
                 <div class="mt-3 border rounded p-3">
                     <div class="card-imgflex justify-content-between card-join">
                         <div class="card-imgflex">
-                            <img class="w-img" src="http://127.0.0.1:8001/images/demi.jpg" alt="Image">
+                            <img class="w-img" src="{{asset('/images/discord.png')}}" alt="Image">
                             <div class="cardHeading">
                                 <span class="card-heading"><small>Artisan Lsut</small></span>
                                 <p class="card-subheading">@asrtlust</p>
@@ -797,7 +766,7 @@
             </div>
 
                 
-                     <div id='topVoters' style="margin: top 15px; display:none" class="proposal_status-card">
+                     <div id='topVoters' style="margin: top 15px; display:none" class="proposal_status-card w-100">
                         <div class="proposal_status-SideCard">
                             <div class="d-flex align-items-start justify-content-start gap-2">
                                <h2 class="heading">Top Voters</h2>
@@ -963,9 +932,11 @@
                                     <div id='dao_save_address_view'>
                                         <input class='form-control' placeholder='Wallet name....' id='dao_save_address_name_edit' style='margin-bottom:10px'/>
                                         <input class='form-control' placeholder='Wallet address....' id='dao_save_address_edit' style='margin-bottom:10px'/>
-                                        <button id='dao_save_addr_add' class='Deo_setting_btn' style='position:relative;margin-right:15px'>Add</button>
-                                        <button id='dao_save_addr_cancel' class='Deo_setting_btn' style='position:relative;background:none;
-                                        border:1px solid #333257;color:#333257'>Cancel</button>
+                                        <div class="d-flex align-items-center justify-content-end w-100">
+                                        <button id='dao_save_addr_add' class='Deo_setting_btn px-4' style='position:relative;margin-right:15px'>Add</button>
+                                        <button id='dao_save_addr_cancel' class='Deo_setting_btn py-0' style='position:relative;background:none;
+                                                border:1px solid #333257;color:#333257'>Cancel</button>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1041,7 +1012,9 @@
                         
                         
                     </div>
-                     <button id='dao_save_button' class="btn assetSearch">Save</button>
+                    <div class="d-flex justify-content-end">
+                    <button id='dao_save_button' class="btn assetSearch w-25">Save</button>
+                    </div>
                 </div>
             </div>
         </div>

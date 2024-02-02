@@ -13,9 +13,12 @@
                 <div class="col-12 col-lg-5 col-xl-3 border-right-inbox font-xs">
 
                     <div class="px-4-inbox d-none d-md-block">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-grow-1">
+                        <div class="d-flex flex-column align-items-start">
+                            <div class="flex-grow-1 w-100 my-0">
                                 <input oninput='searchUser(event)' type="text" class="form-control h-auto py-2 my-3" placeholder="Search...">
+                            </div>
+                            <div class="mt-0">
+                                <button class="btn btn-danger text-white">Compose</button>
                             </div>
                         </div>
                     </div>

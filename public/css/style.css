@@ -1956,7 +1956,7 @@ small{
     color: var(--primary-color);
 }
 .tweet-ctn{
-    width: 25%;
+    width: 28%;
 
 }
 .asset-details-text {
@@ -3377,3 +3377,24 @@ width: 100%;
     color: var(--primary-color);
     text-decoration: none;
 }
+#dao_token_img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: contain;
+    border: 1px dashed gray;
+    padding: 4px;
+}
+#dao_website{
+    max-width: 350px;
+}
+/* Hide scrollbar for Chrome, Safari and Opera */
+.example::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .example {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
