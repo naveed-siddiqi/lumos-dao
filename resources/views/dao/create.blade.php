@@ -859,7 +859,7 @@
               xhr.send(); 
             }
         const createAssetToml = (asset) => {
-            return `ACCOUNTS=[]\n\n[DOCUMENTATION]\nORG_NAME="${asset.name}"\nORG_URL="http://${asset.domain}.lumosdao.io"\nORG_DESCRIPTION="${asset.about}"\nORG_LOGO="${asset.image}"\nORG_TWITTER=""\nORG_INSTAGRAM=""\nORG_DISCORD=""\nORG_TELEGRAM=""\nORG_REDDIT=""\nORG_SUPPORT_EMAIL=""\n\n[[CURRENCIES]]\ncode="${asset.code}"\nissuer="${asset.issuer}"\ndisplay_decimals=1\nname="${asset.name}"\ndesc="${asset.about}"\nstatus="live"\nimage="${asset.image}"`
+            return `ACCOUNTS=[]\n\n[DOCUMENTATION]\nORG_NAME="${asset.name}"\nORG_URL="http://${asset.domain}.testing.lumosdao.io"\nORG_DESCRIPTION="${asset.about}"\nORG_LOGO="${asset.image}"\nORG_TWITTER=""\nORG_INSTAGRAM=""\nORG_DISCORD=""\nORG_TELEGRAM=""\nORG_REDDIT=""\nORG_SUPPORT_EMAIL=""\n\n[[CURRENCIES]]\ncode="${asset.code}"\nissuer="${asset.issuer}"\ndisplay_decimals=1\nname="${asset.name}"\ndesc="${asset.about}"\nstatus="live"\nimage="${asset.image}"`
         } 
         
         //validate the image upload
