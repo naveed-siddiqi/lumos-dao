@@ -23,7 +23,7 @@
      * THE FREIGHTER EXTERNAL WALLET PROVIDER USED
      **/
     const stellarServer = "https://soroban-testnet.stellar.org"
-    const daoContractId = 'CBD6DLZEWPFBQKMSCQ2FRHTMUJ4BOWHC66ANLSPU6KV6HJ4I6DAAMG2P'  
+    const daoContractId = 'CALUJ7XVZGRWRIRZC2WK6G7JBBECNKJ5GI7MGNMUCKLM2XZD6AK4QBUC'  
     const wrappingAddress = 'GC5JKOC7OMSS22NVC23MVL2363QS5JO7SQM5X7C7DPVLQLFQHZ3ZRHGF'
     const networkUsed = StellarSdk.Networks.TESTNET
     const networkWalletUsed = "TESTNET"
@@ -1189,6 +1189,15 @@
         }
     }
     
+    //check if user is an admin
+    const isAdmin = async (domain) => {
+         try {
+            return true
+        } catch (error) { console.log(e)
+            return false;
+        }
+    }
+    
     //check if subdomain exists
     const isSubDomainExists = async (domain) => {
          try {
@@ -1483,4 +1492,13 @@
     */
     const N = (num) => {return (num.toString() * 1)}
     
+     /** To format an address to display
+     * params {_address} the address as string
+     * params {n} the number of address characters to display
+     * returns {String}
+    */
+    const fAddr = (_address, n = 14) => {
+        _address += ""
+        return _address.substring(0,n) + '...' + _address.substring(_address.length - n)
+    }
 </script>

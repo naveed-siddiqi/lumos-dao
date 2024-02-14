@@ -85,7 +85,7 @@
                             </div>
                        </div>
                         <div class="d-flex align-items-center justify-content-end gap-3 py-3 w-100">
-                            <button class="btn btn-danger whitespace-nowrap" data-toggle="modal"
+                            <button id='manageAdminBut' class="btn btn-danger whitespace-nowrap" data-toggle="modal"
                                 data-target="#manageAdmin">Manage
                                 Admins</button>
                             <a id='inbox' href="{{route('proposal.inbox')}}">
@@ -114,19 +114,22 @@
                             <span class="asset-details-label mb-0">Add new admin:</span>
                         </label>
                         <div class="d-flex flex-column flex-md-row align-items-end gap-2">
-                            <input id="dao_o_about" type="text" class="form-control h-auto mt-1">
-                            <button class="btn btn-secondary px-2 py-1.5"><small>Search</small></button>
+                            <input oninput='searchAdminUser()' id="dao_search_admin" type="text" class="form-control h-auto mt-1">
+                            <button onclick='searchAdminUser()' class="btn btn-secondary px-2 py-1.5"><small>Search</small></button>
                         </div>
                     </div>
-                    <div class="m-0 mt-0 mt-md-5 p-0">
-                        <p class="mb-0 text-success manage-admin-heading">Adrress founded</p>
+                    <div id='addNewAdmin' class="m-0 mt-0 mt-md-5 p-0" style='display:none'>
+                        <p class="mb-0 text-success manage-admin-heading">Address founded</p>
                         <div
                             class="d-flex flex-column align-items-center justify-content-between gap-1 mb-2 new-admin-ctn">
-                            <div class="d-flex flex-column flex-md-row align-items-start align-md-items-center gap-1 w-100">
-                                <img class="" src="{{asset('/images/discord.png')}}" alt="">
-                                <p class="mb-0  column-content text-truncate text-break text-wrap">FGDKXQTCPOJVVBBYSNADBDSJBASD2MRK2DXKZANU3I</p>
+                            <div id='dao_search_admin_result' style='width:100%;max-height:300px;overflow:auto'>
+                                
                             </div>
-                            <div class="mb-3">
+                            <!--<div class="d-flex flex-column flex-md-row align-items-start align-md-items-center gap-1 w-100">-->
+                            <!--    <img class="" src="{{asset('/images/discord.png')}}" alt="">-->
+                            <!--    <p id='dao_search_admin_found' class="mb-0  column-content text-truncate text-break text-wrap"></p>-->
+                            <!--</div>-->
+                            <div class="mb-3" id='dao_admin_rules'>
                                 <span class="text new-admin-note">
                                     <strong class="text-danger">Note:</strong>
                                     Before you confirm, make sure to read the admin authorities.
@@ -147,16 +150,19 @@
                     </div>
                     <div class="m-0 py-2 p-0">
                         <p class="mb-0 text-danger manage-admin-heading">All Admins</p>
-                        <div
-                            class="d-flex flex-column align-items-center justify-content-between gap-1 mb-2 new-admin-ctn">
-                            <div class="d-flex flex-column flex-md-row align-items-start align-md-items-center gap-1 w-100">
-                                <img class="" src="{{asset('/images/discord.png')}}" alt="">
-                                <p class="mb-0  column-content text-truncate inline-block text-break text-wrap">FGDKXQTCPOJVVBBYSNADBDSJBASD2MRK2DXKZANU3I</p>
-                            </div>
-                            <div class="d-flex align-items-start align-md-items-end justify-content-start justify-content-md-end gap-2 mt-2 w-100">
-                                <button class="btn btn-danger text-white text "><small>Remove</small></button>
-                            </div>
+                        <div id='dao_admin_lists' style='width:100%;max-height:300px;overflow:auto'>
+                                
                         </div>
+                        <!--<div-->
+                        <!--    class="d-flex flex-column align-items-center justify-content-between gap-1 mb-2 new-admin-ctn">-->
+                        <!--    <div class="d-flex flex-column flex-md-row align-items-start align-md-items-center gap-1 w-100">-->
+                        <!--        <img class="" src="{{asset('/images/discord.png')}}" alt="">-->
+                        <!--        <p class="mb-0  column-content text-truncate inline-block text-break text-wrap">FGDKXQTCPOJVVBBYSNADBDSJBASD2MRK2DXKZANU3I</p>-->
+                        <!--    </div>-->
+                        <!--    <div class="d-flex align-items-start align-md-items-end justify-content-start justify-content-md-end gap-2 mt-2 w-100">-->
+                        <!--        <button class="btn btn-danger text-white text "><small>Remove</small></button>-->
+                        <!--    </div>-->
+                        <!--</div>-->
                     </div>
                 </div>
                 <div class="d-flex align-items-center justify-content-end gap-3 modal-footer m-0 p-0 py-3 px-3 w-100">
@@ -187,23 +193,11 @@
             </div>
         </div>
         <div class="addressLink">
-            <div class="row">
+            <div class="row" id='dao_others_address'>
                 <div class="col-lg-4 col-md-12 col-sm-12">
                     <strong class="text-success">DAO Creator</strong>
                     <div class="column-content">
-                        <p>FGDKXQTCPOJVVBBY...2MRK2DXKZANU3I</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-12 col-sm-12">
-                    <strong class="text-success">Admin(1)</strong>
-                    <div class="column-content">
-                        <p>FGDKXQTCPOJVVBBY...2MRK2DXKZANU3I</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-12 col-sm-12">
-                    <strong class="text-success">Admin(2)</strong>
-                    <div class="column-content">
-                        <p>FGDKXQTCPOJVVBBY...2MRK2DXKZANU3I</p>
+                        <p id='dao_token_creator'></p>
                     </div>
                 </div>
             </div>
@@ -766,7 +760,7 @@
             </div>
 
                 
-                     <div id='topVoters' style="margin: top 15px; display:none" class="proposal_status-card w-100">
+                     <div id='topVoters' style="margin: top 15px; disp lay:none" class="proposal_status-card w-100">
                         <div class="proposal_status-SideCard">
                             <div class="d-flex align-items-start justify-content-start gap-2">
                                <h2 class="heading">Top Voters</h2>
@@ -1166,11 +1160,12 @@ options.forEach(option => {
 </script>
     <script>
         /* INDEX FUNCTIONS GO HERE */
-        var dao;
+        var dao;var daoUsers;
         /* RETRIEVE THE DAO SPECIFIC INFORMATION */
         const indexMain = async () => { 
            let _dao = (window.location + "").substring((window.location + "").lastIndexOf("/") + 1)
            dao = await getDao(_dao) ;  
+           daoUsers = await getDaoUsersP(dao.name); 
            E('inbox').href += "?dao=" + _dao + "&name=" + dao.name
            E('createProposal').href = E('createProposal').href.replace('PROPOSAL_CREATE', `${dao.name}:${dao['token']}`)
            E('createProposal').style.display = 'block'
@@ -1188,7 +1183,10 @@ options.forEach(option => {
                //check if this asset was hosted here 
                if(dao.toml.DOCUMENTATION.ORG_URL.indexOf("<?php echo $_SERVER['HTTP_HOST']; ?>") > -1 ) {
                    //check if its an approved wallet
-                   if(dao.issuer == walletAddress || dao.toml.ACCOUNTS.includes(walletAddress)) E('dao_setting').style.display = 'block'
+                   if(dao.issuer == walletAddress || dao.toml.ACCOUNTS.includes(walletAddress)){
+                       E('dao_setting').style.display = 'block'
+                       E('manageAdminBut').style.display = 'block'
+                   } 
                }
               
                //load info of all the proposals
@@ -1262,25 +1260,37 @@ options.forEach(option => {
                        if(isCoverValid) {E('dao_cover_image').src = coverImgx + "?id=" + Math.random() * 1000}
                        E('dao_token_img').src = E('dao_save_img').src = E('dao_image').src = (dao.image || "") + "?id=" + Math.random() * 1000
                        //verify cover image
-                       E('dao_token_issuer').innerHTML = E('dao_token_distributing').innerHTML = dao.issuer || ""
+                       const temp = (dao.owner || "")
+                       E('dao_others_address').innerHTML = ""
+                       E('dao_others_address').appendChild(drawOtherAddress(temp, 'DAO Creator'))
+                                
                     } 
                     //load approved address
                     E('dao_save_address').innerHTML = ""
                     E('dao_save_address').appendChild(drawAddress(dao.issuer))
                     if(aToml.ACCOUNTS) {
                         let flg = false;
+                        E('dao_admin_lists').innerHTML = ""
                         //get account names if it exist
                         if(!aToml.WALLET_NAMES) {aToml.WALLET_NAMES = []} //not defined yet, define it
+                        console.log(aToml.ACCOUNTS)
                         for(let i=0;i<aToml.ACCOUNTS.length;i++) {
                             //don't redraw the issuer
                             if(aToml.ACCOUNTS[i]){
-                                E('dao_others_address').innerHTML = "<strong class='text-success'>" + (aToml.WALLET_NAMES[aToml.ACCOUNTS[i]] || 'Others') + "</strong>"
-                                E('dao_save_address').appendChild(drawAddress(aToml.ACCOUNTS[i], (aToml.WALLET_NAMES[aToml.ACCOUNTS[i]] || 'Others')))
-                                E('dao_others_address').appendChild(drawOtherAddress(aToml.ACCOUNTS[i]))
+                                E('dao_others_address').appendChild(drawOtherAddress(aToml.ACCOUNTS[i], aToml.WALLET_NAMES[aToml.ACCOUNTS[i]]))
+                                //if admin
+                                if(aToml.WALLET_NAMES[aToml.ACCOUNTS[i]] == 'admin') {
+                                    E('dao_admin_lists').innerHTML += drawAdminUser({user:aToml.ACCOUNTS[i]})
+                                }
+                                else {
+                                    E('dao_save_address').appendChild(drawAddress(aToml.ACCOUNTS[i], (aToml.WALLET_NAMES[aToml.ACCOUNTS[i]] || 'Others')))
+                                }
                                 flg = true
                             } 
                         }
-                        if(flg) E('dao_others_address').style.display = 'block' //show others
+                    }
+                    if(E('dao_admin_lists').innerHTML == "") {
+                        E('dao_admin_lists').parentElement.style.display = 'none'
                     }
                     E('dao_save_address_view').style.display = 'none'
                     //show top voters
@@ -1295,7 +1305,7 @@ options.forEach(option => {
                         E('topVoters').style.display = "block"
                     }
                     else {
-                        E('topVoters').style.display = "none"
+                        E('topVoters').style.display = "block"
                     }
                     //display links
                     const socials = aToml.DOCUMENTATION
@@ -1502,11 +1512,86 @@ options.forEach(option => {
                      stopTalking(4, talk(msg,'fail'))
                  }
              }
-              else {
-                     const msg  = "Empty field present";
+             else {
+                  const msg  = "Empty field present";
+                  stopTalking(4, talk(msg,'fail'))
+             }
+        }
+        //to add dao admins
+        E('manageAdminConfirm').onclick = async () => {
+             const addr = E('dao_search_admin').value.trim()
+             const addr_name = "Admin"
+             if(addr != "" && addr_name) {
+                 if(isSafeToml(addr) && isSafeToml(addr_name)) {
+                    E('manageAdminConfirm').disabled = true
+                    //call trustline function
+                   const id = talk("Checking address", "norm")
+                   await new Promise((resolve) => setTimeout(resolve, 1000));
+                   if((await getTokenUserBal(dao.token, addr)) !== false) {
+                       //save the address to the toml
+                       modifyDao(dao.url, dao.code, 'address', addr + "|@$$@|" + addr_name, async (status) => {
+                            if(status) {
+                                talk("Admin added successfully", "good", id)
+                                //resetting description input
+                                E('dao_search_admin').value = ""
+                                //save back the results
+                                if(dao.toml.ACCOUNTS != undefined) {dao.toml.ACCOUNTS = []}
+                                if(dao.toml.WALLET_NAMES != undefined) {dao.toml.WALLET_NAMES = []}
+                                if(!dao.toml.ACCOUNTS.includes(addr)) {dao.toml.ACCOUNTS.push(addr)}
+                                dao.toml.WALLET_NAMES[addr] = addr_name
+                                setUp()
+                                stopTalking(3, id)
+                            }
+                            else {
+                                talk("Unable to set admin<br>Something went wrong<br>This may be due to network error", "fail", id)
+                                stopTalking(3, id)
+                            }
+                            E('manageAdminConfirm').disabled = false
+                        })
+                   }
+                   else {
+                       const msg  = "This address is not a memeber of this DAO<br>Please establish a trustline and try again";
+                       stopTalking(4, talk(msg,'fail', id))
+                   }
+                 }   
+                 else {
+                     const msg  = "Invalid characters(\") present in description.<br> Please remove it and try again";
                      stopTalking(4, talk(msg,'fail'))
                  }
-              
+             }
+             else {
+                  const msg  = "Empty field present";
+                  stopTalking(4, talk(msg,'fail'))
+             }
+        }
+        //to search dao admin
+        const searchAdminUser = () => {
+            const search = E('dao_search_admin_result')
+            search.innerHTML = "" 
+            const addr = E('dao_search_admin').value.trim()
+            if(addr != "") {
+                for(let i=0;i<daoUsers.length;i++) {
+                    if(daoUsers[i] == addr) {  
+                        //present 
+                        search.innerHTML = drawUser({
+                            user:daoUsers[i] 
+                        })
+                    }
+                }
+                if(search.innerHTML == "") {
+                    search.innerHTML = ` 
+                    <center style='margin:40px'>Nothing found</center> 
+                    `
+                    E('dao_admin_rules').style.display = 'none'
+                }
+                else {
+                    E('dao_admin_rules').style.display = ''
+                }
+                E('addNewAdmin').style.display = ''
+            }
+            else {
+                E('addNewAdmin').style.display = 'none'
+            }
         }
         const modifyAssetImg = (assetName, callback) => {
               const fileInput = E('dao_save_image_edit');
@@ -1613,12 +1698,17 @@ options.forEach(option => {
             }
         const drawAddress = (addr, name = "") => {
             let tm = document.createElement('div')
-            tm.innerHTML = `<div class="column-content">${name}<br><span>${addr.substring(0, 8) + "..." + addr.substring(addr.length - 8)}</span></div>`
+            tm.innerHTML = `<div class="column-content">${name}<br><span>${fAddr(addr, 8)}</span></div>`
             return tm.firstElementChild
         }
-        const drawOtherAddress = (addr) => {
+        const drawOtherAddress = (addr, addrName) => {
             let tm = document.createElement('div')
-            tm.innerHTML = `<div class="column-content"><p>${addr}</p></div>`
+            tm.innerHTML = `<div class="col-lg-4 col-md-12 col-sm-12">
+                    <strong class="text-success" style='text-transform:capitalize'>${addrName}</strong>
+                    <div class="column-content">
+                        <p>${fAddr(addr)}</p>
+                    </div>
+                </div>`
             return tm.firstElementChild
         } 
         const drawTopVoters = (param = {voter:"", vote:""}) => {
@@ -1633,6 +1723,26 @@ options.forEach(option => {
                                 </div>
                         </div>`
             return tm.firstElementChild
+        }
+        const drawUser = (params) => {
+            return `<div class="d-flex flex-column flex-md-row align-items-start align-md-items-center gap-1 w-100">
+                                <img class="" src="{{asset('/images/discord.png')}}" alt="">
+                                <p id='dao_search_admin_found' class="mb-0  column-content text-truncate text-break text-wrap">
+                                ${params.user.substring(0,14) + "..." + params.user.substring(params.user.length-14)}</p>
+                            </div>`
+        }
+        const drawAdminUser = (params) => {
+            return `<div
+                            class="d-flex flex-column align-items-center justify-content-between gap-1 mb-2 new-admin-ctn">
+                            <div class="d-flex flex-column flex-md-row align-items-start align-md-items-center gap-1 w-100">
+                                <img class="" src="{{asset('/images/discord.png')}}" alt="">
+                                <p class="mb-0  column-content text-truncate inline-block text-break text-wrap">
+                                 ${params.user.substring(0,14) + "..." + params.user.substring(params.user.length-14)}</p>
+                            </div>
+                            <div class="d-flex align-items-start align-md-items-end justify-content-start justify-content-md-end gap-2 mt-2 w-100">
+                                <button class="btn btn-danger text-white text "><small>Remove</small></button>
+                            </div>
+                        </div>`
         }
         indexMain() //run the main function
     </script>
