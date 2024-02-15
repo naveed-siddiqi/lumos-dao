@@ -30,12 +30,23 @@
                          <div style="margin:-45px -20px -30px !important; height:230px;" class="">
                                 <img id='dao_cover_image' style="object-fit: cover; object-fit:center;" class="h-100 w-100 rounded object-cover" data="https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
                             </div>
+                            <div class="d-flex align-items-center justify-content-between">
                         <div class="card-imgflex mt-1">
                             <img id='dao_image' data="{{ asset('images/demi.jpg') }}" alt="">
-                            <div class="cardHeading mt-4">
+                            <div class="cardHeading mt-4 py-2">
                                 <p id='dao_name' class="card-heading"></p>
                                 <p id='dao_members' class="card-subheading"></p>
                             </div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-end gap-3 py-3 w-100 mt-4">
+                            <button id='manageAdminBut' class="btn btn-success whitespace-nowrap" data-toggle="modal"
+                                data-target="#manageAdmin">Manage
+                                Admins</button>
+                            <a id='inbox' href="{{route('proposal.inbox')}}">
+                                <button class="btn btn-secondary">Send message</button>
+                            </a>
+                            <button class='btn btn-danger whitespace-nowrap' id='leaveDao' style='border:2px solid red;display:no ne'>Leave Dao</button>
+                        </div>
                         </div>
                         <div id='dao_about' class="card-paragraph">
                         </div>
@@ -84,16 +95,6 @@
                                
                             </div>
                        </div>
-                        <div class="d-flex align-items-center justify-content-end gap-3 py-3 w-100">
-                            <button id='manageAdminBut' class="btn btn-danger whitespace-nowrap" data-toggle="modal"
-                                data-target="#manageAdmin">Manage
-                                Admins</button>
-                            <a id='inbox' href="{{route('proposal.inbox')}}">
-                                <button class="btn btn-secondary">Inbox</button>
-                            </a>
-                            <button class='btn whitespace-nowrap' id='leaveDao' style='border:2px solid grey;display:none'>Leave Dao</button>
-             
-                        </div>
                     </div>
                 </div>
             </div>
@@ -108,7 +109,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
                 </div>
-                <div class="modal-body p-2">
+                <div class="modal-body px-4 py-0 w-100">
                     <div class="form-group">
                         <label for="">
                             <span class="asset-details-label mb-0">Add new admin:</span>

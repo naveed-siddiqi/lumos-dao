@@ -1116,6 +1116,21 @@
         }
     }
     // get all tx
+    const getAllUsersTx = async () => {
+         try {
+            //check if the url is http and from this domain
+            url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_user_tx&dao=" + daoContractId + "&address=" + walletAddress + "&id=" + Math.random() * 1000 
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const tx = await response.text(); 
+            return (tx != "") ? JSON.parse(tx) : ""
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
+    // get all tx
     const getUserTx = async (addr) => {
          try {
             //check if the url is http and from this domain

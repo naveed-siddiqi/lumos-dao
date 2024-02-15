@@ -19,7 +19,7 @@
 </head>
 @include('components.scripts')
 <body class="DOA">
-    <section>
+    <section id='main_header_div'>
         <nav class="navbar navbar-expand-lg ">
             <div class="container">
                 <a class="navbar-brand" href="{{ route('home') }}">
@@ -55,7 +55,9 @@
                                 target="_blank">Github</a>
                         </li>
                     </ul>
-
+                    <div style="display: none;" id="alertCopied" class="alert alert-success position-fixed w-25 mt-5 right-0 text-center" role="alert">
+                            <p class="p-0 m-0 text-success"> Copied!</p>
+                        </div>
                     @if (isset($_COOKIE['public']))
                     <span class="mx-3">
                         <ul class="navbar-nav mx-auto">
@@ -79,7 +81,7 @@
                                 </div>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                            <li><a class="dropdown-item" href="javascript:;"
+                            <li onclick="copyAddress()"><a class="dropdown-item" href="javascript:;"
                                         onclick="copy('{{$_COOKIE['public']}}')"><i class="fa fa-copy"></i> Copy
                                         address</a></li>
                                         <li><a class="dropdown-item" href="{{ route('lumosdao-joined') }}">Profile</a></li>
@@ -287,7 +289,7 @@
     <script>
     const checkbox = document.getElementById('checkbox');
     var settingProBtn = document.getElementById('settingProBtn');
-
+    var alertCopied = document.getElementById('alertCopied');
 
     settingProBtn.addEventListener('click', function() {
 
@@ -306,7 +308,12 @@
             checkbox.checked = false;
         }
     }
-
+    function copyAddress(){
+        alertCopied.style.display = 'block';
+        setTimeout(function() {
+            alertCopied.style.display = 'none';
+        }, 2000); 
+    }
     // Function to toggle the mode and update localStorage
     function toggleMode() {
         if (body.classList.contains('dark-mode')) {
