@@ -103,7 +103,7 @@
     <!-- Modal -->
     <div class="modal fade" id="usersModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
-             <div class="modal-content">
+             <div class="modal-content p-4">
                  <div class="flex-grow-1 my-0" style='margin-left:10px;margin-right:10px'>
                     <input oninput='searchUser(event, "users")' type="text" class="form-control h-auto py-2 my-3" placeholder="Search..."> 
                 </div>
@@ -123,7 +123,30 @@
              </div>
         </div>
     </div>
-  
+    <section>
+        <div class="modal fade" id="ComposeModal" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content fa-modal-content p-0 m-0">
+                    <div class="container p-4">
+                        <div class="">
+                            To:
+                            <input type="text" class="form-control mt-0" placeholder="" id="assetCode" aria-describedby="emailHelp" name="asset_code" value="">
+                        </div>
+                        <div class="mt-3">
+                            Compose:
+                            <textarea class="form-control h-auto mt-0" name="" id="" cols="30" rows="3"></textarea>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                        <button class="btn btn-success mt-2">
+                            Send
+                        </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script> 
     <script>
         /* VARIABLES */
