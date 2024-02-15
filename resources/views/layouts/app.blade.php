@@ -154,11 +154,11 @@
                                                 <div class="card-imgflex-social-link">
                                                     <label for="">
                                                         <img class="w-img"
-                                                            src="/images/x-logo-twitter-elon-musk_dezeen_2364_col_0-1.webp"
+                                                            src="{{asset('/images/x-logo-twitter-elon-musk_dezeen_2364_col_0-1.webp')}}"
                                                             alt="">
                                                     </label>
                                                 </div>
-                                                <span><small>Instagram</small></span>
+                                                <span><small>X.com</small></span>
                                             </a>
                                         </div>
 
@@ -168,7 +168,7 @@
 
                                                 <div class="card-imgflex-social-link">
                                                     <label for="">
-                                                        <img class="w-img" src="/images/LinkedIn_icon.svg.png" alt="">
+                                                        <img class="w-img" src="{{asset('/images/LinkedIn_icon.svg.png')}}" alt="">
                                                     </label>
                                                 </div>
                                                 <span><small>LinkedIn</small></span>
@@ -180,7 +180,7 @@
 
                                                 <div class="card-imgflex-social-link">
                                                     <label for="">
-                                                        <img class="w-img" src="/images/github.png" alt="">
+                                                        <img class="w-img" src="{{asset('/images/github.png')}}" alt="">
                                                     </label>
                                                 </div>
                                                 <span><small>Github</small></span>

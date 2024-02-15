@@ -18,7 +18,7 @@
                                 <input oninput='searchUser(event)' type="text" class="form-control h-auto py-2 my-3" placeholder="Search...">
                             </div>
                             <div class="mt-0">
-                                <button class="btn btn-danger text-white" data-bs-toggle="modal" data-bs-target="#usersModal">Compose</button>
+                                <button class="btn btn-danger text-white" data-bs-toggle="modal" data-bs-target="#ComposeModal">Compose</button>
                             </div>
                         </div>
                     </div>
@@ -134,7 +134,7 @@
                             <input type="text" class="form-control mt-0" placeholder="" id="assetCode" aria-describedby="emailHelp" name="asset_code" value="">
                         </div>
                         <div class="mt-3">
-                            Compose:
+                            Message:
                             <textarea class="form-control h-auto mt-0" name="" id="" cols="30" rows="3"></textarea>
                         </div>
                         <div class="d-flex justify-content-end">
