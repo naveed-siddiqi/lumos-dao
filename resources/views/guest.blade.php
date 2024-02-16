@@ -8,6 +8,7 @@
   <meta content="width=device-width, initial-scale=1" name="viewport" />
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
   <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
   <script type="text/javascript">
     WebFont.load({
@@ -47,11 +48,6 @@
     -ms-text-size-adjust: 100%;
     -webkit-text-size-adjust: 100%;
     font-family: sans-serif
-}
-
-body{
-    overflow-x: hidden;
-    margin: 0
 }
 
 article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
@@ -225,12 +221,79 @@ td, th {
 }
 
 @font-face {
-    font-family: webflow-icons;
-    src: url(data:application/x-font-ttf;charset=utf-8;base64,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)format("truetype");
-    font-weight: 400;
-    font-style: normal
+    font-family: "MontBold";
+    src: url(../fonts/Mont-Bold.ttf);
+    font-weight: normal;
+    font-style: normal;
 }
 
+@font-face {
+    font-family: "MontReg";
+    src: url(../fonts/Mont-Regular.ttf);
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "MontSem";
+    src: url(../fonts/Mont-SemiBold.ttf);
+    font-weight: normal;
+    font-style: normal;
+}
+
+.btnReg {
+    background: linear-gradient(to right, #FFA500, #FF4500, #FF0000);
+    color: white;
+    font-size: 18px;
+    font-family: "MontReg";
+    border-radius: 10px;
+    padding: 10px 15px;
+}
+
+.btn {
+    display: inline-block;
+    font-family: 'MontSem';
+    line-height: 1.5;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    background: linear-gradient(to right, #FFA500, #FF4500, #FF0000);
+    border: 1px solid transparent;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.footer {
+    margin-top: 0px !important;
+    padding: 0px !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+body{
+    background-color: #f8f8f8 !important;
+}
+strong{
+    font-family: 'MontSem';
+    color: #000;
+}
+.footer-links{
+    display: flex !important;
+}
+.row{
+    width: 100%;
+}
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
 [class^=w-icon-], [class*=\ w-icon-] {
     speak: none;
     font-variant: normal;
@@ -240,9 +303,13 @@ td, th {
     font-style: normal;
     font-weight: 400;
     line-height: 1;
-    font-family: webflow-icons !important
+    font-family: "MontReg" !important;
 }
-
+.logo-lumos-font{
+    font-family: "MontBold" !important;
+    text-decoration: none;
+    color: #000;
+}
 .w-icon-slider-right:before {
     content: "î˜€"
 }
@@ -275,15 +342,6 @@ html {
     height: 100%
 }
 
-body {
-    min-height: 100%;
-    color: #333;
-    background-color: #fff;
-    margin: 0;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    line-height: 20px
-}
 
 img {
     max-width: 100%;
@@ -2149,7 +2207,7 @@ textarea.w-input, textarea.w-select {
     --grey-500: #949494;
     --grey-700: #676767;
     --black: black;
-    --dashboardblue: #7978de;
+    --dashboardblue: #FFA500;
     --purple-300: #d3bbfd;
     --sky: #1696f0;
     --wine: #e2154a;
@@ -2600,15 +2658,6 @@ h1 {
     display: flex
 }
 
-.body {
-    flex-direction: column;
-    align-items: center;
-    margin-left: auto;
-    margin-right: auto;
-    font-family: Mulish, sans-serif;
-    display: flex;
-    overflow-x:hidden !important; 
-}
 
 .solid-button {
     height: 42px;
@@ -2818,7 +2867,7 @@ h1 {
 }
 
 .menu-sections {
-    grid-column-gap: 50px;
+    grid-column-gap: 20px;
     grid-row-gap: 50px;
     align-items: center;
     display: flex
@@ -2842,9 +2891,10 @@ h1 {
 
 .section-text {
     color: var(--black);
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
-    display: block
+    display: block;
+    font-family: 'MontReg';
 }
 
 .section-text:hover {
@@ -3002,6 +3052,7 @@ h1 {
     font-weight: 800;
     line-height: 70px;
     position: static;
+    font-family: 'MontBold';
 }
 
 .panel-heading-center {
@@ -3128,7 +3179,7 @@ h1 {
 }
 
 .panel-paragraph {
-    max-width: 570px;
+    max-width: 1200px;
     text-align: left;
     align-self: center;
     margin-bottom: 8px;
@@ -4155,7 +4206,7 @@ h1 {
 
 .content-panel-getintouch.background-gradient-dark {
     min-height: auto;
-    background-image: linear-gradient(204deg, #efd6f5, #c2d1ff 50%, #d9eafb);
+    background: #f3f4f6;
     justify-content: center;
     align-items: center;
     padding-top: 160px;
@@ -4236,7 +4287,7 @@ h1 {
 
 .content-panel-hero.background-gradient-light {
     min-height: 100vh;
-    background-image: linear-gradient(204deg, #fff, #e2e7ff 50%, #f4cbf8);
+    background-image: #8DDD71;
     justify-content: center;
     padding-top: 0;
     display: flex;
@@ -6654,7 +6705,6 @@ h1 {
     padding-top: 140px;
     padding-bottom: 140px
 }
-
 .legal-main {
     font-family: Mulish, sans-serif
 }
@@ -8155,10 +8205,6 @@ h1 {
 
     .top-navigation-wrapper:hover {
         background-color: rgba(255, 255, 255, .01)
-    }
-
-    .menu-sections {
-        margin-left: 407px
     }
 
     .product-menu-wrapper.menu_dropdown_content {
@@ -11354,11 +11400,11 @@ h1 {
     }
 
     .w-slider-dot {
-      border: 1px solid #7978de;
+      border: 1px solid #ffa500;
     }
 
     .w-slider-dot.w-active {
-      background: #7978de;
+      background: #ffa500;
     }
   </style>
 
@@ -11372,11 +11418,17 @@ h1 {
         style="display: none; visibility: hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
   </div>
-  <div class="top-navigation-wrapper">
+        
+    <div class="top-navigation-wrapper">
     <div class="navbar-content">
-      <a href="/" aria-current="page" class="home-link-block w-inline-block w--current"><img
-          src="https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/647d9d0bc78e346059974009_Logo%402x.webp"
-          loading="lazy" alt="" class="image-2" /></a>
+    <a class="navbar-brand" href="http://127.0.0.1:8000">
+                    <div class="d-flex align-items-center ">
+                        <img src="http://127.0.0.1:8000/images/Image.png" alt="">
+                        <h3 class="logo-lumos-font">
+                            LUMOS DAO
+                        </h3>
+                    </div>
+    </a>
       <div class="menu-sections">
         <div data-hover="true" data-delay="0" class="dropdown-3 w-dropdown">
            
@@ -11395,7 +11447,7 @@ h1 {
         </a>
       </div>
       <div class="menu-cta">
-        <a data-w-id="f4a9faa4-903f-458c-a94b-cfd4c516ce63" href="#" class="button w-button" data-bs-toggle="modal" data-bs-target="#ConnectWallet">Connect Wallet</a>
+        <a data-w-id="f4a9faa4-903f-458c-a94b-cfd4c516ce63" href="#" class="btn btnreg" data-bs-toggle="modal" data-bs-target="#ConnectWallet">Connect Wallet</a>
       </div>
     </div>
   </div>
@@ -11431,7 +11483,7 @@ h1 {
         <a href="/pricing" class="nav-link w-nav-link">Pricing</a><a href="https://resources.latana.com/articles/"
           class="nav-link-2 w-nav-link">Resources</a><a href="https://app.latana.com/login"
           class="nav-link-3 w-nav-link">Login</a><a data-w-id="fcf45e15-f05c-8707-2e61-6acbcd10cce0" href="#"
-          class="button w-button">Book a demo</a>
+          class="btn btnreg">Book a demo</a>
       </nav>
       <div class="menu-button w-nav-button">
         <div class="icon w-icon-nav-menu"></div>
@@ -11447,7 +11499,7 @@ h1 {
         <p class="panel-paragraph">
           LumosDAO revolutionizes decentralized governance on Soroban, enabling transparent voting and proposal creation
           for communities to grow and collaborate seamlessly. </p>
-        <a data-w-id="a7cac35f-1429-777b-af96-131c94642000" href="#" class="button w-button">Learn more</a>
+        <a data-w-id="a7cac35f-1429-777b-af96-131c94642000" href="#" class="btn btnreg">Learn more</a>
       </div>
       <div class="panel-visual-dashboard side-by-side">
         <div class="centeral-image">
@@ -11468,135 +11520,72 @@ h1 {
       Trusted by:
     </h2>
     <section class="w-layout-blockcontainer ticker w-container">
-      <div class="tooltip">
+      <div class="">
         <div class="ticker-content">
           <div class="logo">
             <img
-              src="https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64d0e0593f452fef669d3d53_patagonia_logo.svg"
+              src="{{ asset('images/brandlogo1.svg') }}"
               loading="lazy" alt="" />
           </div>
         </div>
       </div>
-      <div class="tooltip">
+      <div class="">
         <div class="ticker-content">
           <div class="logo">
             <img
-              src="https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64d0e059c41267a28dd51b38_babbel_logo.svg"
+              src="{{ asset('images/brandlogo2.svg') }}"
               loading="lazy" alt="" />
           </div>
         </div>
       </div>
-      <div class="tooltip">
+      <div class="">
         <div class="ticker-content">
           <div class="logo">
             <img
-              src="https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64d0e0590ac9e1c56edba816_thrifty_logo.svg"
+              src="{{ asset('images/brandlogo3.svg') }}"
               loading="lazy" alt="" />
           </div>
         </div>
       </div>
-      <div class="tooltip hide">
+      <div class="">
         <div class="ticker-content">
           <div class="logo">
             <img
-              src="https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64d0e9fe7c26d4d92287d1a6_silentnight_logo.svg"
+              src="{{ asset('images/brandlogo4.svg') }}"
               loading="lazy" alt="" />
           </div>
         </div>
       </div>
-      <div class="tooltip">
+      <div class="">
         <div class="ticker-content">
           <div class="logo">
             <img
-              src="https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64d0eb3e5f4d0385b7415657_logo%2Bhungryroot.svg"
-              loading="lazy" alt="" class="image-hungryroot" />
-          </div>
-        </div>
-      </div>
-      <div class="tooltip">
-        <div class="ticker-content">
-          <div class="logo sephora">
-            <img
-              src="https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64d0e059449eb28e9c85f46a_Sephora_logo_purple.svg"
+              src="{{ asset('images/brandlogo1.svg') }}"
               loading="lazy" alt="" />
           </div>
         </div>
       </div>
-      <div class="tooltip">
+      <div class="">
         <div class="ticker-content">
           <div class="logo">
             <img
-              src="https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64b11a2fd8bd3f766034f447_BitcoinDE_dark.svg"
+              src="{{ asset('images/brandlogo2.svg') }}"
               loading="lazy" alt="" />
           </div>
         </div>
       </div>
-      <div class="tooltip">
+      <div class="">
         <div class="ticker-content">
           <div class="logo">
             <img
-              src="https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64b11a2e616e0f54d835463a_Birkenstock_dark.svg"
-              loading="lazy" alt="" class="image-39" />
-          </div>
-        </div>
-      </div>
-      <div class="tooltip">
-        <div class="ticker-content">
-          <div class="logo">
-            <img
-              src="https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64b11a2d151326ef4e23bed3_LeapFrog_dark.svg"
-              loading="lazy" alt="" />
-          </div>
-        </div>
-      </div>
-      <div class="tooltip">
-        <div class="ticker-content">
-          <div class="logo">
-            <img
-              src="https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64b11a2fbfa43fcb05188b2f_Hertz_dark.svg"
-              loading="lazy" alt="" />
-          </div>
-        </div>
-      </div>
-      <div class="tooltip">
-        <div class="ticker-content">
-          <div class="logo">
-            <img
-              src="https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64b11a2fbfa43fcb05188b2f_Hertz_dark.svg"
-              loading="lazy" alt="" />
-          </div>
-        </div>
-      </div>
-      <div class="tooltip">
-        <div class="ticker-content">
-          <div class="logo">
-            <img
-              src="https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64b11a2fbfa43fcb05188b2f_Hertz_dark.svg"
-              loading="lazy" alt="" />
-          </div>
-        </div>
-      </div>
-      <div class="tooltip">
-        <div class="ticker-content">
-          <div class="logo">
-            <img
-              src="https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64b11a2fbfa43fcb05188b2f_Hertz_dark.svg"
-              loading="lazy" alt="" />
-          </div>
-        </div>
-      </div>
-      <div class="tooltip">
-        <div class="ticker-content">
-          <div class="logo">
-            <img
-              src="https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64b11a2fbfa43fcb05188b2f_Hertz_dark.svg"
+              src="{{ asset('images/brandlogo3.svg') }}"
               loading="lazy" alt="" />
           </div>
         </div>
       </div>
     </section>
   </main>
-  <section id="strategy-section" class="content-panel-usp1">
+ <section id="strategy-section" class="content-panel-usp1">
     <div class="content home vp w-container">
       <div class="panel-text centered vp">
         <h2 class="panel-heading center">
@@ -11617,50 +11606,26 @@ h1 {
               <div data-w-id="bcebe238-6b4b-6589-c1d1-cdac115c2e31" class="slide-1 w-slide">
                 <img width="894"
                   sizes="(max-width: 479px) 92vw, (max-width: 767px) 72vw, (max-width: 991px) 71vw, (max-width: 1439px) 67vw, 894px"
-                  src="https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae78ba457bb4910722f052_HP-VP1-S1.webp"
-                  loading="lazy" alt="" srcset="
-                      https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae78ba457bb4910722f052_HP-VP1-S1-p-500.webp   500w,
-                      https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae78ba457bb4910722f052_HP-VP1-S1-p-800.webp   800w,
-                      https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae78ba457bb4910722f052_HP-VP1-S1-p-1080.webp 1080w,
-                      https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae78ba457bb4910722f052_HP-VP1-S1-p-1600.webp 1600w,
-                      https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae78ba457bb4910722f052_HP-VP1-S1.webp        1788w
-                    " class="screen" />
+                  src="{{ asset('images/point 1.png') }}"
+                  loading="lazy" alt="" class="screen" />
               </div>
               <div data-w-id="bcebe238-6b4b-6589-c1d1-cdac115c2e33" class="slide-2 w-slide">
                 <img width="894"
                   sizes="(max-width: 479px) 92vw, (max-width: 767px) 72vw, (max-width: 991px) 71vw, (max-width: 1439px) 67vw, 894px"
-                  src="https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae60c7c93bc48ef730547a_HP-VP1-S2.webp"
-                  loading="lazy" alt="" srcset="
-                      https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae60c7c93bc48ef730547a_HP-VP1-S2-p-500.webp   500w,
-                      https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae60c7c93bc48ef730547a_HP-VP1-S2-p-800.webp   800w,
-                      https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae60c7c93bc48ef730547a_HP-VP1-S2-p-1080.webp 1080w,
-                      https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae60c7c93bc48ef730547a_HP-VP1-S2-p-1600.webp 1600w,
-                      https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae60c7c93bc48ef730547a_HP-VP1-S2.webp        1788w
-                    " class="screen" />
+                  src="{{ asset('images/point 1.png') }}"
+                  loading="lazy" alt="" class="screen" />
               </div>
               <div data-w-id="bcebe238-6b4b-6589-c1d1-cdac115c2e35" class="slide-3 w-slide">
                 <img width="894"
                   sizes="(max-width: 479px) 92vw, (max-width: 767px) 72vw, (max-width: 991px) 71vw, (max-width: 1439px) 67vw, 894px"
-                  src="https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae60c72b165bfbdd22b9c1_HP-VP1-S3.webp"
-                  loading="lazy" alt="" srcset="
-                      https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae60c72b165bfbdd22b9c1_HP-VP1-S3-p-500.webp   500w,
-                      https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae60c72b165bfbdd22b9c1_HP-VP1-S3-p-800.webp   800w,
-                      https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae60c72b165bfbdd22b9c1_HP-VP1-S3-p-1080.webp 1080w,
-                      https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae60c72b165bfbdd22b9c1_HP-VP1-S3-p-1600.webp 1600w,
-                      https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae60c72b165bfbdd22b9c1_HP-VP1-S3.webp        1788w
-                    " class="screen" />
+                  src="{{ asset('images/point 1.png') }}"
+                  loading="lazy" alt=""  class="screen" />
               </div>
               <div data-w-id="bcebe238-6b4b-6589-c1d1-cdac115c2e31" class="slide-4 w-slide">
                 <img width="894"
                   sizes="(max-width: 479px) 92vw, (max-width: 767px) 72vw, (max-width: 991px) 71vw, (max-width: 1439px) 67vw, 894px"
-                  src="https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae60c72b165bfbdd22b9c1_HP-VP1-S3.webp"
-                  loading="lazy" alt="" srcset="
-                      https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae60c72b165bfbdd22b9c1_HP-VP1-S3-p-500.webp   500w,
-                      https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae60c72b165bfbdd22b9c1_HP-VP1-S3-p-800.webp   800w,
-                      https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae60c72b165bfbdd22b9c1_HP-VP1-S3-p-1080.webp 1080w,
-                      https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae60c72b165bfbdd22b9c1_HP-VP1-S3-p-1600.webp 1600w,
-                      https://assets-global.website-files.com/6475c5eea8e20ed4cd6ee36e/64ae60c72b165bfbdd22b9c1_HP-VP1-S3.webp        1788w
-                    " class="screen" />
+                  src="{{ asset('images/point 1.png') }}"
+                  loading="lazy" alt="" class="screen" />
               </div>
             </div>
             <div class="left-arrow w-slider-arrow-left">
@@ -11805,12 +11770,13 @@ h1 {
         <p class="panel-paragraph git">
           We look forward to hearing from you and welcoming you to the LumosDAO community.
         </p>
-        <a data-w-id="b36860b6-9555-4ebd-8211-5580cf70d175" href="#" class="button solid-button cta w-button">Book a
+       <div class="d-flex align-items-center justify-content-center w-100">
+       <a href="#" class="btn btnreg">Book a
           demo</a>
+       </div>
       </div>
     </div>
   </section>
-
   <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=6475c5eea8e20ed4cd6ee36e"
     type="text/javascript" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
     crossorigin="anonymous"></script>
@@ -12040,7 +12006,6 @@ h1 {
       });
     }
 
-    // Call the tooltipAnimation function to initialize the event listeners
     tooltipAnimation();
   </script>
 </body>
