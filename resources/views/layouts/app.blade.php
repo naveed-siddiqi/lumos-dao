@@ -19,7 +19,7 @@
 </head>
 @include('components.scripts')
 <body class="DOA">
-    <section>
+    <section id='main_header_div'>
         <nav class="navbar navbar-expand-lg ">
             <div class="container">
                 <a class="navbar-brand" href="{{ route('home') }}">

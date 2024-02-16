@@ -39,13 +39,13 @@
                             </div>
                         </div>
                         <div class="d-flex align-items-center justify-content-end gap-3 py-3 w-100 mt-4">
-                            <button class="btn btn-success whitespace-nowrap" data-toggle="modal"
+                            <button id='manageAdminBut' class="btn btn-success whitespace-nowrap" data-toggle="modal"
                                 data-target="#manageAdmin">Manage
                                 Admins</button>
                             <a id='inbox' href="{{route('proposal.inbox')}}">
                                 <button class="btn btn-secondary">Send message</button>
                             </a>
-                            <button class='btn btn-danger whitespace-nowrap' id=' ' style='border:2px solid red;display:no ne'>Leave Dao</button>
+                            <button class='btn btn-danger whitespace-nowrap' id='leaveDao' style='border:2px solid red;display:no ne'>Leave Dao</button>
                         </div>
                         </div>
                         <div id='dao_about' class="card-paragraph">
