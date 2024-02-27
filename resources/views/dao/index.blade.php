@@ -34,8 +34,8 @@
                         <div class="card-imgflex mt-1">
                             <img id='dao_image' data="{{ asset('images/demi.jpg') }}" alt="">
                             <div class="cardHeading mt-4 py-2">
-                                <p id='dao_name' class="card-heading"></p>
-                                <p id='dao_members' class="card-subheading"></p>
+                                <p id='dao_name' class="card-heading whitespace-nowrap"></p>
+                                <p id='dao_members' class="card-subheading whitespace-nowrap"></p>
                             </div>
                         </div>
                         <div class="d-flex align-items-center justify-content-end gap-3 py-3 w-100 mt-4">
@@ -48,7 +48,7 @@
                             <button class='btn btn-danger whitespace-nowrap' id='leaveDao' style='border:2px solid red;display:no ne'>Leave Dao</button>
                         </div>
                         </div>
-                        <div id='dao_about' class="card-paragraph">
+                        <div id='dao_about' class="card-paragraph whitespace-nowrap">
                         </div>
 
                        <div class="">

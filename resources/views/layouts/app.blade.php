@@ -15,6 +15,8 @@
         integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGKaWeNxWA8yrx5v3SaVpMvR3CA=="
         referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{{ asset('css/style.css?v='.time()) }}">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel/slick/slick.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel/slick/slick-theme.css" />
     <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> -->
 </head>
 @include('components.scripts')
@@ -154,11 +156,11 @@
                                                 <div class="card-imgflex-social-link">
                                                     <label for="">
                                                         <img class="w-img"
-                                                            src="/images/x-logo-twitter-elon-musk_dezeen_2364_col_0-1.webp"
+                                                            src="{{asset('/images/x-logo-twitter-elon-musk_dezeen_2364_col_0-1.webp')}}"
                                                             alt="">
                                                     </label>
                                                 </div>
-                                                <span><small>Instagram</small></span>
+                                                <span><small>X.com</small></span>
                                             </a>
                                         </div>
 
@@ -168,7 +170,7 @@
 
                                                 <div class="card-imgflex-social-link">
                                                     <label for="">
-                                                        <img class="w-img" src="/images/LinkedIn_icon.svg.png" alt="">
+                                                        <img class="w-img" src="{{asset('/images/LinkedIn_icon.svg.png')}}" alt="">
                                                     </label>
                                                 </div>
                                                 <span><small>LinkedIn</small></span>
@@ -180,7 +182,7 @@
 
                                                 <div class="card-imgflex-social-link">
                                                     <label for="">
-                                                        <img class="w-img" src="/images/github.png" alt="">
+                                                        <img class="w-img" src="{{asset('/images/github.png')}}" alt="">
                                                     </label>
                                                 </div>
                                                 <span><small>Github</small></span>
@@ -270,6 +272,12 @@
     </footer>
 
     @include('components.connectWallet')
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/slick-carousel/slick/slick.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -280,8 +288,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
         integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous">
     </script>
+    @stack('scripts')
 
-    
 
     {{-- <script src="{{ asset('js/custom.js?v='.time()) }}"></script> --}}
     <script src="{{ asset('js/wallet.js?v='.time()) }}"></script>
