@@ -3398,3 +3398,19 @@ width: 100%;
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
   }
+.pollingInput{
+    border: none;
+    /* border-bottom: 1px solid rgb(214, 214, 214); */
+    flex: 1 1 0%;
+    padding:8px;
+    font-family: "MontReg";
+}
+.heading{
+    font-size: 20px;
+    font-family: "MontSem";
+    color: var(--primary-color);
+}
+textarea::placeholder{
+    font-family: 'MontReg';
+    font-size: 14px;
+}
