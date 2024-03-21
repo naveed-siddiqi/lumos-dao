@@ -51,9 +51,9 @@
                             <div class="textProp">
                                 <div class="d-flex gap-2 my-2">
                                 <input class="input-filed border rounded" id='title' type="text" placeholder="Proposal Title" name="title" value="{{ old('title') }}">
-                                <input class="input-filed border rounded" id='about' type="text" placeholder="Add Budget">
+                                <input class="input-filed border rounded" id='budget' type="number" placeholder="Add Budget">
                                 </div>
-                                <textarea class="input-filed border rounded" placeholder="Tell more about your proposal (optional)" name="about">{{ old('about') }}</textarea>
+                                <textarea id='about' class="input-filed border rounded" placeholder="Tell more about your proposal (optional)" name="about">{{ old('about') }}</textarea>
                           
                                </div>
                          </div>
@@ -140,17 +140,19 @@
             e.preventDefault() //prevent the form from submitting itself
             let title = E('title').value.trim()
             const about = E('about').value.trim()
+            const budget = (E('budget').value * 1) * 10000000
             const startDate = (new Date(E('startDate').value)).getTime() / 1000;
             if(title != ""){
-                //first check if he or she is a memeber
                 const id = talk("Getting ready")
+                const dao = await getDao("{{$dao['asset']}}");
+                if(await isBanned(dao.token, walletAddress)){stopTalking(0.1, id);return "";}
+                //first check if he or she is a memeber
                 E('create').disabled = true
                 if(hasJoined == null || hasJoined === false) {
                     //get join state
                     const bal = await getTokenUserBal('{{$dao['asset']}}', walletAddress);  
                     if(bal === false) {
                         talk("You are not a member of this DAO<br><center>Joining DAO</center>", 'norm', id)
-                        const dao = await getDao("{{$dao['asset']}}");
                         const res = await createTrustline(dao.code, dao.issuer, walletAddress, dao.name, dao.token)
                         if(res !== false) {
                             hasJoined = true
@@ -173,7 +175,8 @@
                                 name:title,
                                 about:about,
                                 start:startDate,
-                                links:link
+                                links:link,
+                                budget
                             })
                             if(res) {  
                                 stopTalking(4, talk("Proposal created successfully", 'good', id))

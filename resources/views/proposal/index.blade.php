@@ -94,7 +94,7 @@
             </div>
             <div class="modal-body p-4 pt-0 w-100 font-sm">
                 <p class="">Reason</p>
-                <form class="d-flex flex-column align-items-left justify-content-start gap-3" action="">
+                <form class="d-flex flex-column align-items-left justify-content-start gap-3" onsubmit='voteWithReasons(event)'>
                     <div class="">
                         <input type="radio" id="1" name="reasons" value="1">
                         <label class="font-sm" for="">Alignment with Project Goals</label>
@@ -113,34 +113,35 @@
                     </div>
                     <div id="otherReasonCtn">
                         <label class="font-sm" for="">Mention the Reason here:</label>
-                        <input class="form-control" type="text" maxlength="50">
+                        <input class="form-control" type="text" name='other_reasons' maxlength="50">
                         <div class="text-end">
                             <small class="text-danger text-left w-100 font-sm">-Max 50 characters</small>
                         </div>
                     </div>
+                    <div class="d-flex align-items-center justify-content-end gap-3 modal-footer m-0 p-0 py-3 px-3 w-100">
+                        <button type="submit" class="btn btn-danger text-white font-sm">Confirm</button>
+                    </div>
                 </form>
             </div>
 
-            <div class="d-flex align-items-center justify-content-end gap-3 modal-footer m-0 p-0 py-3 px-3 w-100">
-                <button type="button" class="btn btn-danger text-white font-sm">Confirm</button>
-            </div>
+            
         </div>
     </div>
 </div>
-<div class="modal fade" id="reasonVoteNo" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+ <div class="modal fade" id="reasonVoteNo" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">
 
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content cardEndDiv p-0 fa-ctn fa-modal-content">
             <div class="d-flex justify-content-end w-100">
                 <button type="button" class="close p-3 pb-0 m-0 border-0 bg-transparent" data-dismiss="modal"
-                    aria-label="Close">
+                    data-bs-target="#reasonVoteNo" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body p-4 pt-0 w-100 font-sm">
                 <p class="">Reason</p>
-                <form class="d-flex flex-column align-items-left justify-content-start gap-3" action="">
+                <form class="d-flex flex-column align-items-left justify-content-start gap-3" onsubmit='voteWithReasonsNo(event)'>
                     <div class="">
                         <input type="radio" id="1" name="reasonsNo" value="1">
                         <label class="font-sm" for="">Lack of Alignment with Goals</label>
@@ -159,17 +160,18 @@
                     </div>
                     <div id="otherReasonCtnNo">
                         <label class="font-sm" for="">Mention the Reason here:</label>
-                        <input class="form-control" type="text" maxlength="50">
+                        <input class="form-control" type="text" maxlength="50" name='other_reasons_no'>
                         <div class="text-end">
                             <small class="text-danger text-left w-100 font-sm">-Max 50 characters</small>
                         </div>
                     </div>
+                    <div class="d-flex align-items-center justify-content-end gap-3 modal-footer m-0 p-0 py-3 px-3 w-100">
+                        <button type="submit" class="btn btn-danger text-white font-sm">Confirm</button>
+                    </div>
                 </form>
             </div>
 
-            <div class="d-flex align-items-center justify-content-end gap-3 modal-footer m-0 p-0 py-3 px-3 w-100">
-                <button type="button" class="btn btn-danger text-white font-sm">Confirm</button>
-            </div>
+            
         </div>
     </div>
 </div>
@@ -186,7 +188,7 @@
                 </div>
             </div>
     </section>
-    <section class="DescPer">
+    <section class="DescPer" id='attached_files'>
         <div class="container">
             <div class="row">
                 <div style="gap:50px;" class="DescPerSec d-flex align-items-center ">
@@ -391,20 +393,25 @@
     var propId = ("{{ $prop['proposal_id'] }}");propId = propId.trim() * 1;
     var vote_power;
     var voterInfo;
+    var daoDelegatee;
+    var voterDelegator = [];
+    var vote_type = null;
     var voter_info_page = 1;
     var voter_page_segment = 10;
         const setUp = async () =>{  
             //get dao info
             dao = await getDao("{{ $prop['dao_id'] }}");
-            E('dao_name').innerText = dao.name
+            const timeStart = performance.now()
             //get prop info
             prop = await getProposal(propId); //console.log(prop)
+            E('dao_name').innerText = dao.name
+            daoDelegatee = await getDaoDelegatee(dao.token, walletAddress) || []
             //display info
             E('prop_name').innerText = prop.title || ""
             E('prop_about').innerText = prop.description || ""
-            const delimtr = "https://" + dao.name.toLowerCase().replace(/ /g,"") + ".lumosdao.io"
+            const delimtr = "https://" + dao.name.toLowerCase().replace(/ /g,"") + ".testing.lumosdao.io"
             const links = (prop.links || "").trim().split("," + delimtr)
-            let filename;
+            let filename; E('prop_links').innerHTML = ""
             for(let i=0;i<links.length;i++) {
                 if(links[i] != "") {
                     links[i] = links[i].replace(delimtr, "")
@@ -415,10 +422,13 @@
                     E('prop_links').innerHTML += ` <h6 style="color:#00b2fb;"><a target='_blank' href="${delimtr + links[i]}">${filename}</a></h6>`
                 }
             }
+            if( E('prop_links').innerHTML == "") {
+                E('attached_files').style.display = 'none'
+            }
             //display metadat
             E('prop_id').innerText = 'PROP_' + propId
             E('prop_duration').innerText = '5 days'
-            E('prop_status').innerText = prop.status || "Unsure"
+            E('prop_status').innerText = (prop.status == 4) ? "Ended" : (prop.status == 0) ? "Inactive" : (prop.status == 1) ? "Active": (prop.status == 2) ? "Rejected" : "Funded"
             E('prop_creator').innerText = prop.creator.substring(0, 5) + "..." + prop.creator.substring(prop.creator.length - 3)
             //display the voters info
             setUpVote(prop)
@@ -447,9 +457,9 @@
             const bal = await getTokenUserBal(prop.dao, walletAddress);  
             if(bal !== false) {
                 //voting power
-                vote_power = await getVotingPower({
-                    asset:dao.code, address:dao.issuer, dao: dao.token
-                }, walletAddress)
+                // vote_power = await getVotingPower({
+                //     asset:dao.code, address:dao.issuer, dao: dao.token
+                // }, walletAddress)
                 E('prop_vote_power').innerText = "Current voting power: " + vote_power
                 //can vote, and has joined
                 const my_vote = await getProposalVoterInfo(propId, walletAddress)
@@ -459,31 +469,63 @@
                 E('prop_vote_yes_action').disabled = false
                 E('prop_vote_no_action').disabled = false
                 
-                if(my_vote == 0) {
-                    //has not voted, show both vote buttons
+                if(prop.status == 1) {
+                    if(my_vote == 0 && daoDelegatee.length < 1) {
+                        if(!prop.executed) {
+                            //has not voted, show both vote buttons
+                            E('prop_vote_yes_action').style.display = 'block'
+                            E('prop_vote_no_action').style.display = 'block'
+                            //hide comment button
+                            E('add_comment').style.display = 'none'
+                        }
+                    }
+                    else if(my_vote == 1 && daoDelegatee.length < 1) {
+                            //voted yes
+                            E('prop_vote_yes_action').style.display = 'block'
+                            E('prop_vote_yes_action').innerText = 'Voted'
+                            E('prop_vote_yes_action').disabled = true
+                            //show add comment button
+                            E('add_comment').style.display = 'flex'
+                        }
+                    else if(my_vote == 2 && daoDelegatee.length < 1) {
+                            //voted yes
+                            E('prop_vote_no_action').style.display = 'block'
+                            E('prop_vote_no_action').innerText = 'Voted'
+                            E('prop_vote_no_action').disabled = true
+                            //show comment button
+                             E('add_comment').style.display = 'flex'
+                        }
+                    else {
+                            //has delegated voting power
+                            E('prop_vote_yes_action').style.display = 'block'
+                            E('prop_vote_no_action').style.display = 'block'
+                            E('prop_vote_no_action').innerText = 'Delegated'
+                            E('prop_vote_yes_action').innerText = 'Delegated'
+                            E('prop_vote_no_action').disabled = true
+                            E('prop_vote_yes_action').disabled = true
+                            //hide comment button
+                            E('add_comment').style.display = 'none'
+                        }
+                }
+                else {
+                    //has delegated voting power
                     E('prop_vote_yes_action').style.display = 'block'
                     E('prop_vote_no_action').style.display = 'block'
+                    E('prop_vote_no_action').innerText = 'Inactive'
+                    E('prop_vote_yes_action').innerText = 'Inactive'
+                    E('prop_vote_no_action').disabled = true
+                    E('prop_vote_yes_action').disabled = true
                     //hide comment button
                     E('add_comment').style.display = 'none'
                 }
-                else if(my_vote == 1) {
-                    //voted yes
-                    E('prop_vote_yes_action').style.display = 'block'
-                    E('prop_vote_yes_action').innerText = 'Voted'
-                    E('prop_vote_yes_action').disabled = true
-                    //show add comment button
-                     E('add_comment').style.display = 'flex'
+                E('prop_vote_yes_action').onclick = async () => {
+                    //store the vote type
+                    vote_type = 1
                 }
-                else if(my_vote == 2) {
-                    //voted yes
-                    E('prop_vote_no_action').style.display = 'block'
-                    E('prop_vote_no_action').innerText = 'Voted'
-                    E('prop_vote_no_action').disabled = true
-                    //show comment button
-                     E('add_comment').style.display = 'flex'
+                E('prop_vote_no_action').onclick = async () => {
+                    //store the vote type
+                    vote_type = 2
                 }
-                E('prop_vote_yes_action').onclick = async () => {await vote(1)}
-                E('prop_vote_no_action').onclick = async () => {await vote(2)}
                 //configure add comment button action
                 E('add_comment').onclick = () => {
                     E('prop_comment_box').style.display = 'block'
@@ -553,7 +595,8 @@
             const msg = E('prop_comment_msg').value.trim()
             if(msg != "") {
                 E('prop_send_comment').disabled = true //disable button
-                const id = talk('Commenting')
+                const id = talk('Sending comment')
+                if(await isBanned(dao.token, walletAddress)){stopTalking(0.1, id);return ""}
                 const res = await sendProposalComment(propId, dao.token, msg, walletAddress); 
                 if(res  === 1) {
                     stopTalking(4, talk("Commented", 'good', id))
@@ -578,6 +621,8 @@
                     voter:voterInfo[i].voter,
                     vote_type:voterInfo[i].vote_type,
                     voting_power:voterInfo[i].voting_power,
+                    voting_reason:voterInfo[i].reason,
+                    is_delegated:voterInfo[i].delegated,
                     time:voterInfo[i].time
                 })
             }
@@ -609,40 +654,156 @@
             }
             
         }
-        async function vote(voteType = 1) {
-            //calculate the voting power
-            let vote_label;
-            (voteType == 1) ? vote_label = "yes" : vote_label = "no"
-            const id = talk("Voting " + vote_label + " on this proposal")
+        const voteWithReasons = (e) => {
+           event.preventDefault(); // Prevent form submission (since we're handling it manually)
+           // Get the selected radio option
+           const selectedOption = document.querySelector('input[name="reasons"]:checked');
+           if (selectedOption) {
+                // If a radio option is selected
+                const selectedValue = selectedOption.value;
+                let reason;
+                // Determine the reason based on the selected option value
+                switch (selectedValue) {
+                    case '1':
+                        reason = "Alignment with Project Goals";
+                        break;
+                    case '2':
+                        reason = "Beneficial Impact";
+                        break;
+                    case '3':
+                        reason = "Feasibility and Sustainability";
+                        break;
+                    case 'other':
+                        // If "Other" option is selected, get the text input value
+                        reason = document.querySelector('input[name="other_reasons"]').value;
+                        break;
+                    default:
+                        reason = "";
+                }
+                //hide modal
+                 E('reasonVote').click()
+                 vote(1, reason)
+           } else {
+                stopTalking(2, talk("Please select a reason", 'fail'))
+           }
+        }
+        const voteWithReasonsNo = (e) => {
+           event.preventDefault(); // Prevent form submission (since we're handling it manually)
+           // Get the selected radio option
+           const selectedOption = document.querySelector('input[name="reasonsNo"]:checked');
+           if (selectedOption) {
+                // If a radio option is selected
+                const selectedValue = selectedOption.value;
+                let reason;
+                // Determine the reason based on the selected option value
+                switch (selectedValue) {
+                    case '1':
+                        reason = "Lack of Alignment with Goals";
+                        break;
+                    case '2':
+                        reason = "High budget";
+                        break;
+                    case '3':
+                        reason = "Feasibility Concerns";
+                        break;
+                    case 'other':
+                        // If "Other" option is selected, get the text input value
+                        reason = document.querySelector('input[name="other_reasons_no"]').value;
+                        break;
+                    default:
+                        reason = "";
+                }
+                //hide modal
+                E('reasonVoteNo').click()
+                vote(2, reason)
+           } else {
+                stopTalking(2, talk("Please select a reason", 'fail'))
+           }
+        }
+        async function vote(voteType = 1, reason = "") {
             //disable the two buttons
             E('prop_vote_yes_action').style.display = 'none'
             E('prop_vote_no_action').style.display = 'none'
-            const res = await voteProposal({
-                proposalId: propId,
-                voters: walletAddress,
-                vote_type:voteType,
-                voting_power:vote_power,
-                name:prop.name
-            })
-            if(res) {
-                if(res.status == 'voted') {
-                    stopTalking(4, talk("You have voted " + vote_label + " on this proposal", 'good', id))
-                }
-                else if(res.status == 'hasvoted') {
-                    stopTalking(4, talk("You have already voted " + vote_label + " on this proposal", 'warn', id))
-                }
-                else if(res.status == 'lowbal') {
-                    stopTalking(4, talk("You don't have sufficient DAO asset balance to make this vote", 'fail', id))
-                }
-                else if(res.status == 'lowbal') {
-                    stopTalking(4, talk("This proposal does not accep vote at this time", 'fail', id))
-                }
-                //reset the votes
-                setUpVote()
+            //calculate the voting power
+            let vote_label;
+            (voteType == 1) ? vote_label = "yes" : vote_label = "no"
+            //fetch voting power
+            const id = talk("Fetching voting power")
+            if(await isBanned(dao.token, walletAddress)){stopTalking(0.1, id);return ""}
+            vote_power = await getVotingPower({
+                     asset:dao.code, address:dao.issuer, dao: dao.token
+            }, walletAddress)
+            if(vote_power !== false){
+                const delegators = await getDaoDelegators(dao.token, walletAddress)
+                vote_power *= 1;
+                if(delegators.length > 0) {
+                    //using delegated power, 
+                    talk('Using delegated voting power', 'norm', id)
+                    let i=0;
+                    delegators.forEach(async (_delegator) => {
+                        talk("Fetching voting power of delegator <br>" + fAddr(_delegator, 10), "norm", id)
+                        const _res =  (await getVotingPower({
+                                         asset:dao.code, address:dao.issuer, dao: dao.token
+                        }, _delegator))
+                        if(_res !== false) {  
+                            vote_power += (_res * 1);
+                        }
+                        else {
+                            stopTalking(1.5, talk("Unable to fetch voting power<br>Network error<br><br>Skipping delegator", 'warn', id))
+                        }
+                        //check if its the last delegator
+                        i++
+                        if(i >= delegators.length) {start_voting()}
+                    })
+                }else{start_voting()}
+                
+                async function start_voting() { console.log(vote_power)
+                    talk("Voting " + vote_label + " on this proposal", "norm", id)
+                    const res = await voteProposal({
+                        proposalId: propId,
+                        voters: walletAddress,
+                        vote_type:voteType,
+                        voting_power:vote_power,
+                        name:prop.name,
+                        reason:reason
+                    })
+                    if(res) {
+                        if(res.status == 'voted') {
+                            stopTalking(4, talk("You have voted " + vote_label + " on this proposal", 'good', id))
+                        }
+                        else if(res.status == 'hasvoted') {
+                            stopTalking(4, talk("You have already voted " + vote_label + " on this proposal", 'warn', id))
+                        }
+                        else if(res.status == 'lowbal') {
+                            stopTalking(4, talk("You don't have sufficient DAO asset balance to make this vote", 'fail', id))
+                        }
+                        else if(res.status == 'lowbal') {
+                            stopTalking(4, talk("This proposal does not accep vote at this time", 'fail', id))
+                        }
+                        else if(res.status == 'inactive') {
+                            stopTalking(4, talk("This proposal is not active", 'fail', id))
+                        }
+                        else if(res.status == 'ended') {
+                            stopTalking(4, talk("This proposal has ended", 'fail', id))
+                        }
+                        else  {
+                            stopTalking(4, talk("Something went wrong", 'fail', id))
+                        }
+                        //reset the votes
+                        setUpVote()
+            }
+                    else {
+                        //something went wrong
+                        stopTalking(4, talk("Something went wrong<br>Try again later", 'fail', id))
+                        E('prop_vote_yes_action').style.display = 'block'
+                        E('prop_vote_no_action').style.display = 'block'
+            }
+                    }
+                
             }
             else {
                 //something went wrong
-                stopTalking(4, talk("Something went wrong<br>Try again later", 'fail', id))
+                stopTalking(4, talk("Unable to fetch voting power<br>Network error", 'fail', id))
                 E('prop_vote_yes_action').style.display = 'block'
                 E('prop_vote_no_action').style.display = 'block'
             }
@@ -651,8 +812,8 @@
             return `<tr>
                                     <td>${params.voter.substring(0,4) + '...' + params.voter.substring(params.voter.length - 4)}</td>
                                     <td>${(params.vote_type == 1) ? "Yes" : "No"}</td>
-                                    <td>${N(params.voting_power) / floatingConstant} <span style='background:dodgerblue;padding:5px;border-radius:5px;color:#fff;font-size:13px'>delegated</span></td>
-                                    <td>This is some reason</td>
+                                    <td>${N(params.voting_power) / floatingConstant} <span style='${(params.is_delegated == true) ? '' : 'display:none;'}background:dodgerblue;padding:5px;border-radius:5px;color:#fff;font-size:13px'>delegated</span></td>
+                                    <td>${params.voting_reason}</td>
                                     <td>${(new Date(N(params.time) * 1000)).toLocaleString()}</td>
                                 </tr>`
 

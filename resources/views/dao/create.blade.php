@@ -75,6 +75,19 @@
                             <input type="text" class="form-control" id="dao_about" name="home_domain" placeholder="Description..." value="">
                         </div>
                         
+                         <div class="assetInput" style='margin-top:20px'>
+                            <div class="d-flex align-items-start">
+                                 <label  for="homeDomain" class="form-label" style='white-space: nowrap;flex-shrink:0'>Proposal Funds address</label>
+                            <button style="padding-top:0.2rem;" type="button" class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary " data-toggle="tooltip" data-placement="top" title="A brief description about your DAO community">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                </svg>
+                                  </button>
+                            </div>
+
+                            <input type="text" class="form-control" id="dao_fund" name="home_domain" placeholder="Wallet address..." value="">
+                        </div>
+                        
                     
             
             
@@ -186,7 +199,7 @@
                                             </svg>
                                             </button>
                                     </div>
-                                    <button style="font-weight: 500; background: transparent; font-family: 'MontSem';"  class="create-dao-link border-0 " data-bs-toggle="modal" data-bs-target="
+                                     <button style="font-weight: 500; background: transparent; font-family: 'MontSem';"  class="create-dao-link border-0 " data-bs-toggle="modal" data-bs-target="
                                         <?php
                                          if (!isset($_COOKIE['wallet'])) { echo "#ConnectWallet";}
                                         ?> 
@@ -209,6 +222,20 @@
                                         </button>
                                 <!--<span class="asset-details-text text-secoundary">GCEV......MA6R</span>-->
                             </div>
+                            <div class="d-flex align-items-center justify-content-start gap-3">
+                                    <div class="d-flex align-items-center justify-content-start">
+                                            <span class="asset-stellar-p">Proposal Fund Wallet:</span>
+                                            <button type="button" class="border-0 bg-transparent d-flex align-items-start justify-content-center p-2 text-secondary" data-toggle="tooltip" data-placement="top" title="This is where proposal budget funds would be transferred to.">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                            </svg>
+                                            </button>
+                                    </div>
+                                   <input id='dao_o_fund' type="text" placeholder='Address here' class="form-control">
+                            </div>
+                            
+                           
+                                   
                         </div>
 
                         <div  class="d-flex justify-content-between gap-3" style='display:none !important'>
@@ -611,7 +638,8 @@
             const name = E('dao_name').value.trim()
             const desc = E('dao_about').value.trim()
             const _url = E('assetUrl').value.trim()
-            if(name != "" && desc != "") {
+            const treasury = E('dao_fund').value.trim()
+            if(name != "" && desc != "" && treasury != "") {
                 if(assetAddress != null) {
                     if(issueAddress == walletAddress) {
                         //disable button
@@ -623,7 +651,8 @@
                                 name:name,
                                 about:desc,
                                 token:assetAddress,
-                                url:_url
+                                url:_url,
+                                treasury
                             })
                             console.log(res)
                             if(res === false) {
@@ -671,8 +700,9 @@
             const aSupply = E('asset_o_supply').value.trim()
             const name = E('dao_o_name').value.trim()
             const about = E('dao_o_about').value.trim()
+            const treasury = E('dao_o_fund').value.trim()
             const fileInput = E('asset_o_upload');
-            if(aCode != "" && aSupply != "" && name != "" && about != "" && upload_file != null) {
+            if(aCode != "" && aSupply != "" && name != "" && about != "" && upload_file != null && treasury != "") {
                 if(isSafeToml(aCode) && isSafeToml(name) && isSafeToml(about)) {
                     //disable button
                     E('createodao').disabled = true
@@ -740,7 +770,8 @@
                                                     name:name,
                                                     about:about,
                                                     token:assetAddress,
-                                                    url:turl
+                                                    url:turl,
+                                                    treasury:treasury
                                                 })
                                                 console.log(res)
                                                 if(res === false) {

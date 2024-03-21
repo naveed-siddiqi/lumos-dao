@@ -86,7 +86,7 @@
 
                             </div>
                     </div>
-                      <div class="flex-grow-0 py-3-inbox px-4-inbox border-top-inbox">
+                      <div id='sendMessageField' class="flex-grow-0 py-3-inbox px-4-inbox border-top-inbox">
                         <div class="input-group d-flex align-items-center gap-4">
                             <input id='chatMessage'oninput='doIsTyping()' onkeyup = 'if(event.keyCode == 13){sendMessage()}' type="text" class="form-control rounded" placeholder="Type your message">
                             <div class="d-flex align-items-center mt-2">
@@ -150,10 +150,11 @@
     <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script> 
     <script>
         /* VARIABLES */
-        var users = [];var messages = []; var users_conversation = [];var chatIndex = 0;var firstTimeLoad = true;var isADMIN = false;var typingTmr;
+        var users = [];var messages = []; var users_conversation = [];var chatIndex = 0;var firstTimeLoad = true;var isADMIN = false;var typingTmr;var isBan
         //GET PARAMS
         const daoId = (new URLSearchParams(window.location.search)).get("dao");
         const daoName = (new URLSearchParams(window.location.search)).get("name");
+        const toWallet = (new URLSearchParams(window.location.search)).get("to") || "";
         let addr = (new URLSearchParams(window.location.search)).get("address");
         //SOCKET AND VARIABLES
         const socket = io('https://173.212.232.150:443'); //setting up the socket
@@ -165,14 +166,32 @@
         
         /* FUNCTIONS */
         const setUp = async() => { 
+             const _usr = await getDaoUsersP(daoName); 
+             isADMIN = await isAdmin(daoName)
+             isBan = await getUserBan(daoId, walletAddress)
+             
+             if(isBan === true) {
+                 //hide send message button
+                 E('sendMessageField').style.display = 'none'
+                 stopTalking(3, talk('Your account has been banned<br>So you would not be able to send messages', 'warn'))
+             }
+              
              //set up the connect and disconnect
-             socket.on('connect', () => {  
+             socket.on('connect', () => {   
                 //do the synchronizing
                 socket.emit("register", {id:addr || _walletAddress, dao:daoId, index:chatIndex}, (res)=> {
                     if(res.status === true) {
                         //load the messages
                         loadMessage(res.data)
                         firstTimeLoad = false
+                        //check if there is a preset to address
+                        console.log(toWallet)
+                        if(toWallet != "") { 
+                            selectChat({
+                                user:toWallet,
+                                mdisplay:fAddr(toWallet, 9)
+                            })
+                        }
                         //console.log(res.data)
                      }
                     else {
@@ -180,7 +199,7 @@
                     }
                 });
              })
-             socket.on('disconnect', () => {  
+             socket.on('disconnect', () => {   
                 //turn off all online and typing flags
                 for(let i=0;i<users_conversation.length;i++) {
                     const res = users_conversation[i]
@@ -217,7 +236,7 @@
                  }
              })
              //setting up for the onread alerts
-             socket.on('read', (params) => {  // console.log(params)
+             socket.on('read', (params) => {   
                  //update read status  
                  if(!messages[params.reader]){messages[params.reader] = []} ; 
                  for(let i=0;i<messages[params.reader].length; i++) {
@@ -235,7 +254,7 @@
                 }
              })
              //setting up for online users
-             socket.on('online', (params) => {   //console.log(params)
+             socket.on('online', (params) => {    
                 //update online status  
                 if(E(params.user + "_online")) {
                      E(params.user + '_online').style.display = 'block'
@@ -248,7 +267,7 @@
                 users[params.user] = 'online' 
              })
              //setting up for offline users
-             socket.on('offline', (params) => {   //console.log(params)
+             socket.on('offline', (params) => {   
                  //update online status  
                  if(E(params.user + "_online")) {
                      E(params.user + '_online').style.display = 'none'
@@ -262,7 +281,7 @@
                  users[params.user] = 'offline' 
              })
              //setting up for typing users
-             socket.on('typing', (params) => {   //console.log(params)
+             socket.on('typing', (params) => {    
                  //update typing status  
                  if(E(params.sender + "_typing")) {
                      E(params.sender + '_typing').style.display = 'block'
@@ -273,7 +292,7 @@
                  }
              })
              //setting up for not typing users
-             socket.on('nottyping', (params) => {   //console.log(params)
+             socket.on('nottyping', (params) => {    
                  //update typing status  
                  if(E(params.sender + "_typing")) {
                      E(params.sender + '_typing').style.display = 'none'
@@ -283,8 +302,6 @@
                      E('chatHeadInfo').innerText =  (users[params.sender]) ? users[params.sender] : ''
                  }
              })
-             const _usr = await getDaoUsersP(daoName); 
-             isADMIN = await isAdmin(daoName)
              if(_usr.length > 0) {
                  users = _usr
                  if(isADMIN) {
@@ -299,7 +316,7 @@
                      if(users[i] != _walletAddress) {  
                         E('chatUsersList').innerHTML += drawUser({
                             user:users[i],
-                            mdisplay:users[i].substring(0,9) + "..." + users[i].substring(users[i].length-9)
+                            mdisplay:fAddr(users[i], 9),
                         }, 'compose');
                      }
                 }

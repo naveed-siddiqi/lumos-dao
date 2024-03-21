@@ -5,6 +5,9 @@
 <script src='https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/11.1.0/stellar-sdk.min.js'></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-freighter-api/1.7.1/index.min.js"></script>
 <script type="module"> import n from 'https://cdn.jsdelivr.net/npm/toml@3.0.0/+esm' ; window.toml = n</script>
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
 
 <script>
 
@@ -17,13 +20,14 @@
     const E = (id) => {return document.getElementById(id)}
 </script>
 <script>
+ 
 
     /**
      * CONTAINS ALL FUNCTIONS NEEDED TO INTERACT WITH THE DAO VIA 
      * THE FREIGHTER EXTERNAL WALLET PROVIDER USED
      **/
     const stellarServer = "https://soroban-testnet.stellar.org"
-    const daoContractId = 'CALUJ7XVZGRWRIRZC2WK6G7JBBECNKJ5GI7MGNMUCKLM2XZD6AK4QBUC'  
+    const daoContractId = 'CDILRY65SNB5MPWSYIA3TAUL4V32NBNOTNEOJAF6UO5DQ3XZQJWHZ6CY'  
     const wrappingAddress = 'GC5JKOC7OMSS22NVC23MVL2363QS5JO7SQM5X7C7DPVLQLFQHZ3ZRHGF'
     const networkUsed = StellarSdk.Networks.TESTNET
     const networkWalletUsed = "TESTNET"
@@ -349,7 +353,7 @@
         }
         catch(e) {console.log(e); return false}
     }
-   
+    
     /** This function burns token
      * @params {amount}
      * @params {tokenId}
@@ -375,6 +379,47 @@
                      )
                      .setTimeout(timeout)
                      .addMemo(StellarSdk.Memo.text(version + ' Burning Asset'))
+                     .build();
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else {
+                    return {status: true}
+                }
+            }
+            else {return false}
+        }
+        catch(e) {console.log(e); return false}
+    }
+   
+    /** This function sends payment to contract
+     * @params {amount}
+     * returns {statusObject} | {statusBoolean}
+    **/
+    const payBudget = async (amount, code, issuer, propId) => {
+        try{
+            if(walletAddress != "") {
+                const server = new SorobanClient.Server(stellarServer); 
+                const account = await server.getAccount(walletAddress);
+                //preparing arguements
+                let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
+                const asset = new StellarSdk.Asset(code, issuer)
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to call mint on the contract
+                        StellarSdk.Operation.payment({
+                          amount: amount,
+                          asset: asset,
+                          destination: daoContractId,
+                          source: walletAddress,
+                        })
+                     )
+                     .setTimeout(timeout)
+                     .addMemo(StellarSdk.Memo.text(version + ' sent budget of PROP_' + propId))
                      .build();
                 //sign and exec transactions
                 const res = await execTranst(transaction)
@@ -446,6 +491,7 @@
                 //preparing arguements
                 let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
                 let _tokenAdr = new StellarSdk.Address(params.token); _tokenAdr = _tokenAdr.toScVal()
+                let treasury = new StellarSdk.Address(params.treasury); treasury = treasury.toScVal()
                 const _name = StellarSdk.nativeToScVal(params.name)
                 const about = StellarSdk.nativeToScVal(params.about)
                 const _url = StellarSdk.nativeToScVal(params.url)
@@ -454,7 +500,7 @@
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
                     .addOperation(
                         // An operation to call create on the contract
-                        contract.call("create", _walletAdr, _tokenAdr, _name, about, _url, dte)
+                        contract.call("create", _walletAdr, _tokenAdr, _name, about, _url, dte, treasury)
                      )
                      .setTimeout(timeout)
                      .addMemo(StellarSdk.Memo.text(version + ' Creating Lumos Dao'))
@@ -498,11 +544,12 @@
                 const about = StellarSdk.nativeToScVal(params.about)
                 let start = StellarSdk.nativeToScVal(params.start)
                 let links = StellarSdk.nativeToScVal(params.links)
-                
+                let budget = new StellarSdk.XdrLargeInt('i128', params.budget * 1) 
+                budget = budget.toI128();
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
                     .addOperation(
                         // An operation to call create on the contract
-                        contract.call("create_proposal", params.creator, params.dao, _name, about, start, links)
+                        contract.call("create_proposal", params.creator, params.dao, _name, about, start, links, budget)
                      )
                      .setTimeout(timeout)
                      .addMemo(StellarSdk.Memo.text(version + ' Creating Lumos Proposal'))
@@ -531,7 +578,7 @@
     
     /** This function creates the proposal
      * @params {paramsObject {proposalId, voters, vote_type, voting_power}
-     * returns {daoId} | {statusBoolean}
+     * returns {propId} | {statusBoolean}
     **/
     const voteProposal = async (params = {}) => {
         try{
@@ -542,12 +589,12 @@
                 params.voters = new StellarSdk.Address(params.voters);params.voters = params.voters.toScVal()
                 const propId = StellarSdk.nativeToScVal(params.proposalId)
                 const vote_type = StellarSdk.nativeToScVal(params.vote_type)
+                const vote_reason = StellarSdk.nativeToScVal(params.reason)
                 const voting_power = StellarSdk.nativeToScVal(Math.round(params.voting_power * floatingConstant))
-                
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
                     .addOperation(
                         // An operation to call create on the contract
-                        contract.call("vote_on_proposal", propId, params.voters, vote_type, voting_power)
+                        contract.call("vote_on_proposal", propId, params.voters, vote_type, voting_power, vote_reason)
                      )
                      .setTimeout(timeout)
                      .addMemo(StellarSdk.Memo.text(version + ' Voting Lumos Proposal'))
@@ -570,6 +617,401 @@
                 }
             }
             else {return false}
+        }
+        catch(e) {console.log(e); return false}
+    }
+    
+    /** This function executes the proposal
+     * @params {paramsObject {propId, status}
+     * returns {string} | {statusBoolean}
+    **/
+    const executeProposal = async (params = {}) => {
+        try{
+            if(walletAddress != "") {
+                const server = new SorobanClient.Server(stellarServer); 
+                const account = await server.getAccount(walletAddress);
+                //preparing arguements
+                params.owner = new StellarSdk.Address(walletAddress);params.owner = params.owner.toScVal()
+                const propId = StellarSdk.nativeToScVal(params.propId)
+                const status = StellarSdk.nativeToScVal(params.status * 1)
+                const _type = StellarSdk.nativeToScVal(params._type * 1)
+                console.log(propId, status, params.owner)
+                let msg = "";
+                if((params.status * 1) === 0) {
+                    msg = ' approved Lumos Proposal'
+                }
+                else {
+                    msg = ' rejected Lumos Proposal'
+                }
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to call create on the contract
+                        contract.call("execute_proposal", propId, params.owner, status, _type)
+                     )
+                     .setTimeout(timeout)
+                     .addMemo(StellarSdk.Memo.text(version + msg))
+                     .build();
+                // Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else {
+                    await addTx({
+                       address:walletAddress,
+                       action:msg + ' with id PROP_' + params.propId,
+                       data:  params.propId
+                   })
+                    return {status: (StellarSdk.scValToNative(res.value))}
+                }
+            }
+            else {return false}
+        }
+        catch(e) {console.log(e); return false}
+    }
+    
+    
+    /** This function adds a delegate
+     * @params {paramsObject {delegate, dao}
+     * returns {string} | {statusBoolean}
+    **/
+    const addDelegate = async (params = {}) => {
+        try{
+            if(walletAddress != "") {
+                const server = new SorobanClient.Server(stellarServer); 
+                const account = await server.getAccount(walletAddress);
+                //preparing arguements
+                params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
+                const delegator = (new StellarSdk.Address(walletAddress)).toScVal()
+                const delegatee = (new StellarSdk.Address(params.delegatee)).toScVal()
+                let memoTx = [];
+                if(walletAddress != params.delegatee) {
+                    memoTx[0] = ' Delegated voting power'  
+                    memoTx[1] = ' Delegated voting power to ' + fAddr(params.delegatee, 6) 
+                }
+                else {
+                    memoTx[0] = ' Reclaimed voting power'
+                    memoTx[1] = ' Reclaimed voting power from ' + fAddr(params.delegatee, 6)  
+                }
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to call create on the contract
+                        contract.call("add_delegate", params.dao, delegator, delegatee)
+                     )
+                     .setTimeout(timeout)
+                     .addMemo(StellarSdk.Memo.text(version + memoTx[0]))
+                     .build();
+                // Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else {
+                    await addTx({
+                       address:walletAddress,
+                       action:memoTx[1],
+                       data:params.delegatee
+                   })
+                    return {status: (StellarSdk.scValToNative(res.value))}
+                }
+            }
+            else {return false}
+        }
+        catch(e) {console.log(e); return false}
+    }
+    
+    /** This function sets the treasury
+     * @params {paramsObject {treasury, dao}
+     * returns {string} | {statusBoolean}
+    **/
+    const setDaoTreasury = async (params = {}) => {
+        try{
+            if(walletAddress != "") {
+                const server = new SorobanClient.Server(stellarServer); 
+                const account = await server.getAccount(walletAddress);
+                //preparing arguements
+                params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
+                const owner = (new StellarSdk.Address(walletAddress)).toScVal()
+                const treasury = (new StellarSdk.Address(params.treasury)).toScVal()
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to call create on the contract
+                        contract.call("set_treasury", params.dao, owner, treasury)
+                     )
+                     .setTimeout(timeout)
+                     .addMemo(StellarSdk.Memo.text(version + "Setting treasury"))
+                     .build();
+                // Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else {
+                    await addTx({
+                       address:walletAddress,
+                       action:"set treasury address to " + fAddr(params.treasury, 14),
+                       data:params.treasury
+                   })
+                    return {status: (StellarSdk.scValToNative(res.value))}
+                }
+            }
+            else {return false}
+        }
+        catch(e) {console.log(e); return false}
+    }
+    
+    /** This function adds an admin
+     * @params {paramsObject {admin, dao}
+     * returns {string} | {statusBoolean}
+    **/
+    const addAdmin = async (params = {}) => {
+        try{
+            if(walletAddress != "") {
+                const server = new SorobanClient.Server(stellarServer); 
+                const account = await server.getAccount(walletAddress);
+                //preparing arguements
+                params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
+                const owner = (new StellarSdk.Address(walletAddress)).toScVal()
+                const admin = (new StellarSdk.Address(params.admin)).toScVal()
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to call create on the contract
+                        contract.call("add_admin", params.dao, owner, admin)
+                     )
+                     .setTimeout(timeout)
+                     .addMemo(StellarSdk.Memo.text(version + "Added admin"))
+                     .build();
+                // Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else {
+                    await addTx({
+                       address:walletAddress,
+                       action:"added admin " + fAddr(params.admin, 14),
+                       data:params.admin
+                   })
+                    return {status: (StellarSdk.scValToNative(res.value))}
+                }
+            }
+            else {return false}
+        }
+        catch(e) {console.log(e); return false}
+    }
+    
+    /** This function removes an admin
+     * @params {paramsObject {admin, dao}
+     * returns {string} | {statusBoolean}
+    **/
+    const removeDaoAdmin = async (params = {}) => {
+        try{
+            if(walletAddress != "") {
+                const server = new SorobanClient.Server(stellarServer); 
+                const account = await server.getAccount(walletAddress);
+                //preparing arguements
+                params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
+                const owner = (new StellarSdk.Address(walletAddress)).toScVal()
+                const admin = (new StellarSdk.Address(params.admin)).toScVal()
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to call create on the contract
+                        contract.call("remove_admin", params.dao, owner, admin)
+                     )
+                     .setTimeout(timeout)
+                     .addMemo(StellarSdk.Memo.text(version + " Removed admin"))
+                     .build();
+                // Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else {
+                    await addTx({
+                       address:walletAddress,
+                       action:"removed admin " + fAddr(params.admin, 14),
+                       data:params.admin
+                   })
+                    return {status: (StellarSdk.scValToNative(res.value))}
+                }
+            }
+            else {return false}
+        }
+        catch(e) {console.log(e); return false}
+    }
+    
+    /** This function signs admin for multi signatory
+     * @params {paramsObject {dao: Address, propId: Int, admin: Address}
+     * returns {string} | {statusBoolean}
+    **/
+    const signDaoAdmin = async (params = {}) => {
+        try{
+            if(walletAddress != "") {
+                const server = new SorobanClient.Server(stellarServer); 
+                const account = await server.getAccount(walletAddress);
+                //preparing arguements
+                params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
+                const propId = StellarSdk.nativeToScVal(params.propId)
+                const admin = (new StellarSdk.Address(params.admin)).toScVal()
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to call create on the contract
+                        contract.call("sign_admin", params.dao, propId, admin)
+                     )
+                     .setTimeout(timeout)
+                     .addMemo(StellarSdk.Memo.text(version + "Signed PROP_" + params.propId))
+                     .build();
+                // Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else {
+                    await addTx({
+                       address:walletAddress,
+                       action:fAddr(params.admin, 14) + " signed for budget transfer for PROP_" + params.propId,
+                       data:params.admin
+                   })
+                    return {status: (StellarSdk.scValToNative(res.value))}
+                }
+            }
+            else {return false}
+        }
+        catch(e) {console.log(e); return false}
+    }
+    
+    /** This function bans a member
+     * @params {paramsObject {user, dao}
+     * returns {string} | {statusBoolean}
+    **/
+    const banDaoMember = async (params = {}) => {
+        try{
+            const res = await isAdmin(params.dao)
+            if(walletAddress != "" && res == true) {
+                const isBan = await getUserBan(params.dao, walletAddress)
+                if(isBan === false){
+                    const server = new SorobanClient.Server(stellarServer); 
+                    const account = await server.getAccount(walletAddress);
+                    //preparing arguements
+                    params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
+                    const member = (new StellarSdk.Address(params.user)).toScVal()
+                    let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                        .addOperation(
+                            // An operation to call create on the contract
+                            contract.call("ban_member", params.dao, member)
+                         )
+                         .setTimeout(timeout)
+                         .addMemo(StellarSdk.Memo.text(version + " banned user "))
+                         .build();
+                    // Simulate the transaction to discover the storage footprint, and update the
+                    transaction = await server.prepareTransaction(transaction);
+                    //sign and exec transactions
+                    const res = await execTranst(transaction)
+                    if(res.status === false) {
+                        //something went wrong
+                        return false
+                    }
+                    else {
+                        await addTx({
+                           address:walletAddress,
+                           action:"banned member " + fAddr(params.user, 6),
+                           data:params.user
+                       })
+                        return {status: (StellarSdk.scValToNative(res.value))}
+                    }
+                }
+                else if(isBan === true){
+                    //user has already been banned
+                    return 4
+                }
+                else {return 3}
+            }
+            else {
+                if(res === false) {
+                    return 2; //not admin
+                }
+                else if(res == 2) {
+                    return 3; //network error
+                }
+                else {return false}
+            }
+        }
+        catch(e) {console.log(e); return false}
+    }
+    
+     /** This function un bans a member
+     * @params {paramsObject {user, dao}
+     * returns {string} | {statusBoolean}
+    **/
+    const unbanDaoMember = async (params = {}) => {
+        try{
+            const res = await isAdmin(params.dao)
+            if(walletAddress != "" && res == true) {
+                const isBan = await getUserBan(params.dao, walletAddress)
+                if(isBan === false){
+                    const server = new SorobanClient.Server(stellarServer); 
+                    const account = await server.getAccount(walletAddress);
+                    //preparing arguements
+                    params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
+                    const member = (new StellarSdk.Address(params.user)).toScVal()
+                    let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                        .addOperation(
+                            // An operation to call create on the contract
+                            contract.call("un_ban_member", params.dao, member)
+                         )
+                         .setTimeout(timeout)
+                         .addMemo(StellarSdk.Memo.text(version + " unbanned user "))
+                         .build();
+                    // Simulate the transaction to discover the storage footprint, and update the
+                    transaction = await server.prepareTransaction(transaction);
+                    //sign and exec transactions
+                    const res = await execTranst(transaction)
+                    if(res.status === false) {
+                        //something went wrong
+                        return false
+                    }
+                    else {
+                        await addTx({
+                           address:walletAddress,
+                           action:"Unbanned member " + fAddr(params.user, 6),
+                           data:params.user
+                       })
+                        return {status: (StellarSdk.scValToNative(res.value))}
+                    }
+                }
+                else if(isBan === true){
+                    //user has already been banned
+                    return 4
+                }
+                else {return 3}
+            }
+            else {
+                if(res === false) {
+                    return 2; //not an admin
+                }
+                else if(res == 2) {
+                    return 3; //network error
+                }
+                else {return false}
+            }
         }
         catch(e) {console.log(e); return false}
     }
@@ -670,7 +1112,7 @@
     }
     // xyu
     setTimeout(async () => {
-       // await bumpContractInstance(daoContractId)
+      //console.log(await isAdmin("CBKG6MDVI3FGYWGUUO5ZS7YI6MJLTTAXCFFYXXCPHIHEFYOOBQLKQBKW"))
     }, 5000)//
     // setTimeout(async () => {console.log(1);console.log(await createDaos(
     //     {
@@ -759,6 +1201,7 @@
                 let transactionMeta = (await server.simulateTransaction(transaction))
                 let dao = StellarSdk.scValToNative(transactionMeta.result.retval);
                 if(dao['url'] != undefined) { 
+                    timeStart = performance.now()
                     const aToml = await readAssetToml(dao.url); 
                     let code = await getTokenInfo(dao.token, "symbol");code = code.replace(/[^a-zA-Z0-9]/g,"");
                     const tomlInfo = getTokenTomlInfo(aToml, code)
@@ -861,7 +1304,94 @@
         }
         else {return []}
     }
-    
+    /** This function retrieves the voter delegation info
+     * @params {dao: Address}
+     * @params {voter: Address}
+     * returns @map | []
+    **/ 
+    const getDaoDelegators =  async (dao = "", voter = "") => {
+        if(voter != "" && dao != null && dao !== "") {   
+            try{  
+                const server = new SorobanClient.Server(stellarServer); 
+                const account = await server.getAccount(walletAddress);
+                let address = new StellarSdk.Address(voter);address = address.toScVal()
+                dao = new StellarSdk.Address(dao);dao = dao.toScVal()
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call("get_delegator", dao, address)
+                    )
+                    .setTimeout(timeout) //using a time out of a hour
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
+            }
+            catch(e) {
+                console.log(e)
+                return false
+            }
+        }
+        else {return false}
+    }
+    /** This function retrieves the user delegatee info
+     * @params {dao: Address}
+     * returns @map | []
+    **/ 
+    const getDaoDelegatee =  async (dao = "", user = "") => {
+        if(user != "" && dao != null && dao !== "") {   
+            try{  
+                const server = new SorobanClient.Server(stellarServer); 
+                const account = await server.getAccount(walletAddress);
+                let address = new StellarSdk.Address(user);address = address.toScVal()
+                dao = new StellarSdk.Address(dao);dao = dao.toScVal()
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call("get_delegatee", dao, address)
+                    )
+                    .setTimeout(timeout) //using a time out of a hour
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
+            }
+            catch(e) {
+                //console.log(e)
+                return false
+            }
+        }
+        else {return false}
+    }
+    /** This function retrieves the user ban info
+     * @params {dao: Address, user: Address}
+     * returns @boolean
+    **/ 
+    const getUserBan =  async (dao = "", user = "") => {
+        if(user != "" && dao != null && dao !== "") {   
+            try{  
+                const server = new SorobanClient.Server(stellarServer); 
+                const account = await server.getAccount(walletAddress);
+                let address = new StellarSdk.Address(user);address = address.toScVal()
+                dao = new StellarSdk.Address(dao);dao = dao.toScVal()
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call("get_ban", dao, address)
+                    )
+                    .setTimeout(timeout) //using a time out of a hour
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
+            }
+            catch(e) {
+                //console.log(e)
+                return 2
+            }
+        }
+        else {return 0}
+    }
     /** To retreive token info
      * @params {tokenId}
     **/
@@ -1064,6 +1594,36 @@
             return false;
         }
     }
+    // get comments for bulletins
+    const getBulletinComment = async (id) => {
+         try {
+            //check if the url is http and from this domain
+            const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_bulletin_comment&bid=" + id + "&id=" + Math.random() * 1000 
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const commt = await response.json();   
+            return commt;
+        } catch (error) { console.log(error)
+            return [];
+        }
+    }
+    // get comments for bulletins
+    const getDaoTweet = async (id) => {
+         try {
+            //check if the url is http and from this domain
+            const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_tweet&dao_id=" + id + "&id=" + Math.random() * 1000 
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const tweet = await response.json();   
+            return tweet;
+        } catch (error) { console.log(error)
+            return [];
+        }
+    }
     // send proposal comment
     const sendProposalComment = async (propId, daoId, msg = "", address) => {
          try {
@@ -1076,7 +1636,123 @@
                 }
                 const res = await response.text();
                 return res * 1;
+            } 
+            else {return 2}
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
+    // send bulletin comment
+    const sendBulletinComment = async (id, msg = "", user) => {
+         try {
+             if(msg.trim() != "" && user != "") {
+                //check if the url is http and from this domain
+                url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=add_bulletin_comment&bid=" + id + "&msg=" + encodeURIComponent(msg) + "&user=" + encodeURIComponent(user)
+                const response = await fetch(url);
+                if (!response.ok) {
+                  throw new Error("Network response was not ok");
+                }
+                const res = await response.text();
+                return res * 1;
             }
+            else {return 2}
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
+    // send dao bulletin
+    const sendDaoBulletin = async (daoId, msg = "", address, polls = null) => {
+         try {
+             if(msg.trim() != "" && address != "") {
+                //check if the url is http and from this domain
+                if(polls == null) {
+                   url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=add_bulletin&dao_id=" + daoId  + "&msg=" + encodeURIComponent(msg) + "&address=" + encodeURIComponent(address)
+                }
+                else {
+                   url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=add_poll&dao_id=" + daoId  + "&msg=" + encodeURIComponent(msg) + "&address=" + encodeURIComponent(address) + "&polls=" + encodeURIComponent(JSON.stringify(polls))
+                }
+                const response = await fetch(url);
+                if (!response.ok) {
+                  throw new Error("Network response was not ok");
+                }
+                const res = await response.json();
+                return res
+            }
+            else {return 2}
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
+    
+    // like dao bulletin
+    const likeDaoBulletin = async (id, address) => {
+         try {
+             if(id != "" && address != "") {
+                //check if the url is http and from this domain
+                url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=like_bulletin&id=" + id + "&user=" + encodeURIComponent(address)
+                const response = await fetch(url);
+                if (!response.ok) {
+                  throw new Error("Network response was not ok");
+                }
+                const res = await response.json();
+                return res
+            }
+            else {return 2}
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
+    
+    // like dao bulletin
+    const dislikeDaoBulletin = async (id, address) => {
+         try {
+             if(id != "" && address != "") {
+                //check if the url is http and from this domain
+                url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=dislike_bulletin&id=" + id + "&user=" + encodeURIComponent(address)
+                const response = await fetch(url);
+                if (!response.ok) {
+                  throw new Error("Network response was not ok");
+                }
+                const res = await response.json();
+                return res
+            }
+            else {return 2}
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
+    
+    // to vote on poll
+    const voteDaoPoll = async (id, pid, address) => {
+         try {
+             if(id != "" && address != "") {
+                //check if the url is http and from this domain
+                url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=vote_poll&id=" + id + "&user=" + encodeURIComponent(address) + "&pid=" + pid
+                const response = await fetch(url);
+                if (!response.ok) {
+                  throw new Error("Network response was not ok");
+                }
+                const res = await response.json();
+                return res
+            }
+            else {return 2}
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
+    // send tweet code
+    const embedDaoTweet = async (daoId, code = "", address) => {
+         try { 
+             if(code.trim() != "" && address != "") {
+                //check if the url is http and from this domain
+                url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=add_tweet&dao_id=" + daoId  + "&code=" + encodeURIComponent(code) + "&address=" + encodeURIComponent(address)
+                const response = await fetch(url);
+                if (!response.ok) {
+                  throw new Error("Network response was not ok");
+                }
+                const res = await response.json();
+                return res
+            } 
             else {return 2}
         } catch (error) { console.log(error)
             return false;
@@ -1115,7 +1791,7 @@
             return false;
         }
     }
-    // get all tx
+    // get all Users tx
     const getAllUsersTx = async () => {
          try {
             //check if the url is http and from this domain
@@ -1204,14 +1880,63 @@
         }
     }
     
-    //check if user is an admin
-    const isAdmin = async (domain) => {
+    // get bulletins 
+    const getDaoBulletins = async (dao) => {
          try {
-            return true
-        } catch (error) { console.log(e)
+            //check if the url is http and from this domain
+            url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_bulletin&dao_id=" + dao + "&user=" + walletAddress + "&id=" + Math.random() * 1000 
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const res = await response.json();  
+            return res
+        } catch (error) { console.log(error)
+            return [];
+        }
+    }
+    //to load tweet via url
+    const loadTweetsUri = async (uri) => {
+         try {
+            // Fetch the tweet using Twitter's oEmbed API
+            const response = await fetch('https://publish.twitter.com/oembed?url=' + encodeURIComponent(uri))
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const res = await response.json(); 
+            return res.html
+        } catch (error) { console.log(error)
             return false;
         }
     }
+    //check if user is an admin
+    const isAdmin = async (daoId = "") => {
+        //structure url
+        if(walletAddress != "" && daoId != "") {
+            try{
+                const server = new SorobanClient.Server(stellarServer); 
+                const account = await server.getAccount(walletAddress);
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call("get_dao", (new StellarSdk.Address(daoId)).toScVal())
+                    )
+                    .setTimeout(timeout) //using a time out of a hour
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                let dao = StellarSdk.scValToNative(transactionMeta.result.retval);
+                if(dao['admins'] != undefined) { 
+                    return dao.admins.includes(walletAddress) || dao.owner == walletAddress
+                }
+                else {return false}
+                
+            }
+            catch(e) {return 2}
+        }
+        else {return 2}
+    }
+    
     
     //check if subdomain exists
     const isSubDomainExists = async (domain) => {
@@ -1320,7 +2045,7 @@
             return [0, []];
         }
     }
- 
+    //return proposal comment number
     const getCommentNum = async (_address) => {
          try {
             response = await fetch(window.location.protocol + `//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=wallets_comment&address=` + _address + "&id=" + Math.random());
@@ -1333,8 +2058,68 @@
             return 0;
         }
     }
- 
-       
+    /* 2 FACTOR AUTHENTICATION */
+    const get2FaCodeURI = async () => {
+        if(walletAddress != "") {
+            try {
+                response = await fetch(window.location.protocol + `//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_2fa&user=` + walletAddress + "&id=" + Math.random());
+                if (!response.ok) {
+                  throw new Error("Network response was not ok");
+                }
+                let res = await response.json();
+                if(res.uri != "") {
+                    E('2fa_bar_code').innerHTML = ""
+                    new QRCode(E("2fa_bar_code"), {
+                    	text: res.uri,
+                    	width: 200,
+                    	height: 200,
+                    });
+                    E('2fa_bar_code').setAttribute('data', 'shown') 
+                    E('2fa_auth_code').setAttribute('data', res.secret) 
+                }
+            } catch (error) { console.log(error)
+                return "";
+            }
+        }
+    }
+    get2FaCodeURI()
+    const reg2FaCode = async () => {
+        //check if the input field has shown
+        if(E('2fa_bar_code').getAttribute('data') === 'shown') {
+            E('2fa_bar_code').style.display = 'none'
+            E('2fa_auth_code').style.display = 'block'
+            E('2fa_auth_msg').innerText = "Please input the OTP showing in your authenticator app"
+            E('2fa_bar_code').setAttribute('data', 'otp') //switch to showing otp
+        }
+        else if (E('2fa_bar_code').getAttribute('data') === 'otp') {
+            //verify otp
+            try {
+                const code = E('2fa_auth_code').value.trim()
+                const key = E('2fa_auth_code').getAttribute('data') || ""
+                //console.log(key, code)
+                const id = talk('Verifying OTP')
+                response = await fetch(window.location.protocol + `//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=verify_2fa&code=${code}&key=${key}&user=` + walletAddress + "&id=" + Math.random());
+                if (!response.ok) {
+                  stoptalking(3, talk('Network error', 'fail', id))
+                }
+                let res = await response.json();
+                //console.log(res)
+                if(res.status === true) {
+                    stopTalking(3, talk('2-Factor authentication enabled', 'good', id))
+                    E('2fa_bar_code').style.display = ''
+                    E('2fa_auth_code').style.display = 'none'
+                    E('2fa_auth_msg').innerText = "Using the app, scan the QR code to continue"
+                    E('2fa_bar_code').setAttribute('data', 'shown') //switch to showing otp
+                }
+                else {
+                    stopTalking(3, talk('OTP has expired or is invalid', 'fail', id))
+                }
+            } catch (error) { console.log(error)
+                return "";
+            }
+        }
+    }
+    
     /* UTILITIES */
     
     /** This functions show a modal message
@@ -1344,10 +2129,10 @@
     **/
     const talk = (msg = "", type = "norm", id = "", pgress=0) => {
         //config stylings
-        let params = {color:"black", 'class':"talk_spin fas fa-spinner"}
-        if(type == "good") {params.color = "forestgreen"; params.class='fas fa-check-circle'}
-        else if(type == "fail") {params.color = "red"; params.class='fas fa-times'}
-        else if(type == "warn") {params.color = "#ffa101"; params.class='fas fa-info'}
+        let params = {color:"black", 'class':"talk_spin fa-solid fa-spinner"}
+        if(type == "good") {params.color = "forestgreen"; params.class='fa-solid fa-check-circle'}
+        else if(type == "fail") {params.color = "red"; params.class='fa-solid fa-times'}
+        else if(type == "warn") {params.color = "#ffa101"; params.class='fa-solid fa-info'}
         if(id != "") {
             //performing modifications
             E(id).style.color = params.color
@@ -1395,6 +2180,72 @@
         }
     }
     
+     /** to enable pagination
+     * @params {Element, data, Integer, function} 
+     * return {Integer} Id
+    **/
+   const paginate = (dispId, contentData, page_size = 20, drawFunction, callback = null) => {
+       //prepare the view with the next and prev button
+       const disp = E(dispId)
+       if(disp != null) {
+           let paginate_page = 1;
+           let paginate_page_segment = page_size;
+           const id = Math.floor(Math.random() * Math.random() * 10000000)
+           disp.innerHTML = `<div id='paginate_data_${id}'></div>
+            <div style='display:flex; align-items:center'>
+                                        <button id='paginate_next_${id}' class="btn" style='display:none'>Next</button>
+                                        <button id='paginate_pre_${id}' class="btn" style='margin-left:15px;display:none'>Previous</button>
+                                    </div>`
+            //load first data
+            
+            const paginate_ = (page = 1) => {
+                const start_index = (page - 1) * paginate_page_segment;
+                const end_index = start_index +  paginate_page_segment
+                //reset view
+                E(`paginate_data_${id}`).innerHTML = ""
+                for(let i=start_index; i<end_index && i < contentData.length;i++) {
+                    E(`paginate_data_${id}`).innerHTML += drawFunction(contentData[i], i)
+                }
+                if(end_index >= contentData.length) {
+                    //hide next button
+                    E(`paginate_next_${id}`).style.display = 'none'
+                }
+                else {
+                    E(`paginate_next_${id}`).style.display = 'block'
+                }
+                if(start_index == 0) {
+                    //hide next button
+                   E(`paginate_pre_${id}`).style.display = 'none'
+                }
+                else {
+                   E(`paginate_pre_${id}`).style.display = 'block'
+                }
+                //handle empty voters
+                if(E(`paginate_data_${id}`).firstElementChild == null) {
+                    //show empty view
+                    E(`paginate_data_${id}`).innerHTML = `<center style='margin: 40px 20px'>Nothing yet</center>`
+                }
+                if(callback != null) {callback()}
+            }
+            //configure the buttons
+            E(`paginate_next_${id}`).onclick = () => {
+                if(paginate_page < contentData.length / paginate_page_segment){
+                  paginate_(paginate_page + 1)
+                  paginate_page++
+                }
+            }
+            E(`paginate_pre_${id}`).onclick = () => {
+                if(paginate_page > 1){
+                  paginate_(paginate_page - 1)
+                  paginate_page--
+                }
+            }
+            paginate_()
+            return true
+       }
+       return false
+   }
+    
     /** Check if its toml safe
      * @params {value} String
      * @return {boolean}
@@ -1404,11 +2255,7 @@
         if(value.indexOf('"') > -1) {return false}
         return true
     }
-    /** Encode toml special characters
-     * to allow for safe parsing
-     * @params {value} String
-    **/
-    
+   
     
     /** Validate image upload 
     * params {id} String - the id of the file element
@@ -1501,13 +2348,29 @@
         }
     }
     
-     /** To convert a number to bigInt
+    /** To convert a number to bigInt
      * params {num}
      * returns {BigInt}
     */
     const N = (num) => {return (num.toString() * 1)}
-    
-     /** To format an address to display
+    /** To convert  to formatted number
+     * params {num}
+     * returns {string}
+    */
+    const fNum = (num) => {
+        num *=  1;
+        if(num >= 1000 && num < 1000000) {
+            return Math.round(num/1000) + 'k'
+        }
+        else if(num >= 1000000 && num < 1000000000) {
+            return Math.round(num/1000000) + 'M'
+        }
+        else if(num >= 1000000000) {
+            return Math.round(num/1000000000) + 'B'
+        }
+        else {return num}
+    }
+    /** To format an address to display
      * params {_address} the address as string
      * params {n} the number of address characters to display
      * returns {String}
@@ -1515,5 +2378,36 @@
     const fAddr = (_address, n = 14) => {
         _address += ""
         return _address.substring(0,n) + '...' + _address.substring(_address.length - n)
+    }
+    /** To format a date to display
+     * params {date_string} the address as string
+     * returns {String}
+    */
+    const fDate = (date_string) => {
+        const options = {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric'
+        };
+        return (new Date(date_string)).toLocaleDateString('en-US', options);
+    }
+    /** To check current user ban status
+     * params {user: address, dao:address} the address as string
+     * returns {bool}
+    */
+    const isBanned = async (dao, user) => {
+        const isBan = await getUserBan(dao, user)
+        if(isBan === false) {return false}
+        if(isBan === true) {
+            //user has already been banned
+            stopTalking(3, talk('Your account has been banned', 'fail'))
+        }
+        else{
+            //user has already been banned
+            stopTalking(3, talk('Network error', 'fail'))
+        }
+        return true
     }
 </script>

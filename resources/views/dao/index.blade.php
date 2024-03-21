@@ -34,21 +34,21 @@
                         <div class="card-imgflex mt-1">
                             <img id='dao_image' data="{{ asset('images/demi.jpg') }}" alt="">
                             <div class="cardHeading mt-4 py-2">
-                                <p id='dao_name' class="card-heading"></p>
-                                <p id='dao_members' class="card-subheading"></p>
+                                <p id='dao_name' class="card-heading whitespace-nowrap"></p>
+                                <p id='dao_members' class="card-subheading whitespace-nowrap"></p>
                             </div>
                         </div>
                         <div class="d-flex align-items-center justify-content-end gap-3 py-3 w-100 mt-4">
-                            <button id='manageAdminBut' class="btn btn-success whitespace-nowrap" data-toggle="modal"
+                            <button id='manageAdminBut' style='display:none' class="btn btn-success whitespace-nowrap" data-toggle="modal"
                                 data-target="#manageAdmin">Manage
                                 Admins</button>
                             <a id='inbox' href="{{route('proposal.inbox')}}">
                                 <button class="btn btn-secondary">Send message</button>
                             </a>
-                            <button class='btn btn-danger whitespace-nowrap' id='leaveDao' style='border:2px solid red;display:no ne'>Leave Dao</button>
+                            <button class='btn btn-danger whitespace-nowrap' id='leaveDao' style='border:2px solid red;display:none'>Leave Dao</button>
                         </div>
                         </div>
-                        <div id='dao_about' class="card-paragraph">
+                        <div id='dao_about' class="card-paragraph whitespace-nowrap">
                         </div>
 
                        <div class="">
@@ -166,8 +166,8 @@
                         <!--</div>-->
                     </div>
                 </div>
-                <div class="d-flex align-items-center justify-content-end gap-3 modal-footer m-0 p-0 py-3 px-3 w-100">
-                    <button type="button" class="btn btn-warning text ">Save</button>
+                <div class="d-flex align-items-center justify-content-end gap-3 modal-footer m-0 p-0 py-3 px-3 w-100" >
+                    <button type="button" class="btn btn-warning text " style='display:none !important'>Save</button>
                 </div>
             </div>
         </div>
@@ -246,6 +246,10 @@
                             <a class="pro-nav-link nav-link" id="tab6" data-toggle="tab" href="#content6">Proposal
                                 Funds</a>
                         </li>
+                        <li class="nav-item" id='content7_tab'>
+                            <a class="pro-nav-link nav-link" id="tab6" data-toggle="tab" href="#content7">
+                                Embed tweet</a>
+                        </li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="content1">
@@ -260,212 +264,255 @@
                          <div class="tab-pane fade show" id="content2">
                             <div class="row mt-0">
                                 <div class="cardEndDiv">
-                                <div class="d-flex flex-column align-items-end gap-2 px-1">
+                                    <div class="d-flex flex-column align-items-end gap-2 px-1">
                                         <div class="form-group w-100">
-                                            <label for="">
+                                           <div class="d-flex align-items-center justify-content-between">
+                                           <label for="">
                                                 <span class="asset-details-label whitespace-nowrap">Add Bulletin:</span>
                                             </label>
-                                            <textarea type="text" class="form-control h-auto" rows="4"></textarea>
+                                            <button class="btn btn-success" type="button" data-toggle="modal" data-target="#addPollingModal">Add Polls</button>
+                                           </div>
+                                            <textarea id='bulletin_msg' type="text" class="form-control h-auto" rows="4"></textarea>
                                         </div>
                                         <div class="">
-                                            <button type="button" class="btn btnCreate border-0 mb-1 mt-0">
+                                            <button onclick='addBulletin()' type="button" class="btn btnCreate border-0 mb-1 mt-0">
                                                 <p class="mb-0 text-white">Submit</p>
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="my-4">
-                                        <div class="d-flex flex-wrap justify-content-between">
-                                            <div class="cardEndDetail">
-                                                <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
-                                                    alt="Profile Image" class="image">
-                                                <div class="text text-center">FGDKXQTCP.....DXKZANU3I
-                                                </div>
-                                            </div>
-                                            <div class="text text-muted">12/02/2023</div>
-                                        </div>
-                                        <div class="bultin_description text">
-                                            <p>We will introduce an incentivized referral program, rewarding existing
-                                                LumosDAO members for bringing in new users. This program will encourage
-                                                community growth while rewarding loyal members who contribute to
-                                                expanding
-                                                our user base.</p>
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-start gap-3 bullet-icon">
-                                            <button id="like"
-                                                class="border-0 bg-transparent bullet-icon-i d-flex align-items-center justify-content-start gap-3">
-                                                <i id="like-icn" class="fa fa-thumbs-o-up"></i>
-                                                <span class="text text-muted">Like</span>
-                                            </button>
-                                            <button id="dislike"
-                                                class="border-0 bg-transparent bullet-icon-i d-flex align-items-center justify-content-start gap-3">
-                                                <i id="dislike-icn" class="fa fa-thumbs-o-down"></i><span
-                                                    class="text text-muted">Dislike</span>
-                                            </button>
-                                            <button id="comment"
-                                                class="border-0 bg-transparent bullet-icon-i d-flex align-items-center justify-content-start gap-3">
-                                                <i id="" class="fa fa-comment-o "></i><span
-                                                    class="text text-muted">Comment</span>
-                                            </button>
-                                        </div>
+                                    <div id='bulletins_views'>
+                                        <center>Loading Bulletins</center>
                                     </div>
-                                    <div class="bullet-icon">
-                                        <div id="commentSec" class="cardEndDetail">
-                                            <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
-                                                alt="Profile Image" class="image w-img">
-                                            <div id="comment-pl" class="column-content">
-                                                <div class="text">
-                                                    <p class="text font-weight-bold">Admin</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <!--<div class="my-4">-->
+                                    <!--    <div class="d-flex flex-wrap justify-content-between">-->
+                                    <!--        <div class="cardEndDetail">-->
+                                    <!--            <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"-->
+                                    <!--                alt="Profile Image" class="image">-->
+                                    <!--            <div class="text text-center">FGDKXQTCP.....DXKZANU3I-->
+                                    <!--            </div>-->
+                                    <!--        </div>-->
+                                    <!--        <div class="text text-muted">12/02/2023</div>-->
+                                    <!--    </div>-->
+                                    <!--    <div class="bultin_description text">-->
+                                    <!--        <p>We will introduce an incentivized referral program, rewarding existing-->
+                                    <!--            LumosDAO members for bringing in new users. This program will encourage-->
+                                    <!--            community growth while rewarding loyal members who contribute to-->
+                                    <!--            expanding-->
+                                    <!--            our user base.</p>-->
+                                    <!--    </div>-->
+                                    <!--    <div class="d-flex align-items-center justify-content-start gap-3 bullet-icon">-->
+                                    <!--        <button id="like"-->
+                                    <!--            class="border-0 bg-transparent bullet-icon-i d-flex align-items-center justify-content-start gap-3">-->
+                                    <!--            <i id="like-icn" class="fa fa-thumbs-o-up"></i>-->
+                                    <!--            <span class="text text-muted">Like</span>-->
+                                    <!--        </button>-->
+                                    <!--        <button id="dislike"-->
+                                    <!--            class="border-0 bg-transparent bullet-icon-i d-flex align-items-center justify-content-start gap-3">-->
+                                    <!--            <i id="dislike-icn" class="fa fa-thumbs-o-down"></i><span-->
+                                    <!--                class="text text-muted">Dislike</span>-->
+                                    <!--        </button>-->
+                                    <!--        <button id="comment"-->
+                                    <!--            class="border-0 bg-transparent bullet-icon-i d-flex align-items-center justify-content-start gap-3">-->
+                                    <!--            <i id="" class="fa fa-comment-o "></i><span-->
+                                    <!--                class="text text-muted">Comment</span>-->
+                                    <!--        </button>-->
+                                    <!--    </div>-->
+                                    <!--</div>-->
+                                    <!--<div class="bullet-icon">-->
+                                    <!--    <div id="commentSec" class="cardEndDetail">-->
+                                    <!--        <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"-->
+                                    <!--            alt="Profile Image" class="image w-img">-->
+                                    <!--        <div id="comment-pl" class="column-content">-->
+                                    <!--            <div class="text">-->
+                                    <!--                <p class="text font-weight-bold">Admin</p>-->
+                                    <!--            </div>-->
+                                    <!--        </div>-->
+                                    <!--    </div>-->
+                                    <!--</div>-->
                                     <!-- commnets -->
-                                    <div id="comment-box" style="width: 90%; margin-right:auto;margin-left:40px;"
-                                        class="d-flex align-items-end gap-4 mt-5">
-                                        <div class="form-group w-100">
-                                            <label for="">
-                                                <span class="asset-details-label whitespace-nowrap">Write a
-                                                    comment:</span>
-                                            </label>
+                                    <!--<div id="comment-box" style="width: 90%; margin-right:auto;margin-left:40px;"-->
+                                    <!--    class="d-flex align-items-end gap-4 mt-5">-->
+                                    <!--    <div class="form-group w-100">-->
+                                    <!--        <label for="">-->
+                                    <!--            <span class="asset-details-label whitespace-nowrap">Write a-->
+                                    <!--                comment:</span>-->
+                                    <!--        </label>-->
 
-                                            <div class="form-control d-flex align-items-center justify-content-between">
-                                                <input id="comment-input" type="text" placeholder="Great...."
-                                                    class="border-0 bg-transparent text w-100 h-100">
-                                                <button id="comment-send" type="button" class="btn border-0 mb-1">
-                                                    <svg class="text-secondary" xmlns="http://www.w3.org/2000/svg"
-                                                        width="24" height="24" viewBox="0 0 24 24">
-                                                        <path fill="currentColor" d="m2 21l21-9L2 3v7l15 2l-15 2z" />
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="">
-                                        <div class="row">
-                                            <div class="poll-card cardEndDiv">
-                                                <div class="">
-                                                    <div class="d-flex justify-content-between">
-                                                        <div class="cardEndDetail d-flex justify-content-between gap-3">
-                                                            <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
-                                                                alt="Profile Image" class="image w-img">
-                                                            <div class="text text-center">
-                                                                FGDKXQTCP.....DXKZANU3I
-                                                            </div>
-                                                        </div>
-                                                        <div class="text text-muted">12/02/2023|05:23 pm</div>
-                                                    </div>
-                                                    <div class="text m-4">
-                                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                                            Reiciendis
-                                                            quis dolore, quidem saepe facere assumenda aperiam,
-                                                            quibusdam
-                                                            pariatur fugiat illum sunt natus, eum consectetur.
-                                                            Exercitationem
-                                                            excepturi, quos consectetur error itaque explicabo harum
-                                                            corrupti,
-                                                            quibusdam ipsam voluptatibus similique modi dignissimos?
-                                                            Excepturi
-                                                            sequi, ad dolores minus tempore sunt quod iste autem nulla.
-                                                        </p>
-                                                    </div>
-                                                </div>
+                                    <!--        <div class="form-control d-flex align-items-center justify-content-between">-->
+                                    <!--            <input id="comment-input" type="text" placeholder="Great...."-->
+                                    <!--                class="border-0 bg-transparent text w-100 h-100">-->
+                                    <!--            <button id="comment-send" type="button" class="btn border-0 mb-1">-->
+                                    <!--                <svg class="text-secondary" xmlns="http://www.w3.org/2000/svg"-->
+                                    <!--                    width="24" height="24" viewBox="0 0 24 24">-->
+                                    <!--                    <path fill="currentColor" d="m2 21l21-9L2 3v7l15 2l-15 2z" />-->
+                                    <!--                </svg>-->
+                                    <!--            </button>-->
+                                    <!--        </div>-->
+                                    <!--    </div>-->
+                                    <!--</div>-->
+                                    <!--<div class="">-->
+                                    <!--    <div class="row">-->
+                                    <!--        <div class="poll-card cardEndDiv">-->
+                                    <!--            <div class="">-->
+                                    <!--                <div class="d-flex justify-content-between">-->
+                                    <!--                    <div class="cardEndDetail d-flex justify-content-between gap-3">-->
+                                    <!--                        <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"-->
+                                    <!--                            alt="Profile Image" class="image w-img">-->
+                                    <!--                        <div class="text text-center">-->
+                                    <!--                            FGDKXQTCP.....DXKZANU3I-->
+                                    <!--                        </div>-->
+                                    <!--                    </div>-->
+                                    <!--                    <div class="text text-muted">12/02/2023|05:23 pm</div>-->
+                                    <!--                </div>-->
+                                    <!--                <div class="text m-4">-->
+                                    <!--                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.-->
+                                    <!--                        Reiciendis-->
+                                    <!--                        quis dolore, quidem saepe facere assumenda aperiam,-->
+                                    <!--                        quibusdam-->
+                                    <!--                        pariatur fugiat illum sunt natus, eum consectetur.-->
+                                    <!--                        Exercitationem-->
+                                    <!--                        excepturi, quos consectetur error itaque explicabo harum-->
+                                    <!--                        corrupti,-->
+                                    <!--                        quibusdam ipsam voluptatibus similique modi dignissimos?-->
+                                    <!--                        Excepturi-->
+                                    <!--                        sequi, ad dolores minus tempore sunt quod iste autem nulla.-->
+                                    <!--                    </p>-->
+                                    <!--                </div>-->
+                                    <!--            </div>-->
 
-                                                <div class="options">
+                                    <!--            <div class="options">-->
 
-                                                    <div class="option option-1">
-                                                        <div class="analytic">
-                                                            <div class="bar"></div>
-                                                            <div class="percent">50%</div>
-                                                        </div>
-                                                        <div class="input">
-                                                            <input class="poll-input" type="radio" id="option-1"
-                                                                name="option" hidden>
-                                                            <label class="option-lable" for="option-1">1. Java&nbsp;<i
-                                                                    class="fa fa-check tick" aria-hidden="true"></i>
-                                                            </label>
-                                                        </div>
+                                    <!--                <div class="option option-1">-->
+                                    <!--                    <div class="analytic">-->
+                                    <!--                        <div class="bar"></div>-->
+                                    <!--                        <div class="percent">50%</div>-->
+                                    <!--                    </div>-->
+                                    <!--                    <div class="input">-->
+                                    <!--                        <input class="poll-input" type="radio" id="option-1"-->
+                                    <!--                            name="option" hidden>-->
+                                    <!--                        <label class="option-lable" for="option-1">1. Java&nbsp;<i-->
+                                    <!--                                class="fa fa-check tick" aria-hidden="true"></i>-->
+                                    <!--                        </label>-->
+                                    <!--                    </div>-->
 
-                                                    </div>
+                                    <!--                </div>-->
 
-                                                    <div class="option option-2">
-                                                        <div class="analytic">
-                                                            <div class="bar"></div>
-                                                            <div class="percent">50%</div>
-                                                        </div>
-                                                        <div class="input">
-                                                            <input class="poll-input" type="radio" id="option-2"
-                                                                name="option" hidden>
-                                                            <label class="option-lable" for="option-2">2. Python&nbsp;<i
-                                                                    class="fa fa-check tick"
-                                                                    aria-hidden="true"></i></label>
-                                                        </div>
-                                                    </div>
+                                    <!--                <div class="option option-2">-->
+                                    <!--                    <div class="analytic">-->
+                                    <!--                        <div class="bar"></div>-->
+                                    <!--                        <div class="percent">50%</div>-->
+                                    <!--                    </div>-->
+                                    <!--                    <div class="input">-->
+                                    <!--                        <input class="poll-input" type="radio" id="option-2"-->
+                                    <!--                            name="option" hidden>-->
+                                    <!--                        <label class="option-lable" for="option-2">2. Python&nbsp;<i-->
+                                    <!--                                class="fa fa-check tick"-->
+                                    <!--                                aria-hidden="true"></i></label>-->
+                                    <!--                    </div>-->
+                                    <!--                </div>-->
 
-                                                    <div class="option option-3">
-                                                        <div class="analytic">
-                                                            <div class="bar"></div>
-                                                            <div class="percent">50%</div>
-                                                        </div>
-                                                        <div class="input">
-                                                            <input class="poll-input" type="radio" id="option-3"
-                                                                name="option" hidden>
-                                                            <label class="option-lable" for="option-3">3.
-                                                                JavaScript&nbsp;<i class="fa fa-check tick"
-                                                                    aria-hidden="true"></i></label>
-                                                        </div>
-                                                    </div>
+                                    <!--                <div class="option option-3">-->
+                                    <!--                    <div class="analytic">-->
+                                    <!--                        <div class="bar"></div>-->
+                                    <!--                        <div class="percent">50%</div>-->
+                                    <!--                    </div>-->
+                                    <!--                    <div class="input">-->
+                                    <!--                        <input class="poll-input" type="radio" id="option-3"-->
+                                    <!--                            name="option" hidden>-->
+                                    <!--                        <label class="option-lable" for="option-3">3.-->
+                                    <!--                            JavaScript&nbsp;<i class="fa fa-check tick"-->
+                                    <!--                                aria-hidden="true"></i></label>-->
+                                    <!--                    </div>-->
+                                    <!--                </div>-->
 
-                                                    <div class="option option-4">
-                                                        <div class="analytic">
-                                                            <div class="bar"></div>
-                                                            <div class="percent">50%</div>
-                                                        </div>
-                                                        <div class="input">
-                                                            <input class="poll-input" type="radio" id="option-4"
-                                                                name="option" hidden>
-                                                            <label class="option-lable" for="option-4">4. Don't
-                                                                Judge&nbsp;<i class="fa fa-check tick"
-                                                                    aria-hidden="true"></i></label>
-                                                        </div>
-                                                    </div>
+                                    <!--                <div class="option option-4">-->
+                                    <!--                    <div class="analytic">-->
+                                    <!--                        <div class="bar"></div>-->
+                                    <!--                        <div class="percent">50%</div>-->
+                                    <!--                    </div>-->
+                                    <!--                    <div class="input">-->
+                                    <!--                        <input class="poll-input" type="radio" id="option-4"-->
+                                    <!--                            name="option" hidden>-->
+                                    <!--                        <label class="option-lable" for="option-4">4. Don't-->
+                                    <!--                            Judge&nbsp;<i class="fa fa-check tick"-->
+                                    <!--                                aria-hidden="true"></i></label>-->
+                                    <!--                    </div>-->
+                                    <!--                </div>-->
 
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <!--            </div>-->
+                                    <!--        </div>-->
+                                    <!--    </div>-->
+                                    <!--</div>-->
                                 </div>
                             </div>
-
+                            <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal fade" id="addPollingModal" tabindex="-1" aria-labelledby="addPollingModal" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header px-4 py-1">
+                                                <h2 class="heading" id="addPollingModal">Add Polls</h2>
+                                                <button type="button" class="close btn" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="p-4">
+                                                <div id="poll">
+                                                    <form id="pollForm" data='2'>
+                                                    <label for=""><p class="m-0 p-0">Write a question?</p></label>
+                                                    <textarea class="form-control h-auto mb-2" name="" id="poll_question" cols="30" rows="2" placeholder="Write Question here:" required></textarea>
+                                                        <div class="poll-option d-flex align-items-center justify-content-between gap-2">
+                                                            <input class="pollingInput" type="text" id="poll_option_value_1" name="option_1" placeholder="Option 1" required>
+                                                        </div>
+                                                        <div class="poll-option d-flex align-items-center justify-content-between gap-2">
+                                                            <input class="pollingInput" type="text" id="poll_option_value_2" name="option_2" placeholder="Option 2" required>
+                                                        </div>
+                                                        <button class="btn btn-secondary mt-2" onclick='addNewPollOption()' type="button" id="addOption">Add Option</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" id='poll_cancel' class="btn btn-outline-dark" data-dismiss="modal">Cancel</button>
+                                                <button type="button" onclick="addNewPoll(event)" class="btn btn-warning">Submit</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                            </div>   
                         </div>
+                        
                         <div class="tab-pane fade" id="content3">
                             <div class="row mt-0">
                                 <div class="cardEndDiv">
-                                    <div class="d-flex flex-column gap-4">
-                                        <div id="memberList" class="d-flex justify-content-between">
-                                            <div class="cardEndDetail d-flex justify-content-between gap-3">
-                                                <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
-                                                    alt="Profile Image" class="image w-img">
-                                                <div class="text text-center">
-                                                    FGDKXQTCPDXKZANU3IFGDKXQTCPDXKZANU3I
-                                                </div>
-                                            </div>
-                                            <div class="member-ban-ctn">
-                                                <button id="memBan-btn" class="btn p-0">
-                                                    <div class="text text-muted">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                            width="20px" height="20px">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
-                                                        </svg>
-                                                    </div>
-                                                </button>
-                                                <div class="member-ban-modal">
-                                                    <button class="btn">Ban member</button>
-                                                    <button class="btn">Messeage</button>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="d-flex flex-column gap-4" id='dao_users'>
+                                        <!--<div id="memberList" class="d-flex justify-content-between">-->
+                                        <!--    <div class="cardEndDetail d-flex justify-content-between gap-3">-->
+                                        <!--        <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"-->
+                                        <!--            alt="Profile Image" class="image w-img">-->
+                                        <!--        <div class="text text-center">-->
+                                        <!--            FGDKXQTCPDXKZANU3IFGDKXQTCPDXKZANU3I-->
+                                        <!--        </div>-->
+                                        <!--    </div>-->
+                                        <!--    <div class="member-ban-ctn">-->
+                                        <!--        <button id="memBan-btn" class="btn p-0">-->
+                                        <!--            <div class="text text-muted">-->
+                                        <!--                <svg xmlns="http://www.w3.org/2000/svg" fill="none"-->
+                                        <!--                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"-->
+                                        <!--                    width="20px" height="20px">-->
+                                        <!--                    <path stroke-linecap="round" stroke-linejoin="round"-->
+                                        <!--                        d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />-->
+                                        <!--                </svg>-->
+                                        <!--            </div>-->
+                                        <!--        </button>-->
+                                        <!--        <div class="member-ban-modal">-->
+                                        <!--            <button class="btn">Ban member</button>-->
+                                        <!--            <button class="btn">Messeage</button>-->
+                                        <!--        </div>-->
+                                        <!--    </div>-->
+                                        <!--</div>-->
+                                    </div>
+                                    <div style='display:flex; align-items:center'>
+                                        <button id='next_dao_user_info' class="btn" style='display:none'>Next</button>
+                                        <button id='pre_dao_user_info' class="btn" style='margin-left:15px;display:none'>Previous</button>
                                     </div>
                                 </div>
                             </div>
@@ -476,200 +523,185 @@
                                     <div class="d-flex align-items-end gap-4">
                                         <div class="form-group w-100">
                                             <label for="">
-                                                <span class="asset-details-label whitespace-nowrap">Wallet
-                                                    Address:</span>
+                                                <span class="asset-details-label whitespace-nowrap">Add
+                                                    Delegate:</span>
                                             </label>
-                                            <input type="text" class="form-control">
+                                            <input oninput="searchDelegate()" id='dao_delegate_search' type="text" placeholder='Wallet address here' class="form-control">
                                         </div>
                                         <div class="">
-                                            <button type="button" class="btn btnCreate border-0 mb-1">
+                                            <button type="button" onclick='searchDelegate()' class="btn btnCreate border-0 mb-1">
                                                 <p class="mb-0 text-white">Search</p>
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="my-4">
+                                    <div class="my-4" style='display:none' id='user_delegates_search'>
                                         <div class="mb-2">
-                                            <span class="text-sm text-success text">Member founded</span>
+                                            <span class="text-sm text-success text">Member found</span>
                                         </div>
-                                        <div class="d-flex justify-content-between">
-                                            <div class="cardEndDetail">
-                                                <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
-                                                    alt="Profile Image" class="image">
-                                                <div class="text text-center">FGDKXQTCPOJVVBBYTCPOJVVBBY2MRK2DXKZANU3I
-                                                </div>
-                                            </div>
-                                            <div class="">
-                                                <button type="button"
-                                                    class="btn btn-success text-white text d-flex align-items-center gap-2 mb-0">
-                                                    Confirm Delegation
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                        fill="currentColor" width="20px" height="20px">
-                                                        <path fill-rule="evenodd"
-                                                            d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
-                                                            clip-rule="evenodd" />
-                                                    </svg>
-                                                </button>
-                                            </div>
+                                        <div style='overflow:auto;max-height:300px' id='searchDelegateResults'>
+                                            <!--<div class="d-flex justify-content-between">-->
+                                            <!--    <div class="cardEndDetail">-->
+                                            <!--        <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"-->
+                                            <!--            alt="Profile Image" class="image">-->
+                                            <!--        <div class="text text-center">FGDKXQTCPOJVVBBYTCPOJVVBBY2MRK2DXKZANU3I-->
+                                            <!--        </div>-->
+                                            <!--    </div>-->
+                                            <!--    <div class="">-->
+                                            <!--        <button type="button"-->
+                                            <!--            class="btn btn-success text-white text d-flex align-items-center gap-2 mb-0">-->
+                                            <!--            Confirm Delegation-->
+                                            <!--            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"-->
+                                            <!--                fill="currentColor" width="20px" height="20px">-->
+                                            <!--                <path fill-rule="evenodd"-->
+                                            <!--                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"-->
+                                            <!--                    clip-rule="evenodd" />-->
+                                            <!--            </svg>-->
+                                            <!--        </button>-->
+                                            <!--</div>-->
+                                            <!--</div>-->
                                         </div>
                                     </div>
+                                    <div class="my-4" style='display:none' id='user_delegates' style='border-top:1px solid rgba(0,0,0,.5)'>
+                                        <div class="mb-2">
+                                            <span class="text-sm text-success text">Delegates</span>
+                                        </div>
+                                        <div style='overflow:auto;max-height:300px' id='user_delegates_view'>
+                                             
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="content5">
                             <div class="row mt-0">
-                                <div class="cardEndDiv">
-                                    <div class="col-12 pb-3">
-                                        <a href="http://127.0.0.1:8000/dao/1/proposal/1" class="text-decoration-none">
-                                            <div
-                                                class="d-flex justify-content-between align-items-md-center cardEndDetail_container">
-                                                <div class="text">
-                                                    <span>Created by:</span>
-                                                    <span>ByGBV6...SYEN</span>
-                                                </div>
+                                <div class="cardEndDiv" id='proposal_review'>
+                                     <div style='font-size:20px; margin:60px;'><center>Loading Proposals...</center></div>
+                                    <!--<div class="col-12 pb-3">-->
+                                    <!--    <a href="http://127.0.0.1:8000/dao/1/proposal/1" class="text-decoration-none">-->
+                                    <!--        <div-->
+                                    <!--            class="d-flex justify-content-between align-items-md-center cardEndDetail_container">-->
+                                    <!--            <div class="text">-->
+                                    <!--                <span>Created by:</span>-->
+                                    <!--                <span>ByGBV6...SYEN</span>-->
+                                    <!--            </div>-->
 
-                                                <div class="text">
-                                                    <span>Proposal ID:</span>
-                                                    <span>ByGBV6...SYEN</span>
-                                                </div>
+                                    <!--            <div class="text">-->
+                                    <!--                <span>Proposal ID:</span>-->
+                                    <!--                <span>ByGBV6...SYEN</span>-->
+                                    <!--            </div>-->
 
-                                                <div class="small-card">
-                                                    <div class="small-card-text">Pending</div>
-                                                </div>
-                                            </div>
-                                            <div class="cardendHeading">
-                                                <h2 class="heading">Incentivized Referral Program</h2>
-                                                <div class="paragraph">
-                                                    <p>We will introduce an incentivized referral program, rewarding
-                                                        existing
-                                                        LumosDAO members for bringing in new users. This program will
-                                                        encourage
-                                                        community growth while rewarding loyal members who contribute to
-                                                        expanding
-                                                        our user base.</p>
-                                                </div>
-                                            </div>
-                                            <div
-                                                class="carendBottom d-flex align-items-center justify-content-between w-100">
-                                                <div class="d-flex align-items-center justify-content-end gap-3">
-                                                    <button type="button"
-                                                        class="btn btn-success text-white text d-flex align-items-center gap-2 mb-0">
-                                                        Approve
-                                                    </button>
-                                                    <button type="button"
-                                                        class="btn btn-danger text-white text d-flex align-items-center gap-2 mb-0">
-                                                        Reject
-                                                    </button>
-                                                </div>
-                                                <div class="text d-none">
-                                                    <span>Voted by:</span>
-                                                    <span>123 members</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="col-12 p-3 border-top">
-                                        <a href="http://127.0.0.1:8000/dao/1/proposal/1" class="text-decoration-none">
-                                            <div
-                                                class="d-flex justify-content-between align-items-md-center cardEndDetail_container">
-                                                <div class="text">
-                                                    <span>Created by:</span>
-                                                    <span>GBEE...FSH8OJ</span>
-                                                </div>
-
-                                                <div class="text">
-                                                    <span>Proposal ID:</span>
-                                                    <span>ByGBV6...SYEN</span>
-                                                </div>
-
-                                                <div class="small-card">
-                                                    <div class="small-card-text">Pending</div>
-                                                </div>
-                                            </div>
-                                            <div class="cardendHeading">
-                                                <h2 class="heading">Incentivized Referral Program</h2>
-                                                <div class="paragraph">
-                                                    <p>We will introduce an incentivized referral program, rewarding
-                                                        existing
-                                                        LumosDAO members for bringing in new users. This program will
-                                                        encourage
-                                                        community growth while rewarding loyal members who contribute to
-                                                        expanding
-                                                        our user base.</p>
-                                                </div>
-                                            </div>
-                                            <div
-                                                class="carendBottom d-flex align-items-center justify-content-between w-100">
-                                                <div class="d-flex align-items-center justify-content-end gap-3 d-none">
-                                                    <button type="button"
-                                                        class="btn btn-success text-white text d-flex align-items-center gap-2 mb-0">
-                                                        Approve
-                                                    </button>
-                                                    <button type="button"
-                                                        class="btn btn-danger text-white text d-flex align-items-center gap-2 mb-0">
-                                                        Reject
-                                                    </button>
-                                                </div>
-                                                <div class="text">
-                                                    <span>Voted by:</span>
-                                                    <span>123 members</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
+                                    <!--            <div class="small-card">-->
+                                    <!--                <div class="small-card-text">Pending</div>-->
+                                    <!--            </div>-->
+                                    <!--        </div>-->
+                                    <!--        <div class="cardendHeading">-->
+                                    <!--            <h2 class="heading">Incentivized Referral Program</h2>-->
+                                    <!--            <div class="paragraph">-->
+                                    <!--                <p>We will introduce an incentivized referral program, rewarding-->
+                                    <!--                    existing-->
+                                    <!--                    LumosDAO members for bringing in new users. This program will-->
+                                    <!--                    encourage-->
+                                    <!--                    community growth while rewarding loyal members who contribute to-->
+                                    <!--                    expanding-->
+                                    <!--                    our user base.</p>-->
+                                    <!--            </div>-->
+                                    <!--        </div>-->
+                                    <!--        <div-->
+                                    <!--            class="carendBottom d-flex align-items-center justify-content-between w-100">-->
+                                    <!--            <div class="d-flex align-items-center justify-content-end gap-3">-->
+                                    <!--                <button type="button"-->
+                                    <!--                    class="btn btn-success text-white text d-flex align-items-center gap-2 mb-0">-->
+                                    <!--                    Approve-->
+                                    <!--                </button>-->
+                                    <!--                <button type="button"-->
+                                    <!--                    class="btn btn-danger text-white text d-flex align-items-center gap-2 mb-0">-->
+                                    <!--                    Reject-->
+                                    <!--                </button>-->
+                                    <!--            </div>-->
+                                    <!--            <div class="text d-none">-->
+                                    <!--                <span>Voted by:</span>-->
+                                    <!--                <span>123 members</span>-->
+                                    <!--            </div>-->
+                                    <!--        </div>-->
+                                    <!--    </a>-->
+                                    <!--</div>-->
                                 </div>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="content6">
                             <div class="row mt-0">
+                                <div class="cardEndDiv" id='proposal_budget'>
+                                     <div style='font-size:20px; margin:60px;'><center>Loading Proposals...</center></div>
+                                    <!--<div class="col-12">-->
+                                    <!--    <a href="http://127.0.0.1:8000/dao/1/proposal/1" class="text-decoration-none">-->-->
+                                        <!--    <div-->
+                                        <!--        class="d-flex justify-content-between align-items-center cardEndDetail_container">-->
+                                        <!--        <div class="text">-->
+                                        <!--            <span>Created by: GBEE...FSH8OJ</span>-->
+                                        <!--            <span>ByGBV6...SYEN</span>-->
+                                        <!--        </div>-->
+
+                                        <!--        <div class="text">-->
+                                        <!--            <span>Proposal ID:</span>-->
+                                        <!--            <span>ByGBV6...SYEN</span>-->
+                                        <!--        </div>-->
+
+                                        <!--        <div class="small-card">-->
+                                        <!--            <div class="small-card-text">Signatures (2/3)</div>-->
+                                        <!--        </div>-->
+                                        <!--    </div>-->
+                                        <!--    <div class="cardendHeading">-->
+                                        <!--        <h2 class="heading">A Decentralized initiative for Sustainable-->
+                                        <!--            Development</h2>-->
+                                        <!--        <div class="paragraph">-->
+                                        <!--            <p>We will introduce an incentivized referral program, rewarding-->
+                                        <!--                existing-->
+                                        <!--                LumosDAO members for bringing in new users. This program will-->
+                                        <!--                encourage-->
+                                        <!--                community growth while rewarding loyal members who contribute to-->
+                                        <!--                expanding-->
+                                        <!--                our user base.</p>-->
+                                        <!--        </div>-->
+                                        <!--    </div>-->
+                                        <!--    <div class="carendBottom d-flex align-items-center justify-content-between">-->
+                                        <!--        <div class="text">-->
+                                        <!--            <span class="heading"><small>Requested Budget:</small></span>-->
+                                        <!--            <span>200,000 SHAKE</span>-->
+                                        <!--        </div>-->
+                                        <!--        <div class="d-flex align-items-center justify-content-end">-->
+                                        <!--            <button type="button"-->
+                                        <!--                class="btn btn-success text-white text d-flex align-items-center gap-2 mb-0">-->
+                                        <!--                Confirm-->
+                                        <!--            </button>-->
+                                        <!--        </div>-->
+                                        <!--    </div>-->
+                                        <!--</a>
+                                    <!--</div>-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="content7">
+                            <div class="row mt-0">
                                 <div class="cardEndDiv">
-                                    <div class="col-12">
-                                        <a href="http://127.0.0.1:8000/dao/1/proposal/1" class="text-decoration-none">
-                                            <div
-                                                class="d-flex justify-content-between align-items-center cardEndDetail_container">
-                                                <div class="text">
-                                                    <span>Created by: GBEE...FSH8OJ</span>
-                                                    <span>ByGBV6...SYEN</span>
-                                                </div>
-
-                                                <div class="text">
-                                                    <span>Proposal ID:</span>
-                                                    <span>ByGBV6...SYEN</span>
-                                                </div>
-
-                                                <div class="small-card">
-                                                    <div class="small-card-text">Signatures (2/3)</div>
-                                                </div>
-                                            </div>
-                                            <div class="cardendHeading">
-                                                <h2 class="heading">A Decentralized initiative for Sustainable
-                                                    Development</h2>
-                                                <div class="paragraph">
-                                                    <p>We will introduce an incentivized referral program, rewarding
-                                                        existing
-                                                        LumosDAO members for bringing in new users. This program will
-                                                        encourage
-                                                        community growth while rewarding loyal members who contribute to
-                                                        expanding
-                                                        our user base.</p>
-                                                </div>
-                                            </div>
-                                            <div class="carendBottom d-flex align-items-center justify-content-between">
-                                                <div class="text">
-                                                    <span class="heading"><small>Requested Budget:</small></span>
-                                                    <span>200,000 SHAKE</span>
-                                                </div>
-                                                <div class="d-flex align-items-center justify-content-end">
-                                                    <button type="button"
-                                                        class="btn btn-success text-white text d-flex align-items-center gap-2 mb-0">
-                                                        Confirm
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </a>
+                                    <div class="d-flex align-items-end gap-4">
+                                        <div class="form-group w-100">
+                                            <label for="">
+                                                <span class="asset-details-label whitespace-nowrap">Embed
+                                                    Tweet</span>
+                                            </label>
+                                            <input oninput="" id='tweet_url' type="text" placeholder='https://twitter.com/...' class="form-control">
+                                        </div>
+                                        <div class="">
+                                            <button type="button" onclick='embedTweet()' class="btn btnCreate border-0 mb-1">
+                                                <p class="mb-0 text-white">Add</p>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
 
@@ -691,72 +723,76 @@
                         </button>
                     </div>
                 </div>
-                <div class="mt-3 border rounded p-3">
-                    <div class="card-imgflex justify-content-between card-join">
-                        <div class="card-imgflex">
-                            <img class="w-img" src="{{asset('/images/discord.png')}}" alt="Image">
-                            <div class="cardHeading">
-                                <span class="card-heading"><small>Artisan Lsut</small></span>
-                                <p class="card-subheading">@asrtlust</p>
-                            </div>
-                        </div>
-                        <img style="object-fit: contain !important;" class="w-img" src="/images/blank-twitter.png"
-                            alt="">
-                    </div>
-                    <p class="my-2">
-                        <small>This <span class="text-info">line</span> of text is meant to be treated as fine print
-                            <span class="text-info">Lorem ipsum</span> dolor sit, amet consectetur adipisicing elit.
-                            Aspernatur, molestiae..</small>
-                    </p>
-                    <div class="d-flex justify-content-between">
-                        <small class="text-secondary">12 days ago</small>
-                        <small class="text-secondary">Retweeted by justin</small>
-                    </div>
+                
+                <div id='tweets_views' style='display:flex;justify-content:center'>
+                    
                 </div>
-                <div class="mt-3 border rounded p-3">
-                    <div class="card-imgflex justify-content-between card-join">
-                        <div class="card-imgflex">
-                            <img class="w-img" src="{{asset('/images/discord.png')}}" alt="Image">
-                            <div class="cardHeading">
-                                <span class="card-heading"><small>Artisan Lsut</small></span>
-                                <p class="card-subheading">@asrtlust</p>
-                            </div>
-                        </div>
-                        <img style="object-fit: contain !important;" class="w-img" src="/images/blank-twitter.png"
-                            alt="">
-                    </div>
-                    <p class="my-2">
-                        <small>This <span class="text-info">line</span> of text is meant to be treated as fine print
-                            <span class="text-info">Lorem ipsum</span> dolor sit, amet consectetur adipisicing elit.
-                            Aspernatur, molestiae..</small>
-                    </p>
-                    <div class="d-flex justify-content-between">
-                        <small class="text-secondary">12 days ago</small>
-                        <small class="text-secondary">Retweeted by justin</small>
-                    </div>
-                </div>
-                <div class="mt-3 border rounded p-3">
-                    <div class="card-imgflex justify-content-between card-join">
-                        <div class="card-imgflex">
-                            <img class="w-img" src="{{asset('/images/discord.png')}}" alt="Image">
-                            <div class="cardHeading">
-                                <span class="card-heading"><small>Artisan Lsut</small></span>
-                                <p class="card-subheading">@asrtlust</p>
-                            </div>
-                        </div>
-                        <img style="object-fit: contain !important;" class="w-img" src="/images/blank-twitter.png"
-                            alt="">
-                    </div>
-                    <p class="my-2">
-                        <small>This <span class="text-info">line</span> of text is meant to be treated as fine print
-                            <span class="text-info">Lorem ipsum</span> dolor sit, amet consectetur adipisicing elit.
-                            Aspernatur, molestiae..</small>
-                    </p>
-                    <div class="d-flex justify-content-between">
-                        <small class="text-secondary">12 days ago</small>
-                        <small class="text-secondary">Retweeted by justin</small>
-                    </div>
-                </div>
+                <!--<div class="mt-3 border rounded p-3">-->
+                <!--    <div class="card-imgflex justify-content-between card-join">-->
+                <!--        <div class="card-imgflex">-->
+                <!--            <img class="w-img" src="{{asset('/images/discord.png')}}" alt="Image">-->
+                <!--            <div class="cardHeading">-->
+                <!--                <span class="card-heading"><small>Artisan Lsut</small></span>-->
+                <!--                <p class="card-subheading">@asrtlust</p>-->
+                <!--            </div>-->
+                <!--        </div>-->
+                <!--        <img style="object-fit: contain !important;" class="w-img" src="/images/blank-twitter.png"-->
+                <!--            alt="">-->
+                <!--    </div>-->
+                <!--    <p class="my-2">-->
+                <!--        <small>This <span class="text-info">line</span> of text is meant to be treated as fine print-->
+                <!--            <span class="text-info">Lorem ipsum</span> dolor sit, amet consectetur adipisicing elit.-->
+                <!--            Aspernatur, molestiae..</small>-->
+                <!--    </p>-->
+                <!--    <div class="d-flex justify-content-between">-->
+                <!--        <small class="text-secondary">12 days ago</small>-->
+                <!--        <small class="text-secondary">Retweeted by justin</small>-->
+                <!--    </div>-->
+                <!--</div>-->
+                <!--<div class="mt-3 border rounded p-3">-->
+                <!--    <div class="card-imgflex justify-content-between card-join">-->
+                <!--        <div class="card-imgflex">-->
+                <!--            <img class="w-img" src="{{asset('/images/discord.png')}}" alt="Image">-->
+                <!--            <div class="cardHeading">-->
+                <!--                <span class="card-heading"><small>Artisan Lsut</small></span>-->
+                <!--                <p class="card-subheading">@asrtlust</p>-->
+                <!--            </div>-->
+                <!--        </div>-->
+                <!--        <img style="object-fit: contain !important;" class="w-img" src="/images/blank-twitter.png"-->
+                <!--            alt="">-->
+                <!--    </div>-->
+                <!--    <p class="my-2">-->
+                <!--        <small>This <span class="text-info">line</span> of text is meant to be treated as fine print-->
+                <!--            <span class="text-info">Lorem ipsum</span> dolor sit, amet consectetur adipisicing elit.-->
+                <!--            Aspernatur, molestiae..</small>-->
+                <!--    </p>-->
+                <!--    <div class="d-flex justify-content-between">-->
+                <!--        <small class="text-secondary">12 days ago</small>-->
+                <!--        <small class="text-secondary">Retweeted by justin</small>-->
+                <!--    </div>-->
+                <!--</div>-->
+                <!--<div class="mt-3 border rounded p-3">-->
+                <!--    <div class="card-imgflex justify-content-between card-join">-->
+                <!--        <div class="card-imgflex">-->
+                <!--            <img class="w-img" src="{{asset('/images/discord.png')}}" alt="Image">-->
+                <!--            <div class="cardHeading">-->
+                <!--                <span class="card-heading"><small>Artisan Lsut</small></span>-->
+                <!--                <p class="card-subheading">@asrtlust</p>-->
+                <!--            </div>-->
+                <!--        </div>-->
+                <!--        <img style="object-fit: contain !important;" class="w-img" src="/images/blank-twitter.png"-->
+                <!--            alt="">-->
+                <!--    </div>-->
+                <!--    <p class="my-2">-->
+                <!--        <small>This <span class="text-info">line</span> of text is meant to be treated as fine print-->
+                <!--            <span class="text-info">Lorem ipsum</span> dolor sit, amet consectetur adipisicing elit.-->
+                <!--            Aspernatur, molestiae..</small>-->
+                <!--    </p>-->
+                <!--    <div class="d-flex justify-content-between">-->
+                <!--        <small class="text-secondary">12 days ago</small>-->
+                <!--        <small class="text-secondary">Retweeted by justin</small>-->
+                <!--    </div>-->
+                <!--</div>-->
 
             </div>
 
@@ -777,78 +813,15 @@
                                 </div>
                         </div>
                         <div id='topVotersView' class="">
-                        <div class="d-flex justify-content-between align-items-baseline py-2">
-                                <div class="proposal_sideCard_banner">
-                                    <img src="https://images.unsplash.com/photo-1682685797661-9e0c87f59c60?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60" alt="">
-                                    <span class="">ByGBV6...SYEN</span>
-                                </div>
-                                <div class="proposal_status-SideCard">
-                                    <h2 class="heading">12</h2>
-                                </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-baseline py-2">
-                                <div class="proposal_sideCard_banner">
-                                    <img src="https://images.unsplash.com/photo-1682685797661-9e0c87f59c60?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60" alt="">
-                                    <span class="">ByGBV6...SYEN</span>
-                                </div>
-                                <div class="proposal_status-SideCard">
-                                    <h2 class="heading">9</h2>
-                                </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-baseline py-2">
-                                <div class="proposal_sideCard_banner">
-                                    <img src="https://images.unsplash.com/photo-1682685797661-9e0c87f59c60?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60" alt="">
-                                    <span class="">ByGBV6...SYEN</span>
-                                </div>
-                                <div class="proposal_status-SideCard">
-                                    <h2 class="heading">25 </h2>
-                                </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-baseline py-2">
-                                <div class="proposal_sideCard_banner">
-                                    <img src="https://images.unsplash.com/photo-1682685797661-9e0c87f59c60?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60" alt="">
-                                    <span class="">ByGBV6...SYEN</span>
-                                </div>
-                                <div class="proposal_status-SideCard">
-                                    <h2 class="heading">12 </h2>
-                                </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-baseline py-2">
-                                <div class="proposal_sideCard_banner">
-                                    <img src="https://images.unsplash.com/photo-1682685797661-9e0c87f59c60?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60" alt="">
-                                    <span class="">ByGBV6...SYEN</span>
-                                </div>
-                                <div class="proposal_status-SideCard">
-                                    <h2 class="heading">2</h2>
-                                </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-baseline py-2">
-                                <div class="proposal_sideCard_banner">
-                                    <img src="https://images.unsplash.com/photo-1682685797661-9e0c87f59c60?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60" alt="">
-                                    <span class="">ByGBV6...SYEN</span>
-                                </div>
-                                <div class="proposal_status-SideCard">
-                                    <h2 class="heading">32</h2>
-                                </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-baseline py-2">
-                                <div class="proposal_sideCard_banner">
-                                    <img src="https://images.unsplash.com/photo-1682685797661-9e0c87f59c60?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60" alt="">
-                                    <span class="">ByGBV6...SYEN</span>
-                                </div>
-                                <div class="proposal_status-SideCard">
-                                    <h2 class="heading">16</h2>
-                                </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-baseline py-2">
-                                <div class="proposal_sideCard_banner">
-                                    <img src="https://images.unsplash.com/photo-1682685797661-9e0c87f59c60?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60" alt="">
-                                    <span class="">ByGBV6...SYEN</span>
-                                </div>
-                                <div class="proposal_status-SideCard">
-                                    <h2 class="heading">12</h2>
-                                </div>
-                        </div>
+                            <!--<div class="d-flex justify-content-between align-items-baseline py-2">-->
+                            <!--        <div class="proposal_sideCard_banner">-->
+                            <!--            <img src="https://images.unsplash.com/photo-1682685797661-9e0c87f59c60?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60" alt="">-->
+                            <!--            <span class="">ByGBV6...SYEN</span>-->
+                            <!--        </div>-->
+                            <!--        <div class="proposal_status-SideCard">-->
+                            <!--            <h2 class="heading">12</h2>-->
+                            <!--        </div>-->
+                            <!--</div>-->
                         </div>
                     </div>
             </div>
@@ -1028,8 +1001,6 @@ const commentPlate = document.getElementById('comment-pl');
 const commentSec = document.getElementById('commentSec');
 const commentInput = document.getElementById('comment-input');
 const commentSend = document.getElementById('comment-send');
-const memBanBtn = document.getElementById('memBan-btn');
-const memberBanModal = document.querySelector('.member-ban-modal');
 var memberList = document.getElementById('memberList');
 const manageAdminCheck = document.getElementById('manageAdminCheck');
 const manageAdminConfirm = document.getElementById('manageAdminConfirm');
@@ -1046,127 +1017,139 @@ manageAdminCheck.addEventListener('click', function() {
 });
 
 
-memBanBtn.classList.add('d-none');
-commentBox.classList.add('d-none');
-commentSec.classList.add('d-none');
-memberBanModal.classList.add('d-none');
-btnLike.addEventListener('click', function() {
-    btnLike.classList.toggle('like-active');
-    likeIcon.classList.add('fa-thumbs-up');
-    btnDisLike.classList.remove('like-active');
-    disLikeIcon.classList.remove('fa-thumbs-down');
-});
+// commentBox.classList.add('d-none');
+// commentSec.classList.add('d-none');
+// btnLike.addEventListener('click', function() {
+//     btnLike.classList.toggle('like-active');
+//     likeIcon.classList.add('fa-thumbs-up');
+//     btnDisLike.classList.remove('like-active');
+//     disLikeIcon.classList.remove('fa-thumbs-down');
+// });
 
-btnDisLike.addEventListener('click', function() {
-    btnDisLike.classList.toggle('like-active');
-    disLikeIcon.classList.add('fa-thumbs-down');
-    btnLike.classList.remove('like-active');
-    likeIcon.classList.remove('fa-thumbs-up');
-});
+// btnDisLike.addEventListener('click', function() {
+//     btnDisLike.classList.toggle('like-active');
+//     disLikeIcon.classList.add('fa-thumbs-down');
+//     btnLike.classList.remove('like-active');
+//     likeIcon.classList.remove('fa-thumbs-up');
+// });
 
-comment.addEventListener('click', function() {
-    commentBox.classList.toggle('d-none');
-});
+// comment.addEventListener('click', function() {
+//     commentBox.classList.toggle('d-none');
+// });
 
-commentSend.addEventListener('click', function() {
-    commentSec.classList.remove('d-none');
-    let newComment = document.createElement('small');
-    newComment.textContent = commentInput.value;
-    commentPlate.appendChild(newComment);
-    commentInput.value = '';
-});
+// commentSend.addEventListener('click', function() {
+//     commentSec.classList.remove('d-none');
+//     let newComment = document.createElement('small');
+//     newComment.textContent = commentInput.value;
+//     commentPlate.appendChild(newComment);
+//     commentInput.value = '';
+// });
 
-document.addEventListener('click', function(event) {
-    if (!memberBanModal.contains(event.target) && !memBanBtn.contains(event.target)) {
-        memberBanModal.classList.add('d-none');
-    }
-});
+// document.addEventListener('click', function(event) {
+//     const memBan = document.getElementsByClassName('member-ban-modal');
+//     for(let i =0;i<memBan.length;i++)  {
+//         const elem = memBan[i]
+//         elem.classList.add('d-none');
+//     }
+// });
 
-memberBanModal.addEventListener('click', function(event) {
+function toggleMemberModal(id, m, event) {
+    E(m).classList.toggle('d-none');
     event.stopPropagation();
-});
-memBanBtn.addEventListener('click', function() {
-    memberBanModal.classList.toggle('d-none');
-});
-
-memberList.addEventListener('mouseover', function() {
-    memBanBtn.classList.remove('d-none');
-});
-
-memberList.addEventListener('mouseout', function() {
-    memBanBtn.classList.add('d-none');
-});
-const options = document.querySelectorAll('.poll-input')
-const analytics = document.querySelectorAll('.analytic')
-
-votingData = {
-    'option-1': 1,
-    'option-2': 2,
-    'option-3': 1,
-    'option-4': 3
-}
-
-const getTotalVotes = () => {
-    let totalVotes = 0
-    for (i = 1; i <= 4; i++) {
-        totalVotes += votingData[`option-${i}`]
+    E(m).onclick = (event) => {
+        event.stopPropagation();
     }
-    return totalVotes
 }
+// memberList.addEventListener('mouseover', function() {
+//     const memBan = document.querySelector('.member-ban-modal');
+//     memBan.forEach((elem) => {
+//         elem.classList.remove('d-none');
+//     })
+// });
+// memberList.addEventListener('mouseout', function() {
+//     const memBan = document.querySelector('.member-ban-modal');
+//     memBan.forEach((elem) => {
+//         elem.classList.add('d-none');
+//     })
+// });
+// const options = document.querySelectorAll('.poll-input')
+// const analytics = document.querySelectorAll('.analytic')
 
-const displayResult = () => {
-    var total = 0
-    var widths = []
-    options.forEach(option => {
-        var ID = option.id
-        option.parentNode.parentNode.querySelector('.percent').textContent = Math.floor(votingData[ID] /
-            getTotalVotes() * 100) + '%'
-        option.parentNode.parentNode.querySelector('.bar').style.width = Math.floor(votingData[ID] /
-            getTotalVotes() * 100) + '%'
-        total += Math.floor(votingData[ID] / getTotalVotes() * 100)
-        widths.push(Math.floor(votingData[ID] / getTotalVotes() * 100))
-    })
-    options.forEach(option => {
-        if (total < 100) {
-            var min = Math.min(widths[0], widths[1], widths[2], widths[3])
-            min += (100 - total)
-        }
-        option.parentNode.parentNode.querySelector('.analytic').style.display = 'block'
-    })
+// votingData = {
+//     'option-1': 1,
+//     'option-2': 2,
+//     'option-3': 1,
+//     'option-4': 3
+// }
 
-}
+// const getTotalVotes = () => {
+//     let totalVotes = 0
+//     for (i = 1; i <= 4; i++) {
+//         totalVotes += votingData[`option-${i}`]
+//     }
+//     return totalVotes
+// }
 
-const disableOptions = () => {
-    options.forEach(option => {
-        option.disabled = true
-    })
-}
+// const displayResult = () => {
+//     var total = 0
+//     var widths = []
+//     options.forEach(option => {
+//         var ID = option.id
+//         option.parentNode.parentNode.querySelector('.percent').textContent = Math.floor(votingData[ID] /
+//             getTotalVotes() * 100) + '%'
+//         option.parentNode.parentNode.querySelector('.bar').style.width = Math.floor(votingData[ID] /
+//             getTotalVotes() * 100) + '%'
+//         total += Math.floor(votingData[ID] / getTotalVotes() * 100)
+//         widths.push(Math.floor(votingData[ID] / getTotalVotes() * 100))
+//     })
+//     options.forEach(option => {
+//         if (total < 100) {
+//             var min = Math.min(widths[0], widths[1], widths[2], widths[3])
+//             min += (100 - total)
+//         }
+//         option.parentNode.parentNode.querySelector('.analytic').style.display = 'block'
+//     })
 
-options.forEach(option => {
-    option.addEventListener('click', e => {
-        e.preventDefault()
-        option.style.color = 'display:none;'
-        var option_id = e.target.id
-        votingData[option_id] += 1
+// }
 
-        var analytic = e.target.parentNode.parentNode.querySelector('.analytic')
-        var bar = analytic.querySelector('.bar')
-        bar.style.backgroundColor = 'skyblue'
-        var percent = analytic.querySelector('.percent')
-        e.target.parentNode.parentNode.querySelector('.tick').style.display = 'inline'
-        displayResult()
-        disableOptions()
-    })
-})
+// const disableOptions = () => {
+//     options.forEach(option => {
+//         option.disabled = true
+//     })
+// }
+
+// options.forEach(option => {
+//     option.addEventListener('click', e => {
+//         e.preventDefault()
+//         option.style.color = 'display:none;'
+//         var option_id = e.target.id
+//         votingData[option_id] += 1
+
+//         var analytic = e.target.parentNode.parentNode.querySelector('.analytic')
+//         var bar = analytic.querySelector('.bar')
+//         bar.style.backgroundColor = 'skyblue'
+//         var percent = analytic.querySelector('.percent')
+//         e.target.parentNode.parentNode.querySelector('.tick').style.display = 'inline'
+//         displayResult()
+//         disableOptions()
+//     })
+// })
 </script>
     <script>
-        /* INDEX FUNCTIONS GO HERE */
-        var dao;var daoUsers;
+        /* VARIABLES */
+        var dao;var daoUsers;var daoDelegatee = []; var proposals = []; var bulletins = []; var tweets = []; var is_Admin = false;
+        var dao_users_page = 1;
+        var dao_user_page_segment = 20;
+        
         /* RETRIEVE THE DAO SPECIFIC INFORMATION */
         const indexMain = async () => { 
-           let _dao = (window.location + "").substring((window.location + "").lastIndexOf("/") + 1)
+           let _dao = '{{ $dao_id }}' 
+           let timeStart = performance.now()
            dao = await getDao(_dao) ;  
+           //timeStart = performance.now()
            daoUsers = await getDaoUsersP(dao.name); 
+           //timeStart = performance.now()
+           daoDelegatee = await getDaoDelegatee(dao.token, walletAddress) 
            E('inbox').href += "?dao=" + _dao + "&name=" + dao.name
            E('createProposal').href = E('createProposal').href.replace('PROPOSAL_CREATE', `${dao.name}:${dao['token']}`)
            E('createProposal').style.display = 'block'
@@ -1179,6 +1162,12 @@ options.forEach(option => {
               E('leaveDao').style.display = 'none'
            }
            E('asset_name').href = 'https://stellar.expert/explorer/testnet/asset/' + dao.code + "-" + dao.issuer 
+           //show tweet embed page only if admin
+           if(dao.admins.includes(walletAddress) || dao.owner == walletAddress) {
+               E('content7_tab').style.display = ""
+           }
+           setTimeout(loadBulletin, 50)
+           setTimeout(loadTweets, 50)    
            if(dao['proposals'] != undefined) {
                setUp(); 
                //check if this asset was hosted here 
@@ -1187,6 +1176,10 @@ options.forEach(option => {
                    if(dao.issuer == walletAddress || dao.toml.ACCOUNTS.includes(walletAddress)){
                        E('dao_setting').style.display = 'block'
                        E('manageAdminBut').style.display = 'block'
+                       E('manageAdminBut').addEventListener('click', () => {
+                           //clear the search field
+                           E('addNewAdmin').style.display = 'none'
+                       })
                    } 
                }
               
@@ -1199,25 +1192,61 @@ options.forEach(option => {
                             prop = dao.proposals.pop(); 
                             if(prop != undefined && prop != "") {
                                 let propId = prop;  
+                                prop.status = Number(prop.status)
                                 prop = await getProposal(prop);
                                 if(prop['name'] != undefined) {
                                     prop.proposalId = propId; //attach id
-                                    //append 
-                                    temPropView.appendChild(drawProposal(prop)) 
+                                    proposals[propId] = prop
+                                    if(prop.status != 0 && prop.status != 2){
+                                        //append 
+                                        prop.first = (temPropView.innerHTML == "")
+                                        temPropView.appendChild(drawProposal(prop)) 
+                                    }
+                                    //append based on review and budget
+                                    if(prop.status == 0){
+                                        prop.first = (temRePropView.innerHTML == "")
+                                        temRePropView.innerHTML += drawProposalReview(prop)
+                                    }
+                                    if(prop.status == 1  && prop.budget > 0){  
+                                        prop.first = (temBPropView.innerHTML == "")
+                                        temBPropView.innerHTML += drawProposalApproved(prop)
+                                    }
                                 }
                             }
                             //stop timer if all dao data has been read
-                            if(dao.proposals.length != 0) {setTimeout(dispProposal, 5)}else{E('proposal_views').innerHTML = temPropView.innerHTML;temPropView.innerHTML = "";temPropView = null}
+                            if(dao.proposals.length != 0) {setTimeout(dispProposal, 5)}
+                            else{
+                                E('proposal_views').innerHTML = temPropView.innerHTML;
+                                E('proposal_review').innerHTML = temRePropView.innerHTML;
+                                E('proposal_budget').innerHTML = temBPropView.innerHTML;
+                                if(temPropView.firstElementChild == null) {
+                                    E('proposal_views').innerHTML = "<div style='font-size:20px; margin:60px;'><center>No record found.</center></div>"
+                                    E('proposal_views').setAttribute('data','empty')
+                                }
+                                if(temRePropView.firstElementChild == null) {E('proposal_review').innerHTML = "<div style='font-size:20px; margin:60px;'><center>No record found.</center></div>"}
+                                if(temBPropView.firstElementChild == null) {
+                                    E('proposal_budget').innerHTML = "<div style='font-size:20px; margin:60px;'><center>No record found.</center></div>"
+                                    E('proposal_budget').setAttribute('data','empty')
+                                }
+                                temPropView = temRePropView = temBPropView =null
+                                
+                            }
                         }
                         let temPropView = document.createElement('div') //hold proposal views, till they are done loading
+                        let temRePropView = document.createElement('div') //hold proposal views, till they are done loading
+                        let temBPropView = document.createElement('div') //hold proposal views, till they are done loading
                         const tmr = setTimeout(dispProposal, 10)
                    }
                    else { 
                        E('proposal_views').innerHTML = "<div style='font-size:20px; margin:60px;'><center>No proposal created yet<br>Be the first to create a proposal.</center></div>"
+                       E('proposal_review').innerHTML = "<div style='font-size:20px; margin:60px;'><center>No record found.</center></div>"
+                       E('proposal_budget').innerHTML = "<div style='font-size:20px; margin:60px;'><center>No record found</center></div>"
                    }
                }
                else {
                    E('proposal_views').innerHTML = "<div style='font-size:20px; margin:60px;'><center>No proposal created yet<br>Be the first to create a proposal.</center></div>"
+                   E('proposal_review').innerHTML = "<div style='font-size:20px; margin:60px;'><center>No record found.</center></div>"
+                   E('proposal_budget').innerHTML = "<div style='font-size:20px; margin:60px;'><center>No record found</center></div>"
                }
            }
            E('leaveDao').onclick = async() => {
@@ -1242,12 +1271,29 @@ options.forEach(option => {
               stopTalking(4, id)
                   
            }
+           //load users
+           E('dao_users').innerHTML = `<center style='margin: 40px 20px'>Loading members</center>`
+           //configure the buttons
+           E('next_dao_user_info').onclick = () => {
+                if(dao_users_page < daoUsers.length / dao_user_page_segment){
+                  loadUsers(dao_users_page + 1)
+                  dao_users_page++
+                }
+           }
+           E('pre_dao_user_info').onclick = () => {
+                if(dao_users_page > 1){
+                  loadUsers(dao_users_page - 1)
+                  dao_users_page--
+                }
+           }
+           setTimeout(loadUsers, 50)
+           setTimeout(loadDelegatee, 50)
         }
         const setUp = async () => {
             if(dao['proposals'] != undefined) {
                E('dao_name').innerHTML = E('dao_name_head').innerHTML = E('dao_save_name').innerHTML = dao.name || "no name"
                E('dao_about').innerHTML = E('dao_save_about').innerHTML = dao.description || "Your friendly Lumos DAO community"
-               E('dao_members').innerHTML = dao.members.toLocaleString() + ((dao.members > 1) ? " members" : " member")
+               E('dao_members').innerHTML = daoUsers.length.toLocaleString() + ((daoUsers.length > 1) ? " members" : " member")
                //get token info name
                E('dao_token_name').innerHTML = E('dao_save_code').innerHTML =  dao.code
                //get asset info from toml
@@ -1271,27 +1317,34 @@ options.forEach(option => {
                     E('dao_save_address').appendChild(drawAddress(dao.issuer))
                     if(aToml.ACCOUNTS) {
                         let flg = false;
-                        E('dao_admin_lists').innerHTML = ""
                         //get account names if it exist
                         if(!aToml.WALLET_NAMES) {aToml.WALLET_NAMES = []} //not defined yet, define it
-                        console.log(aToml.ACCOUNTS)
+                        //console.log(aToml.ACCOUNTS)
                         for(let i=0;i<aToml.ACCOUNTS.length;i++) {
                             //don't redraw the issuer
                             if(aToml.ACCOUNTS[i]){
-                                E('dao_others_address').appendChild(drawOtherAddress(aToml.ACCOUNTS[i], aToml.WALLET_NAMES[aToml.ACCOUNTS[i]]))
-                                //if admin
-                                if(aToml.WALLET_NAMES[aToml.ACCOUNTS[i]] == 'admin') {
-                                    E('dao_admin_lists').innerHTML += drawAdminUser({user:aToml.ACCOUNTS[i]})
-                                }
-                                else {
-                                    E('dao_save_address').appendChild(drawAddress(aToml.ACCOUNTS[i], (aToml.WALLET_NAMES[aToml.ACCOUNTS[i]] || 'Others')))
-                                }
+                                E('dao_save_address').appendChild(drawAddress(aToml.ACCOUNTS[i], (aToml.WALLET_NAMES[aToml.ACCOUNTS[i]] || 'Others')))
                                 flg = true
                             } 
                         }
                     }
+                    is_Admin = dao.admins.includes(walletAddress) || (dao.owner == walletAddress)
+                    E('dao_admin_lists').innerHTML = ""
+                    //load admin list
+                    for(let i=0;i<dao.admins.length;i++) {
+                        if(dao.admins[i] != null) {
+                            E('dao_admin_lists').innerHTML += drawAdminUser({user:dao.admins[i]})
+                            E('dao_others_address').appendChild(drawOtherAddress(dao.admins[i], "Admin"))
+                        }
+                    }
+                    if(dao.treasury != "") {
+                        E('dao_others_address').appendChild(drawOtherAddress(dao.treasury, "Proposal Funds Wallet"))
+                    }
                     if(E('dao_admin_lists').innerHTML == "") {
                         E('dao_admin_lists').parentElement.style.display = 'none'
+                    }
+                    else{
+                        E('dao_admin_lists').parentElement.style.display = ''
                     }
                     E('dao_save_address_view').style.display = 'none'
                     //show top voters
@@ -1306,7 +1359,7 @@ options.forEach(option => {
                         E('topVoters').style.display = "block"
                     }
                     else {
-                        E('topVoters').style.display = "block"
+                        E('topVotersView').innerHTML = "<center style='margin-top:40px'>Nothing to show</center>"
                     }
                     //display links
                     const socials = aToml.DOCUMENTATION
@@ -1346,6 +1399,72 @@ options.forEach(option => {
                E('dao_save_addr_cancel').disabled = false
             }
         }
+        const loadDelegatee = async() => {  
+            if(daoDelegatee.length > 0) {
+                for(let i=0;i<daoDelegatee.length;i++) {
+                    if(daoDelegatee[i] != "") {
+                        //show
+                        E('user_delegates_view').innerHTML += drawDelegateSearchResult({
+                            user:daoDelegatee[i],
+                            type:2
+                        })
+                    }
+                }
+                if(E('user_delegates_view').innerHTML !=  "") {
+                  E('user_delegates').style.display = "" //show
+                }
+            }
+            else {
+                 E('user_delegates').style.display = "none" //hide
+            }
+        }
+        const loadUsers = async(page=1) => {
+            //to do pagination, segment is 20
+            const start_index = (page - 1) * dao_user_page_segment;
+            const end_index = start_index +  dao_user_page_segment
+            //reset view
+            E('dao_users').innerHTML = ""
+            for(let i=start_index; i<end_index && i < daoUsers.length;i++) {
+                E('dao_users').innerHTML += drawMember({
+                     member:daoUsers[i],
+                     isBan: dao.ban_members.includes(daoUsers[i])
+                })
+            }
+            
+            if(end_index >= daoUsers.length) {
+                //hide next button
+                E('next_dao_user_info').style.display = 'none'
+            }
+            else {
+                E('next_dao_user_info').style.display = 'block'
+            }
+            if(start_index == 0) {
+                //hide next button
+                E('pre_dao_user_info').style.display = 'none'
+            }
+            else {
+                E('pre_dao_user_info').style.display = 'block'
+            }
+            //handle empty voters
+            if(E('dao_users').firstElementChild == null) {
+                //show empty view
+                E('dao_users').innerHTML = `<center style='margin: 40px 20px'>Nobody has joined this DAO yet</center>`
+            }
+            
+        }
+        const loadBulletin = async () => {
+            bulletins = await getDaoBulletins(dao.token)
+            paginate('bulletins_views', bulletins, 5, drawBulletinBox)
+        }
+        const loadTweets = async () => {
+            tweets = await getDaoTweet(dao.token)
+            paginate('tweets_views', tweets, 10, drawTweetBox, () => {
+                //calls after every load
+                twttr.widgets.load(E('tweets_views'))
+            })
+        }
+        
+
         //to enableEdit
         const enableEdit = (type) => {
             if(type == 'image') {
@@ -1364,105 +1483,108 @@ options.forEach(option => {
                 E('dao_save_address_view').style.display = 'block'
             }
         }
+        
+        //Button click
         //to save the changes to the toml file
         E('dao_save_button').onclick = async () => {
             //to update the dao toml file
+            if(await isBanned(dao.token, walletAddress)){ return ""}
             const fileInput = E('dao_save_image_edit');
             const saveSocials = async (id = null) => {
-                //get all socials
-                const insta = E('dao_save_insta').value.trim()
-                const twitter = E('dao_save_twitter').value.trim()
-                const tele = E('dao_save_tele').value.trim()
-                const reddit = E('dao_save_reddit').value.trim()
-                const discord = E('dao_save_discord').value.trim()
-                if(insta != "" || twitter != "" || tele != "" || reddit != "" || discord != "") {
-                    if(isSafeToml(insta) && isSafeToml(twitter) && isSafeToml(tele) && isSafeToml(reddit) && isSafeToml(discord)){
-                        await new Promise((resolve) => setTimeout(resolve, 1000));
-                        (id != null) ? talk("Saving social media links", "norm", id) : id = talk("Saving social media links")
-                        modifyDao(dao.url, dao.code, 'social', insta+"||$$"+twitter+"||$$"+tele+"||$$"+reddit+"||$$"+discord, async (status) => {
-                            if(status) {
-                                talk("Socials updated successfully", "good", id)
-                                //save back the results
-                                dao.toml.DOCUMENTATION.ORG_TWITTER = twitter
-                                dao.toml.DOCUMENTATION.ORG_INSTAGRAM = insta
-                                dao.toml.DOCUMENTATION.ORG_TELEGRAM = tele
-                                dao.toml.DOCUMENTATION.ORG_REDDIT = reddit
-                                dao.toml.DOCUMENTATION.ORG_DISCORD = discord
-                                setUp()
-                                stopTalking(3, id)
-                            }
-                            else {
-                                talk("Unable to update social media links<br>Something went wrong<br>This may be due to network error", "fail", id)
-                                stopTalking(3, id)
-                                E('dao_save_button').disabled = false
-                            }
-                        })
+                    //get all socials
+                    const insta = E('dao_save_insta').value.trim()
+                    const twitter = E('dao_save_twitter').value.trim()
+                    const tele = E('dao_save_tele').value.trim()
+                    const reddit = E('dao_save_reddit').value.trim()
+                    const discord = E('dao_save_discord').value.trim()
+                    if(insta != "" || twitter != "" || tele != "" || reddit != "" || discord != "") {
+                        if(isSafeToml(insta) && isSafeToml(twitter) && isSafeToml(tele) && isSafeToml(reddit) && isSafeToml(discord)){
+                            await new Promise((resolve) => setTimeout(resolve, 1000));
+                            (id != null) ? talk("Saving social media links", "norm", id) : id = talk("Saving social media links")
+                            modifyDao(dao.url, dao.code, 'social', insta+"||$$"+twitter+"||$$"+tele+"||$$"+reddit+"||$$"+discord, async (status) => {
+                                if(status) {
+                                    talk("Socials updated successfully", "good", id)
+                                    //save back the results
+                                    dao.toml.DOCUMENTATION.ORG_TWITTER = twitter
+                                    dao.toml.DOCUMENTATION.ORG_INSTAGRAM = insta
+                                    dao.toml.DOCUMENTATION.ORG_TELEGRAM = tele
+                                    dao.toml.DOCUMENTATION.ORG_REDDIT = reddit
+                                    dao.toml.DOCUMENTATION.ORG_DISCORD = discord
+                                    setUp()
+                                    stopTalking(3, id)
+                                }
+                                else {
+                                    talk("Unable to update social media links<br>Something went wrong<br>This may be due to network error", "fail", id)
+                                    stopTalking(3, id)
+                                    E('dao_save_button').disabled = false
+                                }
+                            })
+                        }
+                        else {
+                            const msg  = "Invalid characters(\") present in the social media links.<br> Please remove it and try again";
+                            (id != null) ? talk(msg,'fail', id) : id = talk(msg, 'fail')
+                            stopTalking(3, id)
+                            E('dao_save_button').disabled = false
+                        }
                     }
                     else {
-                        const msg  = "Invalid characters(\") present in the social media links.<br> Please remove it and try again";
-                        (id != null) ? talk(msg,'fail', id) : id = talk(msg, 'fail')
-                        stopTalking(3, id)
-                        E('dao_save_button').disabled = false
+                        if(id != null) stopTalking(1, id)
+                        setUp()
                     }
+                    
                 }
-                else {
-                    if(id != null) stopTalking(1, id)
-                    setUp()
-                }
-                
-            }
             const saveDesc = (id = null) => {
-                const desc = E('dao_save_about_edit').value.trim()
-                if(desc != "") {
-                    if(isSafeToml(desc)){
-                        (id != null) ? talk("Saving description", "norm", id) : id = talk("Saving description")
-                        modifyDao(dao.url, dao.code, 'about', desc, async (status) => {
-                            if(status) {
-                                talk("Description updated successfully", "good", id)
-                                //resetting description input
-                                E('dao_save_about_edit').value = ""
-                                //hiding the input element
-                                E('dao_save_about_edit').style.display = 'none'
-                                E('dao_save_about').style.display = 'block'
-                                //save back the results
-                                dao.description = desc
-                                saveSocials(id)
-                            }
-                            else {
-                                talk("Unable to update description<br>Something went wrong<br>This may be due to network error", "fail", id)
-                                stopTalking(3, id)
-                                E('dao_save_button').disabled = false
-                            }
-                        })
+                    const desc = E('dao_save_about_edit').value.trim()
+                    if(desc != "") {
+                        if(isSafeToml(desc)){
+                            (id != null) ? talk("Saving description", "norm", id) : id = talk("Saving description")
+                            modifyDao(dao.url, dao.code, 'about', desc, async (status) => {
+                                if(status) {
+                                    talk("Description updated successfully", "good", id)
+                                    //resetting description input
+                                    E('dao_save_about_edit').value = ""
+                                    //hiding the input element
+                                    E('dao_save_about_edit').style.display = 'none'
+                                    E('dao_save_about').style.display = 'block'
+                                    //save back the results
+                                    dao.description = desc
+                                    saveSocials(id)
+                                }
+                                else {
+                                    talk("Unable to update description<br>Something went wrong<br>This may be due to network error", "fail", id)
+                                    stopTalking(3, id)
+                                    E('dao_save_button').disabled = false
+                                }
+                            })
+                        }
+                        else {
+                            const msg  = "Invalid characters(\") present in description.<br> Please remove it and try again";
+                            (id != null) ? talk(msg,'fail', id) : id = talk(msg, 'fail')
+                            stopTalking(3, id)
+                            E('dao_save_button').disabled = false
+                        }
                     }
                     else {
-                        const msg  = "Invalid characters(\") present in description.<br> Please remove it and try again";
-                        (id != null) ? talk(msg,'fail', id) : id = talk(msg, 'fail')
-                        stopTalking(3, id)
-                        E('dao_save_button').disabled = false
+                        saveSocials(id)
                     }
+                    
                 }
-                else {
-                    saveSocials(id)
-                }
-                
-            }
             if(fileInput.files.length !== 0) {
-                E('dao_save_button').disabled = true
-                const id = talk("Saving new image")
-                modifyAssetImg(dao.code + dao.issuer, async (status) => {
-                    if(status) {
-                        talk("Image updated successfully", "good", id)
-                        E('dao_save_image_edit').value = [] //resetting image upload
-                    }
-                    else {
-                        talk("Unable to modify image<br>Something went wrong<br>This may be due to network error", "fail", id)
-                    }
-                    //time to mint the asset
-                    await new Promise((resolve) => setTimeout(resolve, 1000));
-                    saveDesc(id)
-                })
-            }
+                    E('dao_save_button').disabled = true
+                    const id = talk("Saving new image")
+                    modifyAssetImg(dao.code + dao.issuer, async (status) => {
+                        if(status) {
+                            talk("Image updated successfully", "good", id)
+                            E('dao_save_image_edit').value = [] //resetting image upload
+                        }
+                        else {
+                            talk("Unable to modify image<br>Something went wrong<br>This may be due to network error", "fail", id)
+                        }
+                        //time to mint the asset
+                        await new Promise((resolve) => setTimeout(resolve, 1000));
+                        saveDesc(id)
+                    })
+                }
             else {saveDesc()}
         }
         //to hide the save address input field
@@ -1475,6 +1597,7 @@ options.forEach(option => {
              const addr_name = E('dao_save_address_name_edit').value.trim()
              if(addr != "" && addr_name) {
                  if(isSafeToml(addr) && isSafeToml(addr_name)) {
+                    if(await isBanned(dao.token, walletAddress)){ return ""}
                     E('dao_save_addr_add').disabled = true
                     E('dao_save_addr_cancel').disabled = true
                     //call trustline function
@@ -1521,51 +1644,60 @@ options.forEach(option => {
         //to add dao admins
         E('manageAdminConfirm').onclick = async () => {
              const addr = E('dao_search_admin').value.trim()
-             const addr_name = "Admin"
-             if(addr != "" && addr_name) {
-                 if(isSafeToml(addr) && isSafeToml(addr_name)) {
-                    E('manageAdminConfirm').disabled = true
-                    //call trustline function
-                   const id = talk("Checking address", "norm")
-                   await new Promise((resolve) => setTimeout(resolve, 1000));
-                   if((await getTokenUserBal(dao.token, addr)) !== false) {
-                       //save the address to the toml
-                       modifyDao(dao.url, dao.code, 'address', addr + "|@$$@|" + addr_name, async (status) => {
-                            if(status) {
-                                talk("Admin added successfully", "good", id)
-                                //resetting description input
-                                E('dao_search_admin').value = ""
-                                //save back the results
-                                if(dao.toml.ACCOUNTS != undefined) {dao.toml.ACCOUNTS = []}
-                                if(dao.toml.WALLET_NAMES != undefined) {dao.toml.WALLET_NAMES = []}
-                                if(!dao.toml.ACCOUNTS.includes(addr)) {dao.toml.ACCOUNTS.push(addr)}
-                                dao.toml.WALLET_NAMES[addr] = addr_name
-                                setUp()
-                                stopTalking(3, id)
-                            }
+             if(walletAddress == dao.owner) {
+                 if(addr != "") {
+                     if(addr !== dao.owner) { 
+                         if(isSafeToml(addr)) {
+                            //check if its already an admin
+                            if(dao.admins.includes(addr)){stopTalking(3, talk("Already an admin", 'warn')); return;}
+                            E('manageAdminConfirm').disabled = true
+                            //call trustline function
+                            const id = talk("Checking address", "norm")
+                            await new Promise((resolve) => setTimeout(resolve, 500));
+                            if((await getTokenUserBal(dao.token, addr)) !== false) {
+                               //add admin on chain
+                               const res = await addAdmin({
+                                    admin: addr,
+                                    dao: dao.token
+                                })
+                                if(res !== false) {
+                                    stopTalking(3, talk("Admin added successfully", "good", id))
+                                    dao.admins.push(addr) 
+                                    setUp()
+                                }
+                                else {
+                                    talk("Unable to add admin<br>Something went wrong<br>This may be due to network error", "fail", id)
+                                    stopTalking(3, id)
+                                }
+                                E('manageAdminConfirm').disabled = false
+                           }
                             else {
-                                talk("Unable to set admin<br>Something went wrong<br>This may be due to network error", "fail", id)
-                                stopTalking(3, id)
-                            }
-                            E('manageAdminConfirm').disabled = false
-                        })
-                   }
-                   else {
-                       const msg  = "This address is not a memeber of this DAO<br>Please establish a trustline and try again";
-                       stopTalking(4, talk(msg,'fail', id))
-                   }
-                 }   
+                               const msg  = "This address is not a memeber of this DAO<br>Please establish a trustline and try again";
+                               stopTalking(4, talk(msg,'fail', id))
+                           }
+                         }   
+                         else {
+                             const msg  = "Invalid characters(\") present in the name.<br> Please remove it and try again";
+                             stopTalking(4, talk(msg,'fail'))
+                         }
+                     }
+                     else {
+                        const msg  = "The Dao onwer is alreasy an admin";
+                        stopTalking(4, talk(msg,'fail'))
+                     }
+                 }
                  else {
-                     const msg  = "Invalid characters(\") present in description.<br> Please remove it and try again";
-                     stopTalking(4, talk(msg,'fail'))
+                      const msg  = "Empty field present";
+                      stopTalking(4, talk(msg,'fail'))
                  }
              }
              else {
-                  const msg  = "Empty field present";
-                  stopTalking(4, talk(msg,'fail'))
+                 const msg  = "Only the owner can do this";
+                 stopTalking(4, talk(msg,'fail'))
              }
         }
-        //to search dao admin
+        
+        //to search 
         const searchAdminUser = () => {
             const search = E('dao_search_admin_result')
             search.innerHTML = "" 
@@ -1593,6 +1725,222 @@ options.forEach(option => {
             else {
                 E('addNewAdmin').style.display = 'none'
             }
+        }
+        const searchDelegate = () => {
+            const _delegatee = E('dao_delegate_search').value.trim()
+            E('searchDelegateResults').innerHTML = ""
+            if(_delegatee != "") {
+                //loop through users
+                for(let i=0;i<daoUsers.length;i++) {
+                    if(daoUsers[i].indexOf(_delegatee) > -1 && daoUsers[i] != walletAddress) {
+                        //show
+                        E('searchDelegateResults').innerHTML += drawDelegateSearchResult({
+                            user:daoUsers[i],
+                            type:(daoDelegatee.includes(daoUsers[i])) ? 2:1
+                        })
+                    }
+                }
+                if(E('searchDelegateResults').innerHTML ==  "") {
+                    E('searchDelegateResults').innerHTML = `<center style='margin: 40px 20px'>Nothing found</center>`
+                }
+                E('user_delegates_search').style.display = "" //show
+            }
+            else{
+                E('user_delegates_search').style.display = "none" //show
+            }
+        }
+        
+        //modifications
+        const approveProposal = async (prop = {}, _id="", event) => {
+            //to approve a proposal
+            prop = proposals[prop]
+            event.stopPropagation()
+            if(prop.budget > 0) {
+                //budget admin
+                if(walletAddress == dao.owner) {
+                    await aP()
+                }
+                else {
+                    stopTalking(3, talk("Only the DAO owner can approve a budgeted proposal",'warn'))
+                }
+            }
+            else {
+                //not a budgt proposal, check if admin
+                if(is_Admin) {
+                    await aP()   
+                }
+                else {
+                    stopTalking(3, talk("Only the DAO owner or an admin can approve proposals",'warn'))
+                }
+            }
+            
+            async function aP() {
+                //actual approval
+                const id = talk("Accepting proposal")
+                const res = await executeProposal({
+                    propId:prop.proposalId,
+                    status:1,
+                    _type: (dao.url.indexOf('lumos') > -1) ? 2 : 1
+                })
+                if(res !== false) {
+                    if(res.status === "done") {
+                        talk("Proposal accepted", 'good', id)
+                        stopTalking(3, id)
+                        prop.status = 1n;  
+                        proposals[prop.proposalId] = prop
+                        //draw it in the confirm section
+                        const elem = E('proposal_review')
+                        elem.removeChild(E(_id))
+                        if(elem.firstElementChild == null) {
+                            elem.innerHTML = "<div style='font-size:20px; margin:60px;'><center>No record found.</center></div>"
+                        }
+                        if(E('proposal_views').getAttribute('data') == 'empty'){
+                            E('proposal_views').innerHTML = ""
+                        }
+                        if(E('proposal_budget').getAttribute('data') == 'empty'){
+                            E('proposal_budget').innerHTML = ""
+                        }
+                        //append to the main view changes to the main view
+                        E('proposal_views').insertBefore(drawProposal(prop), E('proposal_views').firstElementChild)
+                        if(prop.budget > 0) {
+                            E('proposal_budget').innerHTML = drawProposalApproved(prop) + E('proposal_budget').innerHTML
+                        }
+                    }
+                    else if(res.status == "lowvotes") {
+                        stopTalking(3, talk("Unable to accept a proposal with no votes",'fail', id))
+                    }
+                    else if(res.status == "executed") {
+                        stopTalking(3, talk("Proposal has already been executed",'fail', id))
+                    }
+                    else if(res.status == "notauth") {
+                        stopTalking(3, talk("You are not authorized to do this<br>You are no longer an admin",'fail', id))
+                    }
+                    else{
+                        stopTalking(3, talk("Unable to approve proposal",'fail', id))
+                    }
+                }
+                else {
+                    stopTalking(3, talk("Something went wrong",'fail', id))
+                }
+            }
+        }
+        const rejectProposal = async (prop = {}, _id="", event) => {
+            //to approve a proposal
+            prop = proposals[prop]
+            event.stopPropagation()
+            if(walletAddress == dao.owner || is_Admin) {
+                await aP()
+            }
+            else {
+                stopTalking(3, talk("You are not authorized to do this",'warn'))
+            }
+            
+            
+            async function aP() {
+                //actual approval
+                const id = talk("Rejecting proposal")
+                const res = await executeProposal({
+                    propId:prop.proposalId,
+                    status:2,
+                    _type:0
+                })
+                if(res !== false) {  
+                    if(res.status === 'done') {
+                        stopTalking(3, talk("Proposal rejected", 'good', id))
+                        prop.status = 2n; prop.executed = true
+                        proposals[prop.proposalId] = prop
+                        //draw it in the confirm section
+                        const elem = E('proposal_review')
+                        elem.removeChild(E(_id))
+                        if(elem.firstElementChild == null) {
+                            elem.innerHTML = "<div style='font-size:20px; margin:60px;'><center>No record found.</center></div>"
+                        }
+                    }
+                    else if(res.status == "executed") {
+                        stopTalking(3, talk("Proposal has already been executed",'fail', id))
+                    }
+                    else if(res.status == "notauth") {
+                        stopTalking(3, talk("You are not authorized to do this<br>You are no longer an admin",'fail', id))
+                    }
+                    else {
+                         stopTalking(3, talk("Unable to reject proposal<br>Something went wrong", 'fail', id))
+                    }
+                }
+                else {
+                    stopTalking(3, talk("Unable to reject proposal", 'fail', id))
+                }
+            }       
+        }
+        const confirmProposal = async (prop = {}, _id="", event) => {
+            prop = proposals[prop]
+            event.stopPropagation()
+            if(walletAddress == dao.owner || is_Admin) {
+                await aP()
+            }
+            else {
+                stopTalking(3, talk("You are not authorized to do this",'warn'))
+            }
+            async function aP() {
+                //actual approval
+                const id = talk("Confirming proposal")
+                if((await getTokenUserBal(dao.token, dao.treasury)) !== false) {
+                    const res = await signDaoAdmin({
+                        propId:prop.proposalId,
+                        admin:walletAddress,
+                        dao:dao.token
+                    })
+                    if(res !== false) { 
+                        console.log(res)
+                        if(res.status === 'done') {
+                            stopTalking(3, talk("Your signature has been added", 'good', id))
+                            proposals[prop.proposalId].signatory.push(walletAddress)
+                            proposals[prop.proposalId].signatory_count += 1;
+                            if(E("prop_budget_signatory_" + prop.proposalId)) {
+                                E("prop_budget_signatory_" + prop.proposalId).innerText = "(" + proposals[prop.proposalId].signatory_count + "/" + (dao.admins.length + 1) + ")"
+                            }
+                        }
+                        else if(res.status === 'transfer') { 
+                            stopTalking(3, talk("Proposal budget has been funded successfully", 'good', id))
+                            proposals[prop.proposalId].status = 3n
+                            //draw it in the confirm section
+                            const elem = E('proposal_budget')
+                            elem.removeChild(E(_id))
+                            if(elem.firstElementChild == null) {
+                                elem.innerHTML = "<div style='font-size:20px; margin:60px;'><center>No record found.</center></div>"
+                            }
+                            //make changes to the main view
+                            if(E('prop_main_status_' + prop.proposalId) != null) {
+                                E('prop_main_status_' + prop.proposalId).innerText = 'Funded'
+                                E('prop_main_end_' + prop.proposalId).style.display = ""
+                            }
+                        }
+                        else if(res.status == "signed") {
+                            stopTalking(3, talk("You have already added your signature",'warn', id))
+                        }
+                        else if(res.status == "rejected") {
+                            stopTalking(3, talk("This proposal has already been rejected",'fail', id))
+                        }
+                        else if(res.status == "lowfund") {
+                            stopTalking(3, talk("Insufficent balance in Multi-Sig contract to fund this proposal",'fail', id))
+                        }
+                        else if(res.status == "noadmin") {
+                            stopTalking(3, talk("You are not authorized to do this<br>You are no longer an admin",'fail', id))
+                        }
+                        else {
+                             stopTalking(3, talk("Unable to confirm proposal<br>Something went wrong", 'fail', id))
+                        }
+                    }
+                    else {
+                        stopTalking(3, talk("Unable to confirm proposal", 'fail', id))
+                    }
+                }
+                else {
+                    talk("The proposal fund wallet has not established a trustline with the DAO token",'fail', id)
+                    await new Promise((resolve) => setTimeout(resolve, 2500));
+                    stopTalking(3, talk("Please establish a trustline and try again", 'warn', id))
+                }
+            }       
+     
         }
         const modifyAssetImg = (assetName, callback) => {
               const fileInput = E('dao_save_image_edit');
@@ -1636,7 +1984,465 @@ options.forEach(option => {
               // Send the FormData object with the image
               xhr.send();
         }
-      
+        const addUserDelegate = async (type = 1, delegatee) => {
+            //to add or remove a delegate
+            let id;
+            const but = E(delegatee + '_delegate')
+            if(await isBanned(dao.token, walletAddress)){ return ""}
+            but.disabled = true
+            if(type == 1) {
+                id = talk("Delegating voting power to " + fAddr(delegatee, 6))
+            }
+            else {
+                id = talk("Reclaiming voting power from " + fAddr(delegatee, 6))
+                delegatee = walletAddress
+            }
+            const res = await addDelegate({
+                delegatee: delegatee,
+                dao:dao.token
+            })
+            but.disabled = false
+            if(res !== false) {
+                if(type == 1) {
+                     stopTalking(3, talk("Delegated voting power to " + fAddr(delegatee, 6), 'good', id))
+                     daoDelegatee = [delegatee]
+                }
+                else {
+                    stopTalking(3, talk("Reclaimed voting power from " + fAddr(delegatee, 6), 'good', id))
+                    daoDelegatee = []
+                }
+                //reload results
+                loadDelegatee()
+                //hide delegate search results
+                E('user_delegates_search').style.display = "none"
+            }
+            else {
+                if(type == 1) {
+                     stopTalking(3, talk("Unable to delegate voting power to " + fAddr(delegatee, 6) + '<br>Something went wrong', 'fail', id))
+                }
+                else {
+                     stopTalking(3, talk("Unable to reclaim voting power from " + fAddr(delegatee, 6) + '<br>Something went wrong', 'fail', id))
+                }
+            }
+        }
+        const banMember = async (user, id, event) => {
+            //to ban a member
+            E(id).classList.add('d-none')
+            if(is_Admin) {
+                if(user != dao.owner) {
+                    if(user != walletAddress) {
+                         event.target.disabled = true
+                         const id = talk('Banning member ' + fAddr(user, 10))
+                         const res = await banDaoMember({
+                             user: user,
+                             dao:dao.token,
+                             url:dao.url
+                         })
+                         event.target.disabled = false
+                         if(res.status === "true") {
+                             stopTalking(3, talk("Banned member "  + fAddr(user, 10) , "good", id))
+                             //remove from banned list
+                             dao.ban_members.push(user)
+                             loadUsers(1)
+                         }
+                         else if(res.status === "false") {
+                             stopTalking(3, talk("Unable to ban member "  + fAddr(user, 10) + "<br>Something went wrong", "fail", id))
+                         }
+                         else if(res === 2) {
+                             stopTalking(3, talk("Unable to perform this operation because you are not an admin", "fail", id))
+                         }
+                         else if(res === 3) {
+                             stopTalking(3, talk("Network error", "fail", id))
+                         }
+                         else if(res === 4) {
+                             stopTalking(3, talk("Unable to perform this operation because your account has been banned", "fail", id))
+                         }
+                         else {
+                             stopTalking(3, talk("Unable to ban member "  + fAddr(user, 10) + "<br>Something went wrong", "fail", id))
+                         }
+                    }
+                    else {
+                        stopTalking(3, talk("You cannot ban yourself", "fail"))
+                    }
+                }
+                else {
+                    stopTalking(3, talk("You cannot ban the creator of this DAO", "fail"))
+                }
+            }
+            else {
+                stopTalking(3, talk("Only an admin can do this", "fail"))
+            }
+        }
+        const unbanMember = async (user, id, event) => {
+            //to ban a member
+            E(id).classList.add('d-none')
+            if(is_Admin) {
+                if(user != walletAddress) {
+                     event.target.disabled = true
+                     const id = talk('Removing ban from member ' + fAddr(user, 10))
+                     const res = await unbanDaoMember({
+                         user: user,
+                         dao:dao.token,
+                         url:dao.url
+                     })
+                     event.target.disabled = false
+                     if(res.status === "true") {
+                         stopTalking(3, talk("Unbanned member "  + fAddr(user, 10) , "good", id))
+                         //add to  banned list
+                         dao.ban_members[dao.ban_members.indexOf(user)] = null
+                         loadUsers(1)
+                     }
+                     else if(res.status === "false") {
+                         stopTalking(3, talk("Unable to unban member "  + fAddr(user, 10) + "<br>Something went wrong", "fail", id))
+                     }
+                     else if(res === 2) {
+                         stopTalking(3, talk("Unable to perform this operation because you are not an admin", "fail", id))
+                     }
+                     else if(res === 4) {
+                         stopTalking(3, talk("Unable to perform this operation because your account has been banned", "fail", id))
+                     }
+                     else if(res === 3) {
+                         stopTalking(3, talk("Network error", "fail", id))
+                     }
+                     else {
+                         stopTalking(3, talk("Unable to unban member "  + fAddr(user, 10) + "<br>Something went wrong", "fail", id))
+                     }
+                }
+                else {
+                    stopTalking(3, talk("You can't unban yourself", "fail"))
+                }
+            }
+            else {
+                stopTalking(3, talk("Only an admin can do this", "fail"))
+            }
+        }
+        const sendMessage = (user) => {
+            window.location.href = E('inbox').href + "&to=" + user
+        }
+        const removeAdmin = async (user, event) => {
+            //to remove admin
+            if(walletAddress == dao.owner) {
+                        event.target.disabled = true
+                        //call trustline function
+                        const id = talk("Checking address", "norm")
+                        //save the address to the toml
+                        const res = await removeDaoAdmin({
+                            admin: user,
+                            dao: dao.token
+                        })
+                        if(res !== false) {
+                            stopTalking(3, talk("Admin removed successfully", "good", id))
+                            dao.admins[dao.admins.indexOf(user)] = null
+                            setUp()
+                        }
+                        else {
+                            talk("Unable to remove admin<br>Something went wrong<br>This may be due to network error", "fail", id)
+                            stopTalking(3, id)
+                        }
+                        event.target.disabled = false
+            }
+            else{
+                const msg  = "Only the owner can do this";
+                stopTalking(4, talk(msg,'fail'))
+            }
+        }
+        const setTreasury = async (user, event) => {
+            //to remove admin
+            if(walletAddress == dao.owner) {
+                    event.target.disabled = true
+                    //call trustline function
+                    const id = talk("Checking address", "norm")
+                    await new Promise((resolve) => setTimeout(resolve, 500));
+                    if((await getTokenUserBal(dao.token, user)) !== false) {
+                        talk('Setting as treasury', 'norm', id)
+                        const res = await setDaoTreasury({
+                            treasury: user,
+                            dao: dao.token
+                        })
+                        if(res !== false) {
+                            stopTalking(3, talk("Treasury address set successfully", "good", id))
+                            dao.treasury = user
+                            setUp()
+                        }
+                        else {
+                            talk("Unable to set treasury wallet<br>Something went wrong<br>This may be due to network error", "fail", id)
+                            stopTalking(3, id)
+                        }
+                    }
+                    else {
+                        stopTalking(3, talk('This address has not established a trustline', 'fail', id))
+                    }
+                    event.target.disabled = false
+            }
+            else{
+                const msg  = "Only the owner can do this";
+                stopTalking(4, talk(msg,'fail'))
+            }
+        }
+        const addBulletin = async () => {
+            const msg = E('bulletin_msg').value.trim()
+            if(msg != "") {
+                const id = talk("Posting bulletin")
+                const resp = await isAdmin(dao.token)
+                if(resp === true) {
+                  const res = await sendDaoBulletin(dao.token, msg, walletAddress)
+                  console.log(res)
+                  if(res.status) {
+                       stopTalking(3, talk("Bulletin posted successfully", 'good', id))
+                       //add to the bulletins data
+                       bulletins.unshift({
+                           msg:msg,
+                           date:(new Date()).getTime(),
+                           user:walletAddress,
+                           bid:res.id,
+                           likes:0,
+                           dislikes:0,
+                           my_likes:false,
+                           my_dislikes:false,
+                           type:'bulletin',
+                           comments:0,
+                       })
+                       //redo pagination
+                       paginate('bulletins_views', bulletins, 5, drawBulletinBox)
+                  }
+                  else {
+                       stopTalking(3, talk("Something went wrong", 'fail', id))
+                  }
+                }
+                else if(resp === false) {
+                    stopTalking(3, talk("You are not authorized to do this", 'fail', id))
+                }
+                else {
+                    stopTalking(3, talk("Network error", 'fail', id))
+                }
+            }
+        }
+        const likeBulletin = async (id, indx) => {
+            //to toggle between like and dislike
+            const res = await likeDaoBulletin(id, walletAddress)
+            console.log(res)
+            if(res.status) {
+                //get like type
+                if(res.type === 1) {
+                    //liked
+                    bulletins[indx].likes += 1
+                    bulletins[indx].dislikes = (bulletins[indx].dislikes > 0) ? bulletins[indx].dislikes - 1 : 0;
+                    bulletins[indx].my_likes = true
+                    bulletins[indx].my_dislikes = false
+                    if(E('likes_' + id)) {
+                        E('likes_' + id).innerText = fNum(bulletins[indx].likes)
+                        E('likes_icon_' + id).classList.add("like-active")
+                        E('dislikes_' + id).innerText = fNum(bulletins[indx].dislikes)
+                        E('dislikes_icon_' + id).classList.remove("like-active")
+                    }
+                }
+                else {
+                   bulletins[indx].likes = (bulletins[indx].likes > 0) ? bulletins[indx].likes - 1 : 0;
+                   bulletins[indx].my_likes = false
+                   if(E('likes_' + id)) {
+                       E('likes_' + id).innerText = fNum(bulletins[indx].likes)
+                       E('likes_icon_' + id).classList.remove("like-active")
+                   }
+                }
+            }
+        }
+        const dislikeBulletin = async (id, indx) => {
+            //to toggle between like and dislike
+            const res = await dislikeDaoBulletin(id, walletAddress)
+            console.log(res)
+            if(res.status) {
+                //get like type
+                if(res.type === 1) {
+                    //liked
+                    bulletins[indx].dislikes += 1
+                    bulletins[indx].likes = (bulletins[indx].likes > 0) ? bulletins[indx].likes - 1 : 0;
+                    bulletins[indx].my_dislikes = true
+                    bulletins[indx].my_likes = false
+                    if(E('likes_' + id)) {
+                        E('likes_' + id).innerText = fNum(bulletins[indx].likes)
+                        E('likes_icon_' + id).classList.remove("like-active")
+                        E('dislikes_' + id).innerText = fNum(bulletins[indx].dislikes)
+                        E('dislikes_icon_' + id).classList.add("like-active")
+                    }
+                }
+                else {
+                   bulletins[indx].dislikes = (bulletins[indx].dislikes > 0) ? bulletins[indx].dislikes - 1 : 0;
+                   bulletins[indx].my_dislikes = false
+                   if(E('dislikes_' + id)) {
+                       E('dislikes_' + id).innerText = fNum(bulletins[indx].dislikes)
+                       E('dislikes_icon_' + id).classList.remove("like-active")
+                   }
+                }
+            }
+        }
+        const showBulletinComment = async (id, indx) => {
+            E('comment_box_' + id).classList.toggle('d-none')
+            E('comment_' + id).classList.toggle('d-none')
+            if(!E('comment_' + id).classList.contains('d-none')) {
+                E('comment_' + id).innerHTML = '<center>Loading comments..</center>'
+                let commt = await getBulletinComment(id)
+                paginate('comment_' + id, commt, 5, drawBulletinCommentBox)
+                //do the send comment button
+                E('comment_send_' + id).onclick = async () => {
+                    const msg = E('comment_input_' + id).value.trim()
+                    if(msg != "") {
+                        const idx = talk('Sending comment')
+                        const res = await sendBulletinComment(id, msg, walletAddress)
+                        if(res === 1) {
+                            stopTalking(3, talk('Comment sent', 'good', idx))
+                            //draw it
+                            commt.unshift({
+                                msg:msg,
+                                date:(new Date()).getTime(),
+                                user:walletAddress,
+                                bid:id
+                            })
+                            paginate('comment_' + id, commt, 5, drawBulletinCommentBox)
+                            bulletins[indx].comments += 1;
+                            if(E('comment_num_' + id)) {
+                                E('comment_num_' + id).innerText = fNum(commt.length)   
+                            }
+                        }
+                        else if(res === 0){
+                            stopTalking(3, talk('Something went wrong', 'fail', idx))
+                        }
+                        else {
+                            stopTalking(3, talk('Network error', 'good', idx))
+                        }
+                    }
+                }
+            }
+        }
+        const addNewPollOption = async () => {
+            //get the current index
+            const indx = E('pollForm').getAttribute('data') * 1
+            if(indx >= 2 && indx < 4) {
+                E('pollForm').insertBefore(drawNewPollOption(indx + 1), E('addOption')) 
+                E('pollForm').setAttribute('data', indx+1)
+            }
+        }
+        const addNewPoll = async (e) => {
+            const msg = E('poll_question').value.trim()
+            if(msg != "") {
+                //fecth the poll options
+                const indx = E('pollForm').getAttribute('data') * 1
+                let poll = {}; let poll_value; let n=0;
+                for(let i=1;i<=indx;i++) {
+                    if(E('poll_option_value_' + i)){
+                        poll_value = E('poll_option_value_' + i).value.trim()
+                        if(poll_value != "") {
+                            poll[n] = poll_value;
+                            n++
+                        }
+                    }
+                }
+                poll['num'] = n
+                if(n > 1) {
+                    const id = talk("Posting poll")
+                    const resp = await isAdmin(dao.token)
+                    if(resp === true) {
+                      const res = await sendDaoBulletin(dao.token, msg, walletAddress, poll)
+                      console.log(res)
+                      if(res.status) {
+                           stopTalking(3, talk("poll posted successfully", 'good', id))
+                           //add to the bulletins data
+                           poll = {}; n=0
+                           for(let i=1;i<=indx;i++) {
+                                if(E('poll_option_value_' + i)){
+                                    poll_value = E('poll_option_value_' + i).value.trim()
+                                    if(poll_value != "") {
+                                        poll[n] = {
+                                            value:poll_value,
+                                            votes:0,
+                                            voted:false,
+                                            percent:0,
+                                        };
+                                        n++
+                                    }
+                                }
+                           }
+                           poll['num'] = n
+                           bulletins.unshift({
+                               msg:msg,
+                               date:(new Date()).getTime(),
+                               user:walletAddress,
+                               bid:res.id,
+                               likes:0,
+                               dislikes:0,
+                               my_likes:false,
+                               my_dislikes:false,
+                               type:'poll',
+                               polls: poll
+                           })
+                           //redo pagination
+                           paginate('bulletins_views', bulletins, 5, drawBulletinBox)
+                           E('poll_cancel').click()
+                      }
+                      else {
+                           stopTalking(3, talk("Something went wrong", 'fail', id))
+                      }
+                    }
+                    else if(resp === false) {
+                        stopTalking(3, talk("You are not authorized to do this", 'fail', id))
+                    }
+                    else {
+                        stopTalking(3, talk("Network error", 'fail', id))
+                    }
+                }
+                else {
+                    stopTalking(3, talk("Add at least two options", 'warn'))
+                }
+            }
+       
+        }
+        const votePoll = async (id, pid, indx, event) => {
+            event.stopPropagation();
+            //to toggle between like and dislike
+            const res = await voteDaoPoll(id, pid, walletAddress)
+            if(res.status) {
+                //get like type
+                if(res.type === 'done') {  
+                    //liked
+                    bulletins[indx].poll = res.polls
+                    //display results
+                    if(E('poll_bar_option_' + id + '_' + pid)) {
+                        E('poll_bar_option_' + id + '_' + pid).style.width = res.polls[pid].percent + '%'
+                        E('poll_bar_option_' + id + '_' + pid).style.background = "#8ac5fe"
+                        E('poll_bar_option_value_' + id + '_' + pid).innerText = res.polls[pid].percent + '%'
+                        E('poll_bar_option_icon_' + id + '_' + pid).style.display = "inline"
+                    }
+                }
+                else if(res.type === 'voted') {
+                    stopTalking(2, talk('Already voted', 'warn'))
+                }
+            }
+        }
+        
+        const embedTweet = async () => {
+            const tweet_url = E('tweet_url').value.trim()
+            if(tweet_url != "") {
+                const id= talk('Embedding tweet')
+                const res = await embedDaoTweet(dao.token, tweet_url, walletAddress)
+                if(res.status === true) {
+                    stopTalking(3, talk('Embedded', 'good', id))
+                    tweets.unshift({
+                        html:res.html
+                    })
+                    paginate('tweets_views', tweets, 10, drawTweetBox, () => {
+                        //calls after every load
+                        twttr.widgets.load(E('tweets_views'))
+                    })
+                    E('tweet_url').value = ""
+                    
+                }
+                else if(res.status === false){
+                   stopTalking(3, talk('Something went wrong', 'fail', id))
+                }
+                else {
+                   stopTalking(3, talk('Network error', 'fail', id))
+                }
+            }
+        }
         //Listen for modal up and reload details
         const observer = new MutationObserver((mutationsList, observer) => {
           for (const mutation of mutationsList) {
@@ -1651,13 +2457,16 @@ options.forEach(option => {
         });
         // Start observing the target element
         observer.observe(E('myModal'), { attributes: true, attributeFilter: ['style'] });
+        
+        //draws
         const drawProposal = (prop) => {
                 let _div = document.createElement('div')
                 let n = prop.creator.substring(0,4) + "..." + prop.creator.substring(prop.creator.length - 5)
                 let h = prop.voters + ((prop.voters > 1) ? " members" : " member")
-                _div.innerHTML = ` <div class="row">
-                    <div class="cardEndDiv">
-                        <div class="col-12">
+                let voteYesRes = N(prop.yes_votes) * (N(prop.yes_voting_power)/(floatingConstant))
+                let voteNoRes = N(prop.no_votes) * (N(prop.no_voting_power)/(floatingConstant))
+                _div.innerHTML = `
+                        <div class="col-12 ${(!prop.first) ? 'border-top" style="margin-top:10px"'  : "" }">
                             <a href="{{ route('dao.proposal', ['proposal_id' => " ", "dao_id"=> $dao_id]) }}${prop.proposalId}" class="text-decoration-none">
                                 <div class="d-flex justify-content-between align-items-center cardEndDetail_container">
                                         <div class="cardEndDetail">
@@ -1671,7 +2480,7 @@ options.forEach(option => {
                                         </div>
     
                                     <div class="small-card">
-                                        <div class="small-card-text">${(prop.status == 0) ? "Ended" : "Active"}</div>
+                                        <div id='prop_main_status_${prop.proposalId}' class="small-card-text">${(prop.status == 4) ? "Ended" : (prop.status == 0) ? "Inactive" : (prop.status == 1) ? "Active": (prop.status == 2) ? "Rejected" : "Funded"}</div>
                                     </div>
                                 </div>
                                 <div class="cardendHeading">
@@ -1681,9 +2490,9 @@ options.forEach(option => {
                                     </div>
                                 </div>
                                 <div class="carendBottom d-flex align-items-center">
-                                <div class="small-card" style='display:${(prop.status == 0) ? "" : "none"}'>
+                                <div id='prop_main_end_${prop.proposalId}' class="small-card" style='display:${(prop.status != 1 && prop.status != 0) ? "" : "none"}'>
                                     <img src="{{ asset('images/Layer 13.png') }}" alt="Small Image" class="small-image">
-                                    <div class="small-card-text">${(prop.yes_votes > prop.no_votes) ? "Yes" : "No"}</div>
+                                    <div class="small-card-text">${(voteYesRes > voteNoRes) ? "Yes" : "No"}</div>
                                 </div>
                                 <div class="text">
                                         <span>Voted by:</span>
@@ -1691,12 +2500,104 @@ options.forEach(option => {
                                 </div>
                             </div>
                             </a>
-                        </div>
-                    </div>
                 </div>`
                 return _div.firstElementChild
                     
             }
+        const drawProposalReview = (prop) => {
+            const id = `prop_review_${prop.proposalId}`
+             
+            return `<div id='${id}' class="col-12 p-3 ${(!prop.first) ? 'border-top' : "" }">
+                                        <a onclick="window.location = '{{ route('dao.proposal', ['proposal_id' => " ", "dao_id"=> $dao_id]) }}${prop.proposalId}'" class="text-decoration-none">
+                                            <div
+                                                class="d-flex justify-content-between align-items-md-center cardEndDetail_container">
+                                                <div class="text">
+                                                    <span>Created by:</span>
+                                                    <span>${fAddr(prop.creator, 5)}</span>
+                                                </div>
+
+                                                <div class="text">
+                                                    <span>Proposal ID:</span>
+                                                    <span>PROP_${prop.proposalId}</span>
+                                                </div>
+
+                                                <div class="small-card">
+                                                    <div class="small-card-text">Pending</div>
+                                                </div>
+                                            </div>
+                                            <div class="cardendHeading">
+                                                <h2 class="heading">${prop.name}</h2>
+                                                <div class="paragraph">
+                                                    <p>
+                                                        ${prop.description}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="carendBottom d-flex align-items-center justify-content-between w-100">
+                                                <div class="d-flex align-items-center justify-content-end gap-3 ${(!is_Admin) ? 'd-none' : ""}">
+                                                    <button onclick='approveProposal("${prop.proposalId}", "${id}", event)' type="button"
+                                                        class="btn btn-success text-white text d-flex align-items-center gap-2 mb-0">
+                                                        Approve
+                                                    </button>
+                                                    <button onclick='rejectProposal("${prop.proposalId}", "${id}", event)' type="button"
+                                                        class="btn btn-danger text-white text d-flex align-items-center gap-2 mb-0">
+                                                        Reject
+                                                    </button>
+                                                </div>
+                                                <div class="text">
+                                                    <span>Voted by:</span>
+                                                    <span>${prop.voters + ((prop.voters > 1) ? " members" : " member")}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                            `
+        }
+        const drawProposalApproved = (prop) => {
+            const id = `prop_budget_${prop.proposalId}`
+            return `<div id='prop_budget_${prop.proposalId}' class="col-12 p-3 ${(!prop.first) ? 'border-top' : "" }">
+                        <a onclick="window.location = '{{ route('dao.proposal', ['proposal_id' => " ", "dao_id"=> $dao_id]) }}${prop.proposalId}'" class="text-decoration-none">
+                                            <div
+                                                class="d-flex justify-content-between align-items-center cardEndDetail_container">
+                                                <div class="text">
+                                                    <span>Created by: GBEE...FSH8OJ</span>
+                                                     <span>${fAddr(prop.creator, 5)}</span>
+                                                </div>
+
+                                                <div class="text">
+                                                    <span>Proposal ID:</span>
+                                                     <span>PROP_${prop.proposalId}</span>
+                                                </div>
+
+                                                <div class="small-card">
+                                                    <div id='prop_budget_signatory_${prop.proposalId}'class="small-card-text">Signatures (${prop.signatory_count}/${dao.admins.length + 1})</div>
+                                                </div>
+                                            </div>
+                                            <div class="cardendHeading">
+                                                 <h2 class="heading">${prop.name}</h2>
+                                                <div class="paragraph">
+                                                    <p>
+                                                        ${prop.description}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="carendBottom d-flex align-items-center justify-content-between">
+                                                <div class="text">
+                                                    <span class="heading"><small>Requested Budget:</small></span>
+                                                    <span>${(prop.budget / 10000000n).toLocaleString()} ${dao.code}</span>
+                                                </div>
+                                                <div class="d-flex align-items-center justify-content-end">
+                                                    <button onclick='confirmProposal("${prop.proposalId}", "${id}", event)'  type="button"
+                                                        class="btn btn-success text-white text d-flex align-items-center gap-2 mb-0">
+                                                        Confirm
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        </div>`
+                        
+        }
         const drawAddress = (addr, name = "") => {
             let tm = document.createElement('div')
             tm.innerHTML = `<div class="column-content">${name}<br><span>${fAddr(addr, 8)}</span></div>`
@@ -1716,8 +2617,8 @@ options.forEach(option => {
             let tm = document.createElement('div')
             tm.innerHTML = ` <div class="d-flex justify-content-between align-items-baseline py-2">
                                 <div class="proposal_sideCard_banner">
-                                    <img style='display:none' src="" alt="">
-                                    <span class="">${param.voter.substring(0, 6) + "..." + param.voter.substring(param.voter.length - 6)}</span>
+                                    <img src="https://images.unsplash.com/photo-1682685797661-9e0c87f59c60?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60" alt="">
+                                    <span class="">By ${fAddr(param.voter, 6)}</span>
                                 </div>
                                 <div class="proposal_status-SideCard">
                                     <h2 class="heading">${param.vote}</h2>
@@ -1738,12 +2639,210 @@ options.forEach(option => {
                             <div class="d-flex flex-column flex-md-row align-items-start align-md-items-center gap-1 w-100">
                                 <img class="" src="{{asset('/images/discord.png')}}" alt="">
                                 <p class="mb-0  column-content text-truncate inline-block text-break text-wrap">
-                                 ${params.user.substring(0,14) + "..." + params.user.substring(params.user.length-14)}</p>
+                                 ${fAddr(params.user, 14)}</p>
                             </div>
-                            <div class="d-flex align-items-start align-md-items-end justify-content-start justify-content-md-end gap-2 mt-2 w-100">
-                                <button class="btn btn-danger text-white text "><small>Remove</small></button>
+                            <div  class="d-flex align-items-start align-md-items-end justify-content-start justify-content-md-end gap-2 mt-2 w-100">
+                                <button onclick='removeAdmin("${params.user}", event)' class="btn btn-danger text-white text "><small>Remove</small></button>
+                                <button onclick='setTreasury("${params.user}", event)' class="btn btn-success text-white text " style='display:none'><small>Make Treasury</small></button>
                             </div>
                         </div>`
+        }
+        const drawMember = (params) => {
+            const sFlg = (dao.owner == walletAddress  && (walletAddress == params.member))
+            return ` <div id="" class="d-flex justify-content-between">
+                                            <div class="cardEndDetail d-flex justify-content-between gap-3">
+                                                <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
+                                                    alt="Profile Image" class="image w-img">
+                                                <div class="text text-center">
+                                                    ${params.member}
+                                                </div> 
+                                            </div>
+                                            <div class="member-ban-ctn" style='${(sFlg) ? 'display:none':"" }'>
+                                                <button id="memBan-btn_${params.member}" onclick='toggleMemberModal("memBan-btn_${params.member}", "member-ban_${params.member}", event)' class="btn p-0">
+                                                    <div class="text text-muted">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                            width="20px" height="20px">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+                                                        </svg>
+                                                    </div>
+                                                </button>
+                                                <div class="member-ban-modal d-none" id='member-ban_${params.member}'>
+                                                    <button onclick='${(params.isBan) ? 'unbanMember("'+ params.member + '", "member-ban_' + params.member + '", event)' : 'banMember("'+ params.member + '", "member-ban_' + params.member + '", event)' }' class="btn" 
+                                                    style='${((dao.admins.includes(params.member) || dao.owner == params.member) || (walletAddress == params.member)) ? 'display:none':"" }'>
+                                                        ${(params.isBan) ? "Unban member" : "Ban member"}
+                                                    </button>
+                                                    <button onclick='sendMessage("${params.member}")' class="btn" style='${(walletAddress == params.member) ? 'display:none':"" }'>Messeage</button>
+                                                </div>
+                                            </div>
+                                        </div>`
+                                
+        }
+        const drawDelegateSearchResult = (param) => {
+            return `<div class="d-flex justify-content-between">
+                                                <div class="cardEndDetail">
+                                                    <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
+                                                        alt="Profile Image" class="image">
+                                                    <div class="text text-center">${fAddr(param.user, 14)}
+                                                    </div>
+                                                </div>
+                                                <div class="">
+                                                    <button id='${param.user}_delegate' onclick='addUserDelegate(${param.type}, "${param.user}")' type="button"
+                                                        class="btn btn-success text-white text d-flex align-items-center gap-2 mb-0">
+                                                        ${(param.type == 1) ? "Confirm delegation" : "Reclaim delegation"}
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                            fill="currentColor" width="20px" height="20px">
+                                                            <path fill-rule="evenodd"
+                                                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+                                                                clip-rule="evenodd" />
+                                                        </svg>
+                                                    </button>
+                                            </div>
+                                            </div>`
+        }
+        const drawBulletinBox = (param, indx) => {
+            if(param.type == 'bulletin') {
+            return `<div class="my-4">
+                                        <div class="d-flex flex-wrap justify-content-between">
+                                            <div class="cardEndDetail">
+                                                <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
+                                                    alt="Profile Image" class="image">
+                                                <div class="text text-center">${fAddr(param.user, 6)}
+                                                </div>
+                                            </div>
+                                            <div class="text text-muted">${fDate(param.date)}</div>
+                                        </div>
+                                        <div class="bultin_description text">
+                                            <p>${param.msg}</p>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-start gap-3 bullet-icon">
+                                            <button onclick='likeBulletin("${param.bid}", ${indx})'  
+                                                class="border-0 bg-transparent bullet-icon-i d-flex align-items-center justify-content-start gap-3">
+                                                <span id="likes_${param.bid}">${fNum(param.likes)}</span>
+                                                <i id="likes_icon_${param.bid}"  class="fa fa-thumbs-o-up ${(param.my_likes == true) ? 'like-active' : ''}"></i>
+                                                <span class="text text-muted">Like</span>
+                                            </button>
+                                            <button onclick='dislikeBulletin("${param.bid}", ${indx})' id="dislike_${param.bid}"
+                                                class="border-0 bg-transparent bullet-icon-i d-flex align-items-center justify-content-start gap-3">
+                                                <span id="dislikes_${param.bid}">${fNum(param.dislikes)}</span>
+                                                <i id="dislikes_icon_${param.bid}"  class="fa fa-thumbs-o-down ${(param.my_dislikes == true) ? 'like-active' : ''}"></i><span
+                                                class="text text-muted">Dislike</span>
+                                            </button>
+                                            <button onclick='showBulletinComment("${param.bid}", ${indx})'
+                                                class="border-0 bg-transparent bullet-icon-i d-flex align-items-center justify-content-start gap-3">
+                                                <span id="comment_num_${param.bid}">${fNum(param.comments)}</span>
+                                                <i id="" class="fa fa-comment-o "></i><span
+                                                    class="text text-muted">Comment</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="bullet-icon d-none">
+                                        <div id="commentSec" class="cardEndDetail">
+                                            <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
+                                                alt="Profile Image" class="image w-img">
+                                            <div id="comment-pl" class="column-content">
+                                                <div class="text">
+                                                    <p class="text font-weight-bold">Admin</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id='comment_${param.bid}' class='d-none'></div>
+                                    <div id="comment_box_${param.bid}" style="width: 90%; margin-right:auto;margin-left:40px;"
+                                        class="d-flex align-items-end gap-4 mt-5 d-none">
+                                        <div class="form-group w-100">
+                                            <label for="">
+                                                <span class="asset-details-label whitespace-nowrap">Write a
+                                                    comment:</span>
+                                            </label>
+
+                                            <div class="form-control d-flex align-items-center justify-content-between">
+                                                <input id="comment_input_${param.bid}" type="text" placeholder="Great...."
+                                                    class="border-0 bg-transparent text w-100 h-100">
+                                                <button id="comment_send_${param.bid}" type="button" class="btn border-0 mb-1">
+                                                    <svg class="text-secondary" xmlns="http://www.w3.org/2000/svg"
+                                                        width="24" height="24" viewBox="0 0 24 24">
+                                                        <path fill="currentColor" d="m2 21l21-9L2 3v7l15 2l-15 2z" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>`
+            }
+            else { 
+                //poll type
+                let polls = ""
+                for(let i=0;i<param.polls.num * 1;i++) {
+                    polls += `<div  class="option option-${i+1}">
+                                <div class="analytic" style='display:inline;transition:all 300ms'>
+                                <div id='poll_bar_option_${param.bid}_${i}' class="bar" style='width:${param.polls[i].percent}%;background:skyblue'></div>
+                                    <div id='poll_bar_option_value_${param.bid}_${i}' class="percent">${param.polls[i].percent}%</div>
+                                </div>
+                                <div class="input" onclick='votePoll("${param.bid}", "${i}",  ${indx}, event)'>
+                                        <label class="option-lable" for="option-1">${i+1}. ${param.polls[i].value}<i
+                                        id='poll_bar_option_icon_${param.bid}_${i}' class="fa fa-check tick" aria-hidden="true" style='display:${(param.polls[i].voted) ? 'inline' : 'none'}'></i>
+                                        </label>
+                                </div>
+                            </div>`
+                }
+                return `
+                <div class="">
+                                        <div class="row" >
+                                            <div class="poll-card cardEndDiv">
+                                                <div class="">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="cardEndDetail d-flex justify-content-between gap-3">
+                                                            <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
+                                                                alt="Profile Image" class="image w-img">
+                                                            <div class="text text-center">
+                                                                ${fAddr(param.user, 6)}
+                                                            </div>
+                                                        </div>
+                                                        <div class="text text-muted">${fDate(param.date)}</div>
+                                                    </div>
+                                                    <div class="text m-4">
+                                                        <p>${param.msg}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="options">
+                                                ${polls}    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    `
+            }
+        }
+        const drawBulletinCommentBox = (param, indx) => {
+            return `<div class="my-4">
+                                        <div class="d-flex flex-wrap justify-content-between">
+                                            <div class="cardEndDetail">
+                                                <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
+                                                    alt="Profile Image" class="image">
+                                                <div class="text text-center">${fAddr(param.user, 6)}
+                                                </div>
+                                            </div>
+                                            <div class="text text-muted">${fDate(param.date)}</div>
+                                        </div>
+                                        <div class="bultin_description text">
+                                            <p>${param.msg}</p>
+                                        </div>
+                                    </div>`
+        }
+        const drawNewPollOption = (indx) => {
+            let tm = `<div id='poll_option_${indx}' class="poll-option d-flex align-items-center justify-content-between gap-2">
+                        <input class="pollingInput" type="text" id="poll_option_value_${indx}"  name="option_${indx}" placeholder="Option ${indx}" required>
+                        <span onclick='E("pollForm").removeChild(E("poll_option_${indx}"))' class='fa-solid fa-trash' style='margin-left:10px'></span>
+            </div>`
+            let tmp = document.createElement('div')
+            tmp.innerHTML = tm
+            return tmp.firstElementChild
+        }
+        const drawTweetBox = (param, indx) => {
+            return param.html
         }
         indexMain() //run the main function
     </script>
