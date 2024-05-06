@@ -42,7 +42,7 @@
                                 <div id='chatHeadInfo' class="text-muted small" style='text-transform:capitalize'></div>
                             </div>
                             <div>
-                                <button class="btn btn-lg p-0"><svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                <button style='display:none' class="btn btn-lg p-0"><svg xmlns="http://www.w3.org/2000/svg" width="24"
                                         height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                                         class="feather feather-more-horizontal feather-lg">
@@ -108,7 +108,7 @@
                     <input oninput='searchUser(event, "users")' type="text" class="form-control h-auto py-2 my-3" placeholder="Search..."> 
                 </div>
                 <div id='chatUsersList' style='overflow:auto;max-height:400px'>
-                    <a id='chatUserBroadcast'  href="#" class="list-group-item list-group-item-action border-0 my-2">
+                    <a id='chatUserBroadcast'  href="#" class="list-group-item list-group-item-action border-0 my-2" style='display:none'>
                         <div class="d-flex align-items-start gap-3">
                             <div class="flex-grow-1 ml-3">
                             <img src="{{asset('/images/github-demi.png')}}" 
@@ -152,24 +152,25 @@
         /* VARIABLES */
         var users = [];var messages = []; var users_conversation = [];var chatIndex = 0;var firstTimeLoad = true;var isADMIN = false;var typingTmr;var isBan
         //GET PARAMS
-        const daoId = (new URLSearchParams(window.location.search)).get("dao");
-        const daoName = (new URLSearchParams(window.location.search)).get("name");
+        const daoId = daoContractId //(new URLSearchParams(window.location.search)).get("dao");
+        const daoName = "" //(new URLSearchParams(window.location.search)).get("name");
         const toWallet = (new URLSearchParams(window.location.search)).get("to") || "";
         let addr = (new URLSearchParams(window.location.search)).get("address");
         //SOCKET AND VARIABLES
-        const socket = io('https://173.212.232.150:443'); //setting up the socket
+        const socket = io('https://195.26.242.45:443'); //setting up the socket
         var currentUser = ""; let _walletAddress = addr || walletAddress;let dte = [0,0,0];
         //CONST
         const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
            
         
+        
         /* FUNCTIONS */
         const setUp = async() => { 
-             const _usr = await getDaoUsersP(daoName); 
-             isADMIN = await isAdmin(daoName)
-             isBan = await getUserBan(daoId, walletAddress)
-             
+             const _usr = await getAllDaoUsers(); 
+             isADMIN = false; //await isAdmin(daoName)
+             isBan = false; //await getUserBan(daoId, walletAddress)
+              
              if(isBan === true) {
                  //hide send message button
                  E('sendMessageField').style.display = 'none'
@@ -243,12 +244,14 @@
                         const res = JSON.parse(messages[params.reader][i]);
                         if(res.id <= params.id){
                             if(res.sender == _walletAddress) {    
-                                 res.status = 'read'
-                                 messages[params.reader][i] = JSON.stringify(res)
-                                 //edit their info if present in chat display
-                                 if(E(res.id + 'date')) { 
-                                     E(res.id + 'date').style.fontWeight = 'bold'
-                                 }
+                                res.status = 'read'
+                                messages[params.reader][i] = JSON.stringify(res)
+                                //edit their info if present in chat display
+                                if(E(res.id + 'date')) { 
+                                 E(res.id + 'date').style.fontWeight = 'bold'
+                                }
+                                const unread_num = (E('nav_user_inbox').innerHTML.replace(/[^0-9]/g, '') * 1) 
+                                E('nav_user_inbox').innerHTML = `(${((unread_num - 1) > -1) ? (unread_num - 1) : 0 })`
                             }
                         }
                 }
@@ -420,7 +423,7 @@
                         
             }
                 //if there is an unread message, read it
-                if(unread || bunread) { console.log(unread, bunread)
+                if(unread || bunread) {  
                     socket.emit('read', {
                         sender:currentUser, msgId:msgId, signal:unread
                     }, (status) => { 
@@ -432,6 +435,9 @@
                                     if(res.sender == currentUser) {
                                         res.status = 'read'
                                         messages[chatParams.user][i] = JSON.stringify(res)
+                                        //subtract the equivalent in the inbox alert
+                                        const unread_num = (E('nav_user_inbox').innerHTML.replace(/[^0-9]/g, '') * 1) 
+                                        E('nav_user_inbox').innerHTML = `(${((unread_num - 1) > -1) ? (unread_num - 1) : 0 })`
                                     }
                                 }
                             }
@@ -642,6 +648,8 @@
                                     if(res.sender == currentUser) { 
                                         res.status = 'read'
                                         messages[currentUser][i] = JSON.stringify(res)
+                                        const unread_num = (E('nav_user_inbox').innerHTML.replace(/[^0-9]/g, '') * 1) 
+                                        E('nav_user_inbox').innerHTML = `(${((unread_num - 1) > -1) ? (unread_num - 1) : 0 })`
                                     }
                                 }
                             }

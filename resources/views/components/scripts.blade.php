@@ -1,14 +1,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" crossorigin="anonymous"
     integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" referrerpolicy="no-referrer"></script>
-<script src="https://unpkg.com/@albedo-link/intent"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/soroban-client/1.0.0-beta.4/soroban-client.js"></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/11.1.0/stellar-sdk.min.js'></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-freighter-api/1.7.1/index.min.js"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/11.3.0/stellar-sdk.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-freighter-api/1.7.1/index.min.js" async></script>
 <script type="module"> import n from 'https://cdn.jsdelivr.net/npm/toml@3.0.0/+esm' ; window.toml = n</script>
 <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-<script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-
+<script src="https://kit.fontawesome.com/1b9091d672.js" crossorigin="anonymous" async></script>
 <script>
 
     @if (isset($_COOKIE['wallet']))
@@ -27,7 +24,7 @@
      * THE FREIGHTER EXTERNAL WALLET PROVIDER USED
      **/
     const stellarServer = "https://soroban-testnet.stellar.org"
-    const daoContractId = 'CDILRY65SNB5MPWSYIA3TAUL4V32NBNOTNEOJAF6UO5DQ3XZQJWHZ6CY'  
+    const daoContractId = 'CAEHD3LHPRTR35LANIXTYTTXOSTKBVQ7EZDTIMR7E6MDCZWKCOCHZTIR'  
     const wrappingAddress = 'GC5JKOC7OMSS22NVC23MVL2363QS5JO7SQM5X7C7DPVLQLFQHZ3ZRHGF'
     const networkUsed = StellarSdk.Networks.TESTNET
     const networkWalletUsed = "TESTNET"
@@ -38,6 +35,11 @@
     const version = 'v1.0'
     const S = SorobanClient;
     SorobanClient = StellarSdk.SorobanRpc
+    const server = new SorobanClient.Server(stellarServer);
+    /* SOCIAL MEDIA AUTH KEYS */
+    const REDDIT_CLIENT_ID = 'aR5bt1khN1rgRWq6eW9Uzw'
+    const LINKEDIN_CLIENT_ID = '77k00ndkottff0'
+    const GITHUB_CLIENT_ID = '2a8b021c17c97e2ef0ee'
                         
     @if (isset($_COOKIE['wallet']))
         const walletAddress = "{{ $_COOKIE['public']  }}" //; 
@@ -123,7 +125,7 @@
                await addTx({
                    address:walletAddress,
                    action:"Create new Stellar Asset (" + asset.code + ")",
-                   data:asset.code
+                   data:'dao/' + contractId
                })
            }
            return res
@@ -148,8 +150,8 @@
     }
     const createTxBuilder = async () => {
       try {
-        const server = new SorobanClient.Server(stellarServer);  
-        const account = await server.getAccount(walletAddress);
+          
+        const account = await server.getAccount(walletAddress)
         return new S.TransactionBuilder(account, {
           fee: '10000',
           networkPassphrase: networkUsed
@@ -160,7 +162,7 @@
       }
     }
     const invokeTransaction = async(tx, sim, parse) => {
-      const server = new SorobanClient.Server(stellarServer);
+      
       const hash = tx.hash().toString('hex');
       const simulation_resp = await server.simulateTransaction(tx);
       if (sim || S.SorobanRpc.isSimulationError(simulation_resp)) {
@@ -175,7 +177,7 @@
     const exeTranst = async (transaction = "") => {
         if(transaction !== "") {
             //prepare xdr
-            const server = new SorobanClient.Server(stellarServer); 
+             
             let xdr = await transaction.toXDR();
             try {
                 if(wallet.toLowerCase() == "freighter" || wallet.toLowerCase() == 'frighter') xdr = await window.freighterApi.signTransaction(xdr, networkWalletUsed) //sign with freighter
@@ -230,8 +232,8 @@
     const createTrustline = async (code, issuer, address, daoName = "", daoId = "") => {
         try{
             if(walletAddress != "") {
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                 
+                const account = await server.getAccount(walletAddress)
                 //preparing arguements
                 let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
                 const asset = new StellarSdk.Asset(code, issuer)
@@ -253,12 +255,16 @@
                     return false
                 }
                 else {
+                    await addDaoUser({
+                        type:'join',
+                        token:daoId
+                    })
                     await addTx({
                        address:walletAddress,
                        action:"Joined DAO " + daoName,
-                       data: daoId
+                       data: 'dao/' + daoId
                    })
-                    return {status: true}
+                   return {status: true}
                 }
             }
             else {return false}
@@ -275,8 +281,7 @@
     const removeTrustline = async (code, issuer, address, daoName = "", daoId = "") => {
         try{
             if(walletAddress != "") {
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                const account = await server.getAccount(walletAddress)
                 //preparing arguements
                 let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
                 const asset = new StellarSdk.Asset(code, issuer)
@@ -299,10 +304,14 @@
                     return false
                 }
                 else {
+                    await addDaoUser({
+                        type:'left',
+                        token:daoId
+                    })
                     await addTx({
                       address:walletAddress,
                       action:"Left DAO " + daoName,
-                      data: daoId
+                      data: 'dao/' + daoId
                   })
                     return {status: true}
                 }
@@ -320,9 +329,7 @@
     const mintToken = async (amount, code, issuer) => {
         try{
             if(walletAddress != "") {
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
-                //preparing arguements
+                const account = await server.getAccount(walletAddress)
                 let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
                 const asset = new StellarSdk.Asset(code, issuer)
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
@@ -362,8 +369,8 @@
     const burnToken = async (amount, code, issuer) => {
         try{
             if(walletAddress != "") {
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                 
+                const account = await server.getAccount(walletAddress)
                 //preparing arguements
                 let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
                 const asset = new StellarSdk.Asset(code, issuer)
@@ -403,8 +410,8 @@
     const payBudget = async (amount, code, issuer, propId) => {
         try{
             if(walletAddress != "") {
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                 
+                const account = await server.getAccount(walletAddress)
                 //preparing arguements
                 let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
                 const asset = new StellarSdk.Asset(code, issuer)
@@ -448,8 +455,8 @@
     const wrapAsset = async () => {
         try{
             if(walletAddress != "") {
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                 
+                const account = await server.getAccount(walletAddress)
                 //preparing arguements
                 let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
@@ -486,21 +493,36 @@
     const createDaos = async (params = {}) => {
         try{
             if(walletAddress != "") {
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                //first add dao info to off chain db
+                if(params.url.trim() != "" && params.token != "") {
+                    const aToml = await readAssetToml(params.url); 
+                    let code = await getTokenInfo(params.token, "symbol");code = code.replace(/[^a-zA-Z0-9]/g,"");
+                    //fetch the token info
+                    const tomlInfo = getTokenTomlInfo(aToml, code)
+                    const coverImgx = tomlInfo.image.replace((code + walletAddress), "cover_" + (code + walletAddress)); 
+                    const isCoverValid = await isImageURLValid(coverImgx)
+                    const defCoverImg = (isCoverValid) ? coverImgx : 'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+            
+                    //check if the url is http and from this domain
+                    let url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=new_dao&dao_id=" + daoContractId  + "&token=" + encodeURIComponent(params.token) + "&url=" + encodeURIComponent(params.url) 
+                    url += "&name=" + encodeURIComponent(tomlInfo.name) + "&code=" +  encodeURIComponent(code) + "&issuer=" +  encodeURIComponent(tomlInfo.issuer)  + "&image=" +  encodeURIComponent(tomlInfo.image)  + "&cover_image=" +  encodeURIComponent(defCoverImg) + "&about=" +  encodeURIComponent(tomlInfo.desc) 
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                      return {status: false, msg:'Network error'};
+                    }
+                    const res = await response.json();
+                    if(!res.status) {return {status: false, msg:'Internal server error'}}
+                }else{return {status: false, msg:'Unable to parse asset data'}}
+                //now add info to on chain
+                 
+                const account = await server.getAccount(walletAddress)
                 //preparing arguements
                 let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
                 let _tokenAdr = new StellarSdk.Address(params.token); _tokenAdr = _tokenAdr.toScVal()
-                let treasury = new StellarSdk.Address(params.treasury); treasury = treasury.toScVal()
-                const _name = StellarSdk.nativeToScVal(params.name)
-                const about = StellarSdk.nativeToScVal(params.about)
-                const _url = StellarSdk.nativeToScVal(params.url)
-                const dte = StellarSdk.nativeToScVal(Date.now())
-                console.log(params)
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
                     .addOperation(
                         // An operation to call create on the contract
-                        contract.call("create", _walletAdr, _tokenAdr, _name, about, _url, dte, treasury)
+                        contract.call("create", _walletAdr, _tokenAdr)
                      )
                      .setTimeout(timeout)
                      .addMemo(StellarSdk.Memo.text(version + ' Creating Lumos Dao'))
@@ -508,24 +530,24 @@
                 // Simulate the transaction to discover the storage footprint, and update the
                 transaction = await server.prepareTransaction(transaction);
                 //sign and exec transactions
-                const res = await execTranst(transaction)
+                const res = await execTranst(transaction); console.log(res)
                 if(res.status === false) {
                     //something went wrong
-                    return false
+                    return {status: false, msg:res.msg || 'Blockchain error'}
                 }
                 else {
                     //save the tx first
                    await addTx({
                        address:walletAddress,
                        action:"Create new DAO " + params.name,
-                       data:params.token
+                       data:'dao/' + params.token
                    })
                    return {status: (S.scValToNative(res.value))}
                 }
             }
-            else {return false}
+            else {return {status: false, msg:'No wallet connected'}}
         }
-        catch(e) {console.log(e); return false}
+        catch(e) {console.log(e); return {status: false, msg:'Network error'}}
     }
     
     /** This function creates the proposal
@@ -535,21 +557,20 @@
     const createProposal = async (params = {}) => {
         try{
             if(walletAddress != "") {
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                 
+                const account = await server.getAccount(walletAddress)
                 //preparing arguements
                 params.creator = new StellarSdk.Address(params.creator);params.creator = params.creator.toScVal()
+                const propDao = params.dao
                 params.dao = new StellarSdk.Address(params.dao); params.dao = params.dao.toScVal()
                 const _name = StellarSdk.nativeToScVal(params.name)
                 const about = StellarSdk.nativeToScVal(params.about)
                 let start = StellarSdk.nativeToScVal(params.start)
                 let links = StellarSdk.nativeToScVal(params.links)
-                let budget = new StellarSdk.XdrLargeInt('i128', params.budget * 1) 
-                budget = budget.toI128();
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
                     .addOperation(
                         // An operation to call create on the contract
-                        contract.call("create_proposal", params.creator, params.dao, _name, about, start, links, budget)
+                        contract.call("create_proposal", params.creator, params.dao)
                      )
                      .setTimeout(timeout)
                      .addMemo(StellarSdk.Memo.text(version + ' Creating Lumos Proposal'))
@@ -563,11 +584,18 @@
                     return false
                 }
                 else {
+                    let url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=new_proposal&dao_id=" + daoContractId  + "&dao=" + encodeURIComponent(propDao) + "&links=" + encodeURIComponent(params.links) 
+                    url += "&name=" + encodeURIComponent(params.name) + "&about=" +  encodeURIComponent(params.about) + "&prop_id=" + (StellarSdk.scValToNative(res.value)) + "&user=" + (walletAddress)
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                      return false;
+                    }
+                    if(!(await response.json()).status) {return false}
                     await addTx({
                        address:walletAddress,
                        action:"Created proposal " + params.name,
-                       data: StellarSdk.scValToNative(res.value)
-                   })
+                       data: 'dao/' + propDao + '/proposal/' + StellarSdk.scValToNative(res.value)
+                    })
                     return {status: (StellarSdk.scValToNative(res.value))}
                 }
             }
@@ -583,18 +611,27 @@
     const voteProposal = async (params = {}) => {
         try{
             if(walletAddress != "") {
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                 
+                const account = await server.getAccount(walletAddress)
+                //first save voter reasons
+                //check if the url is http and from this domain
+                let url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=vote_reason&dao_id=" + params.daoId  + "&user=" + encodeURIComponent(walletAddress) + "&reason=" + encodeURIComponent(params.reason) 
+                url += "&prop_id=" + encodeURIComponent(params.proposalId) 
+                const response = await fetch(url);
+                if (!response.ok) {
+                  return false;
+                }
+                const resp = await response.json();
+                if(!resp.status) {return false}
                 //preparing arguements
                 params.voters = new StellarSdk.Address(params.voters);params.voters = params.voters.toScVal()
                 const propId = StellarSdk.nativeToScVal(params.proposalId)
                 const vote_type = StellarSdk.nativeToScVal(params.vote_type)
-                const vote_reason = StellarSdk.nativeToScVal(params.reason)
                 const voting_power = StellarSdk.nativeToScVal(Math.round(params.voting_power * floatingConstant))
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
                     .addOperation(
                         // An operation to call create on the contract
-                        contract.call("vote_on_proposal", propId, params.voters, vote_type, voting_power, vote_reason)
+                        contract.call("vote_on_proposal", propId, params.voters, vote_type, voting_power)
                      )
                      .setTimeout(timeout)
                      .addMemo(StellarSdk.Memo.text(version + ' Voting Lumos Proposal'))
@@ -608,12 +645,21 @@
                     return false
                 }
                 else {
-                    await addTx({
+                   await addTx({
                        address:walletAddress,
                        action:"Voted " + ((params.vote_type == 1) ? 'Yes' : 'No') + " on this proposal " + (params.name || ""),
-                       data:params.proposalId
+                       data:"dao/" + params.daoId + "/proposal/" + params.proposalId
                    })
-                    return {status: (StellarSdk.scValToNative(res.value))}
+                   //log alert for proposal owner
+                   await addAlerts({
+                       other:walletAddress,
+                       user:params.owner || "",
+                       action:"Voted " + ((params.vote_type == 1) ? 'Yes' : 'No') + " on this proposal " + (params.name || ""),
+                       link:"dao/" + params.daoId + "/proposal/" + params.proposalId,
+                       title:'Vote on proposal',
+                       type:'vote'
+                   })
+                   return {status: (StellarSdk.scValToNative(res.value))}
                 }
             }
             else {return false}
@@ -628,16 +674,14 @@
     const executeProposal = async (params = {}) => {
         try{
             if(walletAddress != "") {
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                const account = await server.getAccount(walletAddress)
                 //preparing arguements
                 params.owner = new StellarSdk.Address(walletAddress);params.owner = params.owner.toScVal()
                 const propId = StellarSdk.nativeToScVal(params.propId)
                 const status = StellarSdk.nativeToScVal(params.status * 1)
                 const _type = StellarSdk.nativeToScVal(params._type * 1)
-                console.log(propId, status, params.owner)
                 let msg = "";
-                if((params.status * 1) === 0) {
+                if((params.status * 1) === 1) {
                     msg = ' approved Lumos Proposal'
                 }
                 else {
@@ -660,12 +704,42 @@
                     return false
                 }
                 else {
-                    await addTx({
-                       address:walletAddress,
-                       action:msg + ' with id PROP_' + params.propId,
-                       data:  params.propId
-                   })
-                    return {status: (StellarSdk.scValToNative(res.value))}
+                    if((StellarSdk.scValToNative(res.value)) === 'done'){
+                        //save the active proposals mark
+                        if((params.status * 1) === 1) {
+                            const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=dao_active_proposal&token=" + params.daoId
+                            const response = await fetch(url);
+                            if (!response.ok) {
+                              return false;
+                            }
+                            if(!(await response.json()).status) {return false}
+                        }
+                        else {
+                            //remove proposals from db
+                            const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=remove_proposal&prop_id=" + params.propId
+                            const response = await fetch(url);
+                            if (!response.ok) {
+                              return false;
+                            }
+                            if(!(await response.json()).status) {return false}
+                        }
+                        //save tx
+                        await addTx({
+                           address:walletAddress, 
+                           action:msg + ' with id PROP_' + params.propId,
+                           data:"dao/" + params.daoId + "/proposal/" + params.proposalId
+                        })
+                       //log alert for proposal owner 
+                       addAlerts({
+                           other:walletAddress,
+                           user:params.creator || "",
+                           action:msg + ' with id PROP_' + params.propId,
+                           link:c,
+                           title:msg.trim(),
+                           type:'execute'
+                       })
+                   }
+                   return {status: (StellarSdk.scValToNative(res.value))}
                 }
             }
             else {return false}
@@ -681,20 +755,21 @@
     const addDelegate = async (params = {}) => {
         try{
             if(walletAddress != "") {
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                 
+                const account = await server.getAccount(walletAddress)
                 //preparing arguements
+                const daoId = params.dao
                 params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
                 const delegator = (new StellarSdk.Address(walletAddress)).toScVal()
                 const delegatee = (new StellarSdk.Address(params.delegatee)).toScVal()
                 let memoTx = [];
                 if(walletAddress != params.delegatee) {
                     memoTx[0] = ' Delegated voting power'  
-                    memoTx[1] = ' Delegated voting power to ' + fAddr(params.delegatee, 6) 
+                    memoTx[1] = ' Delegated voting power to ' + fAddr(params.delegatee, 6)  
                 }
                 else {
                     memoTx[0] = ' Reclaimed voting power'
-                    memoTx[1] = ' Reclaimed voting power from ' + fAddr(params.delegatee, 6)  
+                    memoTx[1] = ' Reclaimed voting power from ' + fAddr(params.del_address, 6)  
                 }
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
                     .addOperation(
@@ -716,9 +791,19 @@
                     await addTx({
                        address:walletAddress,
                        action:memoTx[1],
-                       data:params.delegatee
+                       data:"dao/" + daoId
                    })
-                    return {status: (StellarSdk.scValToNative(res.value))}
+                   if(StellarSdk.scValToNative(res.value) !== false) {
+                       await addAlerts({
+                           other:walletAddress,
+                           user:params.del_address || "",
+                           action:memoTx[1],
+                           link:"dao/" + daoId,
+                           title:"Voting power delegation",
+                           type:'delegation'
+                       })
+                   }
+                   return {status: (StellarSdk.scValToNative(res.value))}
                 }
             }
             else {return false}
@@ -733,8 +818,8 @@
     const setDaoTreasury = async (params = {}) => {
         try{
             if(walletAddress != "") {
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                 
+                const account = await server.getAccount(walletAddress)
                 //preparing arguements
                 params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
                 const owner = (new StellarSdk.Address(walletAddress)).toScVal()
@@ -776,9 +861,10 @@
     const addAdmin = async (params = {}) => {
         try{
             if(walletAddress != "") {
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                 
+                const account = await server.getAccount(walletAddress)
                 //preparing arguements
+                const daoId = params.dao
                 params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
                 const owner = (new StellarSdk.Address(walletAddress)).toScVal()
                 const admin = (new StellarSdk.Address(params.admin)).toScVal()
@@ -802,9 +888,20 @@
                     await addTx({
                        address:walletAddress,
                        action:"added admin " + fAddr(params.admin, 14),
-                       data:params.admin
+                       data:"dao/" + daoId
                    })
-                    return {status: (StellarSdk.scValToNative(res.value))}
+                   if((StellarSdk.scValToNative(res.value)) !== false) {
+                       //log alert for proposal owner
+                       await addAlerts({
+                           other:walletAddress,
+                           user:params.admin || "",
+                           action:"added you as admin in dao " + params.daoName ,
+                           link:"dao/" + daoId,
+                           title:"Made admin",
+                           type:'admin'
+                       })
+                   }
+                   return {status: (StellarSdk.scValToNative(res.value))}
                 }
             }
             else {return false}
@@ -819,9 +916,10 @@
     const removeDaoAdmin = async (params = {}) => {
         try{
             if(walletAddress != "") {
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                 
+                const account = await server.getAccount(walletAddress)
                 //preparing arguements
+                const daoId = params.dao
                 params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
                 const owner = (new StellarSdk.Address(walletAddress)).toScVal()
                 const admin = (new StellarSdk.Address(params.admin)).toScVal()
@@ -845,9 +943,20 @@
                     await addTx({
                        address:walletAddress,
                        action:"removed admin " + fAddr(params.admin, 14),
-                       data:params.admin
+                       data:"dao/" + daoId
                    })
-                    return {status: (StellarSdk.scValToNative(res.value))}
+                   if((StellarSdk.scValToNative(res.value)) !== false) {
+                       //log out alert to user
+                       await addAlerts({
+                           other:walletAddress,
+                           user:params.admin || "",
+                           action:"removed you as admin in dao " + params.daoName ,
+                           link:"dao/" + daoId,
+                           title:"Removed admin",
+                           type:'admin'
+                       })
+                   }
+                   return {status: (StellarSdk.scValToNative(res.value))}
                 }
             }
             else {return false}
@@ -862,8 +971,8 @@
     const signDaoAdmin = async (params = {}) => {
         try{
             if(walletAddress != "") {
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                 
+                const account = await server.getAccount(walletAddress)
                 //preparing arguements
                 params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
                 const propId = StellarSdk.nativeToScVal(params.propId)
@@ -908,8 +1017,8 @@
             if(walletAddress != "" && res == true) {
                 const isBan = await getUserBan(params.dao, walletAddress)
                 if(isBan === false){
-                    const server = new SorobanClient.Server(stellarServer); 
-                    const account = await server.getAccount(walletAddress);
+                     
+                    const account = await server.getAccount(walletAddress)
                     //preparing arguements
                     params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
                     const member = (new StellarSdk.Address(params.user)).toScVal()
@@ -933,7 +1042,7 @@
                         await addTx({
                            address:walletAddress,
                            action:"banned member " + fAddr(params.user, 6),
-                           data:params.user
+                           data:"user/" + params.user
                        })
                         return {status: (StellarSdk.scValToNative(res.value))}
                     }
@@ -967,8 +1076,8 @@
             if(walletAddress != "" && res == true) {
                 const isBan = await getUserBan(params.dao, walletAddress)
                 if(isBan === false){
-                    const server = new SorobanClient.Server(stellarServer); 
-                    const account = await server.getAccount(walletAddress);
+                     
+                    const account = await server.getAccount(walletAddress)
                     //preparing arguements
                     params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
                     const member = (new StellarSdk.Address(params.user)).toScVal()
@@ -992,7 +1101,7 @@
                         await addTx({
                            address:walletAddress,
                            action:"Unbanned member " + fAddr(params.user, 6),
-                           data:params.user
+                           data:'user/' + params.user
                        })
                         return {status: (StellarSdk.scValToNative(res.value))}
                     }
@@ -1023,8 +1132,8 @@
     const verifyAsset = async (params = {code:"", issuer:""}) => {
         if(walletAddress != "") {
             try{
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                 
+                const account = await server.getAccount(walletAddress)
                 let asset; let contract;
                 if(params.code.length == 56) {
                     contract = new StellarSdk.Contract(params.code);
@@ -1075,12 +1184,10 @@
                 //recreate signed transaction
                 transaction = new StellarSdk.Transaction(xdr, networkUsed)
                 let sendResponse = await server.sendTransaction(transaction);
-                console.log(`Sent transaction: ${JSON.stringify(sendResponse)}`);
                 if (sendResponse.status === "PENDING") {
                   let getResponse = await server.getTransaction(sendResponse.hash);
                   // Poll `getTransaction` until the status is not "NOT_FOUND"
                   while (getResponse.status === "NOT_FOUND") {
-                    console.log("Waiting for transaction confirmation...");
                     // See if the transaction is complete
                     getResponse = await server.getTransaction(sendResponse.hash);
                     // Wait one second
@@ -1098,15 +1205,15 @@
                     let returnValue = getResponse.returnValue
                     return {status:true, value: returnValue}
                   } else { 
-                    return {status:false}
+                    return {status:false, msg:'Transaction failed'}
                   }
                 } else {
-                   return {status:false}
+                   return {status:false, msg:'Unable to submit transaction'}
                 }
           } catch (err) {
             // Catch and report any errors we've thrown
             console.log("Sending transaction failed", err);
-            return {status:false}
+            return {status:false, msg:err.message}
         }
     }
     }
@@ -1127,8 +1234,7 @@
     const getDaoMetadata =  async () => {
         if(walletAddress != "") {
             try{
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                const account = await server.getAccount(walletAddress)
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
                     .addOperation(
                         contract.call("get_metadata")
@@ -1136,15 +1242,29 @@
                     .setTimeout(timeout) //using a time out of a hour
                     .build();
                 //Simulate the transaction to discover the storage footprint, and update the
-                transaction = await server.prepareTransaction(transaction);
                 let transactionMeta = (await server.simulateTransaction(transaction))
-                return await StellarSdk.scValToNative(transactionMeta.result.retval);
+                //fetch off chain data
+                const res = await getOffChainInfo()
+                return {...(await StellarSdk.scValToNative(transactionMeta.result.retval)), ...res};
             }
-            catch(e) {
-                console.log(e)
+            catch(e) {console.log(e)
                 return []}
         }
         else {return []}
+        /* Fetch dao info from off chain */
+        async function getOffChainInfo(){
+            try {
+                //check if the url is http and from this domain
+                url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_metadata&dao_id=" + daoContractId + "&id=" + Math.random() * 1000 
+                const response = await fetch(url);
+                if (!response.ok) {
+                  return {}
+                }
+                const res = await response.json();  
+                return res;
+                
+            } catch (error) { console.log(error); return {}}
+        }
     }
     
     /** This function checks
@@ -1155,8 +1275,8 @@
     const isDao =  async (daoId) => {
         if(walletAddress != "" && daoId != undefined && daoId != "") {
             try{
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                 
+                const account = await server.getAccount(walletAddress)
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
                     .addOperation(
                         contract.call("get_dao", (new StellarSdk.Address(daoId)).toScVal())
@@ -1184,34 +1304,33 @@
      * @params {daoId: Address}
      * returns @map | []
      **/ 
-     
-    const getDao =  async (daoId) => {
-        if(walletAddress != "" && daoId != undefined && daoId != "") {
+    const getDao =  async (daoId = []) => {
+        if(walletAddress != "" && daoId.length > 0) {
             try{
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                const account = await server.getAccount(walletAddress)
+                //convert to stellar array
+                let addr = []; 
+                for(let i=0;i<daoId.length;i++){
+                    addr.push(new StellarSdk.Address(daoId[i]))
+                }
+                addr = StellarSdk.nativeToScVal(addr) 
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
                     .addOperation(
-                        contract.call("get_dao", (new StellarSdk.Address(daoId)).toScVal())
+                        contract.call("get_all_dao", addr),
                     )
-                    .setTimeout(timeout) //using a time out of a hour
+                    .setTimeout(timeout) //using a time out of a hourf
                     .build();
                 //Simulate the transaction to discover the storage footprint, and update the
                 transaction = await server.prepareTransaction(transaction);
                 let transactionMeta = (await server.simulateTransaction(transaction))
                 let dao = StellarSdk.scValToNative(transactionMeta.result.retval);
-                if(dao['url'] != undefined) { 
-                    timeStart = performance.now()
-                    const aToml = await readAssetToml(dao.url); 
-                    let code = await getTokenInfo(dao.token, "symbol");code = code.replace(/[^a-zA-Z0-9]/g,"");
-                    const tomlInfo = getTokenTomlInfo(aToml, code)
-                    dao.name = tomlInfo.name
-                    dao.description = tomlInfo.desc
-                    dao.image = tomlInfo.image
-                    dao.issuer = tomlInfo.issuer
-                    dao.toml = aToml
-                    dao.code = code
-                    return dao
+                //fecth the daos data
+                const daoMeta = await getAlldaoInfo(daoId.join(","))
+                if(daoMeta !== false && dao.length > 0) { 
+                    for(let i=0;i<dao.length;i++) {
+                        daoMeta[dao[i].token] = {...(dao[i]), ... daoMeta[dao[i].token]}
+                    }
+                    return daoMeta;
                 }
                 else {return []}
                 
@@ -1223,15 +1342,46 @@
         else {return []}
     }
     
-     /** This function retrieves proposal info
-     * @params {propId: int}
+    /**  DAO SPECIFIC INFO WITHOUT META
+     * @params {daoId: Address}
      * returns @map | []
      **/ 
+    const getDaoWithoutMeta =  async (daoId = []) => {
+        if(walletAddress != "" && daoId.length > 0) {
+            try{
+                const account = await server.getAccount(walletAddress);
+                //convert to stellar array
+                let addr = []; 
+                for(let i=0;i<daoId.length;i++){
+                    addr.push(new StellarSdk.Address(daoId[i]))
+                }
+                addr = StellarSdk.nativeToScVal(addr) 
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call("get_all_dao", addr),
+                    )
+                    .setTimeout(timeout) //using a time out of a hourf
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                const dao = StellarSdk.scValToNative(transactionMeta.result.retval);
+                return dao
+            }
+            catch(e) {
+                console.log(e)
+                return []}
+        }
+        else {return []}
+    }
+    
+    /** This function retrieves proposal info
+     * @params {propId: int}
+     * returns @map | []
+    **/ 
     const getProposal =  async (propId) => {
         if(walletAddress != "" && propId != undefined && propId !== 0) {   
             try{
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                const account = await server.getAccount(walletAddress)
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
                     .addOperation(
                         contract.call("get_proposal", (StellarSdk.nativeToScVal(propId)))
@@ -1239,7 +1389,6 @@
                     .setTimeout(timeout) //using a time out of a hour
                     .build();
                 //Simulate the transaction to discover the storage footprint, and update the
-                transaction = await server.prepareTransaction(transaction);
                 let transactionMeta = (await server.simulateTransaction(transaction))
                 return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
             }
@@ -1249,16 +1398,80 @@
         }
         else {return []}
     }
-    
+    /** This function retrieves all proposal info
+     * @params {propId: [int]}
+     * returns @map | []
+     **/ 
+    const getAllProposal =  async (propId = [], dao) => {
+        if(walletAddress != "" && propId.length > 0) {   
+            try{
+                const account = await server.getAccount(walletAddress)
+                let prop_ids = []; 
+                for(let i=0;i<propId.length;i++){
+                    prop_ids.push(propId[i])
+                }
+                prop_ids = StellarSdk.nativeToScVal(prop_ids) 
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call("get_all_proposal", prop_ids)
+                    )
+                    .setTimeout(timeout) //using a time out of a hour
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                const props =  (StellarSdk.scValToNative(transactionMeta.result.retval)); 
+                //fecth the daos data
+                const propMeta = await getAllPropInfo(propId.join(","), dao)
+                if(propMeta !== false && props.length > 0) { 
+                    for(let i=0;i<props.length;i++) {
+                        propMeta[propId[i]] = {...(props[i]), ... propMeta[propId[i]]}
+                    }
+                    return propMeta;
+                }
+                else {return []}
+            }
+            catch(e) {
+              //  console.log(e)
+                return []}
+        }
+        else {return []}
+    }
+     /** This function retrieves group proposal info
+     * @params {propId, voter, dao}
+     * returns @map | []
+    **/ 
+    const getProposalGroupInfo =  async (params = {}) => {
+        if(walletAddress != "") {   
+            try{
+                const account = await server.getAccount(walletAddress)
+                params.propId = StellarSdk.nativeToScVal(propId),
+                params.dao = StellarSdk.nativeToScVal((new StellarSdk.Address(params.dao)))
+                params.voter = StellarSdk.nativeToScVal((new StellarSdk.Address(params.voter)))
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call("get_proposal_user_group_info", params.propId, params.voter, params.dao)
+                    )
+                    .setTimeout(timeout) //using a time out of a hour
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
+            }
+            catch(e) {
+              //  console.log(e)
+                return []}
+        }
+        else {return []}
+    }
     /** This function retrieves the proposal voter info
      * @params {propId: int}
      * returns @map | []
     **/ 
-    const getProposalVotersInfo =  async (propId) => {
+    const getProposalVotersInfo =  async (propId, dao) => {
         if(walletAddress != "" && propId != undefined && propId !== 0) {   
             try{
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                 
+                const account = await server.getAccount(walletAddress)
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
                     .addOperation(
                         contract.call("get_proposal_voters", (StellarSdk.nativeToScVal(propId)))
@@ -1266,9 +1479,29 @@
                     .setTimeout(timeout) //using a time out of a hour
                     .build();
                 //Simulate the transaction to discover the storage footprint, and update the
-                transaction = await server.prepareTransaction(transaction);
                 let transactionMeta = (await server.simulateTransaction(transaction))
-                return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
+                let res = (StellarSdk.scValToNative(transactionMeta.result.retval)); 
+                if(res.length > 0) {
+                    let voters = ""
+                    for(let i=0;i<res.length;i++) {
+                        voters += res[i].voter + ","
+                    }
+                    //fetch all the voters reasons
+                    url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_all_vote&all_voters=" + voters + "&dao_id=" + dao + "&prop_id=" + propId
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                      throw new Error("Network response was not ok");
+                    }
+                    const resp = await response.json();  
+                    if(resp.status) {
+                        for(let i=0;i<res.length;i++) {
+                            res[i] = {...(res[i]), ...resp[res[i].voter]}
+                        }
+                        return res;
+                    }   
+                    else {return []}
+                }
+                else {return []}
             }
             catch(e) {
                 console.log(e)
@@ -1283,9 +1516,8 @@
     **/ 
     const getProposalVoterInfo =  async (propId, address) => {
         if(walletAddress != "" && propId != undefined && propId !== 0) {   
-            try{ //console.log(propId, address)
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+            try{  
+                const account = await server.getAccount(walletAddress)
                 address = new StellarSdk.Address(address);address = address.toScVal()
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
                     .addOperation(
@@ -1294,7 +1526,6 @@
                     .setTimeout(timeout) //using a time out of a hour
                     .build();
                 //Simulate the transaction to discover the storage footprint, and update the
-                transaction = await server.prepareTransaction(transaction);
                 let transactionMeta = (await server.simulateTransaction(transaction))
                 return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
             }
@@ -1312,8 +1543,8 @@
     const getDaoDelegators =  async (dao = "", voter = "") => {
         if(voter != "" && dao != null && dao !== "") {   
             try{  
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                 
+                const account = await server.getAccount(walletAddress)
                 let address = new StellarSdk.Address(voter);address = address.toScVal()
                 dao = new StellarSdk.Address(dao);dao = dao.toScVal()
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
@@ -1341,8 +1572,8 @@
     const getDaoDelegatee =  async (dao = "", user = "") => {
         if(user != "" && dao != null && dao !== "") {   
             try{  
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                 
+                const account = await server.getAccount(walletAddress)
                 let address = new StellarSdk.Address(user);address = address.toScVal()
                 dao = new StellarSdk.Address(dao);dao = dao.toScVal()
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
@@ -1352,7 +1583,6 @@
                     .setTimeout(timeout) //using a time out of a hour
                     .build();
                 //Simulate the transaction to discover the storage footprint, and update the
-                transaction = await server.prepareTransaction(transaction);
                 let transactionMeta = (await server.simulateTransaction(transaction))
                 return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
             }
@@ -1370,8 +1600,8 @@
     const getUserBan =  async (dao = "", user = "") => {
         if(user != "" && dao != null && dao !== "") {   
             try{  
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                 
+                const account = await server.getAccount(walletAddress)
                 let address = new StellarSdk.Address(user);address = address.toScVal()
                 dao = new StellarSdk.Address(dao);dao = dao.toScVal()
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
@@ -1398,8 +1628,8 @@
     const getTokenInfo = async (tokenId, info="name") => {
         if(walletAddress != "") {
             try{
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                 
+                const account = await server.getAccount(walletAddress)
                 const contract = new StellarSdk.Contract(tokenId);
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
                     .addOperation(
@@ -1423,8 +1653,8 @@
     const getTokenUserBal = async (tokenId, address) => {
         if(walletAddress != "") {
             try{
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                 
+                const account = await server.getAccount(walletAddress)
                 const contract = new StellarSdk.Contract(tokenId);
                 address = new StellarSdk.Address(address);address = address.toScVal()
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
@@ -1434,7 +1664,6 @@
                     .setTimeout(timeout) //using a time out of a hour
                     .build();
                 //Simulate the transaction to discover the storage footprint, and update the
-                transaction = await server.prepareTransaction(transaction);
                 let transactionMeta = (await server.simulateTransaction(transaction))
                 return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
             }
@@ -1758,6 +1987,24 @@
             return false;
         }
     }
+    //
+    const addDaoUser = async (params) => {
+         try {
+             if(params.token != "") {
+                //check if the url is http and from this domain
+                url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=dao_user&token=" + params.token  + "&_type=" + encodeURIComponent(params.type) + "&user=" + encodeURIComponent(walletAddress)
+                const response = await fetch(url);
+                if (!response.ok) {
+                  throw new Error("Network response was not ok");
+                }
+                const res = await response.json();
+                return res;
+            }
+            else {return 2}
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
     //logg in tx
     const addTx = async (params) => {
          try {
@@ -1772,6 +2019,55 @@
                 return res * 1;
             }
             else {return 2}
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
+    //logg in alerts
+    const addAlerts = async (params) => {
+         try { 
+             if(params.action.trim() != "" && params.other != "") {
+                //check if the url is http and from this domain
+                let url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=add_alert&action=" + encodeURIComponent(params.action) + "&other=" + encodeURIComponent(params.other) + "&user=" + encodeURIComponent(params.user)
+                url += "&link=" + encodeURIComponent(params.link) + "&alert_type=" + encodeURIComponent(params.type) + "&title=" + encodeURIComponent(params.title)
+                const response = await fetch(url);
+                if (!response.ok) {
+                  throw new Error("Network response was not ok");
+                }
+                const res = await response.json();  
+                return res;
+             }
+             else {return 2}
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
+    // get all dao info
+    const getAlldaoInfo = async (daos) => {
+         try {
+            //check if the url is http and from this domain
+            url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_all_dao&all_dao=" + daos + "&user=" + walletAddress + "&id=" + Math.random() * 1000 
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const dao = await response.json();  
+            return dao
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
+    // get all proposal info
+    const getAllPropInfo = async (propIds, daoId) => {
+         try {
+            //check if the url is http and from this domain
+            url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_all_proposal&all_proposal=" + propIds + "&dao_id=" + daoId + "&id=" + Math.random() * 1000 
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const dao = await response.json();   
+            return dao
         } catch (error) { console.log(error)
             return false;
         }
@@ -1821,7 +2117,67 @@
             return false;
         }
     }
-    // get num of users
+    // get all user info
+    const getUserInfo = async (addr) => {
+         try {
+            //check if the url is http and from this domain
+            url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_user&user=" + addr + "&id=" + Math.random() * 1000 
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const res = await response.json();  
+            return res
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
+    // get user dao meta
+    const getUserMeta = async (addr) => {
+         try {
+            //check if the url is http and from this domain
+            url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_user_meta&user=" + addr + "&id=" + Math.random() * 1000 
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const user = await response.json();  
+            return user
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
+    // get all Users alerts
+    const getAllUserAlerts = async () => {
+         try {
+            //check if the url is http and from this domain
+            url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_user_alert&user=" + walletAddress + "&id=" + Math.random() * 1000 
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const tx = await response.json(); 
+            return tx;
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
+    // get all Users alerts unread num
+    const getAllUserAlertsNo = async () => {
+         try {
+            //check if the url is http and from this domain
+            url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_user_alert_no&user=" + walletAddress + "&id=" + Math.random() * 1000 
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const tx = await response.json();  
+            return tx['num'];
+        } catch (error) { console.log(error)
+            return 0;
+        }
+    }
+    // get dao users by dao name
     const getDaoUsersP = async (daoName) => { 
          try {
              let num = 0; let joiners = []
@@ -1851,7 +2207,21 @@
             return 0;
         }
     }
-    
+    // get all users
+    const getAllDaoUsers = async () => { 
+         try {
+            //check if the url is http and from this domain
+            url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_all_dao_users&id=" + Math.random() * 1000 
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const res = await response.json();  
+            return res.users || []
+        } catch (error) { console.log(error)
+            return [];
+        }
+    }
     // get num of users
     const getDaoUsers = async () => {
          try {
@@ -1914,8 +2284,8 @@
         //structure url
         if(walletAddress != "" && daoId != "") {
             try{
-                const server = new SorobanClient.Server(stellarServer); 
-                const account = await server.getAccount(walletAddress);
+                
+                const account = await server.getAccount(walletAddress)
                 let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
                     .addOperation(
                         contract.call("get_dao", (new StellarSdk.Address(daoId)).toScVal())
@@ -2026,21 +2396,31 @@
     /* Get user joined dao number  */
     const getDaoJoinedNum = async (_address) => {
          try {
-            const daos = await getDaoMetadata()
-            //loop through the daos
-            if(daos.daos.length > 0) {
-                let num = 0;let _res = []
-                for(let i=0;i<daos.daos.length;i++) {
-                    const res = await getTokenUserBal(daos.daos[i], _address)
-                    if(res !== false) {
-                        num++;_res.push(daos.daos[i])
-                    }
-                }
-                return [num, _res];
+            response = await fetch(window.location.protocol + `//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_user_join_dao&user=` + _address + "&id=" + Math.random());
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
             }
-            else {
-                return [0, []];
+            let daos = await response.json();
+            if(daos.status) {
+                return [daos['daos'].length, daos['daos']]
             }
+            else {return [0, []]}
+        } catch (error) { console.log(error)
+            return [0, []];
+        }
+    }
+    /* Get user joined dao number  */
+    const getDaoJoinedWithInfo = async (_address) => {
+         try {
+            response = await fetch(window.location.protocol + `//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_user_join_daometa&user=` + _address + "&id=" + Math.random());
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            let daos = await response.json();  
+            if(daos.status) {
+                return [daos['daos'].length, daos['daos']]
+            }
+            else {return [0, []]}
         } catch (error) { console.log(error)
             return [0, []];
         }
@@ -2220,7 +2600,7 @@
                 else {
                    E(`paginate_pre_${id}`).style.display = 'block'
                 }
-                //handle empty voters
+                //handle empty view
                 if(E(`paginate_data_${id}`).firstElementChild == null) {
                     //show empty view
                     E(`paginate_data_${id}`).innerHTML = `<center style='margin: 40px 20px'>Nothing yet</center>`
@@ -2279,7 +2659,7 @@
                   if (fileInput.files[0].size > maxSize) {
                     stopTalking(4, talk("File size exceeds the maximum allowed (3MB).", "warn"));
                     fileInput.files = []
-                    callback(null)
+                    callback(null) 
                     return;
                   }
                   // Check if the selected file is an image
@@ -2290,8 +2670,8 @@
                     return;
                   }
                   
-                  callback(fileInput.files[0])
                   const imageURL = URL.createObjectURL(fileInput.files[0]);
+                  callback(fileInput.files[0], imageURL)
                   if(type == 1) {
                       const imageElement = document.createElement("img");
                       imageElement.src = imageURL;
@@ -2348,7 +2728,7 @@
         }
     }
     
-    /** To convert a number to bigInt
+    /** To convert a bigInt to number
      * params {num}
      * returns {BigInt}
     */
@@ -2409,5 +2789,117 @@
             stopTalking(3, talk('Network error', 'fail'))
         }
         return true
+    }
+    /** To copy a link to clipboard
+     * params {text}
+     * returns {bool}
+    */
+    const copyLink = (text) => {
+        // Check if the Clipboard API is available
+        if (navigator.clipboard) {
+            // Use the Clipboard API to copy text
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    stopTalking(2, talk("Copied to clipboard", "good"))
+                })
+                .catch(err => {
+                    stopTalking(2, talk("Unable to copy to clipboard", "fail"))
+                });
+        } else {
+            // Fallback: create a temporary textarea element to copy the text
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+    
+            // Make the textarea out of viewport
+            textarea.style.position = 'fixed';
+            textarea.style.top = '-9999px';
+    
+            document.body.appendChild(textarea);
+    
+            textarea.focus();
+            textarea.select();
+    
+            try {
+                const success = document.execCommand('copy');
+                stopTalking(2, talk("Copied to clipboard", "good"))
+            } catch (err) {
+                stopTalking(2, talk("Unable to copy to clipboard", "fail"))
+            }
+    
+            // Clean up
+            document.body.removeChild(textarea);
+        }
+        return true
+    }
+    /* To Compress image
+    for optimization
+    */
+    const optimizeImg = async (pngDataURL, quality, maxWidth, maxHeight) => {
+        return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+            let width = img.width;
+            let height = img.height;
+            // Calculate new dimensions while maintaining aspect ratio
+            if (width > maxWidth && maxWidth != 0) {
+                height *= (maxWidth / width);
+                width = maxWidth;
+            }
+            if (height > maxHeight && maxHeight != 0) {
+                width *= (maxHeight / height);
+                height = maxHeight;
+            }
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+            canvas.toBlob((blob) => {
+                resolve(blob);
+            }, 'image/jpeg', quality);
+        };
+        img.onerror = (error) => {
+            reject(error);
+        };
+        img.src = pngDataURL;
+    });
+    }
+    //remove null elements in array */
+    const fArr = (arr) => {
+        if(arr.length > 0) {
+            let newArr = []
+            for(let i=0;i<arr.length;i++) {
+                if(arr[i] != null) {newArr.push(arr[i])}
+            }
+             
+            return newArr
+        }
+        return []
+    }
+    /* SOCIAL AUTH METHOD */
+    
+    //reddit oauth url
+    const getRedditOauthUri = (dao, domain) => {
+        const clientId = REDDIT_CLIENT_ID;
+        const redirectUri = 'https://develop.lumosdao.io/.well-known/asset.php?type=reddit_auth';
+        const scopes = ['identity', 'read'];
+        const randomString = dao + ":" + domain
+        const authUrl = `https://www.reddit.com/api/v1/authorize?client_id=${clientId}&response_type=code&state=${randomString}&redirect_uri=${encodeURIComponent(redirectUri)}&duration=permanent&scope=${scopes.join('+')}`;
+        return authUrl
+    }
+    //linkedin oauth url
+    const getLinkedInUri = (user) => {
+        // Replace these values with your actual client ID and redirect URI
+        const redirectUri = 'https://develop.lumosdao.io/.well-known/asset.php?type=user_linkedin_auth';
+        const scopes = ['r_basicprofile', 'r_emailaddress']; // Add the desired scopes
+        const authUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${LINKEDIN_CLIENT_ID}&state=${user}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scopes.join('%20')}`;
+        return authUrl;
+    }
+    //github oauth url
+    const getGithubUri = (user) => {
+        const redirectURI = 'https://develop.lumosdao.io/.well-known/asset.php?type=user_github_auth'
+        const authURL = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${redirectURI}&state=${user}&scope=user`;
+        return authURL;
     }
 </script>

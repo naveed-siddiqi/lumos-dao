@@ -25,9 +25,9 @@
         <nav class="navbar navbar-expand-lg ">
             <div class="container">
                 <a class="navbar-brand" href="{{ route('home') }}">
-                    <div class="d-flex align-items-center ">
-                        <img src="{{ asset('images/Image.png') }}" alt="">
-                        <h3 class="logo-lumos-font">
+                    <div class="d-flex align-items-end gap-2">
+                        <img style="width: 50px;" src="{{ asset('images/Image.png') }}" alt="">
+                        <h3 class="font-bold logo-lumos-font">
                             LUMOS DAO
                         </h3>
                     </div>
@@ -44,17 +44,10 @@
                         </svg>
                     </span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mx-auto">
+                <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto gap-5">
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('explore') }}">Explore</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('page', 'how-it-works') }}">How it works</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="https://github.com/naveed-siddiqi/lumos-dao"
-                                target="_blank">Github</a>
                         </li>
                     </ul>
                     <div style="display: none;" id="alertCopied" class="alert alert-success position-fixed w-25 mt-5 right-0 text-center" role="alert">
@@ -64,19 +57,53 @@
                     <span class="mx-3">
                         <ul class="navbar-nav mx-auto">
                             <li class="nav-item">
-                                <a class="nav-link" href="{{route('proposal.inbox')}}">Inbox <span class="text-danger">(12)</span></a>
+                                <a class="nav-link" href="{{route('proposal.inbox')}}">Inbox <span class="text-danger" id='nav_user_inbox'>(<?php
+                                    /* Load the unread messages number of this user */
+                                    $path = substr(__FILE__, 0, strpos(__FILE__, 'storage'));
+                                    require("$path.well-known/config.php");
+                                    require("$path.well-known/db.php");
+                                    if(isset($_COOKIE['public'])){
+                                        $user = $_COOKIE['public'];
+                                        $query = "SELECT * FROM message WHERE (receiver ='$user' OR receiver ='all') AND status <> 'read'";
+                                	    $result = mysqli_query($conn, $query);
+                                	    $res = mysqli_num_rows($result);
+                                	    echo $res * 1;
+                                    }
+                                    else {echo 0;}
+                                ?>)</span></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="">Alerts <span class="text-danger">(12)</span></a>
+                                <a class="nav-link" href="{{route('pages.alert')}}">Alerts <span class="text-danger" id='nav_user_alert_num'>(<?php
+                                    /* Load the unread messages number of this user */
+                                    if(isset($_COOKIE['public'])){
+                                        $user = $_COOKIE['public'];
+                                        $query = "SELECT * FROM alert WHERE user = '$user' AND status = 'unread'";
+                                	    $result = mysqli_query($conn, $query);
+                                	    echo json_encode(mysqli_num_rows($result) * 1);
+                                    }
+                                    else {echo 0;}
+                                ?>)</span></a>
                             </li>
                         </ul>
                     </span>
+                    <?php
+                        /* Load userinfo */
+                        if(isset($_COOKIE['public'])){
+                            $user = $_COOKIE['public'];
+                            $query = "SELECT * FROM users WHERE wallet='$user'";
+                    	    $result = mysqli_query($conn, $query);
+                    	    if(mysqli_num_rows($result)> 0){
+                    	        $user =  mysqli_fetch_array($result);
+                    	    }
+                    	    else{$user = array();}
+                        }
+                    ?>
                     <div class="profile-dropdown">
                         <div class="dropdown">
                             <button class="btn btn-light dropdown-toggle hide-arrow" type="button" id="profileDropdown"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 <div class="profile-icon">
-                                    <img src="https://id.lobstr.co/{{$_COOKIE['public']}}.png" alt="Profile Icon">
+                                    <img id='nav_user_disp_img' src="<?php if(isset($user['image'])){echo $user['image'] . '?id=' . rand();}else {echo 'https://id.lobstr.co/'. $_COOKIE['public'] . '.png?id=' . rand();} ?>" alt="Profile Icon">
                                     <code
                                         class="profile-name">{{ substr($_COOKIE['public'], 0, 4) . '...' . substr($_COOKIE['public'], -5) }}</code>
                                     <span class="arrowdown"><img src="{{ asset('images/Layer 3.png') }}" alt=""></span>
@@ -86,7 +113,7 @@
                             <li onclick="copyAddress()"><a class="dropdown-item" href="javascript:;"
                                         onclick="copy('{{$_COOKIE['public']}}')"><i class="fa fa-copy"></i> Copy
                                         address</a></li>
-                                        <li><a class="dropdown-item" href="{{ route('lumosdao-joined') }}">Profile</a></li>
+                                        <li><a class="dropdown-item" href="{{route('user','')}}/<?php echo $_COOKIE['public']; ?>">Profile</a></li>
 
                                 <li><button id="settingProBtn" type="button" data-toggle="modal"
                                         data-target="#exampleModalCenter" class="dropdown-item">Settings</button></li>
@@ -100,7 +127,7 @@
                     </section>
                     @else
                     <div class="loginBox">
-                        <button class="btn btnReg" data-bs-toggle="modal" data-bs-target="#ConnectWallet">Connect
+                        <button style=" background: #DC6B19 !important;" class="btn btnReg" data-bs-toggle="modal" data-bs-target="#ConnectWallet">Connect
                             Wallet</button>
                     </div>
                     @endif
@@ -135,24 +162,24 @@
                         </ul>
 
                         <div class="tab-content">
+                            
                             <div class="tab-pane fade show active fa-ctn" id="profile">
                                 <div class="w-100 h-100 fa-profile-sett d-flex flex-column gap-3 pb-4 pt-2">
                                     <div class="form-group">
                                         <label for="">
                                             <span class="asset-details-label">Display Name (Optional):</span>
                                         </label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" id='user_display_save_name' value='<?php if(isset($user['name'])){ echo $user['name']; } ?>' class="form-control">
                                     </div>
                                     <div class="form-group">
                                         <label for="">
                                             <span class="asset-details-label">Bio:</span>
                                         </label>
-                                        <textarea class="form-control" name="" id="" cols="30" rows="10"></textarea>
+                                        <textarea class="form-control" name="" id='user_display_save_bio' cols="30" rows="10"> <?php if(isset($user['bio'])){ echo $user['bio']; } ?></textarea>
                                     </div>
                                     <div class="row m-0 gap-2">
-                                        <div class="d-flex align-items-center gap-1 col-sm form-control">
-                                            <a class="d-flex align-items-center gap-1 col-sm text-black text-decoration-none"
-                                                href="">
+                                        <div class="d-flex align-items-center gap-1 col-sm form-control" onclick='authTwitter()'>
+                                            <a class="d-flex align-items-center gap-1 col-sm text-black text-decoration-none" stye='cursor:pointer'>
                                                 <div class="card-imgflex-social-link">
                                                     <label for="">
                                                         <img class="w-img"
@@ -160,32 +187,47 @@
                                                             alt="">
                                                     </label>
                                                 </div>
-                                                <span><small>X.com</small></span>
+                                                <span><small><?php
+                                                    if(isset($user['twitter'])) {
+                                                        if($user['twitter'] != "") {echo "Connected";}else{echo "x.com";}
+                                                    }
+                                                    else{echo "x.com";}
+                                                ?></small></span>
                                             </a>
                                         </div>
 
-                                        <div class="d-flex align-items-center gap-1 col-sm form-control">
-                                            <a class="d-flex align-items-center gap-1 col-sm text-black text-decoration-none"
-                                                href="">
+                                        <div class="d-flex align-items-center gap-1 col-sm form-control" onclick='authLinkedIn()' style='display:none !important'>
+                                            <a class="d-flex align-items-center gap-1 col-sm text-black text-decoration-none" style='cursor:pointer'
+                                                >
 
                                                 <div class="card-imgflex-social-link">
                                                     <label for="">
                                                         <img class="w-img" src="{{asset('/images/LinkedIn_icon.svg.png')}}" alt="">
                                                     </label>
                                                 </div>
-                                                <span><small>LinkedIn</small></span>
+                                                <span><small><?php
+                                                    if(isset($user['linkedin'])) {
+                                                        if($user['linkedin'] != "") {echo "Connected";}else{echo "Linkedin";}
+                                                    }
+                                                    else{echo "Linkedin";}
+                                                ?></small></span>
                                             </a>
                                         </div>
-                                        <div class="d-flex align-items-center gap-1 col-sm form-control">
-                                            <a class="d-flex align-items-center gap-1 col-sm text-black text-decoration-none"
-                                                href="">
+                                        <div class="d-flex align-items-center gap-1 col-sm form-control" onclick = 'authGithub()'>
+                                            <a class="d-flex align-items-center gap-1 col-sm text-black text-decoration-none" style='cursor:pointer'
+                                                >
 
                                                 <div class="card-imgflex-social-link">
                                                     <label for="">
                                                         <img class="w-img" src="{{asset('/images/github.png')}}" alt="">
                                                     </label>
                                                 </div>
-                                                <span><small>Github</small></span>
+                                                <span><small><?php
+                                                    if(isset($user['github'])) {
+                                                        if($user['github'] != "") {echo "Connected";}else{echo "Github";}
+                                                    }
+                                                    else{echo "Github";}
+                                                ?></small></span>
                                             </a>
                                         </div>
                                     </div>
@@ -195,9 +237,9 @@
                                         </label>
                                         <div class="container_custom_file_input w-50">
                                             <div class="custom-file" style="position: relative;">
-                                                <input type="file" class="custom-file-input" id="customFile">
+                                                <input type="file" id='user_display_save_img' class="custom-file-input" id="customFile">
                                                 <label class="custom-file-label" for="customFile">
-                                                    <span>Browse <br> Computer</span>
+                                                    <span id='user_display_save_img_o' >Browse <br> Computer</span>
                                                     <div class="">
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -213,7 +255,7 @@
                                     </div>
                                 </div>
                                 <div class="w-100 d-flex align-items-center justify-content-end my-2">
-                                    <button class="btn btn-warning text-end">Save</button>
+                                    <button class="btn btn-warning text-end" onclick='saveUserInfo()'>Save</button>
                                 </div>
                             </div>
                             <div class="tab-pane fade fa-ctn" id="security">
@@ -222,20 +264,15 @@
                                     <li>
                                         Download and install an authentication app on your phone. We recommend Twilio
                                         Authy, Microsoft Authenticator, and Duo.
-
-                                    </li>
-                                    <li>
-                                        Using the app, scan the QR code or manually enter the following code:
-                                        EZXEEZY6CNTXKRTW
-                                        Continue
                                     </li>
                                 </ol>
-                                <div class="w-100 d-flex align-items-center justify-content-center">
-                                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKsAAACUCAMAAADbGilTAAAAZlBMVEX///8AAADz8/NKSkr8/PyHh4eenp6ysrIsLCzn5+fg4OA1NTWhoaF0dHR8fHyvr6/KysrV1dUUFBRqamqXl5fDw8NSUlI6OjpZWVkeHh7t7e1FRUW9vb0lJSUKCgo/Pz+Pj49iYmKCjJfoAAAMFUlEQVR4nO2caaOqLBDH07TSFtNyb9Hv/yUfZpSROeBap3vufc7/lSDCL1IYhmW1+tWvfvUrTY49IkpJIR7NM3FYaooZK8RZTVGQrodUZpSyXK+fV7hwy3V5ZLB+0qauPRl1fTZRaQChrBwspUk0qqs1rDulhJALFxdxkTDWMG9T730Z5coMNhC6j5RyncS6GcllN4lVsqQ66wFCu5FSNn+AdfftrPnJNeqpsV5ioau4tQFW7yZCtmStK9e9FiJkQ/QGMmCsT3Mhp3wWq3jLHJOOGusjiiIrhNQQE1hRtAslayCjQxFt3URoxViPxjJW/n4uq1E6KyqUMYEI3BXWViEkiuUjHau5kPewGur1JVZzI/px1vyzrP5J0THQWc9CGzOrDfcO8uEKU8KVzhoc1WL8haxn1oicdFZQbGalnFAXCOltFrKeWCnnpayRmov7TayuWkj001g3H2YtfCG4OCdZVtKXiKyx5zfaiHtJLlkhBEq2H2YN9s8nGjFOIUTfM7A+0vKJSgO7KPxEstpFK/vDrPj36s8G6hPYZtnEyvVB1sNfxPo31eu5ul5deuS83W5vjsr6vAodRHRAFx4r5U+0WahaRK9tlfUoc7oDIvaxt5/BSrY2sV6cNiccF3T2wLexPt7BSvU6hfWxmHV335HyirE6bGx8zHf3zHNsJ8jFI5HKuvdF9BBrlXeF3HdLWe1QlcdYb/UFVWPn7ov78VEED5AyU1kjSJgNsHqsFHshq64vbRboJO95sgTnorJ26mHV9W7Wg/oaNyWkP4t19WZWcyFzWc+eURfGmiRJ6UK03c8alZCKWGVqZL2YCznPYx0StwfQfj33sz7BP+ATK1xcJeuQvo017Gf90hfAxad9RD+EdcxPmM9i3fF+i1jzntylpvkJw2A7LGLdSBOqkKwZRIHTi+ys7UFcbAJ5QawjZQThIOMs9bRZXNx+5ePYD+qX9XtEH2BFrA8j6yqTrKdvYrVLmfFWjcZPvBtmEdRZxtxkDHafVPkX9siBPQvDBQ9aMLKC5rJmalYd6xQ/YUPH7AEDK7Wv0JQVa/Uf+v+xop0VTWall/qDrHbcttC3Q3WtsEfxIcRY7Ru092IoXj0lawyh/SzWs+wMpvcFnNVLVSgUNxqwjwWvO/bi1MdSTpNZ8SVDTetjDayyVYjog6dPvGPV7QHMiftdxlipYZtmu/x1rKWalb3X3gEDa9SWh78zk7OIDmB0083EaqkF4LgSe0B6B6azrop2PFHA7PTFl8OLU9nOc+usTiGHJ3ABlhfOmNehDHFWiI2jlhWeLbYw8x0XXnHezWMlQS9eUlnws+9mVoNw5MZdbsQKCiUrCpqVuX4Xrko8t5ashjH3GGvKR8SM9ayxzvVncbF6dRbU6wCrXq/NKHP6O1CAr4a8DIf6Up+I9QoeHz8MfTTwwEmUmFnRvwTPHukdAGcQDmhdv/EH+QGwBm0o3EJ2kJN3FM9NW5dxsPLoSbXRTD2rIdvK8xzdnTBxHZtZw12ed/PcKPchnoPUUS6lhqyKSuJlDmnI7wKy6a+HUB8rmztuWK1hVZPo/m7W1BtIwFjPPawPjfXUw/gqa+5ee7URBtUN+xcIncysBQ23qW0OIUpHdEV2wb5ldW7CNAtsLbsh1iGh/Tq5zbrrbRaXbmcl72N9uS8YYoW/KfvHWfNnmj6532mfpmkJ8xqHnbjXw2oXdjM/TKxOIadC7mmjJ3x7ubi4nxmru0/3F89uM5jOekTLSkWNbiLGL5NkHYBRZWZ13HWydpmf0H8mjdbSfrOhTQP7zbdV1lUhos41FDCPFQfsFWNF4w+uMCszq12LmNpeffVpoigV88HzsSHaAzPXE54cjRX+MHuEtc//amCVHekX1ul2Fo2U9Wk9a0q9IivWK+TU+V85azRQr9NZb+1awlMArFu2snALqwdFzAkHXvLWkb51XE94PbmngyNzEjHnrtUIxX1M7YpEVxG4eZL1cm7XIi62X5lEU/1Q1r/qCsT9HX97M+vx6NxycK3a2o+uzRL3XrS1v7Ia544VVnUdEbIm1lfp44KG1Xp1XPA3s469Axorfwe+sva8A48ZfpdO+reFn1VMHyAiwoci1w9ER7f9tvDnndm3Bcrkmlz4ts4b+FTv6rdlx/IDnCm9zULxDqO2vq51qPmKaO09QB1ZAdUCOi69L0Dx+YKedRmjrKwBf511rF5fYmUFuKv5sluPkI8W/aFMFMVwA6IDEZ0NsNbkVgLh0B8zgos0E8/C54a+p2rdZF3iJ1fIwqfZWWDugfZoK9mFsvGjOAmjsFy10c4Aa5SqQqfgDXKAiyssk4EosAl3N5k3PA82YfPEtMkabrtw6fMFPawG9cwdsyUQc32aA6yGuY2fwqrdcvS5DfKaZmjpzGfVJ3pmsuKY+wCzFfAl4bQFNgHbdswdYFONI3CY5IBPJg3EBVRLdJKj81qE7pUcmCOr205/36D1L0Wg8tUCcMztztu3gb4MdFPAvCG6nbtaproBxVr9daNsaISfkFO3hgREL0q3Xiq1lDbLS2exdusJab6AsurGBT2srBE2rCfsFki+PC7QWYsfy0o+zZbVcdp6bffWgE+zcVeC5zGO8vz++MLauiQV1jyP4m6DT+PFfCAr5NIUID2ZM1jJV4ysCSwahJd9f5ECX/FBrie8QqhWWR+ZiK7Y2BA8xz74mWsqAJ3FWDV1W0AqfcVL7Fe+/rWrt6byW/GZHtKFjblR2PHrpXCDY6mt3cNqWKN30VlZvU5mXTwueKlel7HOnTOy5TTcDVhpAyp6r2DbaCYSFAdxhUbTqfA8m+p1Bynh5ashg0qyOhDCDsFRzS805DYipzKSz8JcXJiJ0qb5iJh13S0PgZ4BfUTYF3BfBumg1XKq71jilY/VAz/7Kp9Nps1r4A9l+VF3DQ1pn4+IRHPHnHVoXAB6k//1Z7Py9YSctcefRYJ3wKmnspI9YC9lDeWCkavsY21YGgJv0uMIlhEUU8MFJMKQML1uB7DyMjCv5HpEnABBVpjpuNUaa1m1Bpm7W8hK6mwXfUkbChPBRagmitgiA8Me6R69ibU05w6J+JpSkMF2+WVVhRhkaw+xYm8jZ0Ee7B140lzclHlDZK2nt6+TRDaowQNRaxh8vQvvkiqNlUJvkr6mlOQYLBnGyof+zEe0ZB3RP8XK/VljrPVU1tVM1klry89yXH3Ql4WTJ/uyaRN1i2iJFRLGjLWGKJganzHmnrRmn6SPDTtt9cyJFbf46pNS0KJ4b95jMonVYIMS6/v28P2brD1m9CgrXPS9A/B+VJNZR/dEocD7iz1r3E5f27gSAxzKsVybYx/XSYkFX8vWVyzXEzZjGGI9QZRbJuujL1cmTmN929keo/sL9DZr5rjgfWd7zGNdMoZ539ke01ndV1iH9pxy1i04fOR+7juEbrADNTazyvWEjZ8IsszBTxS8wjq0l5ezinT3mnzwIpQfi3afr4FV2by7a3b+lr7TpF7OOrZHWr3dN79lYNXVLVpdzDq29/x9rHJJ4IdY1+9gXdxmTWLNpHnFz0roY43bCRALjLnrQ2X1YQS+/k5Wbr+OslIiuB9GKivNN/04VlstAFlpe82fZe0mtP8EKxwsY6fP557WesChNHa3E85rj6hp6lUktyuRPIWLzRirLw+seQ/rNsmyNZzj0y1zv2RZRssh73CYz02y3ms42geO/lnLRAOsOTw7fT3hgvNdfN3hQfYAiuZjrRFW1PT1hAvOzRnac7qA9Y1nfb2HVQbQkfRSvQ6doYascDIamYPIuoak8DLs4QK94FdxUTPWRMTg/BcV4MYip4AVdzOh9bPqGj0v4yAT8aMwDPvkmXDCt5pE9z5WfV/cNNal+zjfd7bHx1iHz6g8WHA2pdVNf3es9sWKROtPR06u2jMqiXVDW3pkEo+zTt66M+3sTx+W4ELBpXZipxOKe1sZ3Z39WUjWrBKpAcanZ+8qayHuu7GBzMw6pB771bIspVUkE2rH3yZKydosFLEuWVv+Eqt+Vq2BlXU2HeuCteU94mcA97HqZwAbWNmz3VcKrNPqddbZyn0nIhvOVkbd25Q7PNBWffZJzYOXlVPPVp55ZrX5pGnDmdX8Eb0k/uyb52J+9atf/Rv6D6MSF/qsZB0jAAAAAElFTkSuQmCC"
-                                        alt="">
+                                <div id='2fa_bar_code' class="w-100 align-items-center justify-content-center" style='display:flex'>
+                                    
                                 </div>
-                                <div class="w-100 d-flex align-items-center justify-content-end">
-                                    <button class="btn btn-success text-end">Continue</button>
+                                <span id='2fa_auth_msg' style='display:none'></span>
+                                <input class='form-control' placeholder='Code....' id='2fa_auth_code' style='display:none' />
+                                <div class="w-100 d-flex align-items-center justify-content-end" style='margin-top:40px'>
+                                    <button class="btn btn-success text-end" onclick='reg2FaCode()'>Continue</button>
                                 </div>
 
                             </div>
@@ -251,12 +288,12 @@
     <footer class="footer">
         <div class="container">
             <div class="row">
-                <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="col-lg-4 col-md-4 col-sm-12">
                     <div class="left">
                         Built on Stellar <span class="logoTheme"> &nbsp; &nbsp;Lumos DAO</span>
                     </div>
                 </div>
-                <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="col-lg-8 col-md-8 col-sm-12">
                     <div class="right">
                         <ul class="footer-links">
                             <li><a href="{{ route('page', 'lumosdao-explorer') }}">Explorer</a></li>
@@ -264,14 +301,167 @@
                             <li><a href="{{ route('page', 'terms-and-conditions') }}">Terms</a></li>
                             <li><a href="{{ route('page', 'privacy-policy') }}">Policy</a></li>
                             <li><a href="{{ route('page', 'faq') }}">FAQs</a></li>
+                            <li><a class="nav-link" href="https://github.com/naveed-siddiqi/lumos-dao" target="_blank">Github</a></li>
+                            <li> <a class="nav-link" href="{{ route('page', 'docs') }}">Docs</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
     </footer>
-
     @include('components.connectWallet')
+    </script>
+    <!-- for twitter -->
+    <script type="module" async >
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+      import { TwitterAuthProvider, getAuth, signInWithPopup } from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js' 
+      window.TwitterAuthProvider = TwitterAuthProvider
+      window.getAuth = getAuth
+      window.signInWithPopup = signInWithPopup
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AIzaSyAr6xctELroIg3emOorUQq8w81j5cLHbLE",
+        authDomain: "lumosdao-fffb9.firebaseapp.com",
+        projectId: "lumosdao-fffb9",
+        storageBucket: "lumosdao-fffb9.appspot.com",
+        messagingSenderId: "487527622972",
+        appId: "1:487527622972:web:4c70fb14c02086fb30d639",
+        measurementId: "G-6HM371W39R"
+      };
+     // Initialize Firebase
+     const app = initializeApp(firebaseConfig);
+     window.app = app
+    </script>
+    <script>
+        isTwitterAuth = <?php if(isset($user['twitter'])){ if($user['twitter'] != "") {echo true;}else {echo 0;}}else{echo 0;} ?>;
+        isLinkedInAuth = <?php if(isset($user['linkedin'])){ if($user['linkedin'] != "") {echo true;}else {echo 0;}}else{echo 0;} ?>;
+        isGithubAuth = <?php if(isset($user['github'])){ if($user['github'] != "") {echo true;}else {echo 0;}}else{echo 0;} ?>;
+        var user_disp_image = null;
+        const saveUserInfo = async () => {
+            //get the user info
+            const userDispName = E('user_display_save_name').value
+            const userDispBio = E('user_display_save_bio').value
+            
+            try {
+                 if(userDispName != "" && userDispBio != "") {
+                    const id = talk('Saving user info')
+                    //check if the url is http and from this domain
+                    const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=modify_user&user=" + walletAddress  + "&name=" + encodeURIComponent(userDispName) + "&bio=" + encodeURIComponent(userDispBio)
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                      
+                    }
+                    const res = await response.json();
+                    if(res.status) {
+                        //save image if present
+                        if(user_disp_image != null) {
+                            talk('Saving the image', 'norm', id)
+                            const formData = new FormData(); // Create a FormData object
+                            // Add the selected file to the FormData object
+                            formData.append('file', user_disp_image);
+                            // Create an HTTP request
+                            const xhr = new XMLHttpRequest();
+                            const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=upload_user_img&name=" + walletAddress + ".png&user=" + walletAddress
+                            // Define the server endpoint (PHP file)
+                            xhr.open('POST', url, true);
+                            // Set up an event listener to handle the response
+                            xhr.onreadystatechange = function() {
+                                if (xhr.readyState === 4 && xhr.status === 200) {
+                                    console.log(xhr.responseText)
+                                    if (xhr.responseText == "1") {
+                                        stopTalking(2, talk('Profile saved successfully', 'good', id))
+                                        const img = URL.createObjectURL(user_disp_image)
+                                        E('nav_user_disp_img').src = img
+                                        //reload page for img saves
+                                        window.location.reload()
+                                    } else {
+                                        stopTalking(2, talk('Unable to save image', 'fail', id))
+                                    }
+                                } else if (xhr.readyState === 4 && xhr.status !== 200) {
+                                     stopTalking(2, talk('Unable to save image', 'fail', id))
+                                }
+                            };
+                            // Send the FormData object with the image
+                            xhr.send(formData);
+                        }
+                        else {
+                            stopTalking(2, talk('Saved successfully', 'good', id))
+                        }
+                    }
+                    else {
+                        stopTalking(2, talk('Unable to save profile', 'fail', id))
+                    }
+                }
+                else {return 2}
+            } catch (error) { console.log(error)
+                stopTalking(2, talk('Unable to save profile', 'fail', id))
+            }
+            
+        }
+        const authTwitter = () => {
+            if(isTwitterAuth){return;}
+            const provider = new TwitterAuthProvider(); 
+            const auth = getAuth();
+            signInWithPopup(auth, provider)
+            .then(async (result) => { 
+                const user = result.user
+                //save the refresh token
+                 try {
+                     if(user.refreshToken) {
+                        const shareUri = 'https://x.com/' + result._tokenResponse.screenName
+                        const id = talk('Connecting twitter')
+                        const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=user_twitter_auth&user=" + walletAddress  + "&code=" + encodeURIComponent(user.refreshToken) + "&url=" + encodeURIComponent(shareUri)
+                        const response = await fetch(url);
+                        if (!response.ok) {
+                           throw new Error("Network response was not ok");
+                        }
+                        const res = await response.json();
+                        if(res.status) {
+                            talk("Twitter connected successfully", "good", id)
+                            stopTalking(3, id)
+                        }
+                        else {
+                            talk("Unable to connect twitter account<br>Something went wrong<br>This may be due to network error","fail", id)
+                            stopTalking(3, id)
+                        }
+                    }
+                    else {
+                        stopTalking(3, talk('Something went wrong', 'fail'))
+                    }
+                } catch (error) { console.log(error)
+                    stopTalking(2.5, talk("Unable to connect twitter", 'fail'))
+                }
+            }).catch((error) => {
+              console.log(error) 
+            });
+        }
+        const authLinkedIn = () => {
+            if(isLinkedInAuth){return;}
+            window.location.href = getLinkedInUri(walletAddress)
+        }
+        const authGithub = () => {
+            if(isGithubAuth){return;}
+            window.location.href = getGithubUri(walletAddress)
+        }
+        setTimeout(() => {
+            //setup the disp image
+            //validate the image upload
+            validateImageUpload('user_display_save_img', 'user_display_save_img_o', 1, (e, url) => { 
+                if(e != null) {
+                    //optimize the image
+                    optimizeImg(url, 0.9, 400, 400).then((img) => { 
+                        //update upload file
+                        user_disp_image = img
+                    })
+                    
+                }
+            })
+            
+            
+        }, 100)
+    </script>
     <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

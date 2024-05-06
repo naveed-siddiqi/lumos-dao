@@ -6,9 +6,14 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\WalletController;
 use Illuminate\Support\Facades\Route;
-Route::get('/lumosdao-joined', function(){
-    return view('dao.lumosdao-joined');
-})->name('lumosdao-joined');
+Route::prefix('user')->name('user')->group(function () {
+    Route::prefix('{user_id}')->group(function () {
+        Route::get('/', function(){
+             return view('dao.lumosdao-joined');
+        })->name('');
+    });
+});
+
 Route::get('/test', [PageController::class, 'testPage']);
 Route::get('/', [AppController::class, 'home'])->name('home');
 Route::prefix('dao')->name('dao')->group(function () {
@@ -51,3 +56,6 @@ Route::get('/{page}', [PageController::class, 'show'])->name('page');
 Route::get('/proposal/inbox', function () {
     return view('proposal.inbox');
 })->name('proposal.inbox');
+Route::get('/pages/alert', function () {
+    return view('pages.alert');
+})->name('pages.alert');

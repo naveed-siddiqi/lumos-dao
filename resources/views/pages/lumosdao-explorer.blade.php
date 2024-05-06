@@ -5,7 +5,7 @@
         <div class="Platfarm-stats_title text-center mt-5">
             <div class="heading">LumenDAO Explorer</div>
         </div>
-        <div class="h-65">
+        <div style="min-height: 65vh;" class="">
             <div class="explorer_card h-auto px-3 px-sm-4 pt-4 pb-4">
                 <div style='width:100%' id='tx_info'>
                     <center style='margin:20px'>Loading records..</center>
@@ -68,7 +68,7 @@
                     address:JSON.parse(txInfo[i]).signer,
                     action:JSON.parse(txInfo[i]).action,
                     date:(new Date(JSON.parse(txInfo[i]).date)).toLocaleString(),
-                    link:""
+                    link:window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/" + JSON.parse(txInfo[i]).data
                 }))
             }
             
@@ -97,7 +97,7 @@
         let tm = `<div
                     class="form-control border-0 h-auto px-sm-4 py-2 d-flex flex-column flex-md-row align-items-start align-items-sm-start  justify-content-between w-100">
                     <p class="Explorer_p my-auto">${params.address.substring(0, 5) + "....." + params.address.substring(params.address.length - 5)} <a
-                            class="Explorer_p_a" h ref="${params.link}"><span class="">${params.action}</span></a> </p>
+                            class="Explorer_p_a" href="${params.link}"><span class="">${params.action}</span></a> </p>
                     <p class="Explorer_span d-block">${params.date}</p>
                 </div>`
         let th = document.createElement('div')
