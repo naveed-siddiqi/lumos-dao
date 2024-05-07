@@ -5,7 +5,7 @@
         <div class="Platfarm-stats_title text-center mt-5">
             <div class="heading">LumenDAO Explorer</div>
         </div>
-        <div class="h-65">
+        <div style="min-height: 65vh;" class="">
             <div class="explorer_card h-auto px-3 px-sm-4 pt-4 pb-4">
                 <div style='width:100%' id='tx_info'>
                     <center style='margin:20px'>Loading records..</center>

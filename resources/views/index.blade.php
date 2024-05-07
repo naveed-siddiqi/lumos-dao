@@ -78,7 +78,7 @@
                                 <option value="desc">Number of Proposals</option>
                             </select>
                             <a href="{{ route('dao.create') }}" class="btn btnCreate">
-                                Create DAO <img class="plu" src="{{ asset('images/11.png') }}" alt="">
+                                Create DAO <img class="plu" src="{{ asset('images/11.svg') }}" alt="">
                             </a>
                         </div>
                     </div>
@@ -174,7 +174,7 @@
             const coverImgx = daoParams.image.replace((daoParams.code + daoParams.owner), "cover_" + (daoParams.code + daoParams.owner)); 
             const isCoverValid = await isImageURLValid(coverImgx)
             const defCoverImg = 'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-            _div.innerHTML = `<div class="col-lg-4 col-md-6 col-sm-12">
+            _div.innerHTML = `<div class="col-lg-4 col-md-6 col-sm-12 mb-3">
                     <div class="card-join cardShow" onclick='window.location = "{{ route('dao', '') }}/${daoParams.token || ""}"' style='cursor:pointer'>
                             <div class="lblJoin" style='cursor:pointer' onclick="${(daoParams.owner == walletAddress) ? "Owner" : (!daoParams.ismember) ? "joinDao(event,'" +  daoParams.code + "','" + daoParams.issuer + "','" + daoParams.name + "','" + daoParams.token + "')" : ""}">
                                 <p class="mb-0">${(daoParams.owner == walletAddress) ? "Owner" : (daoParams.ismember) ? "Joined" : "Join"}</p>
@@ -188,7 +188,7 @@
                             <div class="cardHeading">
                                     <p class="card-heading">${daoParams.name || ""}</p>
                              </div>
-                            <div class="card-paragraph">
+                            <div class="card-paragraph line-climb-3">
                                 ${daoParams.description || ""}
                             </div>
 

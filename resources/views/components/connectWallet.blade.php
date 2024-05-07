@@ -3,7 +3,7 @@
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content modal-wallet">
-                {{-- <a href="{{ url('wallet/disconnect') }}" class="text-danger remove-btn"
+                {{-- <a  href="{{ url('wallet/disconnect') }}" class="text-danger remove-btn"
                     style="position: absolute;z-index: 1;top: 5%;right: 4%;text-decoration:none;{{ isset($_COOKIE['public']) ? '' : 'display:none' }}">Remove
                     Wallet</a> --}}
                 <div class="modal-header">

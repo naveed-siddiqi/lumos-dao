@@ -188,6 +188,64 @@
                 </div>
             </div>
     </section>
+    <section class="DescPer">
+        <div class="container">
+            <div class="row">
+                <div class="DescPerSec">
+                    <h1>Share</h1>
+                    <div class="col-12 progresInner p-1 p-sm-4">
+                    <div class="w-100 mx-auto row flex-nowrap flex-column flex-lg-row">
+                    <div class="row col gap-2">
+                            <div class="col d-flex align-items-center justify-content-center flex-column gap-1">
+                                <button class="btn btn-block share-social-img d-flex align-items-center justify-content-center p-1 border border-primary">
+                                    <img class="share-social-img w-100 h-100" src="{{asset('/images/facebook.png')}}" alt="">
+                                </button>
+                                <span class="font-xs text-primary">Facebook</span>
+                            </div>
+                            <div class="col d-flex align-items-center justify-content-center flex-column gap-1">
+                                <button class="btn btn-block share-social-img d-flex align-items-center justify-content-center p-1 border border-info">
+                                    <img class="share-social-img w-100 h-100" src="{{asset('/images/linkedin.png ')}}" alt="">
+                                </button>
+                                <span class="font-xs text-info">Linkedin</span>
+                            </div>
+                            <div class="col d-flex align-items-center justify-content-center flex-column gap-1">
+                                <button class="btn btn-block share-social-img d-flex align-items-center justify-content-center p-1 border border-success">
+                                    <img class="share-social-img w-100 h-100" src="{{asset('/images/whatsapp.png')}}" alt="">
+                                </button>
+                                <span class="font-xs text-success">Whatsapp</span>
+                            </div>
+                            <div class="col d-flex align-items-center justify-content-center flex-column gap-1">
+                                <button class="btn btn-block share-social-img d-flex align-items-center justify-content-center p-1 border border-secondary">
+                                    <img class="share-social-img w-100 h-100" src="{{asset('/images/x.webp')}}" alt="">
+                                </button>
+                                <span class="font-xs text-black">X</span>
+                            </div>
+                            <div class="col d-flex align-items-center justify-content-center flex-column gap-1">
+                                <button class="btn btn-block share-social-img d-flex align-items-center justify-content-center p-1 border border-danger">
+                                    <img class="share-social-img w-100 h-100" src="{{asset('/images/Reddit.png ')}}" alt="">
+                                </button>
+                                <span class="font-xs text-danger">Reddit</span>
+                            </div>
+                        </div>
+                        <!-- Input for copying link -->
+                        <div class="col">
+                            <div
+                                class="bg-white input-group mb-3 d-flex align-items-center justify-content-start form-control border text-secondary w-100 flex-nowrap">
+                                <input type="text" id="shareLink"
+                                    class="bg-transparent border-0 text-secondary d-block flex-grow-1"
+                                    value="https://example.com/your-gig" readonly>
+                                <div class="input-group-append w- text-end">
+                                    <button class="btn text-secondary">
+                                        <p class="font-xs font-medium mb-0 whitespace-nowrap">Copy <span class="d-none d-sm-block" >Link</span></p>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+    </section>
     <section class="DescPer" id='attached_files'>
         <div class="container">
             <div class="row">
@@ -241,13 +299,29 @@
             <div class="row">
                 <div class="InnerTable" >
                     <h3>Votes</h3>
-                    <div class="col-12" style='transition:all 500ms'>
+                    <div class="col-12" style="transition:all 500ms;overflow:auto;">
                         <table class="table table-borderless">
                             <thead>
                                 <tr>
                                     <th clas="" scope="col">
                                     <div class="d-flex align-items-center">
-                                        <span>Address</span>
+                                        <span class="font-sm font-medium">Address</span>
+                                        <button type="button"
+                                            class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary "
+                                            data-toggle="tooltip" data-placement="top"
+                                            title="The public Stellar wallet address that cast this vote.">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                </th>
+                                <th clas="" scope="col">
+                                    <div class="d-flex align-items-center">
+                                        <span class="font-sm font-medium">Token holdings</span>
                                         <button type="button"
                                             class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary "
                                             data-toggle="tooltip" data-placement="top"
@@ -263,7 +337,7 @@
                                 </th>
                                      <th scope="col">
                                     <div class="d-flex align-items-center">
-                                        <span>Vote</span>
+                                        <span class="font-sm font-medium">Vote</span>
                                         <button type="button"
                                             class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary "
                                             data-toggle="tooltip" data-placement="top"
@@ -278,7 +352,7 @@
                                 </th>
                                    <th scope="col">
                                     <div class="d-flex align-items-center">
-                                        <span>Voting Power</span>
+                                        <span class="font-sm font-medium">Voting Power</span>
                                         <button type="button"
                                             class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary "
                                             data-toggle="tooltip" data-placement="top"
@@ -293,32 +367,12 @@
                                 </th>
                                     <th scope="col">
                                     <div class="d-flex align-items-center">
-                                        <span>Reason</span>
-                                        <button type="button"
-                                            class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary "
-                                            data-toggle="tooltip" data-placement="top"
-                                            title="The influence of this vote, determined by a calculated voting power algorithm. Learn more">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                                            </svg>
-                                        </button>
+                                        <span class="font-sm font-medium">Reason</span>
                                     </div>
                                 </th>
                                     <th scope="col">
                                     <div class="d-flex align-items-center">
-                                        <span>Date</span>
-                                        <button type="button"
-                                            class="border-0 bg-transparent d-flex align-items-start justify-content-center px-2 text-secondary "
-                                            data-toggle="tooltip" data-placement="top"
-                                            title="The timestamp indicating when this vote was cast.">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                                            </svg>
-                                        </button>
+                                        <span class="font-sm font-medium">Date</span>
                                     </div>
                                 </th>
                                 </tr>

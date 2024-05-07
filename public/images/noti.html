@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+  <title>Notifications List</title>
+</head>
+
+<body>
+  <!-- Button trigger modal -->
+  <button id='dao_setting' style='display:block' type="button" class="btn btn-primary" data-toggle="modal"
+    data-target="#exampleModal">
+    <div class="Deo_setting_btn">
+      <p class="mb-0">DAO Settings</p>
+    </div>
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-content proposal_modal-content">
+
+          <div class="proposal_modal-body">
+            <div class="">
+              <div class="d-flex justify-content-between overflow-hidden">
+                <div style="position:relative; width:100px; height:100px;" class=" ">
+                  <div class="modal_edit_btn" onclick='enableEdit("image")' style='cursor:pointer'>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" width="24px">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                    </svg>
+                  </div>
+                  <img style="width:100px; height: 100px; border-radius:50%;" src="https://plus.unsplash.com/premium_photo-1695186450461-777ea482f34b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8" id='dao_save_img' alt="Dao">
+                  <input id='dao_save_image_edit' type='file' style='visibility:hidden' />
+                </div>
+                <div class="flex-grow-1 ml-4">  
+                  <div class="d-flex align-items-center gap-2 EditModal-title">
+                    <span class="asset-stellar-p">Project Name:</span>
+                    <span class="asset-details-text" id='dao_save_name'>Audi khan</span>
+                  </div>
+                  <div class="d-flex align-items-center gap-2 EditModal-title">
+                    <span class="asset-stellar-p">Asset Code:</span>
+                    <span class="asset-details-text" id='dao_save_code'>XLM</span>
+                  </div>
+                  <div class="d-flex align-items-center gap-2 EditModal-title">
+                    <span class="asset-stellar-p">Home
+                      Domian:</span>
+                    <a style="text-decoration:none; color:blue;" id='dao_save_domain_href' href="">
+                      <span style="color: #578aff;" class="asset-details-text" id='dao_save_domain'>https://web.whatsapp.com/moadsdsdsncie</span>
+                    </a>
+                  </div>
+                  <div class="d-flex align-items-center gap-2 EditModal-title">
+                    <span class="asset-stellar-p">TOML:</span>
+                    <a style="text-decoration:none; color:blue;" id='dao_save_domain_href' href="">
+                      <span style="color: #578aff;" class="asset-details-text" id='dao_save_domain'>https://web.whatsapp.com/moadsdsdsncie</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div class="py-2">
+                <div class="d-flex align-items-center asset-stellar-p">Description:
+                  <div style="margin-left:12px;cursor:pointer" class="modal_edit" onclick='enableEdit("about")'>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" width="24px">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                    </svg>
+                  </div>
+                </div>
+                <div style="font-family:'MontReg';" id='dao_save_about' class="asset-details-text mt-2">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quas vitae vero veniam doloremque odit saepe, ea error omnis! Sit nisi officiis repellendus iure blanditiis earum distinctio deleniti veritatis adipisci aperiam?</div>
+                <input class='form-control' placeholder='Description....' id='dao_save_about_edit'
+                  style='display:none' />
+
+              </div>
+              <div class="py-2">
+                <div class="d-flex align-items-center asset-stellar-p">Socail Profile:
+                  <div style="margin-left:12px;cursor:pointer" class="modal_edit" onclick='enableEdit("about")'>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" width="24px">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="py-2 d-flex align-items-center justify-content-between flex-wrap">
+                  <button class="border rounded-md py-1 px-2 d-flex align-items-center justify-content-between mb-3">
+                    <img class="w-img border" src="./images/x.webp" alt="">
+                    <div class="font-medium text-muted ml-2">Connect</div>
+                  </button>
+                  <button class="border rounded-md py-1 px-2 d-flex align-items-center justify-content-between mb-3">
+                    <img class="w-img border" src="./images/download.jpeg" alt="">
+                    <div class="font-medium text-muted ml-2">Connect</div>
+                  </button>
+                  <button class="border rounded-md py-1 px-2 d-flex align-items-center justify-content-between mb-3">
+                    <img class="w-img border" src="./images/download.png" alt="">
+                    <div class="font-medium text-muted ml-2">Connect</div>
+                  </button>
+                  <button class="border rounded-md py-1 px-2 d-flex align-items-center justify-content-between mb-3">
+                    <img class="w-img border" src="./images/Reddit.png" alt="">
+                    <div class="font-medium text-muted ml-2">Connect</div>
+                  </button>
+                </div>
+                <div class="py-2">
+                  <div class="d-flex align-items-center asset-stellar-p">Admins:
+                    <div style="margin-left:12px;cursor:pointer" class="modal_edit" onclick='enableEdit("about")'>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" width="24px">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="mt-2 d-flex flex-wrap w-100 gap-3">
+                    <div class="border rounded-md py-1 px-2 d-flex align-items-center justify-content-start position-relative flex-grow-1">
+                      <img class="w-img" src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="">
+                      <div class="font-normal text-secondary ml-2 font-xs">GAAHFDB.....DJFDSKBV</div>
+                      <div class="position-absolute cross-dao-setting">
+                        <svg class="text-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20px" heigth="20px">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z" clip-rule="evenodd" />
+                        </svg>                        
+                      </div>
+                    </div>
+                    <div class="border rounded-md py-1 px-2 d-flex align-items-center justify-content-start position-relative flex-grow-1">
+                      <img class="w-img" src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="">
+                      <div class="font-normal text-secondary ml-2 font-xs">GAAHFDB.....DJFDSKBV</div>
+                      <div class="position-absolute cross-dao-setting">
+                        <svg class="text-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20px" heigth="20px">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z" clip-rule="evenodd" />
+                        </svg>                        
+                      </div>
+                    </div>
+                    <div class="border rounded-md py-1 px-2 d-flex align-items-center justify-content-start position-relative flex-grow-1">
+                      <img class="w-img" src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="">
+                      <div class="font-normal text-secondary ml-2 font-xs">GAAHFDB.....DJFDSKBV</div>
+                      <div class="position-absolute cross-dao-setting">
+                        <svg class="text-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20px" heigth="20px">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z" clip-rule="evenodd" />
+                        </svg>                        
+                      </div>
+                    </div>
+                    <div class="border rounded-md py-1 px-2 d-flex align-items-center justify-content-start position-relative flex-grow-1">
+                      <img class="w-img" src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="">
+                      <div class="font-normal text-secondary ml-2 font-xs">GAAHFDB.....DJFDSKBV</div>
+                      <div class="position-absolute cross-dao-setting">
+                        <svg class="text-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20px" heigth="20px">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z" clip-rule="evenodd" />
+                        </svg>                        
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="py-2">
+                  <div class="d-flex align-items-center asset-stellar-p">Add Admins:
+                    <div style="margin-left:12px;cursor:pointer" class="modal_edit" onclick='enableEdit("about")'>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" width="24px">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="mt-2 d-flex flex-wrap w-100 gap-3">
+                    <div class="border rounded-md py-1 px-2 d-flex align-items-center justify-content-start position-relative flex-grow-1">
+                      <input type="text" class="border-0 outline-none p-1 font-xs" placeholder="Enter Wallet address">
+                    </div>
+                    <button class="btn btn-info rounded-md">Search</button>
+                  </div>
+                  <div class=" py-2">
+                    <div class="asset-stellar-p">Address found:</div>
+                    <p class="text-success font-xs mt-2">ASDASKLDBACAGGDHANAAKNKVAUEFALWKBA</p>
+                    <div class="d-flex gap-3 align-items-center justify-content-between">
+                      <div class="d-flex gap-3 align-items-center">
+                        <input width="30px" height="30px" type="checkbox">
+                        <p class="p-0 m-0 font-xs">I've read and agree to the <a class="text-info" href="">terms and condition</a></p>
+                      </div>
+                      <div class="">
+                        <button class="btn btn-danger rounded-md">Approve</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-end w-25 ml-auto">
+                  <button id='dao_save_button' class="btn assetSearch w-100 pt-0 mt-0">Save</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"
+    integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

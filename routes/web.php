@@ -51,3 +51,6 @@ Route::get('/{page}', [PageController::class, 'show'])->name('page');
 Route::get('/proposal/inbox', function () {
     return view('proposal.inbox');
 })->name('proposal.inbox');
+Route::get('/pages/alert', function () {
+    return view('pages.alert');
+})->name('pages.alert');

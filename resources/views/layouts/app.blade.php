@@ -25,9 +25,9 @@
         <nav class="navbar navbar-expand-lg ">
             <div class="container">
                 <a class="navbar-brand" href="{{ route('home') }}">
-                    <div class="d-flex align-items-center ">
-                        <img src="{{ asset('images/Image.png') }}" alt="">
-                        <h3 class="logo-lumos-font">
+                    <div class="d-flex align-items-end gap-2">
+                        <img style="width: 50px;" src="{{ asset('images/Image.png') }}" alt="">
+                        <h3 class="font-bold logo-lumos-font">
                             LUMOS DAO
                         </h3>
                     </div>
@@ -44,17 +44,10 @@
                         </svg>
                     </span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mx-auto">
+                <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto gap-5">
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('explore') }}">Explore</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('page', 'how-it-works') }}">How it works</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="https://github.com/naveed-siddiqi/lumos-dao"
-                                target="_blank">Github</a>
                         </li>
                     </ul>
                     <div style="display: none;" id="alertCopied" class="alert alert-success position-fixed w-25 mt-5 right-0 text-center" role="alert">
@@ -67,7 +60,7 @@
                                 <a class="nav-link" href="{{route('proposal.inbox')}}">Inbox <span class="text-danger">(12)</span></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="">Alerts <span class="text-danger">(12)</span></a>
+                                <a class="nav-link" href="{{route('pages.alert')}}">Alerts <span class="text-danger">(12)</span></a>
                             </li>
                         </ul>
                     </span>
@@ -100,7 +93,7 @@
                     </section>
                     @else
                     <div class="loginBox">
-                        <button class="btn btnReg" data-bs-toggle="modal" data-bs-target="#ConnectWallet">Connect
+                        <button style=" background: #DC6B19 !important;" class="btn btnReg" data-bs-toggle="modal" data-bs-target="#ConnectWallet">Connect
                             Wallet</button>
                     </div>
                     @endif
@@ -251,12 +244,12 @@
     <footer class="footer">
         <div class="container">
             <div class="row">
-                <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="col-lg-4 col-md-4 col-sm-12">
                     <div class="left">
                         Built on Stellar <span class="logoTheme"> &nbsp; &nbsp;Lumos DAO</span>
                     </div>
                 </div>
-                <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="col-lg-8 col-md-8 col-sm-12">
                     <div class="right">
                         <ul class="footer-links">
                             <li><a href="{{ route('page', 'lumosdao-explorer') }}">Explorer</a></li>
@@ -264,6 +257,8 @@
                             <li><a href="{{ route('page', 'terms-and-conditions') }}">Terms</a></li>
                             <li><a href="{{ route('page', 'privacy-policy') }}">Policy</a></li>
                             <li><a href="{{ route('page', 'faq') }}">FAQs</a></li>
+                            <li><a class="nav-link" href="https://github.com/naveed-siddiqi/lumos-dao" target="_blank">Github</a></li>
+                            <li> <a class="nav-link" href="{{ route('page', 'how-it-works') }}">Docs</a></li>
                         </ul>
                     </div>
                 </div>

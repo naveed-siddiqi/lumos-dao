@@ -17,7 +17,7 @@
                 </svg>
             </span>
             <a class="breadcrumbs active" href="" id='wallet_name'>
-                
+
             </a>
         </div>
         <div class="">
@@ -42,12 +42,12 @@
                             src="https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3Dhttps://images.unsplash.com/photo-1599305445671-ac291c95aaa9?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                             alt="Apple">
                     </div>
-                    <div class="text-center w-100 card-join">
+                    <div class="text-center w-100 card-join pt-4">
                         <div class="cardHeading text-center">
                             <span class="card-heading" id='wallet_name_short'></span>
                         </div>
-                        <div class="card-paragraph text-center text-secondary" id='wallet_joined_date'>
-                           
+                        <div class="card-paragraph text-center text-secondary line-climb-3" id='wallet_joined_date'>
+
                         </div>
                     </div>
                     <div class="tab w-100 mt-5">
@@ -70,20 +70,109 @@
                             src="https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3Dhttps://images.unsplash.com/photo-1599305445671-ac291c95aaa9?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                             alt="Apple">
                     </div>
-                    <div class="text-center w-100 card-join">
-                        <div class="cardHeading text-center">
-                            <span class="card-heading" id='wallet_name_short_res'></span>
+                    <div class="text-center w-100 card-join py-3">
+                        <div class="card-heading">Handshake</div>
+                        <div class="cardHeading text-center d-flex align-items-center justify-content-center gap-2">
+                            <div class="dropdown">
+                            <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" aria-haspopup="true"
+                                aria-expanded="false">
+                                <span class="font-medium" id='wallet_name_short_res'></span>
+                            </button>
+                            <div class="dropdown-menu p-3" aria-labelledby="dropdownMenuButton">
+                <div class="">
+                    <div class="">
+                        <img style="width: 50px !important; height: 50px !important; justify-content: left;" class="w-img mr-auto"
+                            src="https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3Dhttps://images.unsplash.com/photo-1599305445671-ac291c95aaa9?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                            alt="Apple">
+                    </div>
+                    <div class="text-start w-100 card-join py-2">
+                        <div class="font-medium">Handshake</div>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="cardHeading text-left d-flex align-items-center justify-content-left gap-3 ml-0 text-secondary">
+                                <span class="font-normal">SDAF....AJAF</span>
+                                <span>
+                                    <svg width="20px" heigth="20px " xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z" />
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center gap-3">
+                                <button class="btn p-0 m-0">
+                                    <img class="w-img-user" src="{{asset('/images/x.webp')}}" alt="">
+                                </button>
+                                <button class="btn p-0 m-0">
+                                    <img class="w-img-user" src="{{asset('/images/download.jpeg')}}" alt="">
+                                </button>
+                                <button class="btn p-0 m-0">
+                                    <img class="w-img-user" src="{{asset('/images/download.png')}}" alt="">
+                                </button>
+                                <button class="btn p-0 m-0">
+                                    <img class="w-img-user" src="{{asset('/images/Reddit.png')}}" alt="">
+                                </button>
+                            </div>
                         </div>
-                        <div class="card-paragraph text-center text-secondary" id='wallet_joined_date_res'>
-                            <center class='cen' style='height:300px;'>Loading Daos...</center>
+                        <div class="asset-details-text mt-3 line-climb-3 font-normal text-secondary">Lorem ipsum dolor sit amet consectetur,
+                            adipisicing elit. Optio eos quibusdam dolores quia, temporibus incidunt, quod iure
+                            doloremque ut necessitatibus officiis, error reiciendis cum. Ex accusantium incidunt veniam
+                            delectus quam.</div>
+                        <div class="border-t font-sm d-flex align-items-center justify-content-between mt-4">
+                            <div class="d-flex align-items-center justify-content-center flex-column">
+                                <span>DAOs</span>
+                                <span>3</span>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center flex-column">
+                                <span>Proposals</span>
+                                <span>304</span>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center flex-column">
+                                <span>Votes</span>
+                                <span>23</span>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center flex-column">
+                                <span>comments</span>
+                                <span>1</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                            <span>
+                            <svg width="20px" heigth="20px " xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z" />
+                            </svg>
+                            </span>
+                        </div>
+                        <div class="asset-details-text mt-2 line-climp-3">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Optio eos quibusdam dolores quia, temporibus incidunt, quod iure doloremque ut necessitatibus officiis, error reiciendis cum. Ex accusantium incidunt veniam delectus quam.</div>
+                        <div class="d-flex align-items-center justify-content-center mt-4">
+                           <button class="btn">
+                           <img class="w-img" src="{{asset('/images/x.webp')}}" alt="">
+                           </button>
+                           <button class="btn">
+                           <img class="w-img" src="{{asset('/images/download.jpeg')}}" alt="">
+                           </button>
+                           <button class="btn">
+                           <img class="w-img" src="{{asset('/images/download.png')}}" alt="">
+                           </button>
+                           <button class="btn">
+                           <img class="w-img" src="{{asset('/images/Reddit.png')}}" alt="">
+                           </button>
                         </div>
                     </div>
                     <div class="tab w-100 mt-5">
                         <button class="tablinks " onclick="openCity(event, 'London')" id="defaultOpen">Activity</button>
-                        <button class="tablinks " onclick="openCity(event, 'Paris')">Joined <span id='wallet_dao_num_res'></span></button>
-                        <button class="tablinks " onclick="openCity(event, 'Tokyo')">Comments <span id='wallet_comment_num_res'></span></button>
-                        <button class="tablinks " onclick="openCity(event, 'newYork1')">Delegates <span id='wallet_comment_num_res'></span></button>
+                        <button class="tablinks " onclick="openCity(event, 'Paris')">Joined <span
+                                id='wallet_dao_num_res'></span></button>
+                        <button class="tablinks " onclick="openCity(event, 'Tokyo')">Comments <span
+                                id='wallet_comment_num_res'></span></button>
+                        <button class="tablinks " onclick="openCity(event, 'newYork1')">Delegates <span
+                                id='wallet_comment_num_res'></span></button>
                     </div>
+                    <div class="card-paragraph text-center text-secondary line-climb-3 h-100 d-flex align-items-end justify-content-end flex-grow-1" id='wallet_joined_date_res'>
+                            <center class='cen' style='height:300px;'>Loading Daos...</center>
+                        </div>
                 </div>
                 <div id="Paris" class="tabcontent col-sm">
                     <div class="row" id='wallet_my_dao'>
@@ -104,11 +193,11 @@
                     </div>
                 </div>
                 <div id="Tokyo" class="tabcontent col-sm">
-                    <div class="" >
-                        <div class="explorer_card h-auto px-3 px-sm-4 pt-4 pb-4 mt-4" >
+                    <div class="">
+                        <div class="explorer_card h-auto px-3 px-sm-4 pt-4 pb-4 mt-4">
                             <div id='wallet_my_comment' style='width:100%'>
                                 <center class='cen' style='margin:50px'>Loading Comments...</center>
-                        </div>
+                            </div>
                             <div class="card-join cardHeading" id='wallet_my_comment_butt' style='display:none'>
                                 <button class="card-heading border-0 bg-transparent" id="viewAllComments">View All
                                     Comments</button>
@@ -116,30 +205,40 @@
                                     Comments</button>
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
                 <div id="newYork1" class="tabcontent col-sm">
                     <div class="tab-pane explorer_card text-left h-auto px-3 px-sm-4 pt-4 pb-4 mt-4">
                         <div class="row mt-0 w-100">
                             <div class="cardEndDiv p-0">
-                                <div class="">
-                                    <div class="mb-2">
-                                        <span class="text text-sm text-secondary text-start">Delegates</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <div class="cardEndDetail">
-                                            <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
-                                                alt="Profile Image" class="image">
-                                            <div class="text text-center">FGDKXQTCPOJVVBBYTCPOJVVBBY2MRK2DXKZANU3I
+                                <div class="w-100">
+                                    <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-end gap-4">
+                                        <div class="d-flex flex-column gap-2">
+                                            <span class="text text-sm text-secondary text-start">Delegates</span>
+                                            <div class="cardEndDetail">
+                                                <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
+                                                    alt="Profile Image" class="image">
+                                                <div class="text text-center">FGDKXQ.....ZANU3I
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex flex-column gap-2">
+                                            <span class="text text-sm text-secondary text-start">DAO</span>
+                                            <div class="cardEndDetail">
+                                                <img src="{{ asset('/images/apple.png') }}"
+                                                    alt="Profile Image" class="image">
+                                                <div class="text text-center">APPle</div>
                                             </div>
                                         </div>
                                         <div class="">
                                             <button type="button"
                                                 class="btn btn-danger text-white text d-flex align-items-center gap-2 mb-0">
                                                 Stop Delegation
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor" width="20px" height="20px">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                                 </svg>
 
                                             </button>
@@ -154,169 +253,180 @@
             </div>
         </div>
         <style>
-            .cen{display:flex;align-items:center;justify-content:center;}
+        .cen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         </style>
     </div>
 </section>
 <script>
-    const uWallet = (new URL(window.location.href)).searchParams.get('x') || walletAddress; // Use your actual URL or replace with the desired URL
-    let tx_page_segment = 10;
-    let txInfo = []
-    let tx_page = 1;
-    
-    const setUp = async () => {
-        //set name
-        E('wallet_name').innerHTML = uWallet
-        E('wallet_name_short').innerHTML = E('wallet_name_short_res').innerHTML = uWallet.substring(0, 5) + "....." + uWallet.substring(uWallet.length - 5)
-        let joined = await getDaoJoinedDate(uWallet);
-        if(joined != "") {
-            joined = (new Date(joined)).toLocaleString()
-            E('wallet_joined_date').innerHTML = E('wallet_joined_date_res').innerHTML = "Member since " + joined
-        }
-         
-        //get user comments
-        const comt = await getUserComment(uWallet)
-        const [num, daos] = await getDaoJoinedNum(uWallet)
-        E('wallet_dao_num').innerHTML = E('wallet_dao_num_res').innerHTML = '(' + num + ')'
-        const cnum = await getCommentNum(uWallet)
-        E('wallet_comment_num').innerHTML = E('wallet_comment_num_res').innerHTML = '(' + cnum + ')'
-        //load comment
-        setTimeout(() => {loadComments(comt)}, 1000)
-        //load daos
-        setTimeout(() => {loadDao(daos)}, 1000)
-        //load activity
-        setTimeout(() => {loadActivity()}, 1000)
-        
+const uWallet = (new URL(window.location.href)).searchParams.get('x') ||
+walletAddress; // Use your actual URL or replace with the desired URL
+let tx_page_segment = 10;
+let txInfo = []
+let tx_page = 1;
+
+const setUp = async () => {
+    //set name
+    E('wallet_name').innerHTML = uWallet
+    E('wallet_name_short').innerHTML = E('wallet_name_short_res').innerHTML = uWallet.substring(0, 5) +
+        "....." + uWallet.substring(uWallet.length - 5)
+    let joined = await getDaoJoinedDate(uWallet);
+    if (joined != "") {
+        joined = (new Date(joined)).toLocaleString()
+        E('wallet_joined_date').innerHTML = E('wallet_joined_date_res').innerHTML = "Member since " + joined
     }
+
+    //get user comments
+    const comt = await getUserComment(uWallet)
+    const [num, daos] = await getDaoJoinedNum(uWallet)
+    E('wallet_dao_num').innerHTML = E('wallet_dao_num_res').innerHTML = '(' + num + ')'
+    const cnum = await getCommentNum(uWallet)
+    E('wallet_comment_num').innerHTML = E('wallet_comment_num_res').innerHTML = '(' + cnum + ')'
     //load comment
-    const loadComments = async(comt) => {
-        E('wallet_my_comment_butt').style.display = 'none'
-        let _commt = ""; 
-        if(comt.length > 0) {
-            let props = []
-            for(let i=0;i<comt.length;i++) {
-                 const res = JSON.parse(comt[i])
-                if(!props[res.proposal_id]) {
-                    //hasnt loaded proposal data, load it
-                    props[res.proposal_id] = await getProposal(res.proposal_id)
-                    if( props[res.proposal_id] !== false){ 
-                        res['proposalName'] =  props[res.proposal_id].name
-                        res['voted'] = await getProposalVoterInfo(res.proposal_id * 1, uWallet)
-                        res['voted'] = (res['voted'] == 0) ? "none" : (res['voted'] == 1) ? 'Yes' : 'No';
-                    }
-                }
-                else {
-                    if( props[res.proposal_id] !== false){
-                        res['proposalName'] =  props[res.proposal_id].name
-                        res['voted'] = await getProposalVoterInfo(res.proposal_id, uWallet)
-                        res['voted'] = (res['voted'] == 0) ? "none" : (res['voted'] == 1) ? 'Yes' : 'No';
-                    }   
-                }
-                const commt = drawComment(res, (i > 4) ? true : false)
-                _commt += commt
-                if(i > 4) {
-                    E('wallet_my_comment_butt').style.display = 'flex'
-                }
-            }
-            //console.log(_commt)
-            E('wallet_my_comment').innerHTML = _commt
-        }
-        else {
-             E('wallet_my_comment').innerHTML = "<center class='cen' style='margin:50px'>You have not made any comments</center>"
-        }
-    }
+    setTimeout(() => {
+        loadComments(comt)
+    }, 1000)
     //load daos
-    const loadDao = async(daos) => {
-        //load all the daos
-        let _daos = "";
-        for(let i=0;i<daos.length;i++) {
-            _daos += await drawDao((await getDao(daos[i])))
+    setTimeout(() => {
+        loadDao(daos)
+    }, 1000)
+    //load activity
+    setTimeout(() => {
+        loadActivity()
+    }, 1000)
+
+}
+//load comment
+const loadComments = async (comt) => {
+    E('wallet_my_comment_butt').style.display = 'none'
+    let _commt = "";
+    if (comt.length > 0) {
+        let props = []
+        for (let i = 0; i < comt.length; i++) {
+            const res = JSON.parse(comt[i])
+            if (!props[res.proposal_id]) {
+                //hasnt loaded proposal data, load it
+                props[res.proposal_id] = await getProposal(res.proposal_id)
+                if (props[res.proposal_id] !== false) {
+                    res['proposalName'] = props[res.proposal_id].name
+                    res['voted'] = await getProposalVoterInfo(res.proposal_id * 1, uWallet)
+                    res['voted'] = (res['voted'] == 0) ? "none" : (res['voted'] == 1) ? 'Yes' : 'No';
+                }
+            } else {
+                if (props[res.proposal_id] !== false) {
+                    res['proposalName'] = props[res.proposal_id].name
+                    res['voted'] = await getProposalVoterInfo(res.proposal_id, uWallet)
+                    res['voted'] = (res['voted'] == 0) ? "none" : (res['voted'] == 1) ? 'Yes' : 'No';
+                }
+            }
+            const commt = drawComment(res, (i > 4) ? true : false)
+            _commt += commt
+            if (i > 4) {
+                E('wallet_my_comment_butt').style.display = 'flex'
+            }
         }
-        if(daos.length == 0) {
-            E('wallet_my_dao').innerHTML = "<center class='cen' style='margin:50px'>You have not joined any dao</center>"
-        }
-        else {
-            E('wallet_my_dao').innerHTML = _daos
-        }
-        
+        //console.log(_commt)
+        E('wallet_my_comment').innerHTML = _commt
+    } else {
+        E('wallet_my_comment').innerHTML =
+            "<center class='cen' style='margin:50px'>You have not made any comments</center>"
     }
-    //load user activity
-    const loadActivity = async () => {
-        //get all the tx
-        txInfo = await getAllUsersTx(walletAddress)
-        let j = []
-        for(let i=txInfo.length-1; i> -1;i--){
-            const t = JSON.parse(txInfo[i])
-            if(t.action.toLowerCase().indexOf('joined dao') > -1) {
-                if(!j.includes(t.signer)) {
-                    //first
-                    t.action = 'Joined LumosDao'
-                    txInfo.splice(i+1, 0, JSON.stringify(t));
-                    j.push(t.signer)
-                }
-            }
-        }
-        loadTxInfo()
-            //configure the buttons
-            E('next_tx_info').onclick = () => {
-                if(tx_page < txInfo.length / tx_page_segment){
-                  loadTxInfo(tx_page + 1)
-                  tx_page++
-                }
-            }
-            E('pre_tx_info').onclick = () => {
-                if(tx_page > 1){
-                  loadTxInfo(tx_page - 1)
-                  tx_page--
-                }
-            }
+}
+//load daos
+const loadDao = async (daos) => {
+    //load all the daos
+    let _daos = "";
+    for (let i = 0; i < daos.length; i++) {
+        _daos += await drawDao((await getDao(daos[i])))
     }
-    const loadTxInfo = (page = 1) => {
-            //to do pagination, segment is 10
-            const start_index = (page - 1) * tx_page_segment;
-            const end_index = start_index +  tx_page_segment
-            //reset view
-            E('tx_info').innerHTML = ""
-            //console.log(txInfo)
-            for(let i=start_index; i<end_index && i < txInfo.length;i++) { 
-                E('tx_info').appendChild(drawExp({
-                    address:JSON.parse(txInfo[i]).signer,
-                    action:JSON.parse(txInfo[i]).action,
-                    date:(new Date(JSON.parse(txInfo[i]).date)).toLocaleString(),
-                    link:""
-                }))
+    if (daos.length == 0) {
+        E('wallet_my_dao').innerHTML =
+            "<center class='cen' style='margin:50px'>You have not joined any dao</center>"
+    } else {
+        E('wallet_my_dao').innerHTML = _daos
+    }
+
+}
+//load user activity
+const loadActivity = async () => {
+    //get all the tx
+    txInfo = await getAllUsersTx(walletAddress)
+    let j = []
+    for (let i = txInfo.length - 1; i > -1; i--) {
+        const t = JSON.parse(txInfo[i])
+        if (t.action.toLowerCase().indexOf('joined dao') > -1) {
+            if (!j.includes(t.signer)) {
+                //first
+                t.action = 'Joined LumosDao'
+                txInfo.splice(i + 1, 0, JSON.stringify(t));
+                j.push(t.signer)
             }
-            
-            if(end_index >= txInfo.length) {
-                //hide next button
-                E('next_tx_info').style.display = 'none'
-            }
-            else {
-                E('next_tx_info').style.display = 'block'
-            }
-            if(start_index == 0) {
-                //hide next button
-                E('pre_tx_info').style.display = 'none'
-            }
-            else {
-                E('pre_tx_info').style.display = 'block'
-            }
-            //handle empty txs
-            if(E('tx_info').firstElementChild == null) {
-                //show empty view
-                E('tx_info').innerHTML = `<center style="margin:50px;">No records yet</center>`
-            }
-            
         }
-    //start
-    setUp()
-    
-    const drawDao = async (daoParams = {}) => {
-            const coverImgx = daoParams.image.replace((daoParams.code + daoParams.owner), "cover_" + (daoParams.code + daoParams.owner)); 
-            const isCoverValid = await isImageURLValid(coverImgx)
-            const defCoverImg = 'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-            
-            let tm = `<div class="col-lg-4 col-md-6 col-sm-12">
+    }
+    loadTxInfo()
+    //configure the buttons
+    E('next_tx_info').onclick = () => {
+        if (tx_page < txInfo.length / tx_page_segment) {
+            loadTxInfo(tx_page + 1)
+            tx_page++
+        }
+    }
+    E('pre_tx_info').onclick = () => {
+        if (tx_page > 1) {
+            loadTxInfo(tx_page - 1)
+            tx_page--
+        }
+    }
+}
+const loadTxInfo = (page = 1) => {
+    //to do pagination, segment is 10
+    const start_index = (page - 1) * tx_page_segment;
+    const end_index = start_index + tx_page_segment
+    //reset view
+    E('tx_info').innerHTML = ""
+    //console.log(txInfo)
+    for (let i = start_index; i < end_index && i < txInfo.length; i++) {
+        E('tx_info').appendChild(drawExp({
+            address: JSON.parse(txInfo[i]).signer,
+            action: JSON.parse(txInfo[i]).action,
+            date: (new Date(JSON.parse(txInfo[i]).date)).toLocaleString(),
+            link: ""
+        }))
+    }
+
+    if (end_index >= txInfo.length) {
+        //hide next button
+        E('next_tx_info').style.display = 'none'
+    } else {
+        E('next_tx_info').style.display = 'block'
+    }
+    if (start_index == 0) {
+        //hide next button
+        E('pre_tx_info').style.display = 'none'
+    } else {
+        E('pre_tx_info').style.display = 'block'
+    }
+    //handle empty txs
+    if (E('tx_info').firstElementChild == null) {
+        //show empty view
+        E('tx_info').innerHTML = `<center style="margin:50px;">No records yet</center>`
+    }
+
+}
+//start
+setUp()
+
+const drawDao = async (daoParams = {}) => {
+    const coverImgx = daoParams.image.replace((daoParams.code + daoParams.owner), "cover_" + (daoParams.code +
+        daoParams.owner));
+    const isCoverValid = await isImageURLValid(coverImgx)
+    const defCoverImg =
+        'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+
+    let tm = `<div class="col-lg-4 col-md-6 col-sm-12">
                             <div class="card-join cardShow mt-4">
                                 <a href="{{ route('dao', '') }}/${daoParams.token || ""}" class="text-decoration-none">
                                     <div class="lblJoin">
@@ -335,7 +445,7 @@
                                     <div class="cardHeading text-left">
                                         <span class="card-heading">${daoParams.name || ""}</span>
                                     </div>
-                                    <div class="card-paragraph text-left">
+                                    <div style="min-height:140px;" class="card-paragraph text-left line-climb-3">
                                          ${daoParams.description || ""}
                                     </div>
 
@@ -358,24 +468,24 @@
                                 </a>
                             </div>
                         </div>`
-                        
-        
-        return tm
-                
-    }
-    const drawExp = (params = {}) => {
-        let tm = `<div
+
+
+    return tm
+
+}
+const drawExp = (params = {}) => {
+    let tm = `<div
                     class="form-control border-0 h-auto px-sm-4 py-2 d-flex flex-column flex-md-row align-items-start align-items-sm-start  justify-content-between w-100">
                     <p class="Explorer_p my-auto">${params.address.substring(0, 5) + "....." + params.address.substring(params.address.length - 5)} <a
                             class="Explorer_p_a" h ref="${params.link}"><span class="">${params.action}</span></a> </p>
                     <p class="Explorer_span d-block">${params.date}</p>
                 </div>`
-        let th = document.createElement('div')
-        th.innerHTML = tm
-        return th.firstElementChild
-    }
-    const drawComment = (params, hide=false) => { 
-        let th = `<div class="comment form-control border-0 h-auto px-sm-4 py-2  w-100" style='display:${(hide == true) ? 'none': ""}'>
+    let th = document.createElement('div')
+    th.innerHTML = tm
+    return th.firstElementChild
+}
+const drawComment = (params, hide = false) => {
+    let th = `<div class="comment form-control border-0 h-auto px-sm-4 py-2  w-100" style='display:${(hide == true) ? 'none': ""}'>
                                 <p class="Explorer_p my-auto">
                                     <a class="Explorer_p_a" href=""><span class="d-block">${params.proposalName || ""}</span></a>
                                     ${params.msg || ""}
@@ -389,72 +499,70 @@
                                 </div>
                             </div>
                          `
-         
-        return th           
-    }
-    /* Page Utilities */
-    {
-let sideOverBtn = document.getElementById('sideover-btn');
-let sideOverCloseBtn = document.getElementById('sideover_close_btn');
-let sideOver = document.getElementById('sideover_menubar');
-sideOver.style.display = 'none';
-sideOverBtn.addEventListener('click', () => {
-    sideOver.style.display = 'block';
-    document.getElementById("defaultOpenMob").click();
-});
-sideOverCloseBtn.addEventListener('click', () => {
-    sideOver.style.display = 'none';
-});
 
-function openCity(evt, cityName) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-    document.getElementById(cityName).style.display = "block";
-    evt.currentTarget.className += " active";
+    return th
 }
-document.getElementById("defaultOpen").click();
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    var comments = document.querySelectorAll('.comment');
-    var viewAllButton = document.getElementById('viewAllComments');
-    var viewFewButton = document.getElementById('viewFewComments');
-    viewFewButton.style.display = 'none';
-
-    // Hide comments after the first four initially
-    for (var i = 5; i < comments.length; i++) {
-        comments[i].style.display = 'none';
-    }
-
-    viewAllButton.addEventListener('click', function() {
-        // Show all comments
-        for (var i = 5; i < comments.length; i++) {
-            comments[i].style.display = 'block';
-        }
-        // Hide the "View All Comments" button and show the "View Few Comments" button
-        viewAllButton.style.display = 'none';
-        viewFewButton.style.display = 'block';
+/* Page Utilities */
+{
+    let sideOverBtn = document.getElementById('sideover-btn');
+    let sideOverCloseBtn = document.getElementById('sideover_close_btn');
+    let sideOver = document.getElementById('sideover_menubar');
+    sideOver.style.display = 'none';
+    sideOverBtn.addEventListener('click', () => {
+        sideOver.style.display = 'block';
+        document.getElementById("defaultOpenMob").click();
+    });
+    sideOverCloseBtn.addEventListener('click', () => {
+        sideOver.style.display = 'none';
     });
 
-    viewFewButton.addEventListener('click', function() {
-        // Hide comments after the first four
+    function openCity(evt, cityName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+    document.getElementById("defaultOpen").click();
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var comments = document.querySelectorAll('.comment');
+        var viewAllButton = document.getElementById('viewAllComments');
+        var viewFewButton = document.getElementById('viewFewComments');
+        viewFewButton.style.display = 'none';
+
+        // Hide comments after the first four initially
         for (var i = 5; i < comments.length; i++) {
             comments[i].style.display = 'none';
         }
-        // Show the "View All Comments" button and hide the "View Few Comments" button
-        viewAllButton.style.display = 'block';
-        viewFewButton.style.display = 'none';
+
+        viewAllButton.addEventListener('click', function() {
+            // Show all comments
+            for (var i = 5; i < comments.length; i++) {
+                comments[i].style.display = 'block';
+            }
+            // Hide the "View All Comments" button and show the "View Few Comments" button
+            viewAllButton.style.display = 'none';
+            viewFewButton.style.display = 'block';
+        });
+
+        viewFewButton.addEventListener('click', function() {
+            // Hide comments after the first four
+            for (var i = 5; i < comments.length; i++) {
+                comments[i].style.display = 'none';
+            }
+            // Show the "View All Comments" button and hide the "View Few Comments" button
+            viewAllButton.style.display = 'block';
+            viewFewButton.style.display = 'none';
+        });
     });
-});
 }
 </script>
 @endsection
-
-
