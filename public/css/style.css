@@ -505,7 +505,7 @@ button#profileDropdown:focus {
     font-size: 16px;
     font-family: "MontReg";
     color-interpolation-filters: var(--primary-color);
-    color:var(--primary-color); ;
+    color:var(--primary-color);
 }
 
 .cardEndDiv .small-card {
@@ -1743,9 +1743,20 @@ p {
     transform: translate(100%, 0);
     pointer-events: none;
 }
-.modal-content {
-    height: 400px;
+.fa-modal-content{
+    max-width: 500px;
+    height: 100%;
+    border: 1px solid rgb(212, 212, 212);
     border-radius: 1rem !important;
+    background: var(--primary-bg);
+}
+.modal-content {
+    height: 100%;
+    border: 1px solid rgb(212, 212, 212);
+    border-radius: 1rem !important;
+}
+.fa-nav-link .active{
+    border: 3px solid gray !important;
 }
 .modal-body {
     padding: 4rem;
@@ -1939,10 +1950,24 @@ a.btn.dope {
 }
 /* form inputs */
 
+small{
+    font-size: 14px;
+    font-family: "MontReg";
+    color: var(--primary-color);
+}
+.tweet-ctn{
+    width: 25%;
 
+}
 .asset-details-text {
     font-size: 14px;
     font-family: "MontSem";
+}
+.w-img{
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 50%;
+    object-fit: cover !important;
 }
 .w-60{
     width: 55%;
@@ -2056,9 +2081,68 @@ text-decoration: none;
     margin-right: 8px;
     fill: #333; /* Change the fill color of the SVG icon */
 }
-
+.proposal-inbox{
+    font-family: "MontReg";
+   
+}
+.inbox-msg{
+    color: rgb(98, 98, 98);
+}
+.font-weight-bold-inbox{
+    font-family: "MontSem";
+    color: var(--primary-color) !important;
+}
+.border-right-inbox{
+    border-right: 1px solid var(--primary-colur);
+}
+.font-xs{
+    font-size: 14px;
+}
 .custom-file-input-attach:hover {
     background-color: #f0f0f0;
+}
+.chat-online {
+    color: #34ce57
+}
+
+.chat-offline {
+    color: #e4606d
+}
+
+.chat-messages {
+    display: flex;
+    flex-direction: column;
+    max-height: 800px;
+    overflow-y: scroll
+}
+
+.chat-message-left,
+.chat-message-right {
+    display: flex;
+    flex-shrink: 0
+}
+
+.chat-message-left {
+    margin-right: auto
+}
+
+.chat-message-right {
+    flex-direction: row-reverse;
+    margin-left: auto
+}
+.py-3-inbox {
+    padding-top: 1rem!important;
+    padding-bottom: 1rem!important;
+}
+.px-4-inbox {
+    padding-right: 1.5rem!important;
+    padding-left: 1.5rem!important;
+}
+.flex-grow-0 {
+    flex-grow: 0!important;
+}
+.border-top-inbox {
+    border-top: 1px solid #dee2e6!important;
 }
 .custom-file-input-attach p{
     font-size: 16px;
@@ -2202,6 +2286,218 @@ gap: 70px;
     height: 15px;
     border-radius: 3px;
 }
+.pro-nav-tabs .pro-nav-link.active{
+    background: linear-gradient(to right, #FFA500, #FF4500, #FF0000) !important;
+    border-radius:10px 10px 0px 0px !important;
+    color: white !important;
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 0rem !important;
+    font-family: "MontSem";
+    border: 0px !important;
+    color: white !important;
+}
+.pro-nav-tabs .pro-nav-link{
+    border-radius: 3px !important;
+    color: var(--primary-color-light);
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 0rem !important;
+    font-family: "MontSem";
+    border: 0px;
+}
+.bultin_description{
+    font-size: 16px;
+    font-family: "MontReg";
+    color: var(--primary-color);
+    margin-bottom: 0px;
+    border: 1px solid var(--primary-colur);
+    border-radius: 10px;
+    padding: 15px;
+    margin:10px auto;
+    width: 90%;
+}
+.bullet-icon{
+    margin-left: 40px;
+}
+.bullet-icon-i{
+    color: rgb(128, 128, 128);
+    font-size: 25px;
+}
+.like-active{
+    color: #FFA500 !important;
+    font-size: 25px;
+}
+#comment-pl{
+min-width: 50% !important;
+width: fit-content !important;
+}
+#comment-pl small{
+  font-size: 14px !important;
+}
+#comment-input:focus{
+    outline:none !important;
+}
+button{
+    font-family: 'MontReg';
+}
+.whitespace-nowrap{
+    white-space: nowrap;
+}
+/* polling */
+.poll-card{
+	max-width: 100%;
+    width: 100%;
+    padding: 20px;
+}
+.question{
+	font-weight: 700;
+	margin-bottom: 1rem;
+}
+.option{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 0.4rem 1.5rem;
+	border-radius: 4px;
+	position: relative;
+    font-size: 16px;
+    font-family: "MontReg";
+    color:var(--primary-color);
+}
+.bar{
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	background: #e9e9e9;
+	border-radius: 4px;
+}
+.member-ban-ctn{
+    position: relative;
+}
+.member-ban-modal{
+    position: absolute;
+    top: 10;
+    right: 0;
+    width: 200px;
+    border: 1px solid rgb(215, 215, 215);
+    border-radius: 10px;
+    background-color: white;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 10px;
+}
+.member-ban-modal button{
+    width: 100%;
+    font-family: "MontReg";
+}
+.fa-nav-tabs{
+    padding: 0px !important;
+}
+.fa-nav-link{
+    border: 0px !important;
+    border-bottom: 1px !important;
+    font-family: 'MontReg';
+    color: var(--primary-color);
+    padding: 10px;
+} 
+.fa-nav-tabs .fa-nav-link .active{
+    background-color: red !important;
+}
+a:hover{
+    color: var(--primary-color) !important;
+}
+.nav-tabs .nav-link.active{
+    /* color: gray !important; */
+    background-color: var(--primary-bg) !important;
+}
+.fa-ctn{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: "MontReg";
+    padding: 20px;
+}
+.fa-profile-sett{
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    background: var(--primary-bg);
+}
+.fa-ctn h1{
+    font-size: large;
+    font-family: "MontSem";
+    text-align: left;
+}
+.fa-ctn ol{
+    padding-left: 0% !important;
+}
+
+.fa-ctn li{
+    font-size: small;
+    font-family: "MontReg";
+    text-align: left;
+}
+.fa-ctn button{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
+.new-admin-ctn{
+    margin: 5px 0px ;
+}
+.manage-admin-heading{
+    font-size: medium;
+    font-family:'MontSem';
+}
+.new-admin-note{
+    font-family: 'MontReg';
+    font-size: 12px !important;
+    padding: 0px 10px;
+    color: --var(primary-color);
+}
+.new-admin-ctn img{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.font-sm{
+    font-size: 14px;
+}
+.dropdown-item{
+    font-family: "MontReg";
+}
+.member-ban-modal button:hover{
+background-color: rgb(204, 202, 202);
+width: 100%;
+}
+.input{
+	width: 100%;
+}
+.option-lable{
+	display: block;
+	cursor: pointer;
+	padding: 0.4rem;
+    position: relative;
+    border: 1px solid var(--primary-colur);
+    border-radius: 4px;
+}
+.percent{
+	position: absolute;
+	right: 7px;
+	top: 12px;
+	font-weight: 700;
+}
+.analytic,
+.tick{
+	display: none;
+}
 .project-logo{
     width: 25%;
 }
@@ -2226,13 +2522,10 @@ gap: 70px;
 
    
 }
-
-
-
-
-
 @media (max-width: 1000px){
-
+    .tweet-ctn{
+        width:100%;
+    }
     .proposal_card_container{
         flex-direction: column;
         align-items: center;
@@ -2243,12 +2536,16 @@ gap: 70px;
     }
     .proposal_status-card{
       width: 100%;
+      margin: 0;
     }
 
     .cardEndDetail_container{
         flex-direction: column;
 
 
+    }
+    .border-right-inbox{
+        border-right: 0px solid var(--primary-colur);
     }
 }
 
