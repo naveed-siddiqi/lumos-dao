@@ -1,19 +1,71 @@
 @extends('layouts.app')
 
 @section('content')
+<?php
+    //load the dao meta funtion to avoid lag in frontend
+    $path = substr(__FILE__, 0, strpos(__FILE__, 'storage'));
+    require("$path.well-known/config.php");
+    require("$path.well-known/db.php");
+    if(isset($_COOKIE['public'])){
+        $user = $_COOKIE['public'];
+        $res = array(); $res['status'] = false;
+        $query = "SELECT * FROM daos WHERE token = '$dao_id' ORDER BY ID DESC";
+        $result = mysqli_query($conn, $query);
+        if(mysqli_num_rows($result)>0){
+            while($row= mysqli_fetch_array($result)){
+                $res = $row;
+                $res['joined'] = (strpos($row['users'], $user) > -1);
+                $res['members'] = sizeof(explode(",", $row['users'])) - 1;
+            }
+	    $res['status'] = true;
+        }
+	    
+    }
+?>
+<!-- Oauth Socials Links -->
+
+<!-- for telegram -->
+<script async onload='setUpTelegram()' src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="lumosdao_bot" data-size="medium" data-userpic="false" data-onauth="saveSocials('telegram',user)" data-request-access="write"></script>
+<script type="text/javascript">
+    const setUpTelegram = () => { 
+        const _iframes = document.getElementsByTagName('iframe'); 
+        window.telegram = null
+        // Loop through all <iframe> elements
+        for (var i = 0; i < _iframes.length; i++) {
+            if(_iframes[i].id.indexOf('telegram') > -1){  
+                window.telegram = _iframes[i];
+                document.body.removeChild(window.telegram)
+                break; 
+            }
+        }
+    }
+</script>
+
 <section class="leadingBoard">
     <div class="container">
         <div class="row">
             <div class="col-12">
                 <div class="heading-board">
+<<<<<<< HEAD
                     <p class="headingBoard">Board</p>
                     <span class="rightArrow"> > </span>
                     <p id='dao_name_head' class="apple-text"></p>
+=======
+                    <a class="headingBoard" href="{{ route('explore') }}">Explore</a>
+                    <span class="rightArrow"> > </span>
+                    <p id='dao_name_head' class="apple-text">
+                        <?php if($res['status']){echo $res['name'];} ?>
+                    </p>
+>>>>>>> 9270b47 (added new UI updates)
                 </div>
             </div>
         </div>
     </div>
 </section>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9270b47 (added new UI updates)
 <section class="main-card-link">
     <div class="container">
         <div class="row">
@@ -22,6 +74,7 @@
                     <div style="display:none;" class="lblJoin">
                         <p class="mb-0">join</p>
                     </div>
+<<<<<<< HEAD
                     <button id='dao_setting' style='display:none' type="button" data-bs-toggle="modal"
                         data-bs-target="#myModal">
                         <div class="Deo_setting_btn">
@@ -31,18 +84,27 @@
                     <div style="margin:-45px -20px -30px !important; height:230px;" class="">
                         <img id='dao_cover_image' style="object-fit: cover; object-fit:center;"
                             class="h-100 w-100 rounded object-cover"
+=======
+                    <div style="margin:-45px -20px -30px !important; height:230px;" class="">
+                        <img id='dao_cover_image' style="object-fit: cover; object-fit:center;"
+                            class="h-100 w-100 rounded object-cover"
+                            src="<?php if($res['status']){echo $res['cover'];} ?>"
+>>>>>>> 9270b47 (added new UI updates)
                             data="https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                             alt="">
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="card-imgflex mt-1">
-                            <img id='dao_image' data="{{ asset('images/demi.jpg') }}" alt="">
+                            <img id='dao_image' src="<?php if($res['status']){echo $res['image'];} ?>" data="{{ asset('images/demi.jpg') }}" alt="">
                             <div class="cardHeading mt-4 py-2">
-                                <p id='dao_name' class="card-heading whitespace-nowrap"></p>
-                                <p id='dao_members' class="card-subheading whitespace-nowrap"></p>
+                                <p id='dao_name' class="card-heading whitespace-nowrap"> <?php if($res['status']){echo $res['name'];} ?></p>
+                                <p id='dao_members' class="card-subheading whitespace-nowrap">
+                                     <?php if($res['status']){echo (( $res['members'] > 1) ? " members" : " member");} ?>
+                                </p>
                             </div>
                         </div>
                         <div class="d-flex align-items-center justify-content-end gap-3 py-3 w-100 mt-4">
+<<<<<<< HEAD
                             <button id='manageAdminBut' style='display:none' class="btn btn-success whitespace-nowrap"
                                 data-toggle="modal" data-target="#manageAdmin">Manage
                                 Admins</button>
@@ -50,12 +112,19 @@
                                 <button class="btn btn-secondary">Send message</button>
                             </a>
                             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#DaoSetting" class="btn btn-success">Dao Settings</button>
+=======
+                            <button type="button" id='dao_setting' class="btn btn-success" data-toggle="modal" data-target="#DaoSetting" style='display:none'>Dao Settings</button>
+>>>>>>> 9270b47 (added new UI updates)
                           
                             <button class='btn btn-danger whitespace-nowrap' id='leaveDao'
                                 style='border:2px solid red;display:none'>Leave Dao</button>
                         </div>
                     </div>
                     <div id='dao_about' class="card-paragraph line-climb-3">
+<<<<<<< HEAD
+=======
+                        <?php if($res['status']){echo $res['description'];} ?>
+>>>>>>> 9270b47 (added new UI updates)
                     </div>
 
                     <div class="">
@@ -64,7 +133,12 @@
                                 <span class="card-bold-word whitespace-nowrap">Assets:</span>
                                 <a id='asset_name' href="#" target='_blank'
                                     class="card-link whitespace-nowrap d-flex align-items-center gap-3"><span
+<<<<<<< HEAD
                                         id='dao_token_name'></span><img id='dao_token_img' src="" style='' alt=""></a>
+=======
+                                        id='dao_token_name'><?php if($res['status']){echo $res['code'];} ?></span><img id='dao_token_img' src="<?php if($res['status']){echo $res['image'];} ?>" style='' alt="">
+                                        </a>
+>>>>>>> 9270b47 (added new UI updates)
                             </div>
                             <div class="card-small-div flex-column align-items-start">
                                 <span class="card-bold-word whitespace-nowrap">Website:</span>
@@ -74,7 +148,13 @@
                             <div class="card-small-div flex-column align-items-start">
                                 <span class="card-bold-word whitespace-nowrap">Toml url:</span>
                                 <a id='dao_token_url' target='_blank' href="#"
+<<<<<<< HEAD
                                     class="card-link whitespace-nowrap text-truncate"></a>
+=======
+                                    class="card-link whitespace-nowrap text-truncate">
+                                    <?php if($res['status']){echo $res['url'];} ?>
+                                </a>
+>>>>>>> 9270b47 (added new UI updates)
                             </div>
                         </div>
                         <div class="d-flex align-items-center gap-3 py-3">
@@ -112,6 +192,7 @@
             </div>
         </div>
     </div>
+<<<<<<< HEAD
     <div class="modal fade" id="manageAdmin" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -141,10 +222,43 @@
                             <div id='dao_search_admin_result' style='width:100%;max-height:300px;overflow:auto'>
 
                             </div>
+=======
+    
+    <!--<div class="modal fade" id="manageAdmin" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"-->
+    <!--    aria-hidden="true">-->
+    <!--    <div class="modal-dialog modal-dialog-centered" role="document">-->
+    <!--        <div class="modal-content cardEndDiv p-0 fa-ctn fa-modal-content">-->
+    <!--            <div class="d-flex align-items-center justify-content-end w-100">-->
+    <!--                <button type="button" class="close p-3 pb-0 m-0 border-0 bg-transparent" data-dismiss="modal"-->
+    <!--                    aria-label="Close">-->
+    <!--                    <span aria-hidden="true">&times;</span>-->
+    <!--                </button>-->
+    <!--            </div>-->
+    <!--            <div class="modal-body px-4 py-0 w-100">-->
+    <!--                <div class="form-group">-->
+    <!--                    <label for="">-->
+    <!--                        <span class="asset-details-label mb-0">Add new admin:</span>-->
+    <!--                    </label>-->
+    <!--                    <div class="d-flex flex-column flex-md-row align-items-end gap-2">-->
+    <!--                        <input oninput='searchAdminUser()' id="dao_search_admin" type="text"-->
+    <!--                            class="form-control h-auto mt-1">-->
+    <!--                        <button onclick='searchAdminUser()'-->
+    <!--                            class="btn btn-secondary px-2 py-1.5"><small>Search</small></button>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--                <div id='addNewAdmin' class="m-0 mt-0 mt-md-5 p-0" style='display:none'>-->
+    <!--                    <p class="mb-0 text-success manage-admin-heading">Address founded</p>-->
+    <!--                    <div-->
+    <!--                        class="d-flex flex-column align-items-center justify-content-between gap-1 mb-2 new-admin-ctn">-->
+    <!--                        <div id='dao_search_admin_result' style='width:100%;max-height:300px;overflow:auto'>-->
+
+    <!--                        </div>-->
+>>>>>>> 9270b47 (added new UI updates)
                             <!--<div class="d-flex flex-column flex-md-row align-items-start align-md-items-center gap-1 w-100">-->
                             <!--    <img class="" src="{{asset('/images/discord.png')}}" alt="">-->
                             <!--    <p id='dao_search_admin_found' class="mb-0  column-content text-truncate text-break text-wrap"></p>-->
                             <!--</div>-->
+<<<<<<< HEAD
                             <div class="mb-3" id='dao_admin_rules'>
                                 <span class="text new-admin-note">
                                     <strong class="text-danger">Note:</strong>
@@ -160,17 +274,43 @@
                                         class="btn btn-success text-white text mt-2 mt-md-0"><small>Confirm</small></button>
                                 </div>
                             </div>
+=======
+    <!--                        <div class="mb-3" id='dao_admin_rules'>-->
+    <!--                            <span class="text new-admin-note">-->
+    <!--                                <strong class="text-danger">Note:</strong>-->
+    <!--                                Before you confirm, make sure to read the admin authorities.-->
+    <!--                            </span>-->
+    <!--                            <div-->
+    <!--                                class="text-left w-100 d-flex flex-column flex-md-row align-items-start align-md-items-center justify-content-between mt-3 px-1.5 px-md-0">-->
+    <!--                                <div class="d-flex align-items-center justify-content-start px-0 px-md-3">-->
+    <!--                                    <input id="manageAdminCheck" type="checkbox">-->
+    <!--                                    <label class="new-admin-note" for="">I have read the admin authorities</label>-->
+    <!--                                </div>-->
+    <!--                                <button id="manageAdminConfirm"-->
+    <!--                                    class="btn btn-success text-white text mt-2 mt-md-0"><small>Confirm</small></button>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+>>>>>>> 9270b47 (added new UI updates)
 
-                            <div class="d-flex align-items-end justify-content-end gap-2 mb-0 w-100">
-                            </div>
-                        </div>
+    <!--                        <div class="d-flex align-items-end justify-content-end gap-2 mb-0 w-100">-->
+    <!--                        </div>-->
+    <!--                    </div>-->
 
+<<<<<<< HEAD
                     </div>
                     <div class="m-0 py-2 p-0">
                         <p class="mb-0 text-danger manage-admin-heading">All Admins</p>
                         <div id='dao_admin_lists' style='width:100%;max-height:300px;overflow:auto'>
 
                         </div>
+=======
+    <!--                </div>-->
+    <!--                <div class="m-0 py-2 p-0">-->
+    <!--                    <p class="mb-0 text-danger manage-admin-heading">All Admins</p>-->
+    <!--                    <div id='dao_admin_lists' style='width:100%;max-height:300px;overflow:auto'>-->
+
+    <!--                    </div>-->
+>>>>>>> 9270b47 (added new UI updates)
                         <!--<div-->
                         <!--    class="d-flex flex-column align-items-center justify-content-between gap-1 mb-2 new-admin-ctn">-->
                         <!--    <div class="d-flex flex-column flex-md-row align-items-start align-md-items-center gap-1 w-100">-->
@@ -181,14 +321,183 @@
                         <!--        <button class="btn btn-danger text-white text "><small>Remove</small></button>-->
                         <!--    </div>-->
                         <!--</div>-->
-                    </div>
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--            <div class="d-flex align-items-center justify-content-end gap-3 modal-footer m-0 p-0 py-3 px-3 w-100">-->
+    <!--                <button type="button" class="btn btn-warning text " style='display:none !important'>Save</button>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!--</div>-->
+    
+    <div class="modal fade" id="DaoSetting" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-content proposal_modal-content">
+
+          <div class="proposal_modal-body">
+            <div class="">
+              <div class="d-flex justify-content-between overflow-hidden gap-3">
+                <div style="position:relative; width:100px; height:100px;" class=" ">
+                  <div class="modal_edit_btn" onclick='enableEdit("image")' style='cursor:pointer'>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" width="24px">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                    </svg>
+                  </div>
+                  <img style="width:100px; height: 100px; border-radius:50%;"
+                    src="https://plus.unsplash.com/premium_photo-1695186450461-777ea482f34b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHx8"
+                    id='dao_save_img' alt="Dao">
+                  <input id='dao_save_image_edit' type='file' style='visibility:hidden' />
                 </div>
+                <div class="flex-grow-1 ml-4">
+                  <div class="d-flex align-items-center gap-2 EditModal-title">
+                    <span class="asset-stellar-p">Project Name:</span>
+                    <span class="asset-details-text" id='dao_save_name'>Audi khan</span>
+                  </div>
+                  <div class="d-flex align-items-center gap-2 EditModal-title">
+                    <span class="asset-stellar-p">Asset Code:</span>
+                    <span class="asset-details-text" id='dao_save_code'>XLM</span>
+                  </div>
+                  <div class="d-flex align-items-center gap-2 EditModal-title">
+                    <span class="asset-stellar-p">Home
+                      Domian:</span>
+                    <a style="text-decoration:none; color:blue;" id='dao_save_domain_href' href="">
+                      <span style="color: #578aff;" class="asset-details-text"
+                        id='dao_save_domain'>https://web.whatsapp.com/moadsdsdsncie</span>
+                    </a>
+                  </div>
+                  <div class="d-flex align-items-center gap-2 EditModal-title">
+                    <span class="asset-stellar-p">TOML:</span>
+                    <a style="text-decoration:none; color:blue;" id='dao_save_toml_href' href="">
+                      <span style="color: #578aff;" class="asset-details-text"
+                        id='dao_save_toml'>https://web.whatsapp.com/moadsdsdsncie</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div class="py-3">
+                <div class="d-flex align-items-center asset-stellar-p">Description:
+                  <div style="margin-left:12px;cursor:pointer" class="modal_edit" id='manageAdminBut' onclick='enableEdit("about")'>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" width="24px">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                    </svg>
+                  </div>
+                </div>
+                <div style="font-family:'MontReg';" id='dao_save_about' class="asset-details-text mt-2">Lorem ipsum
+                  dolor, sit amet consectetur adipisicing elit. Quas vitae vero veniam doloremque odit saepe, ea error
+                  omnis! Sit nisi officiis repellendus iure blanditiis earum distinctio deleniti veritatis adipisci
+                  aperiam?</div>
+                <input class='form-control' placeholder='Description....' id='dao_save_about_edit'
+                  style='display:none' />
+
+              </div>
+              <div class="py-3">
+                <div class="d-flex align-items-center asset-stellar-p">Socail Profile:
+                  <div style="margin-left:12px;cursor:pointer" class="modal_edit" style='display:none'>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" width="24px">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="py-3 d-flex align-items-center justify-content-between flex-wrap">
+                  <button id='dao_save_twitter' class="border rounded-md py-1 px-2 d-flex align-items-center justify-content-between mb-3" onclick='saveSocials("twitter")'>
+                    <img class="w-img border" src="{{asset('/images/x.webp')}}" alt="">
+                    <div id='dao_save_twitter_div' class="font-medium text-muted ml-2">Connect</div>
+                  </button>
+                  <button id='dao_save_telegram' class="border rounded-md py-1 px-2 d-flex align-items-center justify-content-between mb-3">
+                    <img class="w-img border" src="{{asset('/images/download.jpeg')}}" alt="">
+                    <div id='dao_save_telegram_div'  class="font-medium text-muted ml-2">Connect</div>
+                  </button>
+                  <button id='dao_save_reddit' class="border rounded-md py-1 px-2 d-flex align-items-center justify-content-between mb-3" onclick='saveSocials("reddit")'>
+                    <img class="w-img border" src="{{asset('/images/Reddit.png')}}" alt="">
+                    <div id='dao_save_reddit_div'  class="font-medium text-muted ml-2">Connect</div>
+                  </button>
+                </div>
+                <div class="d-flex justify-content-end w-25 ml-auto">
+                  <button id='dao_save_button' class="btn assetSearch w-100 pt-0 mt-0" style='display:none'>Save</button>
+                </div>
+                <div class="py-3">
+                  <div class="d-flex align-items-center asset-stellar-p">Admins:
+                    <div style="margin-left:12px;cursor:pointer" class="modal_edit" style='display:none'>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" width="24px">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div id='dao_admin_lists' class="mt-2 d-flex flex-wrap w-100 gap-3">
+                    <!--<div-->
+                    <!--  class="border rounded-md py-1 px-2 d-flex align-items-center justify-content-start position-relative flex-grow-1 gap-3">-->
+                    <!--  <img class="w-img"-->
+                    <!--    src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="">-->
+                    <!--  <div class="font-normal text-secondary ml-2 font-xs">GAAHFDB.....DJFDSKBV</div>-->
+                    <!--  <div class="position-absolute cross-dao-setting">-->
+                    <!--    <svg class="text-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"-->
+                    <!--      fill="currentColor" width="20px" heigth="20px">-->
+                    <!--      <path fill-rule="evenodd"-->
+                    <!--        d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z"-->
+                    <!--        clip-rule="evenodd" />-->
+                    <!--    </svg>-->
+                    <!--  </div>-->
+                    <!--</div>-->
+                  </div>
+
+                </div>
+<<<<<<< HEAD
                 <div class="d-flex align-items-center justify-content-end gap-3 modal-footer m-0 p-0 py-3 px-3 w-100">
                     <button type="button" class="btn btn-warning text " style='display:none !important'>Save</button>
+=======
+                <div class="py-3">
+                  <div class="d-flex align-items-center asset-stellar-p">Add Admins:
+                    <div style="margin-left:12px;cursor:pointer" class="modal_edit" onclick='enableEdit("admins")'>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" width="24px">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div id='addAdminInputField' class="mt-2 flex-wrap w-100 gap-3" style='display:none !important'>
+                    <div
+                      class="border rounded-md py-1 px-2 d-flex align-items-center justify-content-start position-relative flex-grow-1 gap-3">
+                      <input oninput="searchAdminUser(event)" id="dao_search_admin" type="text" class="border-0 outline-none p-1 font-xs w-100" placeholder="Enter Wallet address">
+                    </div>
+                    <button onclick='searchAdminUser(event)' class="btn btn-info rounded-md">Search</button>
+                  </div>
+                  <div id='addNewAdmin' class=" py-3" style='display:none'>
+                    
+                    <div class="asset-stellar-p">Address found:</div>
+                    <div id='dao_search_admin_result' style='width:100%;max-height:300px;overflow:auto'>
+
+                    </div>
+                    <div class="d-flex gap-3 align-items-center justify-content-between">
+                      <div class="gap-3 align-items-center" id='dao_admin_rules'>
+                        <input width="30px" height="30px" id='manageAdminCheck' type="checkbox">
+                        <p class="p-0 m-0 font-xs">I've read and agree to the <a class="text-info" href="">terms and
+                            condition</a></p>
+                      </div>
+                      <div class="">
+                        <button id='manageAdminConfirm' class="btn btn-danger rounded-md">Approve</button>
+                      </div>
+                    </div>
+                  </div>
+>>>>>>> 9270b47 (added new UI updates)
                 </div>
+                
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
+<<<<<<< HEAD
     <div class="modal fade" id="DaoSetting" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -393,6 +702,8 @@
         </div>
       </div>
     </div>
+=======
+>>>>>>> 9270b47 (added new UI updates)
   </div>
 </section>
 <section class="approveWallet">
@@ -433,8 +744,13 @@
             <div class="col-12">
                 <div class="propFilterInner">
                     <a id='createProposal' href="{{ route('dao.proposal.create', 'PROPOSAL_CREATE') }}"
+<<<<<<< HEAD
                         style="width:200px; whitespace:no-wrap;display:none;margin-left:auto; display:flex; " class="btn btnCreate">
                         Create Proposal <img class="plu" src="{{ asset('images/11.png') }}" alt="">
+=======
+                        style="width:200px; whitespace:no-wrap;display:none;margin-left:auto;display:flex; " class="btn btnCreate">
+                        Create Proposal <img class="plu" src="{{ asset('images/11.svg') }}" alt="">
+>>>>>>> 9270b47 (added new UI updates)
                     </a>
                 </div>
             </div>
@@ -450,6 +766,7 @@
                     <ul class="nav nav-tabs pro-nav-tabs" id="myTabs">
                         <li class="nav-item">
                             <a class="pro-nav-link nav-link active" id="tab1" data-toggle="tab"
+<<<<<<< HEAD
                                 href="#content1">Proposals (2)</a>
                         </li>
                         <!-- <li class="nav-item">
@@ -458,13 +775,24 @@
                         <li class="nav-item">
                             <a class="pro-nav-link nav-link" id="tab3" data-toggle="tab" href="#content3">Members
                                 (23)</a>
+=======
+                                href="#content1">Proposals <span id='tab1_count'></span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="pro-nav-link nav-link" id="tab3" data-toggle="tab" href="#content3">Members
+                                </a>
+>>>>>>> 9270b47 (added new UI updates)
                         </li>
                         <li class="nav-item">
                             <a class="pro-nav-link nav-link" id="tab4" data-toggle="tab" href="#content4">Delegates</a>
                         </li>
-                        <li class="nav-item">
+                        <li id='prop_review_tab' class="nav-item" style='display:none'>
                             <a class="pro-nav-link nav-link" id="tab5" data-toggle="tab" href="#content5">Proposals in
+<<<<<<< HEAD
                                 Review (3)</a>
+=======
+                                Review</a>
+>>>>>>> 9270b47 (added new UI updates)
                         </li>
                     </ul>
                     <div class="tab-content">
@@ -654,31 +982,6 @@
                             <div class="row mt-0">
                                 <div class="cardEndDiv">
                                     <div class="d-flex flex-column gap-4" id='dao_users'>
-                                        <!--<div id="memberList" class="d-flex justify-content-between">-->
-                                        <!--    <div class="cardEndDetail d-flex justify-content-between gap-3">-->
-                                        <!--        <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"-->
-                                        <!--            alt="Profile Image" class="image w-img">-->
-                                        <!--        <div class="text text-center">-->
-                                        <!--            FGDKXQTCPDXKZANU3IFGDKXQTCPDXKZANU3I-->
-                                        <!--        </div>-->
-                                        <!--    </div>-->
-                                        <!--    <div class="member-ban-ctn">-->
-                                        <!--        <button id="memBan-btn" class="btn p-0">-->
-                                        <!--            <div class="text text-muted">-->
-                                        <!--                <svg xmlns="http://www.w3.org/2000/svg" fill="none"-->
-                                        <!--                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"-->
-                                        <!--                    width="20px" height="20px">-->
-                                        <!--                    <path stroke-linecap="round" stroke-linejoin="round"-->
-                                        <!--                        d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />-->
-                                        <!--                </svg>-->
-                                        <!--            </div>-->
-                                        <!--        </button>-->
-                                        <!--        <div class="member-ban-modal">-->
-                                        <!--            <button class="btn">Ban member</button>-->
-                                        <!--            <button class="btn">Messeage</button>-->
-                                        <!--        </div>-->
-                                        <!--    </div>-->
-                                        <!--</div>-->
                                     </div>
                                     <div style='display:flex; align-items:center'>
                                         <button id='next_dao_user_info' class="btn" style='display:none'>Next</button>
@@ -712,26 +1015,6 @@
                                             <span class="text-sm text-success text">Member found</span>
                                         </div>
                                         <div style='overflow:auto;max-height:300px' id='searchDelegateResults'>
-                                            <!--<div class="d-flex justify-content-between">-->
-                                            <!--    <div class="cardEndDetail">-->
-                                            <!--        <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"-->
-                                            <!--            alt="Profile Image" class="image">-->
-                                            <!--        <div class="text text-center">FGDKXQTCPOJVVBBYTCPOJVVBBY2MRK2DXKZANU3I-->
-                                            <!--        </div>-->
-                                            <!--    </div>-->
-                                            <!--    <div class="">-->
-                                            <!--        <button type="button"-->
-                                            <!--            class="btn btn-success text-white text d-flex align-items-center gap-2 mb-0">-->
-                                            <!--            Confirm Delegation-->
-                                            <!--            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"-->
-                                            <!--                fill="currentColor" width="20px" height="20px">-->
-                                            <!--                <path fill-rule="evenodd"-->
-                                            <!--                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"-->
-                                            <!--                    clip-rule="evenodd" />-->
-                                            <!--            </svg>-->
-                                            <!--        </button>-->
-                                            <!--</div>-->
-                                            <!--</div>-->
                                         </div>
                                     </div>
                                     <div class="my-4" style='display:none' id='user_delegates'
@@ -752,6 +1035,7 @@
                                 <div class="cardEndDiv" id='proposal_review'>
                                     <div style='font-size:20px; margin:60px;'>
                                         <center>Loading Proposals...</center>
+<<<<<<< HEAD
                                     </div>
                                     <!--<div class="col-12 pb-3">-->
                                     <!--    <a href="http://127.0.0.1:8000/dao/1/proposal/1" class="text-decoration-none">-->
@@ -930,10 +1214,14 @@
                                             <label class="option-lable text-left font-xxs" for="option-4">4. Don't Judge&nbsp;<i
                                                     class="fa fa-check tick" aria-hidden="true"></i></label>
                                         </div>
+=======
+>>>>>>> 9270b47 (added new UI updates)
                                     </div>
+                                    
                                 </div>
                             </div>
                         </div>
+<<<<<<< HEAD
                     </button>
                     <!--<div class="mt-3 border rounded p-3">-->
                     <!--    <div class="card-imgflex justify-content-between card-join">-->
@@ -1009,6 +1297,53 @@
                     <div class="proposal_status-SideCard">
                         <div class="d-flex align-items-start justify-content-start gap-2">
                             <h2 class="heading">Top Voters</h2>
+=======
+                    </div>
+                </div>
+
+            </div>
+            <div class="d-flex flex-column tweet-ctn">
+                <div style="margin-top: 40px; max-height:600px; overflow-y:scroll"
+                    class="proposal_status-card w-100 py-3 example">
+                    <div class="proposal_status-SideCard sticky top-0">
+                        <div class="d-flex align-items-start justify-content-start gap-2">
+                            <h2 class="heading">Bulletin</h2>
+>>>>>>> 9270b47 (added new UI updates)
+                            <button style="margin-bottom: 0.5rem;" type="button"
+                                class="border-0 bg-transparent d-flex align-items-center  justify-content-center  text-secondary"
+                                data-toggle="tooltip" data-placement="right"
+                                title="Discover the active members of this DAO who consistently participate in voting on proposals. Their engagement drives the decision-making process.">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+<<<<<<< HEAD
+                                    stroke-width="1.5" stroke="currentColor" width="22px" height="22px">
+=======
+                                    stroke-width="1.5" stroke="currentColor" width="22px" hetight="22px">
+>>>>>>> 9270b47 (added new UI updates)
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                </svg>
+                            </button>
+                        </div>
+<<<<<<< HEAD
+=======
+                        <div class="d-flex align-items-center justify-content-end gap-3">
+                            <button id='add_poll_info' class="btn font-xs whitespace-nowrap p-0 text-info"  style='display:none' type="button"
+                                data-toggle="modal" data-target="#addPollingModal">Add Polls</button> <span class="text-secondary font-xxs">|</span> 
+                            <button id='add_bulletin_info' style='display:none'
+                                class="btn font-xs whitespace-nowrap p-0 text-info" type="button" data-toggle="modal"
+                                data-target="#addBulletinModal">Add Bulletin</button>
+                        </div>
+                    </div>
+                    <div class="text-center w-100" id='bulletins_views'>
+                                        <center>Loading Bulletins</center>
+                    </div>
+                  </div>
+
+
+                <div id='topVoters' style="margin: top 15px; disp lay:none" class="proposal_status-card w-100">
+                    <div class="proposal_status-SideCard">
+                        <div class="d-flex align-items-start justify-content-start gap-2">
+                            <h2 class="heading">Top Voters</h2>
                             <button style="margin-bottom: 0.5rem;" type="button"
                                 class="border-0 bg-transparent d-flex align-items-center  justify-content-center  text-secondary"
                                 data-toggle="tooltip" data-placement="right"
@@ -1020,6 +1355,7 @@
                                 </svg>
                             </button>
                         </div>
+>>>>>>> 9270b47 (added new UI updates)
 
                         <div class="paragraph">
                             <p>Participated <br> in Proposal</p>
@@ -1038,6 +1374,7 @@
                     </div>
                 </div>
             </div>
+<<<<<<< HEAD
             <div class="">
 
 
@@ -1370,6 +1707,147 @@
                                 </div>
                             </div>
                         </div>
+=======
+           <div class="modal-dialog modal-dialog-centered">
+                <div class="modal fade" id="addPollingModal" tabindex="-1" aria-labelledby="addPollingModal"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header px-4 pt-2 p-0">
+                                <h4 class="heading" id="addPollingModal">Add Polls</h4>
+                                <button type="button" class="close btn" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="p-4">
+                                <div id="poll">
+                                    <form id="pollForm" data='2'>
+                                        <label for="">
+                                            <p class="m-0 p-0">Write a question?</p>
+                                        </label>
+                                        <textarea class="form-control h-auto mb-2" name="" id="poll_question" cols="30"
+                                            rows="2" placeholder="Write Question here:" required></textarea>
+                                        <div
+                                            class=" poll-option d-flex align-items-center justify-content-between gap-2">
+                                            <input class="pollingInput form-control h-auto w-50" type="text"
+                                                id="poll_option_value_1" name="option_1" placeholder="Option 1"
+                                                required>
+                                        </div>
+                                        <div
+                                            class="poll-option d-flex align-items-center justify-content-between gap-2">
+                                            <input class="pollingInput form-control h-auto w-50" type="text"
+                                                id="poll_option_value_2" name="option_2" placeholder="Option 2"
+                                                required>
+                                        </div>
+                                        <button class="btn btn-secondary mt-2" onclick='addNewPollOption()'
+                                            type="button" id="addOption">Add Option</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" id='poll_cancel' class="btn btn-outline-dark"
+                                    data-dismiss="modal">Cancel</button>
+                                <button type="button" onclick="addNewPoll(event)"
+                                    class="btn btn-warning">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal fade" id="addBulletinModal" tabindex="-1" aria-labelledby="addBulletinModal"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header px-4 pt-2 p-0">
+                                <h4 class="heading" id="addBulletinModal">Add Bulletin</h4>
+                                <button type="button" class="close btn" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="p-4">
+                                <div class="d-flex flex-column align-items-end gap-2 px-1">
+                                    <div class="form-group w-100">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <label for="">
+                                                <span class="asset-details-label whitespace-nowrap">Add Bulletin:</span>
+                                            </label>
+
+                                        </div>
+                                        <textarea id='bulletin_msg' type="text" class="form-control h-auto"
+                                            rows="4"></textarea>
+                                    </div>
+                                    <div class="">
+                                        <button onclick='addBulletin()' type="button"
+                                            class="btn btnCreate border-0 mb-1 mt-0">
+                                            <p class="mb-0 text-white">Submit</p>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal fade" id="BulletinView" tabindex="-1" aria-labelledby="BulletinView"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header px-4 pt-2 p-0">
+                                <h4 class="heading">Bulletin</h4>
+                                <button type="button" class="close btn" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="">
+                                <div class="d-flex flex-column align-items-end gap-2 px-1" id='bulletin_modal_view'>
+                                     
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal fade" id="voterView" tabindex="-1" aria-labelledby="voterView"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header px-4 pt-2 p-0">
+                                <h4 class="heading" id="voterView">Voters</h4>
+                                <button type="button" class="close btn" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div style="min-height: 40vh;" class="p-4">
+                                <div class="d-flex flex-column align-items-center gap-2 px-1">
+                                <div class="d-flex flex-column align-items-center gap-4" id="dao_users">
+                                    <div class="cardEndDetail d-flex justify-content-between gap-3">
+                                        <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="Profile Image" class="image w-img">
+                                        <div class="text text-center">
+                                            GA6B4IASSKD6EO3NH3JRXKNCAHT7GDS3VWL676OTI27ZAR4CM4USWMNZ
+                                        </div> 
+                                    </div>
+                                
+                                    <div class="cardEndDetail d-flex justify-content-between gap-3">
+                                        <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="Profile Image" class="image w-img">
+                                        <div class="text text-center">
+                                            GA6B4IASSKD6EO3NH3JRXKNCAHT7GDS3VWL676OTI27ZAR4CM4USWMNZ
+                                        </div> 
+                                    </div>
+                                
+                                    <div class="cardEndDetail d-flex justify-content-between gap-3">
+                                        <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="Profile Image" class="image w-img">
+                                        <div class="text text-center">
+                                            GA6B4IASSKD6EO3NH3JRXKNCAHT7GDS3VWL676OTI27ZAR4CM4USWMNZ
+                                        </div> 
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+>>>>>>> 9270b47 (added new UI updates)
                     </div>
                 </div>
             </div>
@@ -1531,11 +2009,17 @@ var tweets = [];
 var is_Admin = false;
 var dao_users_page = 1;
 var dao_user_page_segment = 20;
+<<<<<<< HEAD
+=======
+var inbox_link = "{{route('proposal.inbox')}}"
+var logoSaveImg = null
+>>>>>>> 9270b47 (added new UI updates)
 
 /* RETRIEVE THE DAO SPECIFIC INFORMATION */
 const indexMain = async () => {
     let _dao = '{{ $dao_id }}'
     let timeStart = performance.now()
+<<<<<<< HEAD
     dao = await getDao(_dao);
     //timeStart = performance.now()
     daoUsers = await getDaoUsersP(dao.name);
@@ -1839,6 +2323,273 @@ const loadDelegatee = async () => {
         if (E('user_delegates_view').innerHTML != "") {
             E('user_delegates').style.display = "" //show
         }
+=======
+    //fetch dao meta first
+    dao = (await getAlldaoInfo(_dao))[_dao];  
+    //load dao meta function first
+    setUp('meta')
+    //get onchain info
+    dao = {...((await getDaoWithoutMeta([_dao]))[0]), ... dao}; 
+    dao.toml = await readAssetToml(dao.url)
+    setUp(); 
+    inbox_link += "?dao=" + _dao + "&name=" + dao.name
+    E('tab3').innerText = "Members (" + dao.members + ")"
+    if (dao.admins.includes(walletAddress) || dao.owner == walletAddress) {  
+        E('prop_review_tab').style.display = 'flex'
+        E('add_poll_info').style.display = 'flex'
+        E('add_bulletin_info').style.display = 'flex'
+    }
+    setTimeout(loadBulletin, 50)
+    //show proposal review only if admin
+    if (dao['proposals'] != undefined) {
+        //load info of all the proposals
+        if (dao.proposals.length > 0) {
+            //get all propsoal ifo
+            const props = await getAllProposal(dao.proposals, dao.token);
+            if(props.status) { 
+                let temPropView = document.createElement('div') //hold proposal views, till they are done loading
+                let temRePropView = document.createElement('div') //hold proposal views, till they are done loading
+                for(let i=0;i<dao.proposals.length;i++) {
+                    const prop = props[dao.proposals[i]];  
+                    if (prop != undefined && prop != "") {
+                        prop.status = Number(prop.status);  
+                        if (prop['title'] != undefined) {
+                            prop.proposalId = dao.proposals[i]; //attach id
+                            proposals[prop.proposalId] = prop
+                            if (prop.status != 0 && prop.status != 2) {
+                                //append 
+                                prop.first = (temPropView.innerHTML == "")
+                                temPropView.appendChild(drawProposal(prop))
+                            }
+                            //append based on review  
+                            if (prop.status == 0) {
+                                prop.first = (temRePropView.innerHTML == "")
+                                temRePropView.innerHTML += drawProposalReview(prop)
+                            }
+                           
+                        }
+                    }
+                } 
+                E('proposal_views').innerHTML = temPropView.innerHTML;
+                E('proposal_review').innerHTML = temRePropView.innerHTML;
+                if (temPropView.firstElementChild == null) {
+                    E('proposal_views').innerHTML = "<div style='font-size:20px; margin:60px;'><center>No record found.</center></div>"
+                    E('proposal_views').setAttribute('data', 'empty')
+                }
+                if (temRePropView.firstElementChild == null) {
+                    E('proposal_review').innerHTML = "<div style='font-size:20px; margin:60px;'><center>Nothing found.</center></div>"
+                }
+                //show proposals counts
+                E('tab1_count').innerHTML = "(" + temPropView.children.length + ")"
+                E('tab5').innerHTML = "Proposals In Review (" + temRePropView.children.length + ")"
+                temPropView = temRePropView = null
+            }
+        } else {
+            E('proposal_views').innerHTML = "<div style='font-size:20px; margin:60px;'><center>No proposal created yet<br>Be the first to create a proposal.</center></div>"
+            E('proposal_review').innerHTML = "<div style='font-size:20px; margin:60px;'><center>Nothing found.</center></div>"
+        }
+    }
+    else {
+        E('proposal_views').innerHTML = "<div style='font-size:20px; margin:60px;'><center>No proposal created yet<br>Be the first to create a proposal.</center></div>"
+            E('proposal_review').innerHTML =  "<div style='font-size:20px; margin:60px;'><center>No record found.</center></div>"
+    }
+    
+    E('leaveDao').onclick = async () => {
+        const id = talk("Getting ready")
+        //first burn all the tokens
+        const bal = await getTokenUserBal(dao.token, walletAddress)
+        if (bal > 0) {
+            talk("First burning asset balance", 'norm', id)
+            //burn tokens first
+            await burnToken(bal, code, issuer)
+        }
+        talk("Leaving Dao", 'norm', id)
+        const res = await leaveDao(dao.code, dao.issuer, _dao, dao.name)
+        if (res.status === true) {
+            talk("You have left this Dao", 'good', id)
+            //hide button
+            E('leaveDao').style.display = 'none'
+        } else {
+            talk("Something went wrong", 'fail', id)
+        }
+        stopTalking(4, id)
+
+    }
+    //load users
+    E('dao_users').innerHTML = `<center style='margin: 40px 20px'>Loading members</center>`
+    //configure the buttons
+    E('next_dao_user_info').onclick = () => {
+        if (dao_users_page < daoUsers.length / dao_user_page_segment) {
+            loadUsers(dao_users_page + 1)
+            dao_users_page++
+        }
+    }
+    E('pre_dao_user_info').onclick = () => {
+        if (dao_users_page > 1) {
+            loadUsers(dao_users_page - 1)
+            dao_users_page--
+        }
+    }
+    daoUsers = await getDaoUsersP(dao.name);
+    daoDelegatee = await getDaoDelegatee(dao.token, walletAddress)
+    
+    setTimeout(loadUsers, 50)
+    setTimeout(loadDelegatee, 50)
+}
+/** Load dao info 
+ * @params {type all|meta|chain}
+ **/
+const setUp = (type = 'all') => { 
+    if (dao['token'] != undefined) {
+        E('dao_name').innerHTML = E('dao_name_head').innerHTML = E('dao_save_name').innerHTML = dao.name || "no name"
+        E('dao_about').innerHTML = E('dao_save_about').innerHTML = dao.description || "Your friendly Lumos DAO community"
+        E('dao_members').innerHTML = dao.members.toLocaleString() + (( dao.members > 1) ? " members" : " member")
+        //get token info name
+        E('dao_token_name').innerHTML = E('dao_save_code').innerHTML = dao.code
+        E('dao_token_url').innerHTML = E('dao_token_url').href = dao.url
+        const imgx = (dao.image || "");
+        const coverImgx = dao.cover
+        E('dao_cover_image').src = coverImgx
+        E('dao_token_img').src = E('dao_save_img').src = E('dao_image').src = (dao.image || "")  + '?id=' + Math.random() * 100
+        E('asset_name').href = 'https://stellar.expert/explorer/testnet/asset/' + dao.code + "-" + dao.issuer
+        E('createProposal').href = E('createProposal').href.replace('PROPOSAL_CREATE',`${dao.name}:${dao['token']}`)
+        E('createProposal').style.display = 'block'
+        //check if ts a member of this dao
+         const isMember = dao['joined']
+        if (isMember !== false && dao.owner != walletAddress) {
+            E('leaveDao').style.display = 'block'
+        } else {
+            E('leaveDao').style.display = 'none'
+        }      
+        //get asset info from toml
+        if (dao.url != "" ) {
+            const aToml = dao.toml
+            if(type == 'all' || type == 'chain') {
+                E('dao_website').innerHTML = E('dao_website').href = E('dao_save_domain').innerHTML = E('dao_save_domain_href').href = (aToml.DOCUMENTATION != undefined) ? aToml.DOCUMENTATION.ORG_URL : ""
+                E('dao_save_toml').innerHTML = E('dao_save_toml_href').href = dao.url
+                if (aToml.CURRENCIES) {
+                    const temp = (dao.owner || "")
+                    E('dao_others_address').innerHTML = ""
+                    E('dao_others_address').appendChild(drawOtherAddress(temp, 'DAO Creator'))
+    
+                }
+                //check if its an approved wallet
+                if (dao.issuer == walletAddress || dao.admins.includes(walletAddress)) {  
+                    E('dao_setting').style.display = 'block'
+                    E('manageAdminBut').style.display = 'block'
+                    E('manageAdminBut').addEventListener('click', () => {
+                        //clear the search field
+                        E('addNewAdmin').style.display = 'none'
+                    })
+                }
+                //load approved address
+                is_Admin = dao.admins.includes(walletAddress) || (dao.owner == walletAddress)
+                E('dao_admin_lists').innerHTML = ""
+                //load admin list
+                for (let i = 0; i < dao.admins.length; i++) {
+                    if (dao.admins[i] != null) {
+                        E('dao_admin_lists').innerHTML += drawAdminUser({
+                            user: dao.admins[i]
+                        })
+                        E('dao_others_address').appendChild(drawOtherAddress(dao.admins[i], "Admin"))
+                    }
+                }
+                if (E('dao_admin_lists').innerHTML == "") {
+                    E('dao_admin_lists').parentElement.style.display = 'none'
+                } else {
+                    E('dao_admin_lists').parentElement.style.display = ''
+                }
+                //show top voters
+                //sort in descending order
+                dao.top_voters.sort((a, b) => N(b.vote - a.vote));
+                if (dao.top_voters.length > 0) {
+                    E('topVotersView').innerHTML = ""
+                    for (let i = 0; i < dao.top_voters.length && i < 20; i++) {
+                        E('topVotersView').appendChild(drawTopVoters(dao.top_voters[i]))
+                    }
+                    E('topVoters').style.display = "block"
+                } else {
+                    E('topVotersView').innerHTML = "<center style='margin-top:40px'>Nothing to show</center>"
+                }
+                //display links
+                const socials = aToml.DOCUMENTATION
+                if (socials.ORG_TWITTER != "") {
+                    E('dao_twitter').href = socials.ORG_TWITTER
+                    E('dao_twitter').parentElement.style.display = 'flex' //show the icon
+                } else {
+                    E('dao_twitter').parentElement.style.display = 'none'
+                }
+                if(dao.twitter != "") {
+                    E('dao_save_twitter_div').innerHTML = "Connected"
+                    E('dao_save_twitter').disabled = true
+                }
+                if (socials.ORG_TELEGRAM != "") {
+                    E('dao_telegram').href = socials.ORG_TELEGRAM
+                    E('dao_telegram').parentElement.style.display = 'flex' //show the icon
+                } else {
+                    E('dao_telegram').parentElement.style.display = 'none'
+                } //hide the icon
+                if(dao.telegram != "") {
+                    E('dao_save_telegram').innerHTML = `<img class="w-img border" src="{{asset('/images/download.jpeg')}}" alt="">
+                    <div id='dao_save_telegram_div'  class="font-medium text-muted ml-2">Connected</div>`
+                    E('dao_save_telegram').disabled = true
+                }
+                else {
+                    //append the telegram login button
+                    E('dao_save_telegram').innerHTML = "";
+                    E('dao_save_telegram').appendChild(window.telegram)
+                }
+                if (socials.ORG_REDDIT != "") {
+                    E('dao_reddit').href = socials.ORG_REDDIT
+                    E('dao_reddit').parentElement.style.display = 'flex' //show the icon
+                } else {
+                    E('dao_reddit').parentElement.style.display = 'none'
+                } //hide the icon
+                if(dao.reddit != "") {
+                    E('dao_save_reddit_div').innerHTML = "connected"
+                    E('dao_save_reddit').disabled = true
+                }
+                
+                if (socials.ORG_INSTAGRAM != "") {
+                    E('dao_instagram').href = socials.ORG_INSTAGRAM
+                    E('dao_instagram').parentElement.style.display = 'flex' //show the icon
+                } else {
+                    E('dao_instagram').parentElement.style.display = 'none'
+                } //hide the icon
+    
+                if (socials.ORG_DISCORD != "") {
+                    E('dao_discord').href = E('dao_save_discord').value = socials.ORG_DISCORD
+                    E('dao_discord').parentElement.style.display = 'flex' //show the icon
+                } else {
+                    E('dao_discord').parentElement.style.display = 'none'
+                } //hide the icon
+            }
+        }
+        E('dao_save_about_edit').style.display = 'none'
+        E('dao_save_about').style.display = 'block'
+        E('addAdminInputField').style.display = "none" //hide the add admin input field
+        E('addNewAdmin').style.display = "none" //hide the add admin input field
+        E('dao_save_image_edit').value = [] //reset file upload
+        E('dao_save_about_edit').value = "" //reset description
+        E('dao_save_button').disabled = false //enable save button
+        
+    }
+}
+const loadDelegatee = async () => {
+    if (daoDelegatee.length > 0) {
+        for (let i = 0; i < daoDelegatee.length; i++) {
+            if (daoDelegatee[i] != "") {
+                //show
+                E('user_delegates_view').innerHTML += drawDelegateSearchResult({
+                    user: daoDelegatee[i],
+                    type: 2
+                })
+            }
+        }
+        if (E('user_delegates_view').innerHTML != "") {
+            E('user_delegates').style.display = "" //show
+        }
+>>>>>>> 9270b47 (added new UI updates)
     } else {
         E('user_delegates').style.display = "none" //hide
     }
@@ -1879,6 +2630,7 @@ const loadBulletin = async () => {
     bulletins = await getDaoBulletins(dao.token)
     paginate('bulletins_views', bulletins, 5, drawBulletinBox)
 }
+<<<<<<< HEAD
 const loadTweets = async () => {
     tweets = await getDaoTweet(dao.token)
     paginate('tweets_views', tweets, 10, drawTweetBox, () => {
@@ -1888,20 +2640,76 @@ const loadTweets = async () => {
 }
 
 
+=======
+const showInModalView = async (bullentId, indx) => {  
+    if(E(bullentId).parentElement.id != 'bulletin_modal_view') {
+        const mainView = E(bullentId).parentElement
+        const child = E(bullentId)
+        mainView.removeChild(E(bullentId))
+        E('bulletin_modal_view').appendChild(child)
+        //set the dimensions
+        E(bullentId).style.width = "calc(100% - 10px)"
+        E(bullentId).style.marginTop = "20px !important"
+        setTimeout(() => {
+            E(bullentId).setAttribute('data-toggle', "")
+        }, 500)
+        //do timer to listen to when it goes offline
+        await new Promise(resolve => setTimeout(resolve, 500))
+        const tmr = setInterval(() => { 
+            if(E('BulletinView').style.display == 'none') {
+                //place bulletin back to its view
+                const childrn = mainView.children
+                if(childrn[indx] != null) {
+                    //then insert at its original position
+                    mainView.insertBefore(E(bullentId), childrn[indx])
+                }
+                else {
+                    //place at the begining
+                    mainView.appendChild(E(bullentId))
+                }
+                //reset dimensions
+                E(bullentId).style.width = ""
+                E(bullentId).style.marginTop = ""
+                //reset attributes
+                E(bullentId).setAttribute('data-toggle', "modal")
+                clearInterval(tmr)
+            }
+        }, 50)
+    }
+}
+>>>>>>> 9270b47 (added new UI updates)
 //to enableEdit
 const enableEdit = (type) => {
     if (type == 'image') {
         //open select image
+<<<<<<< HEAD
         validateImageUpload('dao_save_image_edit', 'dao_save_img', 2)
         E('dao_save_image_edit').click()
+=======
+        validateImageUpload('dao_save_image_edit', 'dao_save_img', 2, (e, url) => {
+            optimizeImg(url, 0.9, 400, 400).then((img) => { 
+                //update upload file
+                logoSaveImg = img
+            })
+        }) 
+        E('dao_save_image_edit').click()
+        E('dao_save_button').style.display = 'block'
+>>>>>>> 9270b47 (added new UI updates)
     } else if (type == 'about') {
         //make about div editable
         E('dao_save_about_edit').style.display = 'block'
         E('dao_save_about').style.display = 'none'
         E('dao_save_about_edit').value = E('dao_save_about').innerText
+<<<<<<< HEAD
     } else if (type == 'address') {
         //make about div editable
         E('dao_save_address_view').style.display = 'block'
+=======
+        E('dao_save_button').style.display = 'block'
+    } else if (type == 'admins') {
+        //show add admin input field
+        E('addAdminInputField').style.display = "flex"
+>>>>>>> 9270b47 (added new UI updates)
     }
 }
 
@@ -1913,6 +2721,7 @@ E('dao_save_button').onclick = async () => {
         return ""
     }
     const fileInput = E('dao_save_image_edit');
+<<<<<<< HEAD
     const saveSocials = async (id = null) => {
         //get all socials
         const insta = E('dao_save_insta').value.trim()
@@ -1958,6 +2767,8 @@ E('dao_save_button').onclick = async () => {
         }
 
     }
+=======
+>>>>>>> 9270b47 (added new UI updates)
     const saveDesc = (id = null) => {
         const desc = E('dao_save_about_edit').value.trim()
         if (desc != "") {
@@ -1971,19 +2782,32 @@ E('dao_save_button').onclick = async () => {
                         //hiding the input element
                         E('dao_save_about_edit').style.display = 'none'
                         E('dao_save_about').style.display = 'block'
+<<<<<<< HEAD
                         //save back the results
                         dao.description = desc
                         saveSocials(id)
                     } else {
                         talk("Unable to update description<br>Something went wrong<br>This may be due to network error",
                             "fail", id)
+=======
+                        E('dao_save_about').innerHTML = desc
+                        //save back the results
+                        dao.description = desc
+                        stopTalking(3, talk("Saved successfully", 'good', id))
+                    } else {
+                        talk("Unable to update description<br>Something went wrong<br>This may be due to network error", "fail", id)
+>>>>>>> 9270b47 (added new UI updates)
                         stopTalking(3, id)
                         E('dao_save_button').disabled = false
                     }
                 })
             } else {
+<<<<<<< HEAD
                 const msg =
                     "Invalid characters(\") present in description.<br> Please remove it and try again";
+=======
+                const msg = "Invalid characters(\") present in description.<br> Please remove it and try again";
+>>>>>>> 9270b47 (added new UI updates)
                 (id != null) ? talk(msg, 'fail', id): id = talk(msg, 'fail')
                 stopTalking(3, id)
                 E('dao_save_button').disabled = false
@@ -2012,6 +2836,7 @@ E('dao_save_button').onclick = async () => {
         saveDesc()
     }
 }
+<<<<<<< HEAD
 //to hide the save address input field
 E('dao_save_addr_cancel').onclick = () => {
     E('dao_save_address_view').style.display = 'none'
@@ -2072,6 +2897,10 @@ E('dao_save_addr_add').onclick = async () => {
         stopTalking(4, talk(msg, 'fail'))
     }
 }
+=======
+
+
+>>>>>>> 9270b47 (added new UI updates)
 //to add dao admins
 E('manageAdminConfirm').onclick = async () => {
     const addr = E('dao_search_admin').value.trim()
@@ -2088,11 +2917,20 @@ E('manageAdminConfirm').onclick = async () => {
                     //call trustline function
                     const id = talk("Checking address", "norm")
                     await new Promise((resolve) => setTimeout(resolve, 500));
+<<<<<<< HEAD
+=======
+                    talk("Adding admin", "norm", id)
+>>>>>>> 9270b47 (added new UI updates)
                     if ((await getTokenUserBal(dao.token, addr)) !== false) {
                         //add admin on chain
                         const res = await addAdmin({
                             admin: addr,
+<<<<<<< HEAD
                             dao: dao.token
+=======
+                            dao: dao.token,
+                            daoName: dao.name
+>>>>>>> 9270b47 (added new UI updates)
                         })
                         if (res !== false) {
                             stopTalking(3, talk("Admin added successfully", "good", id))
@@ -2128,6 +2966,106 @@ E('manageAdminConfirm').onclick = async () => {
     }
 }
 
+<<<<<<< HEAD
+=======
+//to oauth socials
+const saveSocials = async(type, user) => {
+    if(type == 'twitter') {
+        const provider = new TwitterAuthProvider(); 
+        const auth = getAuth();
+        signInWithPopup(auth, provider)
+        .then(async (result) => { 
+            const user = result.user
+            //save the refresh token
+             try {
+                 if(user.refreshToken) {
+                    const id = talk('Connecting twitter')
+                    //modify the toml first
+                    const shareUri = 'https://x.com/' + result._tokenResponse.screenName
+                    modifyDao(dao.url, dao.code, 'social', JSON.stringify({
+                             twitter:shareUri
+                         }), async (status) => {
+                            if (status) {
+                                //save back the results
+                                dao.toml.DOCUMENTATION.ORG_TWITTER = shareUri
+                                const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=twitter_auth&dao=" + dao.token  + "&code=" + encodeURIComponent(user.refreshToken) 
+                                const response = await fetch(url);
+                                if (!response.ok) {
+                                  throw new Error("Network response was not ok");
+                                }
+                                const res = await response.json();
+                                if(res.status) {
+                                    dao.twitter = user.refreshToken
+                                    setUp()
+                                    talk("Twitter connected successfully", "good", id)
+                                    stopTalking(3, id)
+                                }
+                                else {
+                                    talk("Unable to connect twitter account<br>Something went wrong<br>This may be due to network error","fail", id)
+                                    stopTalking(3, id)
+                                }
+                            } else {
+                                talk("Unable to connect twitter account<br>Something went wrong<br>This may be due to network error","fail", id)
+                                stopTalking(3, id)
+                            }
+                    })
+                }
+                else {
+                    stopTalking(3, talk('Something went wrong', 'fail'))
+                }
+            } catch (error) { console.log(error)
+                stopTalking(2.5, talk("Unable to connect twitter", 'fail'))
+            }
+        }).catch((error) => {
+          console.log(error) 
+        });
+    }
+    else if(type == 'telegram') {
+         try {
+                if(user.id) {
+                    const id = talk('Connecting telegram')
+                    //modify the toml first
+                    const shareUri = 'https://t.me/' + user.username
+                    modifyDao(dao.url, dao.code, 'social', JSON.stringify({
+                             telegram:shareUri
+                         }), async (status) => {
+                            if (status) {
+                                //save back the results
+                                dao.toml.DOCUMENTATION.ORG_TELEGRAM = shareUri
+                                const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=telegram_auth&dao=" + dao.token  + "&id=" + encodeURIComponent(user.id) 
+                                const response = await fetch(url);
+                                if (!response.ok) {
+                                  throw new Error("Network response was not ok");
+                                }
+                                const res = await response.json();
+                                if(res.status) {
+                                    dao.twitter = user.refreshToken
+                                    setUp()
+                                    talk("Telegram connected successfully", "good", id)
+                                    stopTalking(3, id)
+                                }
+                                else {
+                                    talk("Unable to connect telegram account<br>Something went wrong<br>This may be due to network error","fail", id)
+                                    stopTalking(3, id)
+                                }
+                            } else {
+                                talk("Unable to connect telegram account<br>Something went wrong<br>This may be due to network error","fail", id)
+                                stopTalking(3, id)
+                            }
+                    })
+                }
+                else {
+                    stopTalking(3, talk('Something went wrong', 'fail'))
+                }
+            } catch (error) { console.log(error)
+                stopTalking(2.5, talk("Unable to connect telegram", 'fail'))
+            }
+    }
+    else if(type == 'reddit') {
+        window.location.href = getRedditOauthUri(dao.token, (new URL(dao.url).hostname.split('.')[0]))
+    }
+}
+>>>>>>> 9270b47 (added new UI updates)
 //to search 
 const searchAdminUser = () => {
     const search = E('dao_search_admin_result')
@@ -2148,7 +3086,11 @@ const searchAdminUser = () => {
                     `
             E('dao_admin_rules').style.display = 'none'
         } else {
+<<<<<<< HEAD
             E('dao_admin_rules').style.display = ''
+=======
+            E('dao_admin_rules').style.display = 'flex'
+>>>>>>> 9270b47 (added new UI updates)
         }
         E('addNewAdmin').style.display = ''
     } else {
@@ -2205,6 +3147,11 @@ const approveProposal = async (prop = {}, _id = "", event) => {
         const res = await executeProposal({
             propId: prop.proposalId,
             status: 1,
+<<<<<<< HEAD
+=======
+            creator:prop.creator,
+            daoId:'{{ $dao_id }}',
+>>>>>>> 9270b47 (added new UI updates)
             _type: (dao.url.indexOf('lumos') > -1) ? 2 : 1
         })
         if (res !== false) {
@@ -2216,13 +3163,20 @@ const approveProposal = async (prop = {}, _id = "", event) => {
                 //draw it in the confirm section
                 const elem = E('proposal_review')
                 elem.removeChild(E(_id))
+<<<<<<< HEAD
                 if (elem.firstElementChild == null) {
                     elem.innerHTML =
                         "<div style='font-size:20px; margin:60px;'><center>No record found.</center></div>"
+=======
+                E('tab5').innerHTML = "Proposals In Review (" + elem.children.length + ")"
+                if (elem.firstElementChild == null) {
+                    elem.innerHTML =  "<div style='font-size:20px; margin:60px;'><center>No record found.</center></div>"
+>>>>>>> 9270b47 (added new UI updates)
                 }
                 if (E('proposal_views').getAttribute('data') == 'empty') {
                     E('proposal_views').innerHTML = ""
                 }
+<<<<<<< HEAD
                 if (E('proposal_budget').getAttribute('data') == 'empty') {
                     E('proposal_budget').innerHTML = ""
                 }
@@ -2232,6 +3186,11 @@ const approveProposal = async (prop = {}, _id = "", event) => {
                     E('proposal_budget').innerHTML = drawProposalApproved(prop) + E('proposal_budget')
                         .innerHTML
                 }
+=======
+                E('proposal_views').insertBefore(drawProposal(prop), E('proposal_views').firstElementChild)
+                E('tab1_count').innerHTML = "(" + E('proposal_views').children.length + ")"
+                
+>>>>>>> 9270b47 (added new UI updates)
             } else if (res.status == "lowvotes") {
                 stopTalking(3, talk("Unable to accept a proposal with no votes", 'fail', id))
             } else if (res.status == "executed") {
@@ -2264,7 +3223,13 @@ const rejectProposal = async (prop = {}, _id = "", event) => {
         const res = await executeProposal({
             propId: prop.proposalId,
             status: 2,
+<<<<<<< HEAD
             _type: 0
+=======
+            _type: 0,
+            creator:prop.creator,
+            daoId:'{{ $dao_id }}'
+>>>>>>> 9270b47 (added new UI updates)
         })
         if (res !== false) {
             if (res.status === 'done') {
@@ -2275,9 +3240,16 @@ const rejectProposal = async (prop = {}, _id = "", event) => {
                 //draw it in the confirm section
                 const elem = E('proposal_review')
                 elem.removeChild(E(_id))
+<<<<<<< HEAD
                 if (elem.firstElementChild == null) {
                     elem.innerHTML =
                         "<div style='font-size:20px; margin:60px;'><center>No record found.</center></div>"
+=======
+                //set the new proposal review no
+                E('tab5').innerHTML = "Proposals In Review (" + elem.children.length + ")"
+                if (elem.firstElementChild == null) {
+                    elem.innerHTML = "<div style='font-size:20px; margin:60px;'><center>No record found.</center></div>"
+>>>>>>> 9270b47 (added new UI updates)
                 }
             } else if (res.status == "executed") {
                 stopTalking(3, talk("Proposal has already been executed", 'fail', id))
@@ -2322,6 +3294,7 @@ const confirmProposal = async (prop = {}, _id = "", event) => {
                 } else if (res.status === 'transfer') {
                     stopTalking(3, talk("Proposal budget has been funded successfully", 'good', id))
                     proposals[prop.proposalId].status = 3n
+<<<<<<< HEAD
                     //draw it in the confirm section
                     const elem = E('proposal_budget')
                     elem.removeChild(E(_id))
@@ -2330,6 +3303,8 @@ const confirmProposal = async (prop = {}, _id = "", event) => {
                             "<div style='font-size:20px; margin:60px;'><center>No record found.</center></div>"
                     }
                     //make changes to the main view
+=======
+>>>>>>> 9270b47 (added new UI updates)
                     if (E('prop_main_status_' + prop.proposalId) != null) {
                         E('prop_main_status_' + prop.proposalId).innerText = 'Funded'
                         E('prop_main_end_' + prop.proposalId).style.display = ""
@@ -2362,11 +3337,18 @@ const modifyAssetImg = (assetName, callback) => {
     const fileInput = E('dao_save_image_edit');
     const formData = new FormData(); // Create a FormData object
     // Add the selected file to the FormData object
+<<<<<<< HEAD
     formData.append('file', fileInput.files[0]);
     // Create an HTTP request
     const xhr = new XMLHttpRequest();
     const url = window.location.protocol +
         "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=upload&name=" + assetName + ".png"
+=======
+    formData.append('file', logoSaveImg);
+    // Create an HTTP request
+    const xhr = new XMLHttpRequest();
+    const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=upload&name=" + assetName + ".png"
+>>>>>>> 9270b47 (added new UI updates)
     // Define the server endpoint (PHP file)
     xhr.open('POST', url, true);
     // Set up an event listener to handle the response
@@ -2414,10 +3396,24 @@ const addUserDelegate = async (type = 1, delegatee) => {
     //to add or remove a delegate
     let id;
     const but = E(delegatee + '_delegate')
+<<<<<<< HEAD
     if (await isBanned(dao.token, walletAddress)) {
         return ""
     }
     but.disabled = true
+=======
+    const del_address = delegatee
+    if (await isBanned(dao.token, walletAddress)) {
+        stopTalking(3, talk("You have been banned from this dao", 'fail'))
+        return ""
+    }
+    //check if user has joined the dao
+    if ((await getTokenUserBal(dao.token, walletAddress)) === false) {
+        stopTalking(3, talk("You are not a member of this dao", 'fail'))
+        return ""
+    }
+    but.disabled = true  
+>>>>>>> 9270b47 (added new UI updates)
     if (type == 1) {
         id = talk("Delegating voting power to " + fAddr(delegatee, 6))
     } else {
@@ -2426,6 +3422,10 @@ const addUserDelegate = async (type = 1, delegatee) => {
     }
     const res = await addDelegate({
         delegatee: delegatee,
+<<<<<<< HEAD
+=======
+        del_address:del_address,
+>>>>>>> 9270b47 (added new UI updates)
         dao: dao.token
     })
     but.disabled = false
@@ -2434,7 +3434,11 @@ const addUserDelegate = async (type = 1, delegatee) => {
             stopTalking(3, talk("Delegated voting power to " + fAddr(delegatee, 6), 'good', id))
             daoDelegatee = [delegatee]
         } else {
+<<<<<<< HEAD
             stopTalking(3, talk("Reclaimed voting power from " + fAddr(delegatee, 6), 'good', id))
+=======
+            stopTalking(3, talk("Reclaimed voting power from " + fAddr(del_address, 6), 'good', id))
+>>>>>>> 9270b47 (added new UI updates)
             daoDelegatee = []
         }
         //reload results
@@ -2446,7 +3450,11 @@ const addUserDelegate = async (type = 1, delegatee) => {
             stopTalking(3, talk("Unable to delegate voting power to " + fAddr(delegatee, 6) +
                 '<br>Something went wrong', 'fail', id))
         } else {
+<<<<<<< HEAD
             stopTalking(3, talk("Unable to reclaim voting power from " + fAddr(delegatee, 6) +
+=======
+            stopTalking(3, talk("Unable to reclaim voting power from " + fAddr(del_address, 6) +
+>>>>>>> 9270b47 (added new UI updates)
                 '<br>Something went wrong', 'fail', id))
         }
     }
@@ -2536,18 +3544,31 @@ const unbanMember = async (user, id, event) => {
     }
 }
 const sendMessage = (user) => {
+<<<<<<< HEAD
     window.location.href = E('inbox').href + "&to=" + user
+=======
+    window.location.href = inbox_link + "&to=" + user
+>>>>>>> 9270b47 (added new UI updates)
 }
 const removeAdmin = async (user, event) => {
     //to remove admin
     if (walletAddress == dao.owner) {
         event.target.disabled = true
         //call trustline function
+<<<<<<< HEAD
         const id = talk("Checking address", "norm")
         //save the address to the toml
         const res = await removeDaoAdmin({
             admin: user,
             dao: dao.token
+=======
+        const id = talk("Removing admin", "norm")
+        //save the address to the toml
+        const res = await removeDaoAdmin({
+            admin: user,
+            dao: dao.token,
+            daoName: dao.name
+>>>>>>> 9270b47 (added new UI updates)
         })
         if (res !== false) {
             stopTalking(3, talk("Admin removed successfully", "good", id))
@@ -2602,7 +3623,10 @@ const addBulletin = async () => {
         const resp = await isAdmin(dao.token)
         if (resp === true) {
             const res = await sendDaoBulletin(dao.token, msg, walletAddress)
+<<<<<<< HEAD
             console.log(res)
+=======
+>>>>>>> 9270b47 (added new UI updates)
             if (res.status) {
                 stopTalking(3, talk("Bulletin posted successfully", 'good', id))
                 //add to the bulletins data
@@ -2633,7 +3657,10 @@ const addBulletin = async () => {
 const likeBulletin = async (id, indx) => {
     //to toggle between like and dislike
     const res = await likeDaoBulletin(id, walletAddress)
+<<<<<<< HEAD
     console.log(res)
+=======
+>>>>>>> 9270b47 (added new UI updates)
     if (res.status) {
         //get like type
         if (res.type === 1) {
@@ -2661,7 +3688,10 @@ const likeBulletin = async (id, indx) => {
 const dislikeBulletin = async (id, indx) => {
     //to toggle between like and dislike
     const res = await dislikeDaoBulletin(id, walletAddress)
+<<<<<<< HEAD
     console.log(res)
+=======
+>>>>>>> 9270b47 (added new UI updates)
     if (res.status) {
         //get like type
         if (res.type === 1) {
@@ -2690,7 +3720,11 @@ const showBulletinComment = async (id, indx) => {
     E('comment_box_' + id).classList.toggle('d-none')
     E('comment_' + id).classList.toggle('d-none')
     if (!E('comment_' + id).classList.contains('d-none')) {
+<<<<<<< HEAD
         E('comment_' + id).innerHTML = '<center>Loading comments..</center>'
+=======
+        E('comment_' + id).innerHTML = '<center class="font-xs" style="margin-top:20px">Loading comments..</center>'
+>>>>>>> 9270b47 (added new UI updates)
         let commt = await getBulletinComment(id)
         paginate('comment_' + id, commt, 5, drawBulletinCommentBox)
         //do the send comment button
@@ -2753,7 +3787,10 @@ const addNewPoll = async (e) => {
             const resp = await isAdmin(dao.token)
             if (resp === true) {
                 const res = await sendDaoBulletin(dao.token, msg, walletAddress, poll)
+<<<<<<< HEAD
                 console.log(res)
+=======
+>>>>>>> 9270b47 (added new UI updates)
                 if (res.status) {
                     stopTalking(3, talk("poll posted successfully", 'good', id))
                     //add to the bulletins data
@@ -2853,7 +3890,11 @@ const observer = new MutationObserver((mutationsList, observer) => {
     for (const mutation of mutationsList) {
         if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
             // Check if the 'display' property has changed
+<<<<<<< HEAD
             const currentDisplay = E('myModal').style.display;
+=======
+            const currentDisplay = E('DaoSetting').style.display;
+>>>>>>> 9270b47 (added new UI updates)
             if (currentDisplay === 'none') {
                 setUp()
             } else {
@@ -2863,7 +3904,11 @@ const observer = new MutationObserver((mutationsList, observer) => {
     }
 });
 // Start observing the target element
+<<<<<<< HEAD
 observer.observe(E('myModal'), {
+=======
+observer.observe(E('DaoSetting'), {
+>>>>>>> 9270b47 (added new UI updates)
     attributes: true,
     attributeFilter: ['style']
 });
@@ -2872,12 +3917,28 @@ observer.observe(E('myModal'), {
 const drawProposal = (prop) => {
     let _div = document.createElement('div')
     let n = prop.creator.substring(0, 4) + "..." + prop.creator.substring(prop.creator.length - 5)
+<<<<<<< HEAD
     let h = prop.voters + ((prop.voters > 1) ? " members" : " member")
     let voteYesRes = N(prop.yes_votes) * (N(prop.yes_voting_power) / (floatingConstant))
     let voteNoRes = N(prop.no_votes) * (N(prop.no_voting_power) / (floatingConstant))
+=======
+    let h = (prop.yes_votes + prop.no_votes) + (((prop.yes_votes + prop.no_votes) > 1) ? " members" : " member")
+    let voteYesRes = N(prop.yes_votes) * (N(prop.yes_voting_power) / (floatingConstant))
+    let voteNoRes = N(prop.no_votes) * (N(prop.no_voting_power) / (floatingConstant))
+    //calculate yes and no votes bar
+    const tmp = (N(prop.yes_votes) * (N(prop.yes_voting_power)/(floatingConstant))) + (N(prop.no_votes) * (N(prop.no_voting_power)/(floatingConstant)))
+    let yes_per = (Math.floor((100 / (tmp)) * (N(prop.yes_votes) * (N(prop.yes_voting_power)/(floatingConstant)))) + "%") || "0%"
+    let no_per = (Math.floor((100 / (tmp)) * (N(prop.no_votes) * (N(prop.no_voting_power)/(floatingConstant)))) + "%") || "0%"
+    if(tmp == 0) {
+       yes_per = '0%'
+       no_per = '0%'
+    }
+    let _link = "{{ route('dao.proposal', ['proposal_id' => " ", "dao_id"=> $dao_id]) }}"
+    _link = _link.substring(0, _link.lastIndexOf("/") + 1)
+>>>>>>> 9270b47 (added new UI updates)
     _div.innerHTML = `
                         <div class="col-12 ${(!prop.first) ? 'border-top" style="margin-top:10px"'  : "" }">
-                            <a href="{{ route('dao.proposal', ['proposal_id' => " ", "dao_id"=> $dao_id]) }}${prop.proposalId}" class="text-decoration-none">
+                            <a href="${_link + prop.proposalId}" class="text-decoration-none">
                                 <div class="d-flex justify-content-between align-items-center cardEndDetail_container">
                                         <div class="cardEndDetail">
                                             <div class="text d-flex align-items-center justify-content-start gap-1">Created by:
@@ -2892,7 +3953,10 @@ const drawProposal = (prop) => {
                                     </div>
                                 </div>
                                 <div class="cardendHeading">
-                                    <h2 class="heading">${prop.name}</h2>
+                                   <div class="d-flex align-items-center justify-content-between w-100">
+                                        <h2 class="heading">${prop.title}</h2>
+                                        <div style="color:#dc3545;" id="prop_countdown${prop.proposalId}"></div>
+                                    </div>
                                     <div class="paragraph">
                                         <p class="pb-0 line-climb-3">${prop.description}</p>
                                     </div>
@@ -2900,19 +3964,33 @@ const drawProposal = (prop) => {
                                 <div class="my-2">
                                 <div class="option mx-0 option-1">
                                         <div class="">
+<<<<<<< HEAD
                                             <div class="bar"></div>
                                             <div class="percent">100%</div>
                                         </div>
                                         <div class="input">
                                             <input class="poll-input" type="radio" id="option-1" name="option" hidden>
                                             <label style="background:#02C17C;" class="option-lable text-left font-sm" for="option-1">Yes<i
+=======
+                                            <div class="bar" style="background:#02C17C;width:${yes_per}"></div>
+                                            <div class="percent">${yes_per}</div>
+                                        </div>
+                                        <div class="input">
+                                            <input class="poll-input" type="radio" id="option-1" name="option" hidden>
+                                            <label  class="option-lable text-left font-sm" for="option-1">Yes<i
+>>>>>>> 9270b47 (added new UI updates)
                                                     class="fa fa-check tick" aria-hidden="true"></i></label>
                                         </div>
                                 </div>
                                 <div class="option mx-0 option-1">
                                         <div class="">
+<<<<<<< HEAD
                                             <div class="bar"></div>
                                             <div class="percent">0%</div>
+=======
+                                            <div class="bar" style="background:#02C17C;width:${no_per}"></div>
+                                            <div class="percent">${no_per}</div>
+>>>>>>> 9270b47 (added new UI updates)
                                         </div>
                                         <div class="input">
                                             <input class="poll-input" type="radio" id="option-1" name="option" hidden>
@@ -2939,6 +4017,7 @@ const drawProposal = (prop) => {
                             </div>
                             </a>
                 </div>`
+<<<<<<< HEAD
     return _div.firstElementChild
 
 }
@@ -2947,6 +4026,43 @@ const drawProposalReview = (prop) => {
 
     return `<div id='${id}' class="col-12 p-3 ${(!prop.first) ? 'border-top' : "" }">
                                         <a onclick="window.location = '{{ route('dao.proposal', ['proposal_id' => " ", "dao_id"=> $dao_id]) }}${prop.proposalId}'" class="text-decoration-none">
+=======
+    $(document).ready(function() {
+  // Set the target date (replace with your desired end date)
+  const targetDate = N(prop.end) * 1000;
+  // Update the countdown every second
+  const countdownInterval = setInterval(updateCountdown, 1000);
+
+  // Function to update the countdown
+  function updateCountdown() {
+    const currentDate = (new Date()).getTime();
+    const timeDifference = targetDate - currentDate;
+    // Calculate remaining time
+    const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+    // Update the countdown display
+    $(`#prop_countdown${prop.proposalId}`).text('Ends in ' + days + ' Days | ' + hours + ' Hours | ' + minutes + ' Minutes | ' + seconds + ' Seconds');
+
+    // If the countdown is finished, clear the interval
+    if (timeDifference <= 0) {
+      clearInterval(countdownInterval);
+      $(`#prop_countdown${prop.proposalId}`).text('Countdown ended!');
+    }
+  }
+});
+return _div.firstElementChild
+}
+const drawProposalReview = (prop) => {
+    const id = `prop_review_${prop.proposalId}`
+    let _link = "{{ route('dao.proposal', ['proposal_id' => " ", "dao_id"=> $dao_id]) }}"
+    _link = _link.substring(0, _link.lastIndexOf("/") + 1)
+    
+    return `<div id='${id}' class="col-12 p-3 ${(!prop.first) ? 'border-top' : "" }">
+                                        <a onclick="window.location = '${_link + prop.proposalId}'" class="text-decoration-none">
+>>>>>>> 9270b47 (added new UI updates)
                                             <div
                                                 class="d-flex justify-content-between align-items-md-center cardEndDetail_container">
                                                 <div class="text">
@@ -2964,7 +4080,7 @@ const drawProposalReview = (prop) => {
                                                 </div>
                                             </div>
                                             <div class="cardendHeading">
-                                                <h2 class="heading">${prop.name}</h2>
+                                                <h2 class="heading">${prop.title}</h2>
                                                 <div class="paragraph">
                                                     <p>
                                                         ${prop.description}
@@ -2987,14 +4103,15 @@ const drawProposalReview = (prop) => {
                                                     </button>
                                                 </div>
                                                 <div class="text">
-                                                    <span>Voted by:</span>
-                                                    <span>${prop.voters + ((prop.voters > 1) ? " members" : " member")}</span>
+                                                    <span>Voted by: ${(prop.yes_votes + prop.no_votes)}</span>
+                                                    <span>${((prop.yes_votes + prop.no_votes)  > 1) ? " members" : " member"}</span>
                                                 </div>
                                             </div>
                                         </a>
                                     </div>
                             `
 }
+<<<<<<< HEAD
 const drawProposalApproved = (prop) => {
     const id = `prop_budget_${prop.proposalId}`
     return `<div id='prop_budget_${prop.proposalId}' class="col-12 p-3 ${(!prop.first) ? 'border-top' : "" }">
@@ -3039,6 +4156,8 @@ const drawProposalApproved = (prop) => {
                                         </div>`
 
 }
+=======
+>>>>>>> 9270b47 (added new UI updates)
 const drawAddress = (addr, name = "") => {
     let tm = document.createElement('div')
     tm.innerHTML = `<div class="column-content">${name}<br><span>${fAddr(addr, 8)}</span></div>`
@@ -3072,13 +4191,18 @@ const drawTopVoters = (param = {
 }
 const drawUser = (params) => {
     return `<div class="d-flex flex-column flex-md-row align-items-start align-md-items-center gap-1 w-100">
+<<<<<<< HEAD
                                 <img class="" src="{{asset('/images/discord.png')}}" alt="">
+=======
+                                <img class="w-img" src="${API_URL + "user_img&user=" + params.user}" alt="">
+>>>>>>> 9270b47 (added new UI updates)
                                 <p id='dao_search_admin_found' class="mb-0  column-content text-truncate text-break text-wrap">
-                                ${params.user.substring(0,14) + "..." + params.user.substring(params.user.length-14)}</p>
+                                ${fAddr(params.user, 14)}</p>
                             </div>`
 }
 const drawAdminUser = (params) => {
     return `<div
+<<<<<<< HEAD
                             class="d-flex flex-column align-items-center justify-content-between gap-1 mb-2 new-admin-ctn">
                             <div class="d-flex flex-column flex-md-row align-items-start align-md-items-center gap-1 w-100">
                                 <img class="" src="{{asset('/images/discord.png')}}" alt="">
@@ -3090,12 +4214,27 @@ const drawAdminUser = (params) => {
                                 <button onclick='setTreasury("${params.user}", event)' class="btn btn-success text-white text " style='display:none'><small>Make Treasury</small></button>
                             </div>
                         </div>`
+=======
+                      class="border rounded-md py-1 px-2 d-flex align-items-center justify-content-start position-relative flex-grow-1 gap-3">
+                      <img class="w-img"
+                        src="${API_URL + "user_img&user=" + params.user}" alt="">
+                      <div class="font-normal text-secondary ml-2 font-xs">${fAddr(params.user, 10)}</div>
+                      <div class="position-absolute cross-dao-setting" onclick='removeAdmin("${params.user}", event)'>
+                        <svg class="text-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                          fill="currentColor" width="20px" heigth="20px">
+                          <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z"
+                            clip-rule="evenodd" />
+                        </svg>
+                      </div>
+                    </div>`
+>>>>>>> 9270b47 (added new UI updates)
 }
 const drawMember = (params) => {
     const sFlg = (dao.owner == walletAddress && (walletAddress == params.member))
     return ` <div id="" class="d-flex justify-content-between">
                                             <div class="cardEndDetail d-flex justify-content-between gap-3">
-                                                <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
+                                                <img src="${API_URL + "user_img&user=" + params.member}"
                                                     alt="Profile Image" class="image w-img">
                                                 <div class="text text-center">
                                                     ${params.member}
@@ -3126,8 +4265,13 @@ const drawMember = (params) => {
 const drawDelegateSearchResult = (param) => {
     return `<div class="d-flex justify-content-between">
                                                 <div class="cardEndDetail">
+<<<<<<< HEAD
                                                     <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
                                                         alt="Profile Image" class="image w-img">
+=======
+                                                    <img src="${API_URL + "user_img&user=" + param.user}"
+                                                        alt="Profile Image" class="image">
+>>>>>>> 9270b47 (added new UI updates)
                                                     <div class="text text-center">${fAddr(param.user, 14)}
                                                     </div>
                                                 </div>
@@ -3147,6 +4291,7 @@ const drawDelegateSearchResult = (param) => {
 }
 const drawBulletinBox = (param, indx) => {
     if (param.type == 'bulletin') {
+<<<<<<< HEAD
         return `<div class="my-4">
                                         <div class="d-flex flex-wrap justify-content-between">
                                             <div class="cardEndDetail gap-1">
@@ -3205,6 +4350,49 @@ const drawBulletinBox = (param, indx) => {
                                                 <input id="comment_input_${param.bid}" type="text" placeholder="Great...."
                                                     class="border-0 bg-transparent text w-100 h-100 font-xs">
                                                 <button id="comment_send_${param.bid}" type="button" class="btn border-0 mb-1">
+=======
+        return `<div id='bulletin_box_${param.bid}' type="button" data-toggle="modal"  data-target="#BulletinView" onclick='showInModalView("bulletin_box_${param.bid}", ${indx})' class="d-inline btn p-0 m-0" style='margin-bottom:20px !important;'>
+                        <div class="d-flex flex-wrap justify-content-between align-items-center">
+                            <div class="cardEndDetail gap-2">
+                                <img src="${API_URL + "user_img&user=" + param.user}"
+                                    alt="Profile Image" class="image w-img">
+                                <div class="text text-center font-xxs text-secondary text-left">${fAddr(param.user, 6)}</div>
+                            </div>
+                            <div class="text font-xxs">${fDate(param.date)}</div>
+                        </div>
+                        <div class="bultin_description text w-100 mx-auto">
+                            <p class="font-xs mb-0 overflex-hidden line-climb-3 text-left">${param.msg}</p>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-start gap-3 bullet-icon m-0">
+                            <button onclick='likeBulletin("${param.bid}", ${indx})'
+                                class="border-0 bg-transparent bullet-icon-i d-flex align-items-center justify-content-start" style='gap:5px'>
+                                <span class="font-xs" id="likes_${param.bid}">${fNum(param.likes)}</span>
+                                <i id="likes_icon_${param.bid}" class="fa fa-thumbs-o-up font-sm ${(param.my_likes == true) ? 'like-active' : ''}"></i>
+                                <span class="text text-secondary font-xxs text-left">Like</span>
+                            </button>
+                            <button onclick='dislikeBulletin("${param.bid}", ${indx})'
+                                class="border-0 bg-transparent bullet-icon-i d-flex align-items-center justify-content-start" style='gap:5px'>
+                                <span class="font-xs" id="dislikes_${param.bid}">${fNum(param.dislikes)}</span>
+                                <i id="dislikes_icon_${param.bid}" class="fa fa-thumbs-o-down font-sm ${(param.my_dislikes == true) ? 'like-active' : ''}"></i>
+                                <span class="text text-secondary font-xxs text-left">Dislike</span>
+                            </button>
+                            <button onclick='showBulletinComment("${param.bid}", ${indx})'
+                                class="border-0 bg-transparent bullet-icon-i d-flex align-items-center justify-content-start" style='gap:5px'>
+                                <span class="font-xs" id="comment_num_${param.bid}">${fNum(param.comments)}</span>
+                                <i id="" class="fa fa-comment-o font-xs"></i>
+                                <span class="text text-secondary font-xxs text-left">Comment</span>
+                            </button>
+                        </div>
+                    <!-- comment section -->
+                    <div id='comment_${param.bid}' class='d-none' style='flex-direction:column'></div>
+                                    <div id="comment_box_${param.bid}" style="width: 90%; margin-right:auto;margin-left:auto;"
+                                        class="d-flex align-items-end gap-4 mt-5 d-none">
+                                        <div class="form-group w-100">
+                                            <div class="form-control d-flex align-items-center justify-content-between">
+                                                <input id="comment_input_${param.bid}" type="text" placeholder="Comment...."
+                                                    class="border-0 bg-transparent text w-100 h-100 font-xs" >
+                                                <button id="comment_send_${param.bid}" type="button" class="btn border-0 mb-1" style='padding:0px !important'>
+>>>>>>> 9270b47 (added new UI updates)
                                                     <svg class="text-secondary" xmlns="http://www.w3.org/2000/svg"
                                                         width="20" height="20" viewBox="0 0 24 24">
                                                         <path fill="currentColor" d="m2 21l21-9L2 3v7l15 2l-15 2z" />
@@ -3212,11 +4400,16 @@ const drawBulletinBox = (param, indx) => {
                                                 </button>
                                             </div>
                                         </div>
+<<<<<<< HEAD
                                     </div>`
+=======
+                    </div> `
+>>>>>>> 9270b47 (added new UI updates)
     } else {
         //poll type
         let polls = ""
         for (let i = 0; i < param.polls.num * 1; i++) {
+<<<<<<< HEAD
             polls += `<div  class="option option-${i+1} d-flex align-items-center justify-content-between gap-2 flex-row relative">
                                 <div class="analytic" style='display:inline;transition:all 300ms'>
                                     <div id='poll_bar_option_${param.bid}_${i}' class="bar font-xs" style='width:${param.polls[i].percent}%;background:skyblue'></div>
@@ -3293,6 +4486,63 @@ const drawNewPollOption = (indx) => {
                         <input class="pollingInput form-control h-auto w-50" type="text" id="poll_option_value_${indx}"  name="option_${indx}" placeholder="Option ${indx}" required>
                         <span onclick='E("pollForm").removeChild(E("poll_option_${indx}"))' class='text-danger' style='margin-left:10px'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width='20px' hieght='20px'><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></span>
             </div>`
+=======
+            polls += `<div class="option mx-0 option-${i+1}">
+                                        <div class="analytic">
+                                            <div id='poll_bar_option_${param.bid}_${i}' class="bar" style='width:${param.polls[i].percent}%;background:#02C17C'></div>
+                                            <div id='poll_bar_option_value_${param.bid}_${i}' class="percent">${param.polls[i].percent}%</div>
+                                        </div>
+                                        <div class="input" onclick='votePoll("${param.bid}", "${i}",  ${indx}, event)'>
+                                            <input class="poll-input" type="radio" id="option-${i+1}" name="option" hidden>
+                                            <label class="option-lable text-left font-xxs" for="option-1">${i+1}. ${param.polls[i].value}<i
+                                            id='poll_bar_option_icon_${param.bid}_${i}' class="fa fa-check tick" aria-hidden="true" style='display:${(param.polls[i].voted) ? 'inline' : 'none'}'></i></label>
+                                        </div>
+            </div>`
+        }
+        return `<button data-toggle="modal"  data-target="#BulletinView" id='bulletin_box_${param.bid}' onclick='showInModalView("bulletin_box_${param.bid}", ${indx})'  type="button" class="d-inline btn p-0 m-0" style='margin-bottom:20px !important;'>
+                        <div class="row mx-0">
+                            <div class="poll-card cardEndDiv p-0">
+                                <div>
+                                    <div class="d-flex flex-wrap justify-content-between align-items-center">
+                                        <div class="cardEndDetail gap-2">
+                                            <img src="${API_URL + "user_img&user=" + param.user}"
+                                                alt="Profile Image" class="image w-img">
+                                            <div class="text-center font-xxs text-secondary text-left">${fAddr(param.user, 6)}</div>
+                                        </div>
+                                        <div class="font-xxs">${fDate(param.date)}</div>
+                                    </div>
+                                    <div class="bultin_description text w-100 mx-auto">
+                                            <p class="font-xs mb-0 overflex-hidden line-climb-3 text-left">${param.msg}</p>
+                                    </div>
+                                </div>
+                                <div class="options">
+                                ${polls}
+                                </div>
+                            </div>
+                        </div>
+                    </button>`
+    }
+}
+const drawBulletinCommentBox = (param, indx) => {
+    return `<div class="d-inline btn p-0 m-0" style='margin-top:10px !important;margin-left:10px !important; width:calc(100% - 10px)'>
+                        <div class="d-flex flex-wrap justify-content-between align-items-center">
+                            <div class="cardEndDetail gap-2">
+                                <img src="${API_URL + "user_img&user=" + param.user}"
+                                    alt="Profile Image" class="image w-img">
+                                <div class="text text-center font-xxs text-secondary text-left">${fAddr(param.user, 6)}</div>
+                            </div>
+                            <div class="text font-xxs">${fDate(param.date)}</div>
+                        </div>
+                        <div class="bultin_description text w-100 mx-auto">
+                            <p class="font-xs mb-0 overflex-hidden line-climb-3 text-left">${param.msg}</p>
+                        </div></div>`
+}
+const drawNewPollOption = (indx) => {
+    let tm = `<div id='poll_option_${indx}' class="poll-option d-flex align-items-center justify-content-between gap-2">
+                        <input class="pollingInput form-control h-auto w-50" type="text" id="poll_option_value_${indx}"  name="option_${indx}" placeholder="Option ${indx}" required>
+                        <span onclick='E("pollForm").removeChild(E("poll_option_${indx}"))' class='text-danger' style='margin-left:10px'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width='20px' hieght='20px'><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></span>
+            </div>`
+>>>>>>> 9270b47 (added new UI updates)
     let tmp = document.createElement('div')
     tmp.innerHTML = tm
     return tmp.firstElementChild
@@ -3302,4 +4552,8 @@ const drawTweetBox = (param, indx) => {
 }
 indexMain() //run the main function
 </script>
+<<<<<<< HEAD
 @endsection
+=======
+@endsection
+>>>>>>> 9270b47 (added new UI updates)

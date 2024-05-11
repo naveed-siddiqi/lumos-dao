@@ -6,9 +6,9 @@
             <div class="row">
                 <div class="col-12 ">
                     <div class="heading-board">
-                        <p class="headingBoard">Board</p>
+                        <a class="headingBoard" href="{{ route('explore') }}">Explore</a>
                         <span class="rightArrow"> > </span>
-                        <p id='dao_name' class="headingBoard"></p>
+                        <a id='dao_name' class="headingBoard"></a>
                         <span class="rightArrow"> > </span>
                         <p class="apple-text">proposal Info</p>
                     </div>
@@ -56,7 +56,7 @@
                                     <p>No</p>
                                    
                                     <button id='prop_vote_no_action' class="btn" style='border:2px solid #ffa101;display:none' data-bs-toggle="modal" data-bs-target="#reasonVoteNo">Vote</button>
-                                    <div id='prop_final_result_no' style='display:none !important;border-color:grey;color:grey' class="d-flex align-items-center justify-content-center ProgFinal-text" >
+                                    <div id='prop_final_result_no' style='display:none !important;border-color:#02C17C;color:#02C17C' class="d-flex align-items-center justify-content-center ProgFinal-text" >
                                         Final Result
                                     </div>
                                 </div>
@@ -197,31 +197,51 @@
                     <div class="w-100 mx-auto row flex-nowrap flex-column flex-lg-row">
                     <div class="row col gap-2">
                             <div class="col d-flex align-items-center justify-content-center flex-column gap-1">
+<<<<<<< HEAD
                                 <button class="btn btn-block share-social-img d-flex align-items-center justify-content-center p-1 border border-primary">
+=======
+                                <button onclick='shareFunctions()' class="btn btn-block share-social-img d-flex align-items-center justify-content-center p-1 border border-primary">
+>>>>>>> 9270b47 (added new UI updates)
                                     <img class="share-social-img w-100 h-100" src="{{asset('/images/facebook.png')}}" alt="">
                                 </button>
                                 <span class="font-xs text-primary">Facebook</span>
                             </div>
                             <div class="col d-flex align-items-center justify-content-center flex-column gap-1">
+<<<<<<< HEAD
                                 <button class="btn btn-block share-social-img d-flex align-items-center justify-content-center p-1 border border-info">
+=======
+                                <button onclick='shareFunctions("linkedin")' class="btn btn-block share-social-img d-flex align-items-center justify-content-center p-1 border border-info">
+>>>>>>> 9270b47 (added new UI updates)
                                     <img class="share-social-img w-100 h-100" src="{{asset('/images/linkedin.png ')}}" alt="">
                                 </button>
                                 <span class="font-xs text-info">Linkedin</span>
                             </div>
                             <div class="col d-flex align-items-center justify-content-center flex-column gap-1">
+<<<<<<< HEAD
                                 <button class="btn btn-block share-social-img d-flex align-items-center justify-content-center p-1 border border-success">
+=======
+                                <button onclick='shareFunctions("whatsapp")' class="btn btn-block share-social-img d-flex align-items-center justify-content-center p-1 border border-success">
+>>>>>>> 9270b47 (added new UI updates)
                                     <img class="share-social-img w-100 h-100" src="{{asset('/images/whatsapp.png')}}" alt="">
                                 </button>
                                 <span class="font-xs text-success">Whatsapp</span>
                             </div>
                             <div class="col d-flex align-items-center justify-content-center flex-column gap-1">
+<<<<<<< HEAD
                                 <button class="btn btn-block share-social-img d-flex align-items-center justify-content-center p-1 border border-secondary">
+=======
+                                <button onclick='shareFunctions("twitter")' class="btn btn-block share-social-img d-flex align-items-center justify-content-center p-1 border border-secondary">
+>>>>>>> 9270b47 (added new UI updates)
                                     <img class="share-social-img w-100 h-100" src="{{asset('/images/x.webp')}}" alt="">
                                 </button>
                                 <span class="font-xs text-black">X</span>
                             </div>
                             <div class="col d-flex align-items-center justify-content-center flex-column gap-1">
+<<<<<<< HEAD
                                 <button class="btn btn-block share-social-img d-flex align-items-center justify-content-center p-1 border border-danger">
+=======
+                                <button onclick='shareFunctions("reddit")' class="btn btn-block share-social-img d-flex align-items-center justify-content-center p-1 border border-danger">
+>>>>>>> 9270b47 (added new UI updates)
                                     <img class="share-social-img w-100 h-100" src="{{asset('/images/Reddit.png ')}}" alt="">
                                 </button>
                                 <span class="font-xs text-danger">Reddit</span>
@@ -235,8 +255,13 @@
                                     class="bg-transparent border-0 text-secondary d-block flex-grow-1"
                                     value="https://example.com/your-gig" readonly>
                                 <div class="input-group-append w- text-end">
+<<<<<<< HEAD
                                     <button class="btn text-secondary">
                                         <p class="font-xs font-medium mb-0 whitespace-nowrap">Copy <span class="d-none d-sm-block" >Link</span></p>
+=======
+                                    <button class="btn text-secondary" onclick='copyLink(E("shareLink").value)'>
+                                        <p class="font-xs font-medium mb-0 whitespace-nowrap d-flex align-items-center justify-content-center gap-1">Copy <span class="d-none d-sm-block" >Link</span></p>
+>>>>>>> 9270b47 (added new UI updates)
                                     </button>
                                 </div>
                             </div>
@@ -443,28 +468,34 @@
         });
     </script>
     <script>
-    var prop;var dao;
+    var prop;var dao = {};var groupInfo;
     var propId = ("{{ $prop['proposal_id'] }}");propId = propId.trim() * 1;
     var vote_power;
     var voterInfo;
     var daoDelegatee;
     var voterDelegator = [];
-    var vote_type = null;
+    var vote_type = null; 
     var voter_info_page = 1;
     var voter_page_segment = 10;
         const setUp = async () =>{  
-            //get dao info
-            dao = await getDao("{{ $prop['dao_id'] }}");
-            const timeStart = performance.now()
-            //get prop info
-            prop = await getProposal(propId); //console.log(prop)
-            E('dao_name').innerText = dao.name
-            daoDelegatee = await getDaoDelegatee(dao.token, walletAddress) || []
+            //get prop metadata
+            prop = (await getAllPropInfo(propId, "{{ $prop['dao_id'] }}"))[propId]; //display the voters info
             //display info
             E('prop_name').innerText = prop.title || ""
             E('prop_about').innerText = prop.description || ""
-            const delimtr = "https://" + dao.name.toLowerCase().replace(/ /g,"") + ".testing.lumosdao.io"
-            const links = (prop.links || "").trim().split("," + delimtr)
+            //get prop info on chain
+            await loadGroupInfo()
+            prop = {...(groupInfo.proposal), ...prop};  
+            E('prop_status').innerText = (prop.status == 4) ? "Ended" : (prop.status == 0) ? "Inactive" : (prop.status == 1) ? "Active": (prop.status == 2) ? "Rejected" : "Funded"
+            //set up vote info
+            dao.token = "{{ $prop['dao_id'] }}"
+            setUpVote(prop)
+            //get dao info
+            dao = (await getAlldaoInfo("{{ $prop['dao_id'] }}"))["{{ $prop['dao_id'] }}"];  
+            E('dao_name').innerText = dao.name
+            E('dao_name').href = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/dao/" + dao.token
+            const delimtr = "https://" + dao.name.toLowerCase().trim() + ".lumosdao.io"
+            const links = (prop.links || "").trim().split("," + delimtr);  
             let filename; E('prop_links').innerHTML = ""
             for(let i=0;i<links.length;i++) {
                 if(links[i] != "") {
@@ -482,14 +513,18 @@
             //display metadat
             E('prop_id').innerText = 'PROP_' + propId
             E('prop_duration').innerText = '5 days'
-            E('prop_status').innerText = (prop.status == 4) ? "Ended" : (prop.status == 0) ? "Inactive" : (prop.status == 1) ? "Active": (prop.status == 2) ? "Rejected" : "Funded"
             E('prop_creator').innerText = prop.creator.substring(0, 5) + "..." + prop.creator.substring(prop.creator.length - 3)
-            //display the voters info
-            setUpVote(prop)
+            E('shareLink').value = window.location.href
+            loadComment()
+            
         }
-        const setUpVote = async (prop = null) => {
-            (prop == null) ? prop = await getProposal(propId) : ""
-            voterInfo = await getProposalVotersInfo(propId)
+        const loadGroupInfo = async () => {groupInfo = await getProposalGroupInfo({
+                propId:"{{ $prop['dao_id'] }}",
+                voter:walletAddress,
+                dao:prop.dao
+            })
+        }
+        const setUpVote = async () => {
             //voting results
             E('prop_yes_votes').innerText = prop.yes_votes || 0
             E('prop_yes_voting_power').innerText = (N(prop.yes_voting_power)/(floatingConstant))
@@ -504,25 +539,22 @@
             }
             E('prop_no_votes').innerText = prop.no_votes || 0
             E('prop_no_voting_power').innerText = (N(prop.no_voting_power)/(floatingConstant))
-            E('prop_total_voters').innerText = prop.voters
+            E('prop_total_voters').innerText = (prop.no_votes + prop.yes_votes)
             E('prop_total_voting_power').innerText = N(prop.yes_voting_power + prop.no_voting_power) / floatingConstant
                 
             //populate for testing
             const bal = await getTokenUserBal(prop.dao, walletAddress);  
             if(bal !== false) {
-                //voting power
-                // vote_power = await getVotingPower({
-                //     asset:dao.code, address:dao.issuer, dao: dao.token
-                // }, walletAddress)
                 E('prop_vote_power').innerText = "Current voting power: " + vote_power
                 //can vote, and has joined
-                const my_vote = await getProposalVoterInfo(propId, walletAddress)
+                const my_vote = groupInfo.voter_type; 
+                daoDelegatee = groupInfo.delegatee; 
                 //reset buttons
                 E('prop_vote_yes_action').style.display = 'none'
                 E('prop_vote_no_action').style.display = 'none'
                 E('prop_vote_yes_action').disabled = false
                 E('prop_vote_no_action').disabled = false
-                
+                 
                 if(prop.status == 1) {
                     if(my_vote == 0 && daoDelegatee.length < 1) {
                         if(!prop.executed) {
@@ -562,11 +594,9 @@
                         }
                 }
                 else {
-                    //has delegated voting power
-                    E('prop_vote_yes_action').style.display = 'block'
-                    E('prop_vote_no_action').style.display = 'block'
-                    E('prop_vote_no_action').innerText = 'Inactive'
-                    E('prop_vote_yes_action').innerText = 'Inactive'
+                    //proposal no longer active
+                    E('prop_vote_yes_action').style.display = 'none'
+                    E('prop_vote_no_action').style.display = 'none'
                     E('prop_vote_no_action').disabled = true
                     E('prop_vote_yes_action').disabled = true
                     //hide comment button
@@ -587,6 +617,7 @@
                 }
                 E('prop_send_comment').onclick = sendComment
             }
+            voterInfo = await getProposalVotersInfo(propId, dao.token)
             voter_info_page
             loadVoterInfo()
             //configure the buttons
@@ -615,7 +646,8 @@
                          tmp = JSON.parse(comments[i]) //convert to json
                          E('prop_comment_view').appendChild(drawVoterComment({
                              voter:tmp.address,
-                             msg:tmp.msg
+                             msg:tmp.msg,
+                             date:tmp.date
                          })) 
                     }
                     if(comments.length > 5) {
@@ -629,7 +661,8 @@
                                 tmp= JSON.parse(comments[i]) //convert to json
                                 E('prop_comment_view').appendChild(drawVoterComment({
                                      voter:tmp.address,
-                                     msg:tmp.msg
+                                     msg:tmp.msg,
+                                     date:tmp.date
                                  })) 
                             }
                             E('prop_see_more_comment').style.display = 'none'
@@ -675,7 +708,7 @@
                     voter:voterInfo[i].voter,
                     vote_type:voterInfo[i].vote_type,
                     voting_power:voterInfo[i].voting_power,
-                    voting_reason:voterInfo[i].reason,
+                    voting_reason:voterInfo[i].reasons || "",
                     is_delegated:voterInfo[i].delegated,
                     time:voterInfo[i].time
                 })
@@ -811,7 +844,7 @@
                     })
                 }else{start_voting()}
                 
-                async function start_voting() { console.log(vote_power)
+                async function start_voting() { 
                     talk("Voting " + vote_label + " on this proposal", "norm", id)
                     const res = await voteProposal({
                         proposalId: propId,
@@ -819,7 +852,9 @@
                         vote_type:voteType,
                         voting_power:vote_power,
                         name:prop.name,
-                        reason:reason
+                        reason:reason,
+                        owner:prop.creator,
+                        daoId:"{{ $prop['dao_id'] }}"
                     })
                     if(res) {
                         if(res.status == 'voted') {
@@ -843,6 +878,7 @@
                         else  {
                             stopTalking(4, talk("Something went wrong", 'fail', id))
                         }
+                        await loadGroupInfo()
                         //reset the votes
                         setUpVote()
             }
@@ -862,6 +898,34 @@
                 E('prop_vote_no_action').style.display = 'block'
             }
         }
+        //handles social media shares
+        const shareFunctions = (type = 'fb') => {
+            const msg = `New proposal on ${dao.name} DAO👇 ${prop.title} `
+            const title = `LumosDao Proposal ${prop.name}`
+            const url = window.location.href;
+            let shareUrl;
+            if(type == "fb") {
+                // Construct the Facebook share URL with parameters
+                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(msg)}`;
+            }
+            else if(type == 'linkedin'){
+                // Construct the LinkedIn share URL with parameters
+                shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(msg)}`;
+            }
+            else if(type == 'whatsapp') {
+                shareUrl = `https://wa.me/?text=${msg + '\n' + url}`;
+            }
+            else if(type == 'twitter') {
+                shareUrl = `https://twitter.com/intent/tweet?text=${msg}&url=${url}`;
+            }
+            else if(type == 'reddit') {
+                // Construct the Reddit share URL
+                shareUrl = `https://www.reddit.com/r/${msg}/submit?title=${title}&url=${url}`;
+            }
+            //Open the Facebook share dialog in a new window
+            window.open(shareUrl, '_blank');
+            
+        }
         const drawVotersInfo = (params = {}) => {
             return `<tr>
                                     <td>${params.voter.substring(0,4) + '...' + params.voter.substring(params.voter.length - 4)}</td>
@@ -872,14 +936,17 @@
                                 </tr>`
 
         }
-        const drawVoterComment = (params = {}) => {
+        const drawVoterComment = (params = {}) => { 
             let tm = document.createElement('div')
             tm.innerHTML = `<div  class="col-12">
                           <div class="col-12">
-                        <div class="d-flex align-items-center justify-center gap-2">
-                            <img style="width:40px; height:40px; border-radius:50%;display:none" alt="">
-                            <span>${params.voter.substring(0,4) + '...' + params.voter.substring(params.voter.length - 4)}</span>
+                        <div class="d-flex align-items-center justify-content-between gap-2 w-100">
+                       <div class="d-flex align-items-center justify-center gap-2">
+                            <img style="width:40px; height:40px; border-radius:50%;display:non e" src="${API_URL + 'user_img&user=' + params.voter}" alt="">
+                            <span>${fAddr(params.voter, 6)}</span>
                         </div>
+                        <p class="Explorer_span d-block">${(new Date(params.date)).toLocaleString()}</p>
+                       </div>
                         </div>
                         <div style="border-bottom: 1px solid #e5e7eb; " class="col-12 my-2">
                             <p>
@@ -892,7 +959,7 @@
         }
         /* Initialize page */ 
         setUp()
-        loadComment()
+        
     </script>
     <script>
         var otherReason = document.getElementById('otherReason');
