@@ -7,12 +7,12 @@
                     style="position: absolute;z-index: 1;top: 5%;right: 4%;text-decoration:none;{{ isset($_COOKIE['public']) ? '' : 'display:none' }}">Remove
                     Wallet</a> --}}
                 <div class="modal-header">
-                    <h5 class="modal-title">Connect Wallet</h5>
+                    <h5 style="font-family:'MontSem';" class="modal-title">Connect Wallet</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-12 text-center">
+                        <div style="font-family:'MontBold';"  class="col-12 text-center">
                             <h3>Please Connect Your
                                 Account to Wallet</h3>
                         </div>
@@ -22,26 +22,26 @@
                             <!-- Dropdown -->
                             <label class="drop">
                                 <input type="checkbox" id="mainWalletList"> <!-- Toggle Drop -->
-                                <span id="selectedWallet" class="control">Choose your Wallet</span> <!-- Fake button -->
+                                <span style="font-family:'MontReg';" id="selectedWallet" class="control">Choose your Wallet</span> <!-- Fake button -->
 
                                 <!-- Items -->
                                 <ul class="drop-items " id="walltetList">
-                                    <li class="item-drop wallet-drop-items">
+                                    <!-- <li class="item-drop wallet-drop-items">
                                         <a href="#" wallet="rabet"><img src="{{ asset('images/rabet.png') }}">
                                             Rabet</a>
-                                    </li>
+                                    </li> -->
                                     <li class="item-drop wallet-drop-items">
                                         <a href="#" wallet="frighter"><img
                                                 src="{{ asset('images/frighter.png') }}">Frighter</a>
                                     </li>
-                                    <li class="item-drop wallet-drop-items">
+                                    <!-- <li class="item-drop wallet-drop-items">
                                         <a href="#" wallet="albeto"><img
                                                 src="{{ asset('images/albeto.png') }}">Albedo</a>
                                     </li>
                                     <li class="item-drop wallet-drop-items">
                                         <a href="#" wallet="xbull"><img
                                                 src="{{ asset('images/xbull.png') }}">Xbull</a>
-                                    </li>
+                                    </li> -->
                                     {{-- <li class="item-drop wallet-drop-items">
                                         <a href="#" wallet="privatekey"><img class=""
                                                 src="{{ asset('images/privatekey.png') }}">Private Key</a>

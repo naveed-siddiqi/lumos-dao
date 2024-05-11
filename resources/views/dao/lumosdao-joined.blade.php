@@ -323,7 +323,7 @@
                                         <p class="mb-0">Joined</p>
                                     </div>
                                     <div style="margin: -20px !important;" class="">
-                                        <img class="h-100 w-100 rounded-md"
+                                        <img style="height:200px;object-fit:cover;" class="w-100 rounded-md"
                                             src="${((isCoverValid) ? coverImgx : defCoverImg) + "?id=" + Math.random() }"
                                             alt="">
                                     </div>

@@ -34,8 +34,8 @@
                         <div class="card-imgflex mt-1">
                             <img id='dao_image' data="{{ asset('images/demi.jpg') }}" alt="">
                             <div class="cardHeading mt-4 py-2">
-                                <p id='dao_name' class="card-heading"></p>
-                                <p id='dao_members' class="card-subheading"></p>
+                                <p id='dao_name' class="card-heading whitespace-nowrap"></p>
+                                <p id='dao_members' class="card-subheading whitespace-nowrap"></p>
                             </div>
                         </div>
                         <div class="d-flex align-items-center justify-content-end gap-3 py-3 w-100 mt-4">
@@ -48,7 +48,7 @@
                             <button class='btn btn-danger whitespace-nowrap' id='leaveDao' style='border:2px solid red;display:no ne'>Leave Dao</button>
                         </div>
                         </div>
-                        <div id='dao_about' class="card-paragraph">
+                        <div id='dao_about' class="card-paragraph whitespace-nowrap">
                         </div>
 
                        <div class="">
@@ -262,9 +262,12 @@
                                 <div class="cardEndDiv">
                                 <div class="d-flex flex-column align-items-end gap-2 px-1">
                                         <div class="form-group w-100">
-                                            <label for="">
+                                           <div class="d-flex align-items-center justify-content-between">
+                                           <label for="">
                                                 <span class="asset-details-label whitespace-nowrap">Add Bulletin:</span>
                                             </label>
+                                            <button class="btn btn-success" type="button" data-toggle="modal" data-target="#addPollingModal">Add Polls</button>
+                                           </div>
                                             <textarea type="text" class="form-control h-auto" rows="4"></textarea>
                                         </div>
                                         <div class="">
@@ -435,7 +438,39 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal fade" id="addPollingModal" tabindex="-1" aria-labelledby="addPollingModal" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                        <div class="modal-header px-4 py-1">
+                                            <h2 class="heading" id="addPollingModal">Add Polls</h2>
+                                            <button type="button" class="close btn" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="p-4">
+                                        <div id="poll">
+                                            <label for=""><p class="m-0 p-0">Write a question?</p></label>
+                                            <textarea class="form-control h-auto mb-2" name="" id="" cols="30" rows="2" placeholder="Write Question here:"></textarea>
+                                            <form class="" id="pollForm">
+                                                <div class="poll-option d-flex align-items-center justify-content-between gap-2">
+                                                    <input class="pollingInput" type="text" name="option[]" placeholder="Option 1">
+                                                </div>
+                                                <div class="poll-option d-flex align-items-center justify-content-between gap-2">
+                                                    <input class="pollingInput" type="text" name="option[]" placeholder="Option 2">
+                                                </div>
+                                                <button class="btn btn-secondary mt-2" type="button" id="addOption">Add Option</button>
+                                            </form>
+                                        </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Cancle</button>
+                                            <button type="button" class="btn btn-warning">Submit</button>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                            </div>   
                         </div>
                         <div class="tab-pane fade" id="content3">
                             <div class="row mt-0">
@@ -1033,6 +1068,55 @@ const memberBanModal = document.querySelector('.member-ban-modal');
 var memberList = document.getElementById('memberList');
 const manageAdminCheck = document.getElementById('manageAdminCheck');
 const manageAdminConfirm = document.getElementById('manageAdminConfirm');
+document.addEventListener('DOMContentLoaded', function() {
+  const pollForm = document.getElementById('pollForm');
+  const addOptionButton = document.getElementById('addOption');
+
+  addOptionButton.addEventListener('click', function() {
+    const optionContainer = document.createElement('div');
+    optionContainer.classList.add('d-flex', 'align-items-center', 'gap-2');
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.name = 'option[]';
+    input.classList ="pollingInput";
+    input.placeholder = `Option ${document.querySelectorAll('.pollingInput').length + 1}`;
+
+    const removeButton = document.createElement('button');
+    removeButton.type = 'button';
+    removeButton.classList.add('removeOption' , 'btn' ,'text-danger', 'd-flex' ,'align-items-center');
+    removeButton.innerHTML = `<i style="font-size:20px" class="fa">&#xf014;</i>`;
+    removeButton.addEventListener('click', function() { 
+      optionContainer.remove();
+      updateAddOptionButton();
+    });
+
+    optionContainer.appendChild(input);
+    optionContainer.appendChild(removeButton);
+    pollForm.insertBefore(optionContainer, addOptionButton);
+    updateAddOptionButton();
+  });
+
+  pollForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    const formData = new FormData(pollForm);
+    const options = [];
+    for (const value of formData.getAll('option[]')) {
+      options.push(value);
+    }
+    console.log('Submitted Options:', options);
+    // You can send the options to your server or perform other actions here
+  });
+
+  function updateAddOptionButton() {
+    const optionInputs = document.querySelectorAll('.pollingInput');
+    if (optionInputs.length >= 4) {
+      addOptionButton.style.display = 'none';
+    } else {
+      addOptionButton.style.display = 'block';
+    }
+  }
+});
 
 
 
