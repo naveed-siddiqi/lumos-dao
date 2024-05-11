@@ -56,7 +56,7 @@
                         </li>
                     </ul>
                     <div style="display: none;" id="alertCopied" class="alert alert-success position-fixed w-25 mt-5 right-0 text-center" role="alert">
-                            <p class="p-0 m-0 text-success"> Copied!</p>
+                            <p class="p-0 m-0 text-success">Address Copied!</p>
                         </div>
                     @if (isset($_COOKIE['public']))
                     <span class="mx-3">
