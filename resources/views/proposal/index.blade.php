@@ -28,7 +28,7 @@
                             <div class="ProgText">
                                 <div class="left d-flex align-items-baseline justify-content-center gap-2">
                                     <p>Yes</p>
-                                    <button id='prop_vote_yes_action' class="btn" style='border:2px solid #ffa101;display:none'>Vote</button>
+                                    <button id='prop_vote_yes_action' class="btn" style='border:2px solid #ffa101;display:none' data-bs-toggle="modal" data-bs-target="#reasonVote">Vote</button>
                                     <div id='prop_final_result_yes' style='display:none !important' class="d-flex align-items-center justify-content-center ProgFinal-text">
                                         Final Result
                                     </div>
@@ -54,7 +54,8 @@
                             <div class="ProgText">
                                 <div class="left d-flex align-items-baseline justify-content-center gap-2">
                                     <p>No</p>
-                                    <button id='prop_vote_no_action' class="btn" style='border:2px solid #ffa101;display:none'>Vote</button>
+                                   
+                                    <button id='prop_vote_no_action' class="btn" style='border:2px solid #ffa101;display:none' data-bs-toggle="modal" data-bs-target="#reasonVoteNo">Vote</button>
                                     <div id='prop_final_result_no' style='display:none !important;border-color:grey;color:grey' class="d-flex align-items-center justify-content-center ProgFinal-text" >
                                         Final Result
                                     </div>
@@ -603,6 +604,7 @@
                                     <td><center style="margin:50px;width:100%">Nothing to show</center></td>
                                     <td></td>
                                     <td></td>
+                                    <td></td>
                                 </tr>`
             }
             
@@ -649,7 +651,8 @@
             return `<tr>
                                     <td>${params.voter.substring(0,4) + '...' + params.voter.substring(params.voter.length - 4)}</td>
                                     <td>${(params.vote_type == 1) ? "Yes" : "No"}</td>
-                                    <td>${N(params.voting_power) / floatingConstant}</td>
+                                    <td>${N(params.voting_power) / floatingConstant} <span style='background:dodgerblue;padding:5px;border-radius:5px;color:#fff;font-size:13px'>delegated</span></td>
+                                    <td>This is some reason</td>
                                     <td>${(new Date(N(params.time) * 1000)).toLocaleString()}</td>
                                 </tr>`
 

@@ -23,7 +23,7 @@
      * THE FREIGHTER EXTERNAL WALLET PROVIDER USED
      **/
     const stellarServer = "https://soroban-testnet.stellar.org"
-    const daoContractId = 'CBD6DLZEWPFBQKMSCQ2FRHTMUJ4BOWHC66ANLSPU6KV6HJ4I6DAAMG2P'  
+    const daoContractId = 'CALUJ7XVZGRWRIRZC2WK6G7JBBECNKJ5GI7MGNMUCKLM2XZD6AK4QBUC'  
     const wrappingAddress = 'GC5JKOC7OMSS22NVC23MVL2363QS5JO7SQM5X7C7DPVLQLFQHZ3ZRHGF'
     const networkUsed = StellarSdk.Networks.TESTNET
     const networkWalletUsed = "TESTNET"
@@ -1116,6 +1116,21 @@
         }
     }
     // get all tx
+    const getAllUsersTx = async () => {
+         try {
+            //check if the url is http and from this domain
+            url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_user_tx&dao=" + daoContractId + "&address=" + walletAddress + "&id=" + Math.random() * 1000 
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const tx = await response.text(); 
+            return (tx != "") ? JSON.parse(tx) : ""
+        } catch (error) { console.log(error)
+            return false;
+        }
+    }
+    // get all tx
     const getUserTx = async (addr) => {
          try {
             //check if the url is http and from this domain
@@ -1186,6 +1201,15 @@
              return j.length
         } catch (error) { console.log(error)
             return 0;
+        }
+    }
+    
+    //check if user is an admin
+    const isAdmin = async (domain) => {
+         try {
+            return true
+        } catch (error) { console.log(e)
+            return false;
         }
     }
     
@@ -1483,4 +1507,13 @@
     */
     const N = (num) => {return (num.toString() * 1)}
     
+     /** To format an address to display
+     * params {_address} the address as string
+     * params {n} the number of address characters to display
+     * returns {String}
+    */
+    const fAddr = (_address, n = 14) => {
+        _address += ""
+        return _address.substring(0,n) + '...' + _address.substring(_address.length - n)
+    }
 </script>
