@@ -51,9 +51,8 @@
                             <div class="textProp">
                                 <div class="d-flex gap-2 my-2">
                                 <input class="input-filed border rounded" id='title' type="text" placeholder="Proposal Title" name="title" value="{{ old('title') }}">
-                                <input class="input-filed border rounded" id='about' type="text" placeholder="Add Budget">
                                 </div>
-                                <textarea class="input-filed border rounded" placeholder="Tell more about your proposal (optional)" name="about">{{ old('about') }}</textarea>
+                                <textarea id='about' class="input-filed border rounded" placeholder="Tell more about your proposal (optional)" name="about">{{ old('about') }}</textarea>
                           
                                </div>
                          </div>
@@ -142,15 +141,16 @@
             const about = E('about').value.trim()
             const startDate = (new Date(E('startDate').value)).getTime() / 1000;
             if(title != ""){
-                //first check if he or she is a memeber
                 const id = talk("Getting ready")
+                const dao = (await getDao(["{{$dao['asset']}}"]))["{{$dao['asset']}}"];
+                if(await isBanned(dao.token, walletAddress)){stopTalking(0.1, id);return "";}
+                //first check if he or she is a memeber
                 E('create').disabled = true
                 if(hasJoined == null || hasJoined === false) {
                     //get join state
                     const bal = await getTokenUserBal('{{$dao['asset']}}', walletAddress);  
                     if(bal === false) {
                         talk("You are not a member of this DAO<br><center>Joining DAO</center>", 'norm', id)
-                        const dao = await getDao("{{$dao['asset']}}");
                         const res = await createTrustline(dao.code, dao.issuer, walletAddress, dao.name, dao.token)
                         if(res !== false) {
                             hasJoined = true
@@ -173,13 +173,15 @@
                                 name:title,
                                 about:about,
                                 start:startDate,
-                                links:link
+                                links:link,
                             })
                             if(res) {  
                                 stopTalking(4, talk("Proposal created successfully", 'good', id))
                                 setTimeout(() => {
                                    //redirect to proposal page
-                                   window.location = "{{ route('dao.proposal', ['proposal_id' => " ", 'dao_id'=> $dao['asset']]) }}" + res.status
+                                   let _link = "{{ route('dao.proposal', ['proposal_id' => " ", 'dao_id'=> $dao['asset']]) }}"
+                                   _link = _link.substring(0, _link.lastIndexOf("/") + 1) + res.status
+                                   window.location = _link
                                 },2000)
                             }
                             else {
@@ -202,7 +204,7 @@
                                     createProp(link)
                                 }
                                 else if(res === false){
-                                    stopTalking(4, talk("Unable to upload proposal file<br>TTry again later", 'fail', id))
+                                    stopTalking(4, talk("Unable to upload proposal file<br>Try again later", 'fail', id))
                                     E('create').disabled = false
                                 }
                                 else {
@@ -233,17 +235,16 @@
               for (let i = 0; i < file.length; i++) {
                 formData.append('files' + i, file[i]);
               }
-               
+              dao= dao.replace(/ /g,"")
               proposal = proposal.trim().replace(/ /g, "")
               // Create an HTTP request
               const xhr = new XMLHttpRequest();
               const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=proposal_upload&dao=" + encodeURIComponent(dao.toLowerCase()) + "&proposal_name=" + encodeURIComponent(proposal) + "&num=" + file.length
-              console.log(url) 
               // Define the server endpoint (PHP file)
               xhr.open('POST', url, true);
               // Set up an event listener to handle the response
               xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) { console.log(xhr.responseText)
+                if (xhr.readyState === 4 && xhr.status === 200) {  
                 const res = JSON.parse(xhr.responseText)
                     if (res.status == "1") {callback(true, res.links)}else{callback(false)}
                 }
@@ -311,7 +312,6 @@
                    }
                }
                file = files;
-               console.log(file)
            }
     </script>
 @endsection

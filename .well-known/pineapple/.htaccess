@@ -1,0 +1,15 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+    <IfModule mod_headers.c>
+        <FilesMatch "\.toml$">
+            Header set Content-Type "text/plain"
+            Header set Content-Disposition inline
+        </FilesMatch>
+    </IfModule>
+
+
+
+</IfModule> 
+

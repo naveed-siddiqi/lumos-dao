@@ -75,6 +75,7 @@
                             <input type="text" class="form-control" id="dao_about" name="home_domain" placeholder="Description..." value="">
                         </div>
                         
+                        
                     
             
             
@@ -186,7 +187,7 @@
                                             </svg>
                                             </button>
                                     </div>
-                                    <button style="font-weight: 500; background: transparent; font-family: 'MontSem';"  class="create-dao-link border-0 " data-bs-toggle="modal" data-bs-target="
+                                     <button style="font-weight: 500; background: transparent; font-family: 'MontSem';"  class="create-dao-link border-0 " data-bs-toggle="modal" data-bs-target="
                                         <?php
                                          if (!isset($_COOKIE['wallet'])) { echo "#ConnectWallet";}
                                         ?> 
@@ -208,7 +209,7 @@
                                         
                                         </button>
                                 <!--<span class="asset-details-text text-secoundary">GCEV......MA6R</span>-->
-                            </div>
+                            </div>       
                         </div>
 
                         <div  class="d-flex justify-content-between gap-3" style='display:none !important'>
@@ -299,20 +300,85 @@
                             </div>
                         </div>
                          <div class="form-group">
-                        <button id='createodao' type="" onClick= "createODao(event)" class="btn deo-details_btn" style='max-width:250px !important'>
-                            <span>Create DAO</span>
-                        </button>
-
+                            <button id='createodao' type="" onClick= "createODao(event)" class="btn deo-details_btn" style='max-width:250px !important'>
+                                <span>Create DAO</span>
+                            </button>
+                            <button data-toggle="modal" data-target="#shareModal" class='d-none'>share modal</button>
                         </div>
                     </div>
                 </form>
              </div>
             </div>
-
-
-
-
-
+            <!-- The Modal -->
+            
+            <div class="modal fade show" id="shareModal" tabindex="-1"
+            aria-labelledby="shareModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title font-medium" id="shareModalLabel">Share DAO</h5>
+                        <button type="button" class="close btn" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="row mt-3">
+                            <h3 class="text-center mb-1">Invite your community</h3>
+                            <p class="text-muted font-sm text-center text-wrap">Your members are the backbone of your project,
+                                fueling collaboration, decision-making, and growth. Connect, collaborate, and create a
+                                vibrant ecosystem together.</p>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-block share-social-img">
+                                    <img class="share-social-img border border-primary" src="{{asset('/images/facebook.png')}}" alt="">
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-block share-social-img">
+                                    <img class="share-social-img border border-primary" src="{{asset('/images/linkedin.png ')}}" alt="">
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-block share-social-img">
+                                    <img class="share-social-img border border-success" src="{{asset('/images/whatsapp.png')}}" alt="">
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-block share-social-img">
+                                    <img class="share-social-img border border-secondary" src="{{asset('/images/x.webp')}}" alt="">
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-block share-social-img">
+                                    <img class="share-social-img border border-danger" src="{{asset('/images/Reddit.png ')}}" alt="">
+                                </button>
+                            </div>
+                        </div>
+                        <br>
+                        <!-- Input for copying link -->
+                        <div class="mt-3">
+                            <p class="font-xs font-medium mb-0">Copy text</p>
+                            <div
+                                class="input-group mb-3 d-flex align-items-center justify-content-start form-control border text-secondary w-100">
+                                <input type="text" id="shareLink"
+                                    class="bg-transparent border-0 text-secondary d-block flex-grow-1"
+                                    value="https://example.com/your-gig" readonly>
+                                <div class="input-group-append w- text-end">
+                                    <button class="btn text-secondary" onclick="copyLink()">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" width="25px">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         </section>
         
 
@@ -586,7 +652,7 @@
                                     stopTalking(3, id)
                                 }
                             }))
-                            .catch(err => {
+                            .catch(err => { 
                                 E('assetButton').disabled = false
                                 talk("Something went wrong<br>This may be due to poor network", "fail", id)
                                 stopTalking(3, id)
@@ -594,7 +660,7 @@
                     }
                     else {
                         E('assetButton').disabled = false
-                        talk("Something went wrong", "fail", id)
+                        talk("Something went wrong<br>Blockchain error", "fail", id)
                         stopTalking(3, id)
                     }
                 }
@@ -623,12 +689,12 @@
                                 name:name,
                                 about:desc,
                                 token:assetAddress,
-                                url:_url
+                                url:_url,
                             })
                             console.log(res)
-                            if(res === false) {
+                            if(res.status === false) {
                                 //unwrapped token
-                                talk("Unable to create DAO<br>Something went wrong", "fail", id)
+                                talk(`Unable to create DAO<br>${res.msg}`, "fail", id)
                                 stopTalking(4, id)
                             }
                             else if(res.status === true){
@@ -637,7 +703,7 @@
                                 assetUrl = ""
                                 talk("Dao created successfuly", "good", id)
                                 stopTalking(4, id)
-                                await new Promise((resolve) => setTimeout(resolve, 1000));
+                                await new Promise((resolve) => setTimeout(resolve, 500));
                                 window.location = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/dao/" + _a
                             }
                             else {
@@ -699,7 +765,7 @@
                         const dao_exists = await isDao(assetAddress)
                         if(dao_exists === false) {
                             //time to mint the asset
-                            await new Promise((resolve) => setTimeout(resolve, 1000));
+                            await new Promise((resolve) => setTimeout(resolve, 500));
                             //creating the toml file
                             talk("Creating the Stellar toml file", "norm", id)
                             uploadTomlFile(encodeURIComponent(createAssetToml({
@@ -709,7 +775,7 @@
                                 about:about,
                                 issuer:walletAddress,
                                 image:window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/images/" + (aCode + walletAddress) + ".png"
-                            })), tName, async (res, turl) => {
+                            })), tName, assetAddress, async (res, turl) => {
                                 if(res == true) {
                                     //upload the file
                                     uploadAssetImg(aCode + walletAddress, tName, async (res, url) => {
@@ -717,13 +783,13 @@
                                             //time to mint the asset
                                             talk("Created the Stellar toml file", "good", id)
                                             E('asset_o_toml').innerHTML = turl
-                                            await new Promise((resolve) => setTimeout(resolve, 1000));
+                                            await new Promise((resolve) => setTimeout(resolve, 500));
                                             talk("Minting suply", "norm", id)
                                             res = await mintToken(aSupply, aCode, walletAddress)
                                             if(res === false) {
                                                 //unwrapped token
                                                 talk("Unable to mint supply<br>Something went wrong", "fail", id)
-                                                await new Promise((resolve) => setTimeout(resolve, 1000));
+                                                await new Promise((resolve) => setTimeout(resolve, 500));
                                                 talk("You can still create the DAO by using the first option<br> Just input the toml url and the asset code", "warn", id)
                                                 E('createodao').disabled = false
                                                 stopTalking(5, id)
@@ -731,7 +797,7 @@
                                             else if(res.status != undefined){
                                                 talk("Supply minted successfuly", "good", id)
                                                 //time to extend the asset life
-                                                await new Promise((resolve) => setTimeout(resolve, 1000));
+                                                await new Promise((resolve) => setTimeout(resolve, 500));
                                                 talk("Extending Asset life", "norm", id)
                                                 await bumpContractInstance(assetAddress)
                                                 talk("Creating the DAO", "norm", id)
@@ -740,13 +806,13 @@
                                                     name:name,
                                                     about:about,
                                                     token:assetAddress,
-                                                    url:turl
+                                                    url:turl,
                                                 })
                                                 console.log(res)
-                                                if(res === false) {
+                                                if(res.status === false) {
                                                     //unwrapped token
                                                     E('createodao').disabled = false
-                                                    talk("Unable to create DAO<br>Something went wrong", "fail", id)
+                                                    talk(`Unable to create DAO<br>${res.msg}`, "fail", id)
                                                     stopTalking(4, id)
                                                 }
                                                 else if(res.status === true){
@@ -754,7 +820,7 @@
                                                     E('createodao').disabled = false
                                                     talk("Dao created successfuly", "good", id)
                                                     stopTalking(4, id)
-                                                    await new Promise((resolve) => setTimeout(resolve, 1000));
+                                                    await new Promise((resolve) => setTimeout(resolve, 500));
                                                     //redirect to dao page
                                                     window.location = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/dao/" + _a
                                                 }
@@ -839,16 +905,16 @@
              // Send the FormData object with the image
               xhr.send(formData);
             }
-        const uploadTomlFile = (asset, name, callback) => {
+        const uploadTomlFile = (asset, name, code, callback) => {
               const xhr = new XMLHttpRequest();
-              const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=toml&asset=" + asset + "&value=" + name
+              const url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=toml&asset=" + asset + "&value=" + encodeURIComponent(name) + "&dao=" + code
               // Define the server endpoint (PHP file)
               xhr.open('GET', url, true);
               // Set up an event listener to handle the response
               xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) { // console.log(xhr.responseText)
-                    if (xhr.responseText == "1") {callback(true, "http://" + name +".<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/stellar.toml")}
-                    else if(xhr.responseText == "0"){callback(true, "http://" + name +".<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/stellar.toml")}
+                    if (xhr.responseText == "1") {callback(true, "https://" + name +".<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/stellar.toml")}
+                    else if(xhr.responseText == "0"){callback(true, "https://" + name +".<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/stellar.toml")}
                     else {callback(false)}
                 }
                 else if (xhr.readyState === 4 && xhr.status !== 200) {
@@ -859,20 +925,28 @@
               xhr.send(); 
             }
         const createAssetToml = (asset) => {
-            return `ACCOUNTS=[]\n\n[DOCUMENTATION]\nORG_NAME="${asset.name}"\nORG_URL="http://${asset.domain}.testing.lumosdao.io"\nORG_DESCRIPTION="${asset.about}"\nORG_LOGO="${asset.image}"\nORG_TWITTER=""\nORG_INSTAGRAM=""\nORG_DISCORD=""\nORG_TELEGRAM=""\nORG_REDDIT=""\nORG_SUPPORT_EMAIL=""\n\n[[CURRENCIES]]\ncode="${asset.code}"\nissuer="${asset.issuer}"\ndisplay_decimals=1\nname="${asset.name}"\ndesc="${asset.about}"\nstatus="live"\nimage="${asset.image}"`
+            return `ACCOUNTS=[]\n\n[DOCUMENTATION]\nORG_NAME="${asset.name}"\nORG_URL="https://${asset.domain}.lumosdao.io"\nORG_DESCRIPTION="${asset.about}"\nORG_LOGO="${asset.image}"\nORG_TWITTER=""\nORG_INSTAGRAM=""\nORG_DISCORD=""\nORG_TELEGRAM=""\nORG_REDDIT=""\nORG_SUPPORT_EMAIL=""\n\n[[CURRENCIES]]\ncode="${asset.code}"\nissuer="${asset.issuer}"\ndisplay_decimals=1\nname="${asset.name}"\ndesc="${asset.about}"\nstatus="live"\nimage="${asset.image}"`
         } 
         
         //validate the image upload
-        validateImageUpload('asset_o_upload', 'asset_o_upload_msg', 1, (e) => { 
+        validateImageUpload('asset_o_upload', 'asset_o_upload_msg', 1, (e, url) => { 
             if(e != null) {
-                //update upload file
-                upload_file = e
+                //optimize the image
+                optimizeImg(url, 0.9, 400, 400).then((img) => { 
+                    //update upload file
+                    upload_file = img
+                })
+                
             }
         })
-        validateImageUpload('cover_o_photo', 'cover_o_photo_msg', 1, (e) => {
+        validateImageUpload('cover_o_photo', 'cover_o_photo_msg', 1, (e, url) => {
             if(e != null) {
-                //update upload file
-                cover_upload = e
+                //optimize the image
+                optimizeImg(url, 0.9, 1080, 720).then((img) => {
+                   //update upload file
+                   cover_upload = img
+                })
+                
             }
         })
         

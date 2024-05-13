@@ -1,0 +1,22 @@
+ACCOUNTS=[]
+
+[DOCUMENTATION]
+ORG_NAME="Pineapple"
+ORG_URL="http://pineapple.testing.lumosdao.io"
+ORG_DESCRIPTION="Pineapple (PIN) is the sizzling new meme token on the Soroban blockchain, serving up delicious gains and juicy community engagement. Don't miss out, or you might be left with an empty plate!"
+ORG_LOGO="https://testing.lumosdao.io/.well-known/images/PINGA6B4IASSKD6EO3NH3JRXKNCAHT7GDS3VWL676OTI27ZAR4CM4USWMNZ.png"
+ORG_TWITTER=""
+ORG_INSTAGRAM=""
+ORG_DISCORD=""
+ORG_TELEGRAM=""
+ORG_REDDIT=""
+ORG_SUPPORT_EMAIL=""
+
+[[CURRENCIES]]
+code="PIN"
+issuer="GA6B4IASSKD6EO3NH3JRXKNCAHT7GDS3VWL676OTI27ZAR4CM4USWMNZ"
+display_decimals=1
+name="Pineapple"
+desc="Pineapple (PIN) is the sizzling new meme token on the Soroban blockchain, serving up delicious gains and juicy community engagement. Don't miss out, or you might be left with an empty plate!"
+status="live"
+image="https://testing.lumosdao.io/.well-known/images/PINGA6B4IASSKD6EO3NH3JRXKNCAHT7GDS3VWL676OTI27ZAR4CM4USWMNZ.png"

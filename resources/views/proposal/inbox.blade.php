@@ -18,7 +18,7 @@
                                 <input oninput='searchUser(event)' type="text" class="form-control h-auto py-2 my-3" placeholder="Search...">
                             </div>
                             <div class="mt-0">
-                                <button class="btn btn-danger text-white" data-bs-toggle="modal" data-bs-target="#ComposeModal">Compose</button>
+                                <button class="btn btn-danger text-white" data-bs-toggle="modal" data-bs-target="#usersModal">Compose</button>
                             </div>
                         </div>
                     </div>
@@ -34,7 +34,7 @@
                      <div class="py-2 px-4-inbox border-bottom d-none d-lg-block" id='chatHead' style='display:none !important'>
                         <div class="d-flex align-items-center py-1 gap-3">
                             <div class="position-relative">
-                                <img src="{{asset('/images/github-demi.png')}}"
+                                <img id='chatHeadImage' src="{{asset('/images/github-demi.png')}}"
                                     class="rounded-circle mr-1" alt="" width="40" height="40">
                             </div>
                             <div class="flex-grow-1 pl-3">
@@ -42,7 +42,7 @@
                                 <div id='chatHeadInfo' class="text-muted small" style='text-transform:capitalize'></div>
                             </div>
                             <div>
-                                <button class="btn btn-lg p-0"><svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                <button style='display:none' class="btn btn-lg p-0"><svg xmlns="http://www.w3.org/2000/svg" width="24"
                                         height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                                         class="feather feather-more-horizontal feather-lg">
@@ -86,7 +86,7 @@
 
                             </div>
                     </div>
-                      <div class="flex-grow-0 py-3-inbox px-4-inbox border-top-inbox">
+                      <div id='sendMessageField' class="flex-grow-0 py-3-inbox px-4-inbox border-top-inbox">
                         <div class="input-group d-flex align-items-center gap-4">
                             <input id='chatMessage'oninput='doIsTyping()' onkeyup = 'if(event.keyCode == 13){sendMessage()}' type="text" class="form-control rounded" placeholder="Type your message">
                             <div class="d-flex align-items-center mt-2">
@@ -108,7 +108,7 @@
                     <input oninput='searchUser(event, "users")' type="text" class="form-control h-auto py-2 my-3" placeholder="Search..."> 
                 </div>
                 <div id='chatUsersList' style='overflow:auto;max-height:400px'>
-                    <a id='chatUserBroadcast'  href="#" class="list-group-item list-group-item-action border-0 my-2">
+                    <a id='chatUserBroadcast'  href="#" class="list-group-item list-group-item-action border-0 my-2" style='display:none'>
                         <div class="d-flex align-items-start gap-3">
                             <div class="flex-grow-1 ml-3">
                             <img src="{{asset('/images/github-demi.png')}}" 
@@ -134,7 +134,7 @@
                             <input type="text" class="form-control mt-0" placeholder="" id="assetCode" aria-describedby="emailHelp" name="asset_code" value="">
                         </div>
                         <div class="mt-3">
-                            Message:
+                            Compose:
                             <textarea class="form-control h-auto mt-0" name="" id="" cols="30" rows="3"></textarea>
                         </div>
                         <div class="d-flex justify-content-end">
@@ -150,37 +150,57 @@
     <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script> 
     <script>
         /* VARIABLES */
-        var users = [];var messages = []; var users_conversation = [];var chatIndex = 0;var firstTimeLoad = true;var isADMIN = false;var typingTmr;
+        var users = [];var messages = []; var users_conversation = [];var chatIndex = 0;var firstTimeLoad = true;var isADMIN = false;var typingTmr;var isBan
         //GET PARAMS
-        const daoId = (new URLSearchParams(window.location.search)).get("dao");
-        const daoName = (new URLSearchParams(window.location.search)).get("name");
+        const daoId = daoContractId //(new URLSearchParams(window.location.search)).get("dao");
+        const daoName = "" //(new URLSearchParams(window.location.search)).get("name");
+        const toWallet = (new URLSearchParams(window.location.search)).get("to") || "";
         let addr = (new URLSearchParams(window.location.search)).get("address");
         //SOCKET AND VARIABLES
-        const socket = io('https://173.212.232.150:443'); //setting up the socket
+        const socket = io('https://lumos-server.onrender.com'); //setting up the socket
         var currentUser = ""; let _walletAddress = addr || walletAddress;let dte = [0,0,0];
         //CONST
         const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
            
         
+        
         /* FUNCTIONS */
         const setUp = async() => { 
+             const _usr = await getAllDaoUsers(); 
+             isADMIN = false; //await isAdmin(daoName)
+             isBan = false; //await getUserBan(daoId, walletAddress)
+              
+             if(isBan === true) {
+                 //hide send message button
+                 E('sendMessageField').style.display = 'none'
+                 stopTalking(3, talk('Your account has been banned<br>So you would not be able to send messages', 'warn'))
+             }
+              
              //set up the connect and disconnect
-             socket.on('connect', () => {  
+             socket.on('connect', () => {   
                 //do the synchronizing
                 socket.emit("register", {id:addr || _walletAddress, dao:daoId, index:chatIndex}, (res)=> {
                     if(res.status === true) {
                         //load the messages
                         loadMessage(res.data)
                         firstTimeLoad = false
-                        //console.log(res.data)
+                        //check if there is a preset to address
+                        //console.log(toWallet)
+                        if(toWallet != "") { 
+                            selectChat({
+                                user:toWallet,
+                                mdisplay:fAddr(toWallet, 9)
+                            })
+                        }
+                        ////console.log(res.data)
                      }
                     else {
                         stopTalking(3, talk("Unable to connect to chat server<br>Please refresh this page", "fail"))
                     }
                 });
              })
-             socket.on('disconnect', () => {  
+             socket.on('disconnect', () => {   
                 //turn off all online and typing flags
                 for(let i=0;i<users_conversation.length;i++) {
                     const res = users_conversation[i]
@@ -197,7 +217,7 @@
              socket.on('msg', (params) => { 
                  if(params.msg) {
                      params = JSON.parse(formatReadForBroadcast(params))
-                     //console.log(params)
+                     ////console.log(params)
                      //first check if the message has not been received before
                      if(!messages['id']){messages['id'] = []}
                      if(!messages['id'].includes(params.id)) {
@@ -217,25 +237,27 @@
                  }
              })
              //setting up for the onread alerts
-             socket.on('read', (params) => {  // console.log(params)
+             socket.on('read', (params) => {   
                  //update read status  
                  if(!messages[params.reader]){messages[params.reader] = []} ; 
                  for(let i=0;i<messages[params.reader].length; i++) {
                         const res = JSON.parse(messages[params.reader][i]);
                         if(res.id <= params.id){
                             if(res.sender == _walletAddress) {    
-                                 res.status = 'read'
-                                 messages[params.reader][i] = JSON.stringify(res)
-                                 //edit their info if present in chat display
-                                 if(E(res.id + 'date')) { 
-                                     E(res.id + 'date').style.fontWeight = 'bold'
-                                 }
+                                res.status = 'read'
+                                messages[params.reader][i] = JSON.stringify(res)
+                                //edit their info if present in chat display
+                                if(E(res.id + 'date')) { 
+                                 E(res.id + 'date').style.fontWeight = 'bold'
+                                }
+                                const unread_num = (E('nav_user_inbox').innerHTML.replace(/[^0-9]/g, '') * 1) 
+                                E('nav_user_inbox').innerHTML = `(${((unread_num - 1) > -1) ? (unread_num - 1) : 0 })`
                             }
                         }
                 }
              })
              //setting up for online users
-             socket.on('online', (params) => {   //console.log(params)
+             socket.on('online', (params) => {    
                 //update online status  
                 if(E(params.user + "_online")) {
                      E(params.user + '_online').style.display = 'block'
@@ -248,7 +270,7 @@
                 users[params.user] = 'online' 
              })
              //setting up for offline users
-             socket.on('offline', (params) => {   //console.log(params)
+             socket.on('offline', (params) => {   
                  //update online status  
                  if(E(params.user + "_online")) {
                      E(params.user + '_online').style.display = 'none'
@@ -262,7 +284,7 @@
                  users[params.user] = 'offline' 
              })
              //setting up for typing users
-             socket.on('typing', (params) => {   //console.log(params)
+             socket.on('typing', (params) => {    
                  //update typing status  
                  if(E(params.sender + "_typing")) {
                      E(params.sender + '_typing').style.display = 'block'
@@ -273,7 +295,7 @@
                  }
              })
              //setting up for not typing users
-             socket.on('nottyping', (params) => {   //console.log(params)
+             socket.on('nottyping', (params) => {    
                  //update typing status  
                  if(E(params.sender + "_typing")) {
                      E(params.sender + '_typing').style.display = 'none'
@@ -283,8 +305,6 @@
                      E('chatHeadInfo').innerText =  (users[params.sender]) ? users[params.sender] : ''
                  }
              })
-             const _usr = await getDaoUsersP(daoName); 
-             isADMIN = await isAdmin(daoName)
              if(_usr.length > 0) {
                  users = _usr
                  if(isADMIN) {
@@ -299,7 +319,7 @@
                      if(users[i] != _walletAddress) {  
                         E('chatUsersList').innerHTML += drawUser({
                             user:users[i],
-                            mdisplay:users[i].substring(0,9) + "..." + users[i].substring(users[i].length-9)
+                            mdisplay:fAddr(users[i], 9),
                         }, 'compose');
                      }
                 }
@@ -311,9 +331,8 @@
                 let u='';
                 if(firstTimeLoad){
                     E('chatList').innerHTML = ''
-                    E('chatBody').innerHTML = `
-                     <center style='margin:auto;height:60vh;display:flex;align-items:center;justify-content:center'>Chat messages will appear here</center> 
-                    `
+                    E('chatBody').innerHTML = `<center style='margin:auto;height:60vh;display:flex;align-items:center;justify-content:center'>Chat messages will appear here</center>`
+                    E('sendMessageField').style.display = 'none'
                 }
                 for(let i=msgArr.length -1;i>=0;i--) {
                     //load only the messages
@@ -336,19 +355,18 @@
                 readAllMessages() //to read all unread messages in the display
             }
             else if(firstTimeLoad){ //if its a first time load
-                E('chatBody').innerHTML = `
-                 <center style='margin:auto;height:60vh;display:flex;align-items:center;justify-content:center'>Chat messages will appear here</center> 
-                `
+                E('chatBody').innerHTML = `<center style='margin:auto;height:60vh;display:flex;align-items:center;justify-content:center'>Chat messages will appear here</center>`
                 E('chatHead').style.display = 'none !important'
-                E('chatList').innerHTML = `
-                     <center style='margin:40px'>No chat started</center> 
-                `
+                E('chatList').innerHTML = `<center style='margin:40px'>No chat started</center>`
+                E('sendMessageField').style.display = 'none'
             }
         }
         const selectChat = (chatParams) => {
             //To select a chat
             E('chatHead').style.display = ""
             E('chatHeadDisplay').innerText =(chatParams.user != 'Broadcast Messages')? chatParams.user.substring(0,9) + "..." + chatParams.user.substring(chatParams.user.length-9) : chatParams.user;
+            E('chatHeadImage').src = API_URL + "user_img&user=" + chatParams.user
+            E('sendMessageField').style.display = ''
             //draw chat on
             let u;E('chatBody').innerHTML = '';dte = [0,0,0];let unread = false;let bunread = false; /*unread flag*/let msgId = 0;
             if(users[chatParams.user]) {
@@ -403,7 +421,7 @@
                         
             }
                 //if there is an unread message, read it
-                if(unread || bunread) { console.log(unread, bunread)
+                if(unread || bunread) {  
                     socket.emit('read', {
                         sender:currentUser, msgId:msgId, signal:unread
                     }, (status) => { 
@@ -415,6 +433,9 @@
                                     if(res.sender == currentUser) {
                                         res.status = 'read'
                                         messages[chatParams.user][i] = JSON.stringify(res)
+                                        //subtract the equivalent in the inbox alert
+                                        const unread_num = (E('nav_user_inbox').innerHTML.replace(/[^0-9]/g, '') * 1) 
+                                        E('nav_user_inbox').innerHTML = `(${((unread_num - 1) > -1) ? (unread_num - 1) : 0 })`
                                     }
                                 }
                             }
@@ -456,7 +477,7 @@
                         //personal message
                         p.receiver = currentUser;
                         socket.emit('msg', {msg:msg, receiver:currentUser}, (status) => {
-                            console.log(status)
+                            //console.log(status)
                             if(status.status === true) {
                                 //has sent
                                 p.id = status.id;p.status = 'sent'
@@ -477,7 +498,7 @@
                    else{
                        p.receiver = 'all'
                         socket.emit('broadcast', {msg:msg}, (status) => {
-                            console.log(status) 
+                            //console.log(status) 
                             if(status.status === true) { 
                                 //has sent
                                 p.id = status.id;p.status = 'sent'
@@ -613,7 +634,7 @@
                         msgId = res.id; //saving the last msg id of the unread message
                     }
                  }
-                if(unread || bunread) { console.log(unread, bunread)
+                if(unread || bunread) { //console.log(unread, bunread)
                     socket.emit('read', {
                         sender:currentUser, msgId:msgId, signal:unread
                     }, (status) => {  
@@ -625,6 +646,8 @@
                                     if(res.sender == currentUser) { 
                                         res.status = 'read'
                                         messages[currentUser][i] = JSON.stringify(res)
+                                        const unread_num = (E('nav_user_inbox').innerHTML.replace(/[^0-9]/g, '') * 1) 
+                                        E('nav_user_inbox').innerHTML = `(${((unread_num - 1) > -1) ? (unread_num - 1) : 0 })`
                                     }
                                 }
                             }
@@ -723,7 +746,7 @@
             return `<a id='${(type == 'chat') ? params.user : Math.random()}_user' onclick='selectChat(${JSON.stringify(params)})' href="#" class="list-group-item list-group-item-action border-0 my-2">
                         <div class="d-flex align-items-start gap-3">
                             <div class="flex-grow-1 ml-3">
-                            <img src="{{asset('/images/github-demi.png')}}"
+                            <img src="${API_URL + "user_img&user=" + params.user}"
                                     class="rounded-circle mr-1" alt="" width="40" height="40">
                                 ${params.mdisplay}
                                 <div class="small" style='display:flex;align-items:center'>
@@ -740,7 +763,7 @@
             const bold = (params.status == 'read' && params.type == 'me') ? 'bold' : "";
             return `<div class="${(params.type == 'me') ? 'chat-message-right mb-4' : 'chat-message-left pb-4'} ">
                                 <div>
-                                    <img src="{{asset('/images/github-demi.png')}}"
+                                    <img src="${API_URL + "user_img&user=" + walletAddress}"
                                         class="rounded-circle mr-1" alt="" width="40" height="40">
                                     <div id='${params.id}date' class="text-muted small text-nowrap mt-2" style='display:${(params.status == 'notsent') ? 'none' : ''}; font-weight:${bold}'>${params.date.toLocaleTimeString()}</div>
                                 </div>

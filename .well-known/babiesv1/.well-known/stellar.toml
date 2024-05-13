@@ -1,0 +1,22 @@
+ACCOUNTS=[]
+
+[DOCUMENTATION]
+ORG_NAME="Babies V1"
+ORG_URL="http://babiesv1.testing.lumosdao.io"
+ORG_DESCRIPTION="Love is an addiction not attraction"
+ORG_LOGO="https://testing.lumosdao.io/.well-known/images/BVIGBPB22I6M3UHP3HZ475FTCIA5A7KVDJ6DMOCLTHX4KRRWMEHHUM7UY36.png"
+ORG_TWITTER=""
+ORG_INSTAGRAM=""
+ORG_DISCORD=""
+ORG_TELEGRAM=""
+ORG_REDDIT=""
+ORG_SUPPORT_EMAIL=""
+
+[[CURRENCIES]]
+code="BVI"
+issuer="GBPB22I6M3UHP3HZ475FTCIA5A7KVDJ6DMOCLTHX4KRRWMEHHUM7UY36"
+display_decimals=1
+name="Babies V1"
+desc="Love is an addiction not attraction"
+status="live"
+image="https://testing.lumosdao.io/.well-known/images/BVIGBPB22I6M3UHP3HZ475FTCIA5A7KVDJ6DMOCLTHX4KRRWMEHHUM7UY36.png"

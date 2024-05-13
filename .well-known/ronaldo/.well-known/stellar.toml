@@ -1,0 +1,22 @@
+ACCOUNTS=[]
+
+[DOCUMENTATION]
+ORG_NAME="Ronaldo"
+ORG_URL="http://ronaldo.testing.lumosdao.io"
+ORG_DESCRIPTION="Ronaldo (RON) is the latest digital asset on the Soroban blockchain, adding up to be the next big thing in the crypto sphere. Crunch the numbers and get on board before the totals skyrocket!"
+ORG_LOGO="https://testing.lumosdao.io/.well-known/images/RONGA6B4IASSKD6EO3NH3JRXKNCAHT7GDS3VWL676OTI27ZAR4CM4USWMNZ.png"
+ORG_TWITTER=""
+ORG_INSTAGRAM=""
+ORG_DISCORD=""
+ORG_TELEGRAM=""
+ORG_REDDIT=""
+ORG_SUPPORT_EMAIL=""
+
+[[CURRENCIES]]
+code="RON"
+issuer="GA6B4IASSKD6EO3NH3JRXKNCAHT7GDS3VWL676OTI27ZAR4CM4USWMNZ"
+display_decimals=1
+name="Ronaldo"
+desc="Ronaldo (RON) is the latest digital asset on the Soroban blockchain, adding up to be the next big thing in the crypto sphere. Crunch the numbers and get on board before the totals skyrocket!"
+status="live"
+image="https://testing.lumosdao.io/.well-known/images/RONGA6B4IASSKD6EO3NH3JRXKNCAHT7GDS3VWL676OTI27ZAR4CM4USWMNZ.png"

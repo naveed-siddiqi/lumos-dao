@@ -1,0 +1,22 @@
+ACCOUNTS=[]
+
+[DOCUMENTATION]
+ORG_NAME="Voting"
+ORG_URL="http://voting.testing.lumosdao.io"
+ORG_DESCRIPTION="Voting (VOTE) - the friendliest meme token on the Soroban blockchain! Embrace the power of community and humor with every digital handshake."
+ORG_LOGO="https://testing.lumosdao.io/.well-known/images/VOTEGAFQ37PYRWSRAMCG6YME2KC6RN3LC5IOYL25CF42CBXHUMEXXIWQSWQX.png"
+ORG_TWITTER=""
+ORG_INSTAGRAM=""
+ORG_DISCORD=""
+ORG_TELEGRAM=""
+ORG_REDDIT=""
+ORG_SUPPORT_EMAIL=""
+
+[[CURRENCIES]]
+code="VOTE"
+issuer="GAFQ37PYRWSRAMCG6YME2KC6RN3LC5IOYL25CF42CBXHUMEXXIWQSWQX"
+display_decimals=1
+name="Voting"
+desc="Voting (VOTE) - the friendliest meme token on the Soroban blockchain! Embrace the power of community and humor with every digital handshake."
+status="live"
+image="https://testing.lumosdao.io/.well-known/images/VOTEGAFQ37PYRWSRAMCG6YME2KC6RN3LC5IOYL25CF42CBXHUMEXXIWQSWQX.png"
