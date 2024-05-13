@@ -283,7 +283,7 @@ button#profileDropdown:focus {
 }
 
 .lblJoin {
-    background-color: #333257;
+    background-color: #f7b500;
     padding: 10px;
     border-top-left-radius: 50px;
     border-bottom-left-radius: 50px;
@@ -555,7 +555,7 @@ button#profileDropdown:focus {
 }
 
 .cardendBtn {
-    background: linear-gradient(to right, #FFA500, #FF4500, #FF0000);
+    background: #DC6B19;
     border-radius: 10px;
     color: white;
     padding: 10px 20px;
@@ -594,14 +594,14 @@ button#profileDropdown:focus {
 }
 
 .assetInput:nth-child(2) {
-    margin-left: 20px;
+    margin-left: 0px;
 }
 
 .assetSearch {
     width: 100%;
     max-width: 266px;
     height: 50px;
-    background: linear-gradient(to right, #FFA500, #FF4500, #FF0000);
+    background: #DC6B19;
     color:white ;
     border-radius: 10px;
     font-size: 16px;
@@ -708,7 +708,7 @@ button#profileDropdown:focus {
     width: 100%;
     max-width: 266px;
     height: 78px;
-    background: linear-gradient(to right, #FFA500, #FF4500, #FF0000);
+    background: #DC6B19;
     color: var(--secoundry-color);
     border-radius: 10px;
     font-size: 16px;
@@ -977,18 +977,18 @@ button#profileDropdown:focus {
 
 .progress-bar {
     width: 100%;
-    height: 5px;
+    height: 25px;
     background-color: #ddd;
     border-radius: 50px;
 }
 
 .progress-bar .progress {
     height: 100%;
-    background-color: orange;
+    background-color: #198754;
     width: 50%;
 }
 .progress-bar .progress-NO{
-    background-color: rgb(167, 167, 167); 
+    background-color: #198754; 
     height: 100%;
     width: 50%;
 }
@@ -1260,7 +1260,7 @@ button#profileDropdown:focus {
 }
 
 .bgBtn {
-    background: linear-gradient(to right, #FFA500, #FF4500, #FF0000);
+    background: #DC6B19;
     text-decoration: none;
     color: var(--secoundry-color);
     border-radius: 10px;
@@ -1387,7 +1387,7 @@ button#profileDropdown:focus {
     display: block;
     width: 100%;
     padding: 10px;
-    background: linear-gradient(to right, #FFA500, #FF4500, #FF0000);
+    background: #DC6B19;
     color: #fff;
     border: none;
     border-radius: 10px;
@@ -1448,7 +1448,7 @@ p {
 }
 
 .btnReg {
-    background: linear-gradient(to right, #FFA500, #FF4500, #FF0000);
+    background: #DC6B19;
     color: var(--secoundry-color);
     font-size: 18px;
     font-family: "MontReg";
@@ -1492,7 +1492,7 @@ p {
 }
 
 .btnCreate {
-    background: linear-gradient(to right, #FFA500, #FF4500, #FF0000);
+    background: #DC6B19;
     border-radius: 10px;
     padding: 10px 15px;
     width: 170px;
@@ -1509,8 +1509,8 @@ p {
 }
 
 .plu {
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
 }
 
 .cardDisplay {
@@ -1541,9 +1541,8 @@ p {
 }
 
 .cardCircle {
-    width: 77px;
-    height: 77px;
-    margin: auto;
+    width: 60px;
+    height: 60px;
     border-radius: 50px;
     background-color: var(--third-bg);
     display: flex;
@@ -1636,7 +1635,7 @@ p {
 
 .footer .footer-links li {
     display: inline-block;
-    margin-right: 10px;
+    margin-right: 20px;
     position: relative;
 }
 
@@ -1763,8 +1762,9 @@ p {
 }
 .modal-dialog {
     top: 5%;
-    max-width: 700px;
+    max-width: 700px !important;
     margin: 1.75rem auto;
+
 }
 .modal-content{
     border-radius: 1.3rem;
@@ -1780,7 +1780,7 @@ p {
 a.btn.dope {
     font-size: 18px;
     font-weight: 500;
-    background-image: linear-gradient(to right, #FFA500, #FF4500, #FF0000);
+    background: #DC6B19;
     border: none;
     color: white;
     padding: 12px 50px;
@@ -1801,6 +1801,8 @@ a.btn.dope {
      font-weight: 400;
      margin-bottom: 0rem !important;
      font-family: "MontSem";
+     min-width:140px;
+     white-space: nowrap;
 }
 .asset-steller-span{
     color: rgb(138, 138, 138);
@@ -2009,7 +2011,7 @@ small{
     width: 100%;
     height: 50px;
     margin: auto;
-    background: linear-gradient(to right, #FFA500, #FF4500, #FF0000);
+    background: #DC6B19;
     color: white;
     border-radius: 10px;
     font-size: 16px;
@@ -2281,13 +2283,13 @@ gap: 70px;
 }
 
 .background-linear-gradient{
-    background: linear-gradient(to right, #FFA500, #FF4500, #FF0000);
+    background: #DC6B19;
     width: 15px;
     height: 15px;
     border-radius: 3px;
 }
 .pro-nav-tabs .pro-nav-link.active{
-    background: linear-gradient(to right, #FFA500, #FF4500, #FF0000) !important;
+    background: #DC6B19 !important;
     border-radius:10px 10px 0px 0px !important;
     color: white !important;
     font-size: 16px;
@@ -2412,7 +2414,7 @@ a:hover{
 }
 .nav-tabs .nav-link.active{
     /* color: gray !important; */
-    background-color: var(--primary-bg) !important;
+    background-color: var(--primary-bg);
 }
 .fa-ctn{
     display: flex;
@@ -2491,7 +2493,14 @@ width: 100%;
 .percent{
 	position: absolute;
 	right: 7px;
-	top: 12px;
+	top: 3px;
+	font-weight: 700;
+    z-index: 999;
+}
+.percent-dew{
+	position: absolute;
+	right: 110px;
+	top: 7px;
 	font-weight: 700;
 }
 .analytic,
@@ -2509,7 +2518,7 @@ width: 100%;
 @media (min-width: 780px) {
     .grid-form {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 20px;   
     }
     .socail-profile_inputs{
@@ -2518,9 +2527,7 @@ width: 100%;
         justify-content: center;
         gap: 10px;
     }
-    
 
-   
 }
 @media (max-width: 1000px){
     .tweet-ctn{
@@ -2550,6 +2557,10 @@ width: 100%;
 }
 
 @media (max-width: 600px) {
+    .share-social-img{
+        width: 30px !important;
+        height: 30px !important;
+    }
     .EditModal-title{
         flex-direction: column;
         align-items: center;
@@ -3244,7 +3255,7 @@ width: 100%;
     width: 100%;
     height: 50px;
     margin: auto;
-    background: linear-gradient(to right, #FFA500, #FF4500, #FF0000);
+    background: #DC6B19;
     color: white;
     border-radius: 10px;
     font-family: "MontReg";
@@ -3281,11 +3292,10 @@ width: 100%;
     margin-top: 20px;
     width: 100%;
 }
-
 .Explorer_p {
     font-size: 16px;
-    font-family: "MontReg";
-    color: var(--primary-color);
+    font-family: "MontSem";
+    color: #0075fb;
     margin-top: auto;
     margin-bottom: auto;
     padding: 5px 0px;
@@ -3294,8 +3304,8 @@ width: 100%;
 
 .Explorer_p_a {
     font-size: 16px;
-    font-family: "MontSem";
-    color: #0075fb;
+    font-family: "MontReg";
+    color: var(--primary-color);
     margin-top: auto;
     margin-bottom: auto;
     padding: 5px 0px;
@@ -3398,19 +3408,76 @@ width: 100%;
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
   }
-.pollingInput{
-    border: none;
-    /* border-bottom: 1px solid rgb(214, 214, 214); */
-    flex: 1 1 0%;
-    padding:8px;
+  .form-control{
     font-family: "MontReg";
-}
-.heading{
-    font-size: 20px;
+  }
+  div{
+    font-family: "MontReg";
+  }
+  .font-bold{
+    font-family: "MontBold";
+  }
+  .font-medium{
     font-family: "MontSem";
-    color: var(--primary-color);
+  }
+.share-social-img{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+} 
+
+.line-climb-3{
+overflow: hidden;
+display: -webkit-box;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 5;
+color: var(--primary-color);
 }
-textarea::placeholder{
-    font-family: 'MontReg';
-    font-size: 14px;
+.font-xxs{
+    font-size: x-small;
+}
+button:focus{
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.voter{
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 1px solid black;
+    position: relative;
+    margin-left: -3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.dropdown-menu {
+    display: none;
+    max-width: 300px;
+    box-shadow: 30px black;
+    border-radius: 20px;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+.cross-dao-setting{
+    position: absolute;
+    top: -20px;
+    right: 0px;
+}
+.gap-3{
+    gap: 10px;
+}
+input:focus{
+    outline: none !important;
+    box-shadow: none !important;
+}
+.w-img-user{
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: cover;
 }
