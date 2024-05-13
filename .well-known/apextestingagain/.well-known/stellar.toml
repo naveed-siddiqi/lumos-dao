@@ -1,0 +1,22 @@
+ACCOUNTS=[]
+
+[DOCUMENTATION]
+ORG_NAME="Apex Testing again"
+ORG_URL="http://apextestingagain.testing.lumosdao.io"
+ORG_DESCRIPTION="testing"
+ORG_LOGO="https://testing.lumosdao.io/.well-known/images/APTGBPB22I6M3UHP3HZ475FTCIA5A7KVDJ6DMOCLTHX4KRRWMEHHUM7UY36.png"
+ORG_TWITTER=""
+ORG_INSTAGRAM=""
+ORG_DISCORD=""
+ORG_TELEGRAM=""
+ORG_REDDIT=""
+ORG_SUPPORT_EMAIL=""
+
+[[CURRENCIES]]
+code="APT"
+issuer="GBPB22I6M3UHP3HZ475FTCIA5A7KVDJ6DMOCLTHX4KRRWMEHHUM7UY36"
+display_decimals=1
+name="Apex Testing again"
+desc="testing"
+status="live"
+image="https://testing.lumosdao.io/.well-known/images/APTGBPB22I6M3UHP3HZ475FTCIA5A7KVDJ6DMOCLTHX4KRRWMEHHUM7UY36.png"

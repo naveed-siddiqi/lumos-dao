@@ -1,0 +1,22 @@
+ACCOUNTS=[]
+
+[DOCUMENTATION]
+ORG_NAME="Handshake"
+ORG_URL="http://handshake90.lumosdao.io"
+ORG_DESCRIPTION="Handshake (SHAKE) is the latest digital asset on the Soroban blockchain, adding up to be the next big thing in the crypto sphere. Crunch the numbers and get on board before the totals skyrocket!"
+ORG_LOGO="https://lumosdao.io/.well-known/images/ShakeGA6B4IASSKD6EO3NH3JRXKNCAHT7GDS3VWL676OTI27ZAR4CM4USWMNZ.png"
+ORG_TWITTER=""
+ORG_INSTAGRAM=""
+ORG_DISCORD=""
+ORG_TELEGRAM=""
+ORG_REDDIT=""
+ORG_SUPPORT_EMAIL=""
+
+[[CURRENCIES]]
+code="Shake"
+issuer="GA6B4IASSKD6EO3NH3JRXKNCAHT7GDS3VWL676OTI27ZAR4CM4USWMNZ"
+display_decimals=1
+name="Handshake"
+desc="Handshake (SHAKE) is the latest digital asset on the Soroban blockchain, adding up to be the next big thing in the crypto sphere. Crunch the numbers and get on board before the totals skyrocket!"
+status="live"
+image="https://lumosdao.io/.well-known/images/ShakeGA6B4IASSKD6EO3NH3JRXKNCAHT7GDS3VWL676OTI27ZAR4CM4USWMNZ.png"

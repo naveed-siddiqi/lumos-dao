@@ -1,0 +1,22 @@
+ACCOUNTS=[]
+
+[DOCUMENTATION]
+ORG_NAME="LumosDAO testing"
+ORG_URL="http://lumosdaotesting12.testing.lumosdao.io"
+ORG_DESCRIPTION="Unlock the full potential of decentralized governance with LumosDAO's suite of features designed for efficiency, transparency, and community empowerment."
+ORG_LOGO="https://testing.lumosdao.io/.well-known/images/tLUMOSGA6B4IASSKD6EO3NH3JRXKNCAHT7GDS3VWL676OTI27ZAR4CM4USWMNZ.png"
+ORG_TWITTER=""
+ORG_INSTAGRAM=""
+ORG_DISCORD=""
+ORG_TELEGRAM=""
+ORG_REDDIT=""
+ORG_SUPPORT_EMAIL=""
+
+[[CURRENCIES]]
+code="tLUMOS"
+issuer="GA6B4IASSKD6EO3NH3JRXKNCAHT7GDS3VWL676OTI27ZAR4CM4USWMNZ"
+display_decimals=1
+name="LumosDAO testing"
+desc="Unlock the full potential of decentralized governance with LumosDAO's suite of features designed for efficiency, transparency, and community empowerment."
+status="live"
+image="https://testing.lumosdao.io/.well-known/images/tLUMOSGA6B4IASSKD6EO3NH3JRXKNCAHT7GDS3VWL676OTI27ZAR4CM4USWMNZ.png"

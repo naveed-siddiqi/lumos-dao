@@ -1,0 +1,22 @@
+ACCOUNTS=[]
+
+[DOCUMENTATION]
+ORG_NAME="Pineapple"
+ORG_URL="http://pineapple69.testing.lumosdao.io"
+ORG_DESCRIPTION="Pineapple is a tasty fruit. Pineapple is a tasty fruit. Pineapple is a tasty fruit. Pineapple is a tasty fruit. Pineapple is a tasty fruit. Pineapple is a tasty fruit. Pineapple is a tasty fruit."
+ORG_LOGO="https://testing.lumosdao.io/.well-known/images/PINGB2OWGITD44VF4AQOV2ASMOF52TWGS3NRRQFM7GAIZEG6SSSSV6ZJ2HP.png"
+ORG_TWITTER=""
+ORG_INSTAGRAM=""
+ORG_DISCORD=""
+ORG_TELEGRAM=""
+ORG_REDDIT=""
+ORG_SUPPORT_EMAIL=""
+
+[[CURRENCIES]]
+code="PIN"
+issuer="GB2OWGITD44VF4AQOV2ASMOF52TWGS3NRRQFM7GAIZEG6SSSSV6ZJ2HP"
+display_decimals=1
+name="Pineapple"
+desc="Pineapple is a tasty fruit. Pineapple is a tasty fruit. Pineapple is a tasty fruit. Pineapple is a tasty fruit. Pineapple is a tasty fruit. Pineapple is a tasty fruit. Pineapple is a tasty fruit."
+status="live"
+image="https://testing.lumosdao.io/.well-known/images/PINGB2OWGITD44VF4AQOV2ASMOF52TWGS3NRRQFM7GAIZEG6SSSSV6ZJ2HP.png"

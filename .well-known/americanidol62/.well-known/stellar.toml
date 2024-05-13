@@ -1,0 +1,22 @@
+ACCOUNTS=[]
+
+[DOCUMENTATION]
+ORG_NAME="American Idol"
+ORG_URL="http://americanidol62.testing.lumosdao.io"
+ORG_DESCRIPTION="Love is an addiction not attraction"
+ORG_LOGO="https://testing.lumosdao.io/.well-known/images/ADLSGBPB22I6M3UHP3HZ475FTCIA5A7KVDJ6DMOCLTHX4KRRWMEHHUM7UY36.png"
+ORG_TWITTER=""
+ORG_INSTAGRAM=""
+ORG_DISCORD=""
+ORG_TELEGRAM=""
+ORG_REDDIT=""
+ORG_SUPPORT_EMAIL=""
+
+[[CURRENCIES]]
+code="ADLS"
+issuer="GBPB22I6M3UHP3HZ475FTCIA5A7KVDJ6DMOCLTHX4KRRWMEHHUM7UY36"
+display_decimals=1
+name="American Idol"
+desc="Love is an addiction not attraction"
+status="live"
+image="https://testing.lumosdao.io/.well-known/images/ADLSGBPB22I6M3UHP3HZ475FTCIA5A7KVDJ6DMOCLTHX4KRRWMEHHUM7UY36.png"

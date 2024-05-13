@@ -1,0 +1,22 @@
+ACCOUNTS=[]
+
+[DOCUMENTATION]
+ORG_NAME="American Idol"
+ORG_URL="http://americanidol.testing.lumosdao.io"
+ORG_DESCRIPTION="The next superstar"
+ORG_LOGO="https://testing.lumosdao.io/.well-known/images/AMLGBPB22I6M3UHP3HZ475FTCIA5A7KVDJ6DMOCLTHX4KRRWMEHHUM7UY36.png"
+ORG_TWITTER=""
+ORG_INSTAGRAM=""
+ORG_DISCORD=""
+ORG_TELEGRAM=""
+ORG_REDDIT=""
+ORG_SUPPORT_EMAIL=""
+
+[[CURRENCIES]]
+code="AML"
+issuer="GBPB22I6M3UHP3HZ475FTCIA5A7KVDJ6DMOCLTHX4KRRWMEHHUM7UY36"
+display_decimals=1
+name="American Idol"
+desc="The next superstar"
+status="live"
+image="https://testing.lumosdao.io/.well-known/images/AMLGBPB22I6M3UHP3HZ475FTCIA5A7KVDJ6DMOCLTHX4KRRWMEHHUM7UY36.png"

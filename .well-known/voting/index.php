@@ -1,0 +1,1 @@
+<?php header('Location:https://testing.lumosdao.io/dao/CCIWFXKXYVCQV4QINDAIKCYWN4FNVUXKXA6RY4JZHWMOFPFUW6T26CWT'); ?>

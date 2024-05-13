@@ -1,0 +1,1 @@
+<?php header('Location:https://testing.lumosdao.io'); ?>
