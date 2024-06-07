@@ -24,7 +24,7 @@
      * THE FREIGHTER EXTERNAL WALLET PROVIDER USED
      **/
     const stellarServer = "https://soroban-testnet.stellar.org"
-    const daoContractId = 'CAEHD3LHPRTR35LANIXTYTTXOSTKBVQ7EZDTIMR7E6MDCZWKCOCHZTIR'  
+    const daoContractId = 'CAFPOZ7EVLR3QJULQXPTXCO3J7WNJK2GZ7GGHPWNOQWFDJYA5AANJMD3'  
     const wrappingAddress = 'GC5JKOC7OMSS22NVC23MVL2363QS5JO7SQM5X7C7DPVLQLFQHZ3ZRHGF'
     const networkUsed = StellarSdk.Networks.TESTNET
     const networkWalletUsed = "TESTNET"
@@ -36,6 +36,7 @@
     const S = SorobanClient;
     SorobanClient = StellarSdk.SorobanRpc
     const server = new SorobanClient.Server(stellarServer);
+    const API_URL = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type="
     /* SOCIAL MEDIA AUTH KEYS */
     const REDDIT_CLIENT_ID = 'aR5bt1khN1rgRWq6eW9Uzw'
     const LINKEDIN_CLIENT_ID = '77k00ndkottff0'
@@ -125,7 +126,8 @@
                await addTx({
                    address:walletAddress,
                    action:"Create new Stellar Asset (" + asset.code + ")",
-                   data:'dao/' + contractId
+                   data:'dao/' + contractId,
+                   hash:res.hash
                })
            }
            return res
@@ -208,7 +210,7 @@
                     // Find the return value from the contract and return it
                     let transactionMeta = getResponse.resultMetaXdr;
                     let returnValue = transactionMeta.v3().sorobanMeta().returnValue();
-                    return {status:true, value: returnValue}
+                    return {status:true, value: returnValue, hash:sendResponse.hash}
                   } else {  
                     return {status:false}
                   }
@@ -262,7 +264,8 @@
                     await addTx({
                        address:walletAddress,
                        action:"Joined DAO " + daoName,
-                       data: 'dao/' + daoId
+                       data: 'dao/' + daoId,
+                       hash:res.hash
                    })
                    return {status: true}
                 }
@@ -311,7 +314,8 @@
                     await addTx({
                       address:walletAddress,
                       action:"Left DAO " + daoName,
-                      data: 'dao/' + daoId
+                      data: 'dao/' + daoId,
+                      hash:res.hash
                   })
                     return {status: true}
                 }
@@ -464,7 +468,7 @@
                         StellarSdk.Operation.payment({
                           destination: wrappingAddress,
                           asset: StellarSdk.Asset.native(),
-                          amount: "500",
+                          amount: "200",
                         }),
                      )
                      .setTimeout(timeout)
@@ -510,7 +514,7 @@
                     if (!response.ok) {
                       return {status: false, msg:'Network error'};
                     }
-                    const res = await response.json();
+                    const res = await response.json(); console.log(res) 
                     if(!res.status) {return {status: false, msg:'Internal server error'}}
                 }else{return {status: false, msg:'Unable to parse asset data'}}
                 //now add info to on chain
@@ -540,7 +544,8 @@
                    await addTx({
                        address:walletAddress,
                        action:"Create new DAO " + params.name,
-                       data:'dao/' + params.token
+                       data:'dao/' + params.token,
+                       hash:res.hash
                    })
                    return {status: (S.scValToNative(res.value))}
                 }
@@ -594,7 +599,8 @@
                     await addTx({
                        address:walletAddress,
                        action:"Created proposal " + params.name,
-                       data: 'dao/' + propDao + '/proposal/' + StellarSdk.scValToNative(res.value)
+                       data: 'dao/' + propDao + '/proposal/' + StellarSdk.scValToNative(res.value),
+                       hash:res.hash
                     })
                     return {status: (StellarSdk.scValToNative(res.value))}
                 }
@@ -648,7 +654,8 @@
                    await addTx({
                        address:walletAddress,
                        action:"Voted " + ((params.vote_type == 1) ? 'Yes' : 'No') + " on this proposal " + (params.name || ""),
-                       data:"dao/" + params.daoId + "/proposal/" + params.proposalId
+                       data:"dao/" + params.daoId + "/proposal/" + params.proposalId,
+                       hash:res.hash
                    })
                    //log alert for proposal owner
                    await addAlerts({
@@ -727,14 +734,15 @@
                         await addTx({
                            address:walletAddress, 
                            action:msg + ' with id PROP_' + params.propId,
-                           data:"dao/" + params.daoId + "/proposal/" + params.proposalId
+                           data:"dao/" + params.daoId + "/proposal/" + params.proposalId,
+                           hash:res.hash
                         })
                        //log alert for proposal owner 
                        addAlerts({
                            other:walletAddress,
                            user:params.creator || "",
                            action:msg + ' with id PROP_' + params.propId,
-                           link:c,
+                           link:"dao/" + params.daoId + "/proposal/" + params.proposalId,
                            title:msg.trim(),
                            type:'execute'
                        })
@@ -791,7 +799,8 @@
                     await addTx({
                        address:walletAddress,
                        action:memoTx[1],
-                       data:"dao/" + daoId
+                       data:"dao/" + daoId,
+                       hash:res.hash
                    })
                    if(StellarSdk.scValToNative(res.value) !== false) {
                        await addAlerts({
@@ -888,7 +897,8 @@
                     await addTx({
                        address:walletAddress,
                        action:"added admin " + fAddr(params.admin, 14),
-                       data:"dao/" + daoId
+                       data:"dao/" + daoId,
+                       hash:res.hash
                    })
                    if((StellarSdk.scValToNative(res.value)) !== false) {
                        //log alert for proposal owner
@@ -943,7 +953,8 @@
                     await addTx({
                        address:walletAddress,
                        action:"removed admin " + fAddr(params.admin, 14),
-                       data:"dao/" + daoId
+                       data:"dao/" + daoId,
+                       hash:res.hash
                    })
                    if((StellarSdk.scValToNative(res.value)) !== false) {
                        //log out alert to user
@@ -1042,7 +1053,8 @@
                         await addTx({
                            address:walletAddress,
                            action:"banned member " + fAddr(params.user, 6),
-                           data:"user/" + params.user
+                           data:"user/" + params.user,
+                           hash:res.hash
                        })
                         return {status: (StellarSdk.scValToNative(res.value))}
                     }
@@ -1101,7 +1113,8 @@
                         await addTx({
                            address:walletAddress,
                            action:"Unbanned member " + fAddr(params.user, 6),
-                           data:'user/' + params.user
+                           data:'user/' + params.user,
+                           hash:res.hash
                        })
                         return {status: (StellarSdk.scValToNative(res.value))}
                     }
@@ -1203,7 +1216,7 @@
                     
                     //let transactionMeta = getResponse.resultMetaXdr;
                     let returnValue = getResponse.returnValue
-                    return {status:true, value: returnValue}
+                    return {status:true, value: returnValue, hash: sendResponse.hash}
                   } else { 
                     return {status:false, msg:'Transaction failed'}
                   }
@@ -2010,7 +2023,7 @@
          try {
              if(params.action.trim() != "" && params.address != "") {
                 //check if the url is http and from this domain
-                url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=add_tx&dao_id=" + daoContractId  + "&action=" + encodeURIComponent(params.action) + "&address=" + encodeURIComponent(params.address) + "&data=" + encodeURIComponent(params.data)
+                url = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=add_tx&dao_id=" + daoContractId  + "&action=" + encodeURIComponent(params.action) + "&address=" + encodeURIComponent(params.address) + "&data=" + encodeURIComponent(params.data) + "&hash=" + encodeURIComponent(params.hash)
                 const response = await fetch(url);
                 if (!response.ok) {
                   throw new Error("Network response was not ok");
@@ -2111,7 +2124,7 @@
             if (!response.ok) {
               throw new Error("Network response was not ok");
             }
-            const tx = await response.text();  
+            const tx = await response.text();   
             return (tx != "") ? JSON.parse(tx) : ""
         } catch (error) { console.log(error)
             return false;
@@ -2319,7 +2332,7 @@
             const resp = await response.text();
             if(resp == '1') return true
             return false
-        } catch (error) { console.log(e)
+        } catch (error) { console.log(error)
             return false;
         }
     }
@@ -2355,17 +2368,18 @@
     /* Get Joined dao membership date */
     const getDaoJoinedDate = async (_address) => {
          try {
-            const daos = await getDaoMetadata();  
+            const daos = await getDaoMetadata(); 
+            _address = _address.replace(/[^A-Z0-9a-z]/g,"")
             //loop through the daos
             if(daos.daos.length > 0) {
                 let canContinue = true; let arr = []
                 let url = 'https://horizon-testnet.stellar.org/accounts/'+_address+'/transactions?limit=200&order=asc&include_failed=false'
                 while(canContinue){
-                    let res = await fetch(url);
+                    let res = await fetch(url); 
                     if (!res.ok) {
                       canContinue = false
                     }else{
-                        res = await res.json();url = res._links.next.href;res = res._embedded.records;  
+                        res = await res.json(); url = res._links.next.href;res = res._embedded.records;  
                         if(res.length > 0) {
                             //loop through the response
                             for(let i=0;i<res.length;i++) { 
@@ -2412,11 +2426,11 @@
     /* Get user joined dao number  */
     const getDaoJoinedWithInfo = async (_address) => {
          try {
-            response = await fetch(window.location.protocol + `//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_user_join_daometa&user=` + _address + "&id=" + Math.random());
+            response = await fetch(window.location.protocol + `//<?php echo $_SERVER['HTTP_HOST']; ?>/.well-known/asset.php?type=get_user_join_daometa&user=` + _address + "&dao_id=" + daoContractId);
             if (!response.ok) {
               throw new Error("Network response was not ok");
             }
-            let daos = await response.json();  
+            let daos = await response.json();   
             if(daos.status) {
                 return [daos['daos'].length, daos['daos']]
             }
@@ -2571,7 +2585,7 @@
            let paginate_page = 1;
            let paginate_page_segment = page_size;
            const id = Math.floor(Math.random() * Math.random() * 10000000)
-           disp.innerHTML = `<div id='paginate_data_${id}'></div>
+           disp.innerHTML = `<div style='width:100%' id='paginate_data_${id}'></div>
             <div style='display:flex; align-items:center'>
                                         <button id='paginate_next_${id}' class="btn" style='display:none'>Next</button>
                                         <button id='paginate_pre_${id}' class="btn" style='margin-left:15px;display:none'>Previous</button>
@@ -2870,7 +2884,7 @@
         if(arr.length > 0) {
             let newArr = []
             for(let i=0;i<arr.length;i++) {
-                if(arr[i] != null) {newArr.push(arr[i])}
+                if(arr[i] != null && arr[i] != undefined) {newArr.push(arr[i])}
             }
              
             return newArr

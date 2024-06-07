@@ -447,13 +447,13 @@
         });
     </script>
     <script>
-    var prop;var dao;var groupInfo;
+    var prop;var dao = {};var groupInfo;
     var propId = ("{{ $prop['proposal_id'] }}");propId = propId.trim() * 1;
     var vote_power;
     var voterInfo;
     var daoDelegatee;
     var voterDelegator = [];
-    var vote_type = null;
+    var vote_type = null; 
     var voter_info_page = 1;
     var voter_page_segment = 10;
         const setUp = async () =>{  
@@ -467,12 +467,13 @@
             prop = {...(groupInfo.proposal), ...prop};  
             E('prop_status').innerText = (prop.status == 4) ? "Ended" : (prop.status == 0) ? "Inactive" : (prop.status == 1) ? "Active": (prop.status == 2) ? "Rejected" : "Funded"
             //set up vote info
+            dao.token = "{{ $prop['dao_id'] }}"
             setUpVote(prop)
             //get dao info
             dao = (await getAlldaoInfo("{{ $prop['dao_id'] }}"))["{{ $prop['dao_id'] }}"];  
             E('dao_name').innerText = dao.name
             E('dao_name').href = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/dao/" + dao.token
-            const delimtr = "https://" + dao.name.toLowerCase().trim() + ".testing.lumosdao.io"
+            const delimtr = "https://" + dao.name.toLowerCase().trim() + ".lumosdao.io"
             const links = (prop.links || "").trim().split("," + delimtr);  
             let filename; E('prop_links').innerHTML = ""
             for(let i=0;i<links.length;i++) {
@@ -532,7 +533,7 @@
                 E('prop_vote_no_action').style.display = 'none'
                 E('prop_vote_yes_action').disabled = false
                 E('prop_vote_no_action').disabled = false
-                
+                 
                 if(prop.status == 1) {
                     if(my_vote == 0 && daoDelegatee.length < 1) {
                         if(!prop.executed) {
@@ -624,7 +625,8 @@
                          tmp = JSON.parse(comments[i]) //convert to json
                          E('prop_comment_view').appendChild(drawVoterComment({
                              voter:tmp.address,
-                             msg:tmp.msg
+                             msg:tmp.msg,
+                             date:tmp.date
                          })) 
                     }
                     if(comments.length > 5) {
@@ -638,7 +640,8 @@
                                 tmp= JSON.parse(comments[i]) //convert to json
                                 E('prop_comment_view').appendChild(drawVoterComment({
                                      voter:tmp.address,
-                                     msg:tmp.msg
+                                     msg:tmp.msg,
+                                     date:tmp.date
                                  })) 
                             }
                             E('prop_see_more_comment').style.display = 'none'
@@ -889,7 +892,7 @@
                 shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(msg)}`;
             }
             else if(type == 'whatsapp') {
-                shareUrl = `https://wa.me/?text=${msg + '\n' + url}`;
+                shareUrl = `https://wa.me/?text=${msg + ' \n ' + url}`;
             }
             else if(type == 'twitter') {
                 shareUrl = `https://twitter.com/intent/tweet?text=${msg}&url=${url}`;
@@ -912,14 +915,17 @@
                                 </tr>`
 
         }
-        const drawVoterComment = (params = {}) => {
+        const drawVoterComment = (params = {}) => { 
             let tm = document.createElement('div')
             tm.innerHTML = `<div  class="col-12">
                           <div class="col-12">
-                        <div class="d-flex align-items-center justify-center gap-2">
-                            <img style="width:40px; height:40px; border-radius:50%;display:none" alt="">
-                            <span>${params.voter.substring(0,4) + '...' + params.voter.substring(params.voter.length - 4)}</span>
+                        <div class="d-flex align-items-center justify-content-between gap-2 w-100">
+                       <div class="d-flex align-items-center justify-center gap-2">
+                            <img style="width:40px; height:40px; border-radius:50%;display:non e" src="${API_URL + 'user_img&user=' + params.voter}" alt="">
+                            <span>${fAddr(params.voter, 6)}</span>
                         </div>
+                        <p class="Explorer_span d-block">${(new Date(params.date)).toLocaleString()}</p>
+                       </div>
                         </div>
                         <div style="border-bottom: 1px solid #e5e7eb; " class="col-12 my-2">
                             <p>

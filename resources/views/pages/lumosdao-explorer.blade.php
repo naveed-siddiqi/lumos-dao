@@ -68,7 +68,8 @@
                     address:JSON.parse(txInfo[i]).signer,
                     action:JSON.parse(txInfo[i]).action,
                     date:(new Date(JSON.parse(txInfo[i]).date)).toLocaleString(),
-                    link:window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/" + JSON.parse(txInfo[i]).data
+                    link:window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/" + JSON.parse(txInfo[i]).data,
+                    hash:JSON.parse(txInfo[i]).hash || ""
                 }))
             }
             
@@ -94,11 +95,14 @@
             
         }
     const drawExp = (params = {}) => {
-        let tm = `<div
+         let tm = `<div
                     class="form-control border-0 h-auto px-sm-4 py-2 d-flex flex-column flex-md-row align-items-start align-items-sm-start  justify-content-between w-100">
                     <p class="Explorer_p my-auto">${params.address.substring(0, 5) + "....." + params.address.substring(params.address.length - 5)} <a
                             class="Explorer_p_a" href="${params.link}"><span class="">${params.action}</span></a> </p>
+                    <div class="d-flex align-items-center justify-content-end gap-2">
                     <p class="Explorer_span d-block">${params.date}</p>
+                   <div class="Explorer_p_a my-auto" style='display:${(params.hash != "") ? "" : 'none'}'><a target='_blank' href="https://testnet.steexp.com/tx/${params.hash}">View on Explorer</a></div>
+                    </div>
                 </div>`
         let th = document.createElement('div')
         th.innerHTML = tm

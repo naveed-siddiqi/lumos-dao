@@ -34,7 +34,7 @@
                      <div class="py-2 px-4-inbox border-bottom d-none d-lg-block" id='chatHead' style='display:none !important'>
                         <div class="d-flex align-items-center py-1 gap-3">
                             <div class="position-relative">
-                                <img src="{{asset('/images/github-demi.png')}}"
+                                <img id='chatHeadImage' src="{{asset('/images/github-demi.png')}}"
                                     class="rounded-circle mr-1" alt="" width="40" height="40">
                             </div>
                             <div class="flex-grow-1 pl-3">
@@ -157,7 +157,7 @@
         const toWallet = (new URLSearchParams(window.location.search)).get("to") || "";
         let addr = (new URLSearchParams(window.location.search)).get("address");
         //SOCKET AND VARIABLES
-        const socket = io('https://195.26.242.45:443'); //setting up the socket
+        const socket = io('https://lumos-server.onrender.com'); //setting up the socket
         var currentUser = ""; let _walletAddress = addr || walletAddress;let dte = [0,0,0];
         //CONST
         const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -186,14 +186,14 @@
                         loadMessage(res.data)
                         firstTimeLoad = false
                         //check if there is a preset to address
-                        console.log(toWallet)
+                        //console.log(toWallet)
                         if(toWallet != "") { 
                             selectChat({
                                 user:toWallet,
                                 mdisplay:fAddr(toWallet, 9)
                             })
                         }
-                        //console.log(res.data)
+                        ////console.log(res.data)
                      }
                     else {
                         stopTalking(3, talk("Unable to connect to chat server<br>Please refresh this page", "fail"))
@@ -217,7 +217,7 @@
              socket.on('msg', (params) => { 
                  if(params.msg) {
                      params = JSON.parse(formatReadForBroadcast(params))
-                     //console.log(params)
+                     ////console.log(params)
                      //first check if the message has not been received before
                      if(!messages['id']){messages['id'] = []}
                      if(!messages['id'].includes(params.id)) {
@@ -331,9 +331,8 @@
                 let u='';
                 if(firstTimeLoad){
                     E('chatList').innerHTML = ''
-                    E('chatBody').innerHTML = `
-                     <center style='margin:auto;height:60vh;display:flex;align-items:center;justify-content:center'>Chat messages will appear here</center> 
-                    `
+                    E('chatBody').innerHTML = `<center style='margin:auto;height:60vh;display:flex;align-items:center;justify-content:center'>Chat messages will appear here</center>`
+                    E('sendMessageField').style.display = 'none'
                 }
                 for(let i=msgArr.length -1;i>=0;i--) {
                     //load only the messages
@@ -356,19 +355,18 @@
                 readAllMessages() //to read all unread messages in the display
             }
             else if(firstTimeLoad){ //if its a first time load
-                E('chatBody').innerHTML = `
-                 <center style='margin:auto;height:60vh;display:flex;align-items:center;justify-content:center'>Chat messages will appear here</center> 
-                `
+                E('chatBody').innerHTML = `<center style='margin:auto;height:60vh;display:flex;align-items:center;justify-content:center'>Chat messages will appear here</center>`
                 E('chatHead').style.display = 'none !important'
-                E('chatList').innerHTML = `
-                     <center style='margin:40px'>No chat started</center> 
-                `
+                E('chatList').innerHTML = `<center style='margin:40px'>No chat started</center>`
+                E('sendMessageField').style.display = 'none'
             }
         }
         const selectChat = (chatParams) => {
             //To select a chat
             E('chatHead').style.display = ""
             E('chatHeadDisplay').innerText =(chatParams.user != 'Broadcast Messages')? chatParams.user.substring(0,9) + "..." + chatParams.user.substring(chatParams.user.length-9) : chatParams.user;
+            E('chatHeadImage').src = API_URL + "user_img&user=" + chatParams.user
+            E('sendMessageField').style.display = ''
             //draw chat on
             let u;E('chatBody').innerHTML = '';dte = [0,0,0];let unread = false;let bunread = false; /*unread flag*/let msgId = 0;
             if(users[chatParams.user]) {
@@ -479,7 +477,7 @@
                         //personal message
                         p.receiver = currentUser;
                         socket.emit('msg', {msg:msg, receiver:currentUser}, (status) => {
-                            console.log(status)
+                            //console.log(status)
                             if(status.status === true) {
                                 //has sent
                                 p.id = status.id;p.status = 'sent'
@@ -500,7 +498,7 @@
                    else{
                        p.receiver = 'all'
                         socket.emit('broadcast', {msg:msg}, (status) => {
-                            console.log(status) 
+                            //console.log(status) 
                             if(status.status === true) { 
                                 //has sent
                                 p.id = status.id;p.status = 'sent'
@@ -636,7 +634,7 @@
                         msgId = res.id; //saving the last msg id of the unread message
                     }
                  }
-                if(unread || bunread) { console.log(unread, bunread)
+                if(unread || bunread) { //console.log(unread, bunread)
                     socket.emit('read', {
                         sender:currentUser, msgId:msgId, signal:unread
                     }, (status) => {  
@@ -748,7 +746,7 @@
             return `<a id='${(type == 'chat') ? params.user : Math.random()}_user' onclick='selectChat(${JSON.stringify(params)})' href="#" class="list-group-item list-group-item-action border-0 my-2">
                         <div class="d-flex align-items-start gap-3">
                             <div class="flex-grow-1 ml-3">
-                            <img src="{{asset('/images/github-demi.png')}}"
+                            <img src="${API_URL + "user_img&user=" + params.user}"
                                     class="rounded-circle mr-1" alt="" width="40" height="40">
                                 ${params.mdisplay}
                                 <div class="small" style='display:flex;align-items:center'>
@@ -765,7 +763,7 @@
             const bold = (params.status == 'read' && params.type == 'me') ? 'bold' : "";
             return `<div class="${(params.type == 'me') ? 'chat-message-right mb-4' : 'chat-message-left pb-4'} ">
                                 <div>
-                                    <img src="{{asset('/images/github-demi.png')}}"
+                                    <img src="${API_URL + "user_img&user=" + walletAddress}"
                                         class="rounded-circle mr-1" alt="" width="40" height="40">
                                     <div id='${params.id}date' class="text-muted small text-nowrap mt-2" style='display:${(params.status == 'notsent') ? 'none' : ''}; font-weight:${bold}'>${params.date.toLocaleTimeString()}</div>
                                 </div>

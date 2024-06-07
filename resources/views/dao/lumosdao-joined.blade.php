@@ -191,6 +191,9 @@
                                 }
                             ?>
                         </div>
+                         <div class="">
+                            <button class="btn btn-success my-2" id='user_inbox'>Send Message</button>
+                        </div>
                         <div class="d-flex align-items-center justify-content-center mt-4">
                            <button class="btn" id='user_twitter_nav_short' style='display:none'>
                            <img class="w-img" src="{{asset('/images/x.webp')}}" alt="">
@@ -319,6 +322,7 @@ const setUp = async () => {
     //set name
     E('wallet_name').innerHTML = uWallet
     E('wallet_name_short').innerHTML = E('wallet_name_short_res').innerHTML = E('wallet_name_main').innerHTML =  uWallet.substring(0, 5) + "....." + uWallet.substring(uWallet.length - 5)
+    E('user_inbox').onclick = () => {window.location.href = "{{route('proposal.inbox')}}" + "?to=" + uWallet}
     //load activity
     setTimeout(() => {
         loadActivity()
@@ -409,7 +413,12 @@ const loadComments = async (comt) => {
 //load daos
 const loadDao = async (daos) => {  
     //load all the daos
-    let tdaos = daos.map(e => e.token)
+    const actual_daos = await getDaoMetadata()
+    let tdaos = fArr(daos.map((e) => {
+        if(actual_daos['daos'].includes(e.token)){
+            return e.token
+        }
+    }))
     let _daos = await getDao(tdaos); let daoView = ""
     for (let i = 0; i < tdaos.length; i++) {
         daoView += await drawDao(_daos[tdaos[i]])
@@ -464,7 +473,8 @@ const loadTxInfo = (page = 1) => {
             address: JSON.parse(txInfo[i]).signer,
             action: JSON.parse(txInfo[i]).action,
             date: (new Date(JSON.parse(txInfo[i]).date)).toLocaleString(),
-            link:window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/" + JSON.parse(txInfo[i]).data
+            link:window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/" + JSON.parse(txInfo[i]).data,
+            hash:JSON.parse(txInfo[i]).hash || ""
         }))
     }
 
@@ -529,6 +539,16 @@ const copyWalletAddress = () => {
 setUp()
 
 const drawDao = async (daoParams = {}) => {  
+    //fetch all the active proposals
+    if(daoParams.proposals.length > 0) {
+        const props = await getAllProposal(daoParams.proposals, daoParams.token)
+        daoParams.active_proposals = 0
+        for(let i=0;i<daoParams.proposals.length;i++) {
+            if(props[daoParams.proposals[i]].status == 1) {
+                daoParams.active_proposals++
+            }   
+        }
+    }
     let tm = `<div class="col-lg-4 col-md-6 col-sm-12">
                             <div class="card-join cardShow mt-4">
                                 <a href="{{ route('dao', '') }}/${daoParams.token || ""}" class="text-decoration-none">
@@ -577,27 +597,35 @@ const drawDao = async (daoParams = {}) => {
 
 }
 const drawExp = (params = {}) => {
-    let tm = `<div
+      let tm = `<div
                     class="form-control border-0 h-auto px-sm-4 py-2 d-flex flex-column flex-md-row align-items-start align-items-sm-start  justify-content-between w-100">
                     <p class="Explorer_p my-auto">${params.address.substring(0, 5) + "....." + params.address.substring(params.address.length - 5)} <a
                             class="Explorer_p_a" href="${params.link}"><span class="">${params.action}</span></a> </p>
+                    <div class="d-flex align-items-center justify-content-end gap-2">
                     <p class="Explorer_span d-block">${params.date}</p>
+                   <div class="Explorer_p_a my-auto" style='display:${(params.hash != "") ? "" : 'none'}'><a target='_blank' href="https://testnet.steexp.com/tx/${params.hash}">View on Explorer</a></div>
+                    </div>
                 </div>`
-    let th = document.createElement('div')
-    th.innerHTML = tm
-    return th.firstElementChild
+        let th = document.createElement('div')
+        th.innerHTML = tm
+        return th.firstElementChild
+    
 }
 const drawComment = (params, hide = false) => {
     let th = `<div class="comment form-control border-0 h-auto px-sm-4 py-2  w-100" style='display:${(hide == true) ? 'none': ""}'>
-                                <p class="Explorer_p my-auto">
+                                <p style="color:#6c757d !important; font-family:'MontReg" class="Explorer_p my-auto">
                                     <a class="Explorer_p_a" href=""><span class="d-block">${params.proposalName || ""}</span></a>
                                     ${params.msg || ""}
                                 </p>
                                 <div
                                     class="form-control border-0 h-auto px-sm-4 py-2 d-flex flex-column flex-md-row align-items-start align-items-sm-start  justify-content-between w-100 bg-white">
-                                    <p class="Explorer_p my-auto">${uWallet.substring(0, 5) + "....." + uWallet.substring(uWallet.length - 5)} voted <span
+                                   <div class="d-flex gap-3 align-items-center">
+                                   <img class="w-img" src="${API_URL + 'user_img&user=' + uWallet}"
+                                        alt="Profile Image" class="image">
+                                    <p class="Explorer_p my-auto">${fAddr(uWallet, 7)} voted <span
                                             class="Explorer_p_a">${params.voted || "none"}</span> on
                                         proposal <a class="Explorer_p_a" href=""><span class="">${params.proposalName || ""}</span></a> </p>
+                                   </div>
                                     <p class="Explorer_span d-block">${params.date || ""}</p>
                                 </div>
                             </div>
@@ -610,7 +638,7 @@ const drawDelegates = (params, index) => {
                                         <div class="d-flex flex-column gap-2">
                                             <span class="text text-sm text-secondary text-start">Delegates</span>
                                             <div class="cardEndDetail">
-                                                <img src="https://id.lobstr.co/${params.delegate}.png"
+                                                <img src="${API_URL + "user_img&user=" + params.delegate}"
                                                     alt="Profile Image" class="image">
                                                 <div class="text text-center">${fAddr(params.delegate, 7)}
                                                 </div>

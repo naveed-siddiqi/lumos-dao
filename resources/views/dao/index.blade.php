@@ -269,9 +269,9 @@
                   </div>
                   <div class="d-flex align-items-center gap-2 EditModal-title">
                     <span class="asset-stellar-p">TOML:</span>
-                    <a style="text-decoration:none; color:blue;" id='dao_save_domain_href' href="">
+                    <a style="text-decoration:none; color:blue;" id='dao_save_toml_href' href="">
                       <span style="color: #578aff;" class="asset-details-text"
-                        id='dao_save_domain'>https://web.whatsapp.com/moadsdsdsncie</span>
+                        id='dao_save_toml'>https://web.whatsapp.com/moadsdsdsncie</span>
                     </a>
                   </div>
                 </div>
@@ -917,6 +917,76 @@
                     </div>
                 </div>
             </div>
+            <button data-toggle="modal" id='shareModalButton' data-target="#shareModal" class='d-none'>share modal</button>
+            <div class="modal fade show" id="shareModal" tabindex="-1"
+            aria-labelledby="shareModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title font-medium" id="shareModalLabel">Share DAO</h5>
+                        <button type="button" class="close btn" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="row mt-3">
+                            <h3 class="text-center mb-1">Invite your community</h3>
+                            <p class="text-muted font-sm text-center text-wrap">Your members are the backbone of your project,
+                                fueling collaboration, decision-making, and growth. Connect, collaborate, and create a
+                                vibrant ecosystem together.</p>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <button onclick='shareFunctions()'  class="btn btn-block share-social-img">
+                                    <img class="share-social-img border border-primary" src="{{asset('/images/facebook.png')}}" alt="">
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button onclick='shareFunctions("linkedin")' class="btn btn-block share-social-img">
+                                    <img class="share-social-img border border-primary" src="{{asset('/images/linkedin.png ')}}" alt="">
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button onclick='shareFunctions("whatsapp")' class="btn btn-block share-social-img">
+                                    <img class="share-social-img border border-success" src="{{asset('/images/whatsapp.png')}}" alt="">
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button onclick='shareFunctions("twitter")' class="btn btn-block share-social-img">
+                                    <img class="share-social-img border border-secondary" src="{{asset('/images/x.webp')}}" alt="">
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button onclick='shareFunctions("reddit")'  class="btn btn-block share-social-img">
+                                    <img class="share-social-img border border-danger" src="{{asset('/images/Reddit.png ')}}" alt="">
+                                </button>
+                            </div>
+                        </div>
+                        <br>
+                        <!-- Input for copying link -->
+                        <div class="mt-3">
+                            <p class="font-xs font-medium mb-0">Copy text</p>
+                            <div
+                                class="input-group mb-3 d-flex align-items-center justify-content-start form-control border text-secondary w-100">
+                                <input type="text" id="shareLink"
+                                    class="bg-transparent border-0 text-secondary d-block flex-grow-1"
+                                    value="https://example.com/your-gig" readonly>
+                                <div class="input-group-append w- text-end">
+                                    <button class="btn text-secondary" onclick='copyLink(E("shareLink").value)'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" width="25px">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
 </section>
 <script>
 // Get references to DOM elements
@@ -1089,6 +1159,7 @@ const indexMain = async () => {
     //get onchain info
     dao = {...((await getDaoWithoutMeta([_dao]))[0]), ... dao}; 
     dao.toml = await readAssetToml(dao.url)
+    E('shareLink').value = window.location.protocol + "//<?php echo $_SERVER['HTTP_HOST']; ?>/dao/" + '{{ $dao_id }}'
     setUp(); 
     inbox_link += "?dao=" + _dao + "&name=" + dao.name
     E('tab3').innerText = "Members (" + dao.members + ")"
@@ -1098,6 +1169,8 @@ const indexMain = async () => {
         E('add_bulletin_info').style.display = 'flex'
     }
     setTimeout(loadBulletin, 50)
+    //show the share modal
+    E('shareModalButton').click()
     //show proposal review only if admin
     if (dao['proposals'] != undefined) {
         //load info of all the proposals
@@ -1224,6 +1297,7 @@ const setUp = (type = 'all') => {
             const aToml = dao.toml
             if(type == 'all' || type == 'chain') {
                 E('dao_website').innerHTML = E('dao_website').href = E('dao_save_domain').innerHTML = E('dao_save_domain_href').href = (aToml.DOCUMENTATION != undefined) ? aToml.DOCUMENTATION.ORG_URL : ""
+                E('dao_save_toml').innerHTML = E('dao_save_toml_href').href = dao.url
                 if (aToml.CURRENCIES) {
                     const temp = (dao.owner || "")
                     E('dao_others_address').innerHTML = ""
@@ -1332,6 +1406,35 @@ const setUp = (type = 'all') => {
         
     }
 }
+//this function shares the dao
+const shareFunctions = (type = 'fb') => {
+            const msg = `Check out this Dao ${dao.name}`
+            const title = `Lumosdao ${dao.name}`
+            const url = E('shareLink').value;
+            let shareUrl;
+            if(type == "fb") {
+                // Construct the Facebook share URL with parameters
+                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(msg)}`;
+            }
+            else if(type == 'linkedin'){
+                // Construct the LinkedIn share URL with parameters
+                shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(msg)}`;
+            }
+            else if(type == 'whatsapp') {
+                shareUrl = `https://wa.me/?text=${msg + ' \n ' + url}`;
+            }
+            else if(type == 'twitter') {
+                shareUrl = `https://twitter.com/intent/tweet?text=${msg}&url=${url}`;
+            }
+            else if(type == 'reddit') {
+                // Construct the Reddit share URL
+                shareUrl = `https://www.reddit.com/r/${msg}/submit?title=${title}&url=${url}`;
+            }
+            //Open the Facebook share dialog in a new window
+            window.open(shareUrl, '_blank');
+            
+}
+     
 const loadDelegatee = async () => {
     if (daoDelegatee.length > 0) {
         for (let i = 0; i < daoDelegatee.length; i++) {
@@ -2433,7 +2536,10 @@ const drawProposal = (prop) => {
                                     </div>
                                 </div>
                                 <div class="cardendHeading">
-                                    <h2 class="heading">${prop.title}</h2>
+                                   <div class="d-flex align-items-center justify-content-between w-100">
+                                        <h2 class="heading">${prop.title}</h2>
+                                        <div style="color:#dc3545;" id="prop_countdown${prop.proposalId}"></div>
+                                    </div>
                                     <div class="paragraph">
                                         <p class="pb-0 line-climb-3">${prop.description}</p>
                                     </div>
@@ -2480,8 +2586,33 @@ const drawProposal = (prop) => {
                             </div>
                             </a>
                 </div>`
-    return _div.firstElementChild
+    $(document).ready(function() {
+  // Set the target date (replace with your desired end date)
+  const targetDate = N(prop.end) * 1000;
+  // Update the countdown every second
+  const countdownInterval = setInterval(updateCountdown, 1000);
 
+  // Function to update the countdown
+  function updateCountdown() {
+    const currentDate = (new Date()).getTime();
+    const timeDifference = targetDate - currentDate;
+    // Calculate remaining time
+    const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+    // Update the countdown display
+    $(`#prop_countdown${prop.proposalId}`).text('Ends in ' + days + ' Days | ' + hours + ' Hours | ' + minutes + ' Minutes | ' + seconds + ' Seconds');
+
+    // If the countdown is finished, clear the interval
+    if (timeDifference <= 0) {
+      clearInterval(countdownInterval);
+      $(`#prop_countdown${prop.proposalId}`).text('Countdown ended!');
+    }
+  }
+});
+return _div.firstElementChild
 }
 const drawProposalReview = (prop) => {
     const id = `prop_review_${prop.proposalId}`
@@ -2571,7 +2702,7 @@ const drawTopVoters = (param = {
 }
 const drawUser = (params) => {
     return `<div class="d-flex flex-column flex-md-row align-items-start align-md-items-center gap-1 w-100">
-                                <img class="w-img" src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="">
+                                <img class="w-img" src="${API_URL + "user_img&user=" + params.user}" alt="">
                                 <p id='dao_search_admin_found' class="mb-0  column-content text-truncate text-break text-wrap">
                                 ${fAddr(params.user, 14)}</p>
                             </div>`
@@ -2580,7 +2711,7 @@ const drawAdminUser = (params) => {
     return `<div
                       class="border rounded-md py-1 px-2 d-flex align-items-center justify-content-start position-relative flex-grow-1 gap-3">
                       <img class="w-img"
-                        src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png" alt="">
+                        src="${API_URL + "user_img&user=" + params.user}" alt="">
                       <div class="font-normal text-secondary ml-2 font-xs">${fAddr(params.user, 10)}</div>
                       <div class="position-absolute cross-dao-setting" onclick='removeAdmin("${params.user}", event)'>
                         <svg class="text-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
@@ -2596,7 +2727,7 @@ const drawMember = (params) => {
     const sFlg = (dao.owner == walletAddress && (walletAddress == params.member))
     return ` <div id="" class="d-flex justify-content-between">
                                             <div class="cardEndDetail d-flex justify-content-between gap-3">
-                                                <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
+                                                <img src="${API_URL + "user_img&user=" + params.member}"
                                                     alt="Profile Image" class="image w-img">
                                                 <div class="text text-center">
                                                     ${params.member}
@@ -2627,7 +2758,7 @@ const drawMember = (params) => {
 const drawDelegateSearchResult = (param) => {
     return `<div class="d-flex justify-content-between">
                                                 <div class="cardEndDetail">
-                                                    <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
+                                                    <img src="${API_URL + "user_img&user=" + param.user}"
                                                         alt="Profile Image" class="image">
                                                     <div class="text text-center">${fAddr(param.user, 14)}
                                                     </div>
@@ -2651,7 +2782,7 @@ const drawBulletinBox = (param, indx) => {
         return `<div id='bulletin_box_${param.bid}' type="button" data-toggle="modal"  data-target="#BulletinView" onclick='showInModalView("bulletin_box_${param.bid}", ${indx})' class="d-inline btn p-0 m-0" style='margin-bottom:20px !important;'>
                         <div class="d-flex flex-wrap justify-content-between align-items-center">
                             <div class="cardEndDetail gap-2">
-                                <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
+                                <img src="${API_URL + "user_img&user=" + param.user}"
                                     alt="Profile Image" class="image w-img">
                                 <div class="text text-center font-xxs text-secondary text-left">${fAddr(param.user, 6)}</div>
                             </div>
@@ -2703,7 +2834,7 @@ const drawBulletinBox = (param, indx) => {
         for (let i = 0; i < param.polls.num * 1; i++) {
             polls += `<div class="option mx-0 option-${i+1}">
                                         <div class="analytic">
-                                            <div id='poll_bar_option_${param.bid}_${i}' class="bar" style='width:${param.polls[i].percent}%;background:skyblue'></div>
+                                            <div id='poll_bar_option_${param.bid}_${i}' class="bar" style='width:${param.polls[i].percent}%;background:#02C17C'></div>
                                             <div id='poll_bar_option_value_${param.bid}_${i}' class="percent">${param.polls[i].percent}%</div>
                                         </div>
                                         <div class="input" onclick='votePoll("${param.bid}", "${i}",  ${indx}, event)'>
@@ -2719,7 +2850,7 @@ const drawBulletinBox = (param, indx) => {
                                 <div>
                                     <div class="d-flex flex-wrap justify-content-between align-items-center">
                                         <div class="cardEndDetail gap-2">
-                                            <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
+                                            <img src="${API_URL + "user_img&user=" + param.user}"
                                                 alt="Profile Image" class="image w-img">
                                             <div class="text-center font-xxs text-secondary text-left">${fAddr(param.user, 6)}</div>
                                         </div>
@@ -2741,7 +2872,7 @@ const drawBulletinCommentBox = (param, indx) => {
     return `<div class="d-inline btn p-0 m-0" style='margin-top:10px !important;margin-left:10px !important; width:calc(100% - 10px)'>
                         <div class="d-flex flex-wrap justify-content-between align-items-center">
                             <div class="cardEndDetail gap-2">
-                                <img src="https://id.lobstr.co/GBZZV4WEUL25WZMQOYTP3I7N33TJ7WYG5TTHALHA66MWEFRB2EVDRW5P.png"
+                                <img src="${API_URL + "user_img&user=" + param.user}"
                                     alt="Profile Image" class="image w-img">
                                 <div class="text text-center font-xxs text-secondary text-left">${fAddr(param.user, 6)}</div>
                             </div>

@@ -162,7 +162,7 @@
                                     const dao = daos[daoMeta['daos'][i]];
                                     if(dao.joined === false) {dao.ismember = false}else{dao.ismember = true}
                                     if(E('daoView').innerHTML == "<center>Loading DAOs...</center>"){E('daoView').innerHTML = ""}
-                                    E('daoView').appendChild(drawDaoDiv(dao))
+                                    E('daoView').appendChild(await drawDaoDiv(dao))
                                 }
                              }
                          }
@@ -241,9 +241,19 @@
         }
         
         /* DRAWA */
-        function drawDaoDiv(daoParams){ 
+        async function drawDaoDiv(daoParams){ 
             let _div = document.createElement('div');
             const coverImgx =  daoParams.cover
+            //fetch all the active proposals
+            if(daoParams.proposals.length > 0) {
+                const props = await getAllProposal(daoParams.proposals, daoParams.token)
+                daoParams.active_proposals = 0
+                for(let i=0;i<daoParams.proposals.length;i++) {
+                    if(props[daoParams.proposals[i]].status == 1) {
+                        daoParams.active_proposals++
+                    }   
+                }
+            }
             const sortDetails = {
                 created: N(daoParams.created),
                 active: N(daoParams.active_proposals),

@@ -179,7 +179,9 @@
                                 stopTalking(4, talk("Proposal created successfully", 'good', id))
                                 setTimeout(() => {
                                    //redirect to proposal page
-                                   window.location = "{{ route('dao.proposal', ['proposal_id' => " ", 'dao_id'=> $dao['asset']]) }}" + res.status
+                                   let _link = "{{ route('dao.proposal', ['proposal_id' => " ", 'dao_id'=> $dao['asset']]) }}"
+                                   _link = _link.substring(0, _link.lastIndexOf("/") + 1) + res.status
+                                   window.location = _link
                                 },2000)
                             }
                             else {
