@@ -1,6 +1,0 @@
-
-RewriteEngine on
-RewriteCond %{HTTP_HOST} ^nsh16\.lumosdao\.io$ [OR]
-RewriteCond %{HTTP_HOST} ^www\.nsh16\.lumosdao\.io$
-RewriteRule ^/?$ "http\:\/\/173\.212\.232\.150\:4000\/" [R=301,L]
-

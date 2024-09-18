@@ -1,0 +1,50 @@
+{
+  "name": "lumos-dao",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "dev_secure": "next dev --experimental-https",
+    "build": "next build",
+    "start": "NODE_ENV=production node server.js",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@creit.tech/stellar-wallets-kit": "^1.2.0",
+    "@lobstrco/signer-extension-api": "^1.0.0-beta.0",
+    "@next/font": "^14.2.5",
+    "@stellar/freighter-api": "^2.0.0",
+    "@stellar/stellar-sdk": "^12.2.0",
+    "@telegram-auth/react": "^1.0.3",
+    "@walletconnect/core": "^2.15.1",
+    "@walletconnect/universal-provider": "^2.15.1",
+    "@walletconnect/utils": "^2.15.1",
+    "@walletconnect/web3wallet": "^1.14.1",
+    "@web3-storage/w3up-client": "^16.0.0",
+    "firebase": "^10.13.0",
+    "http-proxy": "^1.18.1",
+    "next": "14.2.5",
+    "qrcode": "^1.5.4",
+    "qrcodejs": "^1.0.0",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-icons": "^5.2.1",
+    "react-quill": "^2.0.0",
+    "react-slick": "^0.30.2",
+    "slate-react": "^0.107.1",
+    "slick-carousel": "^1.8.1",
+    "socket.io-client": "^4.7.5",
+    "soroban-client": "^1.0.0-beta.4",
+    "sweetalert2": "^11.12.4",
+    "swiper": "^11.1.5",
+    "thirdweb": "^5.48.1",
+    "toml": "^3.0.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.5",
+    "postcss": "^8.4.39",
+    "tailwindcss": "^3.4.6"
+  }
+}
