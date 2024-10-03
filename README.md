@@ -1,3 +1,7 @@
+Here’s the updated README file with the link to the latest code added:
+
+---
+
 # LumosDAO on Stellar
 
 ## Table of Contents
@@ -20,6 +24,7 @@
 4. [Understanding LumosDAO's Voting Mechanism](#understanding-lumosdaos-voting-mechanism)
 5. [Upcoming Features](#upcoming-features)
 6. [Conclusion](#conclusion)
+7. [Latest Code Repository](#latest-code-repository)
 
 ## Introduction
 
@@ -103,3 +108,9 @@ LumosDAO's voting mechanism is designed for fairness and includes multi-factor c
 ## Conclusion
 
 LumosDAO aims to revolutionize DAO governance, making it equitable and transparent. We invite you to join the LumosDAO community and be part of this journey.
+
+## Latest Code Repository
+
+To access the latest code for LumosDAO, visit our GitHub repository: [LumosDAO Latest Updates](https://github.com/naveed-siddiqi/lumos-dao/tree/kingfavour/new-updates).
+
+---
