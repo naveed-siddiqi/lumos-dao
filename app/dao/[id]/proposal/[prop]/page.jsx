@@ -77,11 +77,13 @@ const ProposalInfo = () => {
     }
     const setUpVote = async () => {
         //voting results
-        E('prop_yes_votes').innerText = prop.yes_votes || 0
-        E('prop_yes_voting_power').innerText = (N(prop.yes_voting_power)/(floatingConstant))
         //can vote, and has joined
         const my_vote = groupInfo.voter_type; 
         if(my_vote != 0){
+            E('prop_yes_votes').innerText = prop.yes_votes || 0
+            E('prop_yes_voting_power').innerText = (N(prop.yes_voting_power)/(floatingConstant))
+            E('prop_no_votes').innerText = prop.no_votes || 0
+            E('prop_no_voting_power').innerText = (N(prop.no_voting_power)/(floatingConstant))
             if((prop.yes_votes + prop.no_votes) > 0){
                 const tmp = (N(prop.yes_votes) * (N(prop.yes_voting_power)/(floatingConstant))) + (N(prop.no_votes) * (N(prop.no_voting_power)/(floatingConstant)))
                 E('prop_yes_bar').style.width = (Math.floor((100 / (tmp)) * (N(prop.yes_votes) * (N(prop.yes_voting_power)/(floatingConstant)))) + "%") || "0px"
@@ -92,8 +94,6 @@ const ProposalInfo = () => {
                 E('prop_no_bar').style.width = "0px"
             }
         }
-        E('prop_no_votes').innerText = prop.no_votes || 0
-        E('prop_no_voting_power').innerText = (N(prop.no_voting_power)/(floatingConstant))
         E('prop_total_voters').innerText = (prop.no_votes + prop.yes_votes) || 0
         E('prop_total_voting_power').innerText = N(prop.yes_voting_power + prop.no_voting_power) / floatingConstant
             

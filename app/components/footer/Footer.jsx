@@ -8,7 +8,7 @@ const Footer = () => {
             <p className='border-r pr-5'>Built on Stellar</p>
             <p className='text-[#f39c12]'>Lumos DAO</p>
         </div>
-        <div className='grid grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-5'>
+        <div className='grid grid-cols-3 md:grid-cols-5 lg:grid-cols-8 gap-5'>
           <Link href="/explorer" className='border-r pr-5'>Explorer</Link>
           <Link href="/about" className='border-r px-5'>About</Link>
           <Link href="/terms-and-conditions" className='border-r px-5'>Terms</Link>
@@ -16,6 +16,7 @@ const Footer = () => {
           <Link href="/faq" className='border-r px-5'>FAQs</Link>
           <Link href="https://github.com/naveed-siddiqi/lumos-dao" className='border-r px-5'>Github</Link>
           <Link href="/docs" className='pl-5'>Docs</Link>
+          <Link href="/LumosDAOWhitepaper.pdf" className='pl-5'>Whitepaper</Link>
         </div>
     </div>
   )
