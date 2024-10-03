@@ -1,4 +1,4 @@
-Here’s the updated README file with the link to the latest code added:
+Here's the updated README file with the whitepaper link added:
 
 ---
 
@@ -26,6 +26,7 @@ Here’s the updated README file with the link to the latest code added:
   - [Understanding LumosDAO's Voting Mechanism](#understanding-lumosdaos-voting-mechanism)
   - [Upcoming Features](#upcoming-features)
   - [Conclusion](#conclusion)
+  - [Whitepaper](#whitepaper)
 
 ## Introduction
 
@@ -109,3 +110,9 @@ LumosDAO's voting mechanism is designed for fairness and includes multi-factor c
 ## Conclusion
 
 LumosDAO aims to revolutionize DAO governance, making it equitable and transparent. We invite you to join the LumosDAO community and be part of this journey.
+
+## Whitepaper
+
+For more detailed information about LumosDAO's framework and design, please refer to the [LumosDAO Whitepaper](https://app.lumosdao.com/LumosDAOWhitepaper.pdf).
+
+---
