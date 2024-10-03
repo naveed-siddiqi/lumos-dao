@@ -6,25 +6,26 @@ Here’s the updated README file with the link to the latest code added:
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
-    1. [What is a DAO?](#what-is-a-dao)
-    2. [What is LumosDAO?](#what-is-lumosdao)
-    3. [Benefits of LumosDAO](#benefits-of-lumosdao)
-2. [Getting Started with LumosDAO](#getting-started-with-lumosdao)
-    1. [Creating an Account](#creating-an-account)
-    2. [Dashboard Overview](#dashboard-overview)
-3. [Creating and Managing a DAO](#creating-and-managing-a-dao)
-    1. [For DAO Creators](#for-dao-creators)
-        1. [Creating a New DAO](#creating-a-new-dao)
-        2. [Adding an Existing Stellar Asset](#adding-an-existing-stellar-asset)
-    2. [For DAO Members](#for-dao-members)
-        1. [Joining a DAO](#joining-a-dao)
-        2. [Participating in Proposals](#participating-in-proposals)
-        3. [Voting on Proposals](#voting-on-proposals)
-4. [Understanding LumosDAO's Voting Mechanism](#understanding-lumosdaos-voting-mechanism)
-5. [Upcoming Features](#upcoming-features)
-6. [Conclusion](#conclusion)
-7. [Latest Code Repository](#latest-code-repository)
+- [LumosDAO on Stellar](#lumosdao-on-stellar)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+    - [What is a DAO?](#what-is-a-dao)
+    - [What is LumosDAO?](#what-is-lumosdao)
+    - [Benefits of LumosDAO](#benefits-of-lumosdao)
+  - [Getting Started with LumosDAO](#getting-started-with-lumosdao)
+    - [Creating an Account](#creating-an-account)
+    - [Dashboard Overview](#dashboard-overview)
+  - [Creating and Managing a DAO](#creating-and-managing-a-dao)
+    - [For DAO Creators](#for-dao-creators)
+      - [Creating a New DAO](#creating-a-new-dao)
+      - [Adding an Existing Stellar Asset](#adding-an-existing-stellar-asset)
+    - [For DAO Members](#for-dao-members)
+      - [Joining a DAO](#joining-a-dao)
+      - [Participating in Proposals](#participating-in-proposals)
+      - [Voting on Proposals](#voting-on-proposals)
+  - [Understanding LumosDAO's Voting Mechanism](#understanding-lumosdaos-voting-mechanism)
+  - [Upcoming Features](#upcoming-features)
+  - [Conclusion](#conclusion)
 
 ## Introduction
 
@@ -108,9 +109,3 @@ LumosDAO's voting mechanism is designed for fairness and includes multi-factor c
 ## Conclusion
 
 LumosDAO aims to revolutionize DAO governance, making it equitable and transparent. We invite you to join the LumosDAO community and be part of this journey.
-
-## Latest Code Repository
-
-To access the latest code for LumosDAO, visit our GitHub repository: [LumosDAO Latest Updates](https://github.com/naveed-siddiqi/lumos-dao/tree/kingfavour/new-updates).
-
----
