@@ -2,6 +2,7 @@
 import React, { useEffect, useMemo } from 'react'
 import {  paginate } from '../core/core';
 import { fAddr, getAllUserAlerts } from '../core/getter';
+import AlertLoader from '../components/alert-loader/AlertLoader';
 
 let hasLoad = false;
 const AlertPage = () => {
@@ -43,10 +44,12 @@ const AlertPage = () => {
     main()
   }, [])
   return (
-    <div className='px-[3rem] my-[80px]'>
-      <p className='font-[500] mb-5 text-[26px]'>LumenDAO Notifications</p>
+    <div className='px-[3rem] my-[80px] helvetica-font'>
+      <p className='font-[500] mb-5 text-[26px]'>LumosDAO Notifications</p>
       <div id='alert_view' className='p-4 rounded-[6px] bg-white'>
-       <center style={{margin:'auto',marginTop:'20px'}}>Fetching data...</center>
+       <center style={{margin:'auto',marginTop:'20px'}}>
+        <AlertLoader />
+       </center>
       </div>
     </div>
   )

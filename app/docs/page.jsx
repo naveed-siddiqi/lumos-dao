@@ -5,7 +5,6 @@ import { MdOutlinePlayCircleFilled, MdHowToVote, MdShowChart } from "react-icons
 import { PiNetworkFill } from "react-icons/pi";
 import { FaRegUser } from "react-icons/fa";
 import { BsChevronDown, BsChevronRight } from 'react-icons/bs';
-import Link from 'next/link';
 
 
 const Docs = () => {
@@ -18,7 +17,7 @@ const Docs = () => {
     const [dropDown, setDropDown] = useState(false);
 
   return (
-    <div className='px-[3rem] my-[80px]'>
+    <div className='px-[3rem] my-[80px] helvetica-font'>
         <div className='flex items-start gap-[1rem] h-full'>
             <div className='lg:flex justify-start py-8 flex-col border rounded-[8px] h-[100dvh] w-[25%] hidden'>
                 <div className='mx-3 font-[500] text-left flex flex-col gap-1'>
@@ -50,30 +49,24 @@ const Docs = () => {
                         <MdShowChart />
                         <button className=''>DAO Features</button>
                     </div>
-                    {/* <div onClick={() => setSelectedTab('user-features')} className={selectedTab === 'user-features' ? `cursor-pointer flex items-center justify-start gap-2 bg-[#DC6B19] text-white w-full py-3 rounded-[8px] text-left px-5` : `cursor-pointer flex items-center justify-start gap-2 text-black w-full py-3 rounded-[8px] text-left px-5`}>
+                    <div onClick={() => setSelectedTab('user-features')} className={selectedTab === 'user-features' ? `cursor-pointer flex items-center justify-start gap-2 bg-[#DC6B19] text-white w-full py-3 rounded-[8px] text-left px-5` : `cursor-pointer flex items-center justify-start gap-2 text-black w-full py-3 rounded-[8px] text-left px-5`}>
                         <FaRegUser />
                         <button className=''>User Features</button>
                     </div>
                     <div onClick={() => setSelectedTab('voting-power')} className={selectedTab === 'voting-power' ? `cursor-pointer flex items-center justify-start gap-2 bg-[#DC6B19] text-white w-full py-3 rounded-[8px] text-left px-5` : `cursor-pointer flex items-center justify-start gap-2 text-black w-full py-3 rounded-[8px] text-left px-5`}>
                         <MdHowToVote />
                         <button className=''>Voting Power</button>
-                    </div> */}
+                    </div>
                 </div>
                 {/* <p className='mt-20 text-center text-gray-500'>Loading DAOS...</p> */}
             </div>
             {
                 selectedTab === 'getting-started' &&
                 <div className='lg:w-[75%] px-[3rem]'>
-                    <p className='text-[1.275rem] font-[500] mb-3 text-[#1B1B1B]'>Getting started: Connecting Wallet</p>
+                    <p className='text-[1.275rem] font-[500] mb-3 text-[#1B1B1B]'>Getting started:</p>
                     <p className='text-[#5E5A5A]'>
-                        To get started on LumosDAO, visit <Link href="https://app.lumosdao.com/">app.lumosdao.com </Link>and click "Connect Wallet" in the top right corner. You can choose from three options:
+                        Connecting wallet: To begin using LumosDAO, please connect your Freighter wallet. If you have not yet installed the Freighter wallet extension, it is available for download from the Chrome Web Store. After installation, create your new Stellar wallet and link Freighter with LumosDAO.
                     </p>
-                    <ul className='ml-10 my-3 list-decimal'>
-                        <li> <span className='font-bold'>Lobstr extension</span> for Chrome.</li>
-                        <li> <span className='font-bold'>Freighter wallet</span> for desktop.</li>
-                        <li> <span className='font-bold'>WalletConnect</span>, which allows you to connect your mobile wallet by scanning a QR code.</li>
-                    </ul>
-                    <p>Simply select your preferred method and connect your wallet to begin using LumosDAO.</p>
                 </div>
             }
             {
@@ -81,7 +74,7 @@ const Docs = () => {
                 <div className='lg:w-[75%] px-[3rem]'>
                     <p className='text-[1.275rem] font-[500] mb-3 text-[#1B1B1B]'>Voting:</p>
                     <p className='text-[#5E5A5A]'>
-                        Once the proposal is approved, any member of the DAO can vote. Voters can also leave a reason for their vote and add comments after voting. Voting runs for 5 days by default.
+                        After a proposal is approved, DAO members may cast their votes. When voting, members have the option to provide a reason for their vote. This reason will be publicly displayed on the proposal page under the voters section.
                     </p>
                 </div>
             }
@@ -90,46 +83,42 @@ const Docs = () => {
                 <div className='lg:w-[75%] px-[3rem]'>
                     <p className='text-[1.275rem] font-[500] mb-3 text-[#1B1B1B]'>Creating Proposals:</p>
                     <p className='text-[#5E5A5A]'>
-                        After setting up your DAO, click "Create Proposal." You can provide a title, description, and attach files (e.g., images, PDFs). Once submitted, the proposal is saved on IPFS and needs to be approved by the DAO owner or admin before voting begins.
+                        To create a proposal, you must first be a member of the DAO. Click "Join DAO" and confirm the transaction to become a member. After joining, navigate to the DAO page and select "Create Proposal". Enter the title and description of your proposal and attach any relevant documents (optional). Once approved, the voting on proposals will be open for 5 days. Please note that all proposals are subject to moderation by the DAO administrators.
                     </p>
                 </div>
             }
             {
                 selectedTab === 'dao-features' &&
                 <div className='lg:w-[75%] px-[3rem]'>
-                    <p className='text-[1.275rem] font-[500] mb-3 text-[#1B1B1B]'>LumosDAO Features:</p>
+                    <p className='text-[1.275rem] font-[500] mb-3 text-[#1B1B1B]'>DAO Features:</p>
                     <ol className='list-decimal grid gap-5'>
                         <li>
-                            <p className='text-[18px] text-[#1B1B1B]'>Multi-chain Support:</p>
-                            <p className='text-[#5E5A5A]'>LumosDAO supports projects from various blockchains, including Stellar, Ripple XRPL, Solana, and Tonchain.</p>
+                            <p className='text-[18px] text-[#1B1B1B]'>TOML Generation and Hosting:</p>
+                            <p className='text-[#5E5A5A]'>LumosDAO automatically generates and hosts the asset&apos;s TOML file. DAO creators can update the TOML details by navigating through the DAO settings.</p>
                         </li>
                         <li>
-                            <p className='text-[18px] text-[#1B1B1B]'>Easy DAO Setup:</p>
-                            <p className='text-[#5E5A5A]'>Projects can set up their DAOs in under 2 minutes, with or without an existing token.</p>
+                            <p className='text-[18px] text-[#1B1B1B]'>Automatic Asset Wrapping:</p>
+                            <p className='text-[#5E5A5A]'>This feature automatically converts Classic Stellar assets to Soroban, facilitating the setup of the DAO on LumosDAOThis feature automatically converts Classic Stellar assets to Soroban, facilitating the setup of the DAO on LumosDAO.</p>
                         </li>
                         <li>
-                            <p className='text-[18px] text-[#1B1B1B]'>6 Proposal Systems:</p>
-                            <p className='text-[#5E5A5A]'>LumosDAO offers six different types of governance models, providing flexibility to DAO creators and participants.</p>
+                            <p className='text-[18px] text-[#1B1B1B]'>Bulletin:</p>
+                            <p className='text-[#5E5A5A]'>DAO administrators can use this space to post project-related news and announcements. Additionally, they can conduct polls for community engagement.</p>
                         </li>
                         <li>
-                            <p className='text-[18px] text-[#1B1B1B]'>Admin Controls:</p>
-                            <p className='text-[#5E5A5A]'>DAO creators can add admins who can manage settings, edit TOML files, and moderate proposals.</p>
+                            <p className='text-[18px] text-[#1B1B1B]'>Voting Power Delegation:</p>
+                            <p className='text-[#5E5A5A]'>Users can delegate their voting power to another wallet within the same DAO, allowing another individual to make decisions on their behalf. This delegation can be revoked at any time by the delegator.</p>
                         </li>
                         <li>
-                            <p className='text-[18px] text-[#1B1B1B]'>Delegation of Voting Power:</p>
-                            <p className='text-[#5E5A5A]'>Users can delegate their voting power to another DAO member and revoke it at any time.</p>
+                            <p className='text-[18px] text-[#1B1B1B]'>File Attachments:</p>
+                            <p className='text-[#5E5A5A]'>Proposal creators can attach relevant files to their proposals, including images, PDFs, or text files.</p>
                         </li>
                         <li>
-                            <p className='text-[18px] text-[#1B1B1B]'>DAO Stats:</p>
-                            <p className='text-[#5E5A5A]'>View important DAO information such as asset details, explorer links, top voters, and active proposals.</p>
+                            <p className='text-[18px] text-[#1B1B1B]'>Proposal Moderation:</p>
+                            <p className='text-[#5E5A5A]'>To prevent spam, all proposals are manually moderated by the DAO creators or administrators.</p>
                         </li>
                         <li>
-                            <p className='text-[18px] text-[#1B1B1B]'>IPFS Integration:</p>
-                            <p className='text-[#5E5A5A]'>Proposal data is saved on IPFS, ensuring permanent storage on the blockchain.</p>
-                        </li>
-                        <li>
-                            <p className='text-[18px] text-[#1B1B1B]'>Future Features:</p>
-                            <p className='text-[#5E5A5A]'>Upcoming features include NFT staking and the LUMOS credits system, which will be introduced soon.</p>
+                            <p className='text-[18px] text-[#1B1B1B]'>Admin and Roles:</p>
+                            <p className='text-[#5E5A5A]'>The DAO creator can appoint multiple administrators and assign them specific roles, enhancing community management efficiency.</p>
                         </li>
                     </ol>
                 </div>
@@ -191,16 +180,16 @@ const Docs = () => {
                 selectedTab === 'creating-dao' &&
                 <div className='lg:w-[75%] px-[3rem]'>
                     <p className='text-[1.275rem] font-[500] mb-3 text-[#1B1B1B]'>Creating a DAO:</p>
-                    <p className='text-[#5E5A5A] mb-5'>Once your wallet is connected, go to the LumosDAO homepage and click on "Create DAO." There are two options:</p>
+                    <p className='text-[#5E5A5A] mb-5'>On the homepage, select “Create DAO”. There are two methods to establish a DAO for your project</p>
                     <ol className='list-decimal grid gap-5 ml-9'>
                         <li>
-                            {/* <p className='text-[18px] text-[#1B1B1B]'>For an Existing Project:</p> */}
-                            <p className='text-[#5E5A5A] mb-7'>If your project already has a token issued on the blockchain, enter the <span className='font-bold'>asset code</span> and <span className='font-bold'>TOML URL</span> to fetch project details and create the DAO.</p>
-                            {/* <p className='text-[#5E5A5A]'>Next, wrap your assets to convert Stellar-based assets to Soroban format. LumosDAO provides a one-click solution for this process, enabling you to complete the setup swiftly. Finally, click "Create DAO'' and confirm the transaction in your wallet</p> */}
+                            <p className='text-[18px] text-[#1B1B1B]'>For an Existing Project:</p>
+                            <p className='text-[#5E5A5A] mb-7'>If your project already has a token on the Stellar blockchain, you will need to import it into LumosDAO. Begin by entering the asset code and the TOML URL of your asset, then click "Search". LumosDAO will retrieve all relevant data for the asset, such as logo, description, and home domain, from the TOML file.</p>
+                            <p className='text-[#5E5A5A]'>Next, wrap your assets to convert Stellar-based assets to Soroban format. LumosDAO provides a one-click solution for this process, enabling you to complete the setup swiftly. Finally, click "Create DAO'' and confirm the transaction in your wallet</p>
                         </li>
                         <li>
-                            {/* <p className='text-[18px] text-[#1B1B1B]'>For an Existing Project:</p> */}
-                            <p className='text-[#5E5A5A]'>If you don't have an existing token, provide your project’s details (name, asset code, supply, description, logo, and cover photo). LumosDAO will mint the token, lock the issuing wallet, and generate the TOML file for you.</p>
+                            <p className='text-[18px] text-[#1B1B1B]'>For an Existing Project:</p>
+                            <p className='text-[#5E5A5A]'>If your project already has a token on the Stellar blockchain, you will need to import it into LumosDAO. Begin by entering the asset code and the TOML URL of your asset, then click "Search". LumosDAO will retrieve all relevant data for the asset, such as logo, description, and home domain, from the TOML file.</p>
                         </li>
                     </ol>
                 </div>

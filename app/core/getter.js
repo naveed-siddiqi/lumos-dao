@@ -2,7 +2,7 @@
  * CONTAINS ALL FUNCTIONS NEEDED TO GET THE DAO DATA
 **/
 
-import { API_URL, daoContractId, networkUsed, server, fee, wrappingAddress, contract, timeout, TOML_URL, horizonServer, version, networkWalletUsed } from "../data/constant"
+import { API_URL, daoContractId, networkUsed, server, fee, wrappingAddress, contract, timeout, TOML_URL, horizonServer, version, networkWalletUsed, BACKEND_API, xrpClient, xrp } from "../data/constant"
 import * as StellarSdk from '@stellar/stellar-sdk';
 import * as toml from 'toml';
 import { stopTalking, talk } from "../components/alert/swal";
@@ -11,40 +11,123 @@ import { stopTalking, talk } from "../components/alert/swal";
 * @params {daoId: Address}
 * returns @map | []
 **/  
-export const getDao =  async (daoId = [], useCache=false) => {
-    if(wrappingAddress != "" && daoId.length > 0) {
+export const getDao =  async (daoId = {}) => {
+    if(wrappingAddress != "" && daoId) {
         try{
-            const account = await server.getAccount(wrappingAddress)
-            //convert to stellar array
-            let addr = []; 
-            for(let i=0;i<daoId.length;i++){
-                addr.push(new StellarSdk.Address(daoId[i]))
-            }
-            addr = StellarSdk.nativeToScVal(addr) 
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
-                .addOperation(
-                    contract.call("get_all_dao", addr),
-                )
-                .setTimeout(timeout) //using a time out of a hourf
-                .build();
-            //Simulate the transaction to discover the storage footprint, and update the
-            transaction = await server.prepareTransaction(transaction);
-            let transactionMeta = (await server.simulateTransaction(transaction))
-            let dao = StellarSdk.scValToNative(transactionMeta.result.retval);
-            //fecth the daos data
-            const daoMeta = await getAlldaoInfo(daoId.join(","))
-            if(daoMeta !== false && dao.length > 0) { 
-                for(let i=0;i<dao.length;i++) {
-                    daoMeta[dao[i].token] = {...(dao[i]), ... daoMeta[dao[i].token]}
+            //for stellar
+            let daoMeta = [];
+            if(daoId['stellar'].length > 0){
+                const account = await server.getAccount(wrappingAddress)
+                //convert to stellar array
+                let addr = []; 
+                for(let i=0;i<daoId['stellar'].length;i++){
+                    addr.push(new StellarSdk.Address(daoId['stellar'][i]))
                 }
-                return daoMeta;
+                addr = StellarSdk.nativeToScVal(addr) 
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call("get_all_dao", addr),
+                    )
+                    .setTimeout(timeout) //using a time out of a hourf
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                let dao = StellarSdk.scValToNative(transactionMeta.result.retval);
+                //fecth the daos data
+                daoMeta = await getAlldaoInfo(daoId['stellar'].join(","))
+                if(daoMeta !== false && dao.length > 0) { 
+                    for(let i=0;i<dao.length;i++) {
+                        daoMeta[dao[i].token] = {...(dao[i]), ... daoMeta[dao[i].token]}
+                    }
+                }
             }
-            else {return []}
-            
+            if(daoId['xrp'].length> 0){
+                //fetch the information
+                const res = await fetch(`${BACKEND_API}/chain/xrp/dao/all`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        ids:daoId['xrp'],
+                        address:walletAddress,
+                      }
+                    ),
+                    headers: {
+                    "content-type": "application/json",
+                    },
+                });
+                if(res.ok) {
+                    const resp = await res.json()
+                    if(resp.status) {
+                        daoMeta = {...daoMeta, ...resp.daoMeta}
+                        daoMeta.status = true
+                    }
+                }
+            }
+            return daoMeta
         }
-        catch(e) {
-            console.log(e)
-            return []}
+        catch(e) {console.log(e);return []}
+    }
+    else {return []}
+}
+/**  DAO SPECIFIC INFO
+* @params {daoId: Address}
+* returns @map | []
+**/  
+export const getDaoInfo =  async (daoId = [], chain) => {
+    if(wrappingAddress != "" && daoId) {  
+        try{
+            //for stellar
+            let daoMeta = []
+            if(daoId.length > 0 && chain == 'stellar'){
+                const account = await server.getAccount(wrappingAddress)
+                //convert to stellar array
+                let addr = []; 
+                for(let i=0;i<daoId.length;i++){
+                    addr.push(new StellarSdk.Address(daoId[i]))
+                }
+                addr = StellarSdk.nativeToScVal(addr) 
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call("get_all_dao", addr),
+                    )
+                    .setTimeout(timeout) //using a time out of a hourf
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                let dao = StellarSdk.scValToNative(transactionMeta.result.retval);
+                //fecth the daos data
+                daoMeta = await getAlldaoInfo(daoId.join(","))
+                if(daoMeta !== false && dao.length > 0) { 
+                    for(let i=0;i<dao.length;i++) {
+                        daoMeta[dao[i].token] = {...(dao[i]), ...daoMeta[dao[i].token]}
+                    }
+                    return daoMeta
+                }
+            }
+            if(daoId.length > 0 && chain == 'xrp'){ 
+                //fetch the off chain information
+                const res = await fetch(`${BACKEND_API}/chain/xrp/dao`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        id:daoId,
+                        address:walletAddress,
+                      }
+                    ),
+                    headers: {
+                    "content-type": "application/json",
+                    },
+                });
+                if(res.ok) {
+                    const resp = await res.json()
+                    if(resp.status) {
+                        daoMeta = resp.dao
+                    }
+                }
+            }
+            return daoMeta
+        }
+        catch(e) {console.log(e);return []}
     }
     else {return []}
 }
@@ -52,37 +135,59 @@ export const getDao =  async (daoId = [], useCache=false) => {
 * @params {propId: [int]}
 * returns @map | []
 **/ 
-export const getAllProposal =  async (propId = [], dao, useCache=false) => {
+export const getAllProposal =  async (propId = [], dao, chain) => {
     if(wrappingAddress != "" && propId.length > 0) {   
         try{
-            const account = await server.getAccount(wrappingAddress)
-            let prop_ids = []; 
-            for(let i=0;i<propId.length;i++){
-                prop_ids.push(propId[i])
-            }
-            prop_ids = StellarSdk.nativeToScVal(prop_ids) 
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
-                .addOperation(
-                    contract.call("get_all_proposal", prop_ids)
-                )
-                .setTimeout(timeout) //using a time out of a hour
-                .build();
-            //Simulate the transaction to discover the storage footprint, and update the
-            let transactionMeta = (await server.simulateTransaction(transaction))
-            const props =  (StellarSdk.scValToNative(transactionMeta.result.retval)); 
-            //fecth the daos data
-            const propMeta = await getAllPropInfo(propId.join(","), dao)
-            if(propMeta !== false && props.length > 0) { 
-                for(let i=0;i<props.length;i++) {
-                    propMeta[propId[i]] = {...(props[i]), ... propMeta[propId[i]]}
+            if(chain == 'stellar'){
+                const account = await server.getAccount(wrappingAddress)
+                let prop_ids = []; 
+                for(let i=0;i<propId.length;i++){
+                    prop_ids.push(propId[i])
                 }
-                return propMeta;
+                prop_ids = StellarSdk.nativeToScVal(prop_ids) 
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call("get_all_proposal", prop_ids)
+                    )
+                    .setTimeout(timeout) //using a time out of a hour
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                const props =  (StellarSdk.scValToNative(transactionMeta.result.retval)); 
+                //fecth the daos data
+                const propMeta = await getAllPropInfo(propId.join(","), dao)
+                if(propMeta !== false && props.length > 0) { 
+                    for(let i=0;i<props.length;i++) {
+                        propMeta[propId[i]] = {...(props[i]), ... propMeta[propId[i]]}
+                    }
+                    return propMeta;
+                }
+                else {return []}
             }
-            else {return []}
+            else if(chain == 'xrp'){
+                //fetch the information
+                const res = await fetch(`${BACKEND_API}/chain/xrp/proposal/all`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        ids:propId,
+                        address:walletAddress,
+                        daoId:dao
+                      }
+                    ),
+                    headers: {
+                    "content-type": "application/json",
+                    },
+                });
+                if(res.ok) {
+                    const resp = await res.json()
+                    if(resp.status) {
+                        return resp.props
+                    }
+                    else{return []}
+                }
+            }
         }
-        catch(e) {
-            console.log(e)
-            return []}
+        catch(e) {console.log(e);return []}
     }
     else {return []}
 }
@@ -96,45 +201,24 @@ export const getDaoMetadata =  async (useCache=false) => {
         try{return JSON.parse(localStorage.getItem("lumos_dao_metadata") || "{}")  || []}
         catch(e){return false}
     }
-    if(wrappingAddress != "") {
-        try{
-            const account = await server.getAccount(wrappingAddress)
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
-                .addOperation(
-                    contract.call("get_metadata")
-                )
-                .setTimeout(timeout) //using a time out of a hour
-                .build();
-            //Simulate the transaction to discover the storage footprint, and update the
-            let transactionMeta = (await server.simulateTransaction(transaction))
-            //fetch off chain data
-            const res = await getOffChainInfo()
-            const data = {...(await StellarSdk.scValToNative(transactionMeta.result.retval)), ...res};
-            //cache the results
+    //fecth all chain stats
+    try {
+        //check if the url is http and from this domain
+        const url = BACKEND_API + "/chain/stats" 
+        const response = await fetch(url);
+        if (!response.ok) {
+          return false
+        }
+        const {status, data} = await response.json(); 
+        if(status) {
             localStorage.setItem('lumos_dao_metadata', JSON.stringify(data))
             return data
-        }
-        catch(e) {console.log(e)
-            return false}
+        } 
+    } catch (error) {
+        console.log(error)
     }
-    else {return []}
-    /* Fetch dao info from off chain */
-    async function getOffChainInfo(){
-        try {
-            //check if the url is http and from this domain
-            const url = API_URL + "get_metadata&dao_id=" + daoContractId + "&id=" + Math.random() * 1000 
-            const response = await fetch(url);
-            if (!response.ok) {
-              return {}
-            }
-            const res = await response.json();  
-            return res;
-            
-        } catch (error) { return false}
-    }
+    return []
 }
-
-
 // get all dao info
 export const getAlldaoInfo = async (daos) => {
     try {
@@ -144,7 +228,7 @@ export const getAlldaoInfo = async (daos) => {
        if (!response.ok) {
          throw new Error("Network response was not ok");
        }
-       const dao = await response.json();  
+       const dao = await response.json(); 
        return dao
    } catch (error) { console.log(error)
        return false;
@@ -222,21 +306,68 @@ export const isSubDomainExists = async (domain) => {
    }
 }
 // URL of the Stellar asset's TOML file
-export const readAssetToml = async (url) => {
+export const readAssetToml = async (url, chain='stellar') => {
     try {
        //check if the url is http and from this domain
        if(url.indexOf('http://') > -1 && url.indexOf(TOML_URL) > -1) {
            //using insecure http and from lumos, serve from asset folder
            url = new URL(url);
            url = url.hostname.split('.')[0]; // Get the first part of the hostname
-           url = API_URL + "loadtoml&value=" + url  + "&id=" + Math.random() * 1000
+           url = API_URL + "loadtoml&chain=" + chain + "&value=" + url  + "&id=" + Math.random() * 1000
        }
        const response = await fetch(url);
        if (!response.ok) {
          throw new Error("Network response was not ok");
        }
        const tomlContent = await response.text();
-       return toml.parse(tomlContent);
+       const data = toml.parse(tomlContent);
+       if(chain == 'xrp'){
+            //reformat it to the standard we understand
+            const orgName = data.ORGANIZATION?.name || data?.DOCUMENTATION?.ORG_NAME || "";
+            const orgWebsite = data.ORGANIZATION?.website || data?.DOCUMENTATION?.ORG_URL || "";
+            // Social media links from TOKENS or ORGANIZATION
+            const tokenWeblinks = data.TOKENS?.[0]?.WEBLINKS || [];
+            const socialMediaLinks = {
+                ORG_TWITTER: tokenWeblinks.find(link => link.url.includes('twitter.com'))?.url || data?.DOCUMENTATION?.ORG_TWITTER || "",
+                ORG_INSTAGRAM: tokenWeblinks.find(link => link.url.includes('instagram.com'))?.url || data?.DOCUMENTATION?.ORG_INSTAGRAM || "",
+                ORG_DISCORD: tokenWeblinks.find(link => link.url.includes('discord.gg'))?.url || data?.DOCUMENTATION?.ORG_DISCORD || "",
+                ORG_TELEGRAM: tokenWeblinks.find(link => link.url.includes('t.me'))?.url || data?.DOCUMENTATION?.ORG_TELEGRAM || "",
+                ORG_REDDIT: tokenWeblinks.find(link => link.url.includes('reddit.com'))?.url || data?.DOCUMENTATION?.ORG_REDDIT || ""
+            };
+
+            // Add new DOCUMENTATION fields
+            data.DOCUMENTATION = {
+                ORG_NAME: orgName,
+                ORG_URL: orgWebsite || tokenWeblinks.find(link => link.type === "website")?.url || "",
+                ...socialMediaLinks
+            };
+            // Restructure ACCOUNTS to be an array of account addresses
+            data.ACCOUNTS = [...(data?.ACCOUNTS || []), ...(data?.ISSUERS || [])];
+            data.ACCOUNTS = data.ACCOUNTS.map(account => account.address);
+            // Update CURRENCIES field by matching with TOKENS
+            if(data.TOKENS){
+                data.CURRENCIES = [...(data?.CURRENCIES || []), ...(data?.TOKENS || [])];
+                data.CURRENCIES = data.CURRENCIES.map(currency => {
+                    const matchingToken = data?.TOKENS.find(token => 
+                        token.name === currency.code || token.currency === currency.code
+                    );
+
+                    if (matchingToken) {
+                        return {
+                            ...currency,
+                            name: matchingToken?.name,
+                            desc: matchingToken?.desc,
+                            image: matchingToken?.icon,
+                            code:matchingToken?.currency
+                        };
+                    }
+                    return currency;
+                });
+            }
+            console.log(data)
+            return data
+       }
+       else if(chain == 'stellar') return data
    } catch (error) { console.log(error)
        return false;
    }
@@ -332,9 +463,9 @@ export const getAllUserAlerts = async () => {
 * params {user: address, dao:address} the address as string
 * returns {bool}
 */
-export const isBanned = async (dao, user) => {
-    const isBan = await getUserBan(dao, user)
-     if(isBan === false) {return false}
+export const isBanned = async (dao, user, chain='stellar') => {
+    const isBan = await getUserBan(dao, user, chain)
+    if(isBan === false) {return false}
     if(isBan === true) { 
         //user has already been banned
         stopTalking(3, talk('Your account has been banned', 'fail'))
@@ -349,26 +480,33 @@ export const isBanned = async (dao, user) => {
 * @params {dao: Address, user: Address}
 * returns @boolean
 **/ 
-export const getUserBan =  async (dao = "", user = "") => {
+export const getUserBan =  async (dao = "", user = "", chain='stellar') => {
     if(user != "" && dao != null && dao !== "") {   
-        try{  
-             
-            const account = await server.getAccount(wrappingAddress)
-            let address = new StellarSdk.Address(user);address = address.toScVal()
-            dao = new StellarSdk.Address(dao);dao = dao.toScVal()
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
-                .addOperation(
-                    contract.call("get_ban", dao, address)
-                )
-                .setTimeout(timeout) //using a time out of a hour
-                .build();
-            //Simulate the transaction to discover the storage footprint, and update the
-            transaction = await server.prepareTransaction(transaction);
-            let transactionMeta = (await server.simulateTransaction(transaction))
-            return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
+        try{   
+            if(chain=='stellar'){
+                const account = await server.getAccount(wrappingAddress)
+                let address = new StellarSdk.Address(user);address = address.toScVal()
+                dao = new StellarSdk.Address(dao);dao = dao.toScVal()
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call("get_ban", dao, address)
+                    )
+                    .setTimeout(timeout) //using a time out of a hour
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
+            }
+            else if(chain=='xrp'){
+                const daoMeta = await getDaoInfo([dao], chain)
+                if(daoMeta){
+                    return daoMeta[dao].ban_members.includes(user)
+                }
+            }
         }
         catch(e) {
-            //console.log(e)
+            console.log(e)
             return 2
         }
     }
@@ -392,21 +530,89 @@ export const isProposalExists = async (proposal, dao) => {
    }
 }
 //get token user balance
-export const getTokenUserBal = async (tokenId, address) => {
+export const getTokenUserBal = async (tokenId, address, chain='stellar') => {
     if(wrappingAddress != "") { 
         try{
-            const account = await server.getAccount(wrappingAddress)
-            const contract = new StellarSdk.Contract(tokenId);
-            address = new StellarSdk.Address(address);address = address.toScVal()
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
-                .addOperation(
-                    contract.call('balance', address)
-                )
-                .setTimeout(timeout) //using a time out of a hour
-                .build();
-            //Simulate the transaction to discover the storage footprint, and update the
-            let transactionMeta = (await server.simulateTransaction(transaction))
-            return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
+            if(chain == 'stellar'){
+                const account = await server.getAccount(wrappingAddress)
+                const contract = new StellarSdk.Contract(tokenId);
+                address = new StellarSdk.Address(address);address = address.toScVal()
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call('balance', address)
+                    )
+                    .setTimeout(timeout) //using a time out of a hour
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
+            }
+            else if(chain == 'xrp') {
+                //get the user balance of a token
+                const client = await xrpClient()
+                const response = await client.request({
+                    command: 'account_lines',
+                    account: address
+                });
+                if(response){ 
+                    const assetLine = response?.result?.lines || []
+                    for(let i=0;i<assetLine.length;i++){
+                        const assetHash = await Hash(`${assetLine[i].currency}:${assetLine[i].account}`)
+                        if(assetHash == tokenId){
+                            return Number(Math.abs(assetLine[i].balance))
+                        }
+                    } 
+                }
+            }
+        }
+        catch(e) {
+            return 0
+        }
+    }
+    else {return 0}
+}
+//check if user is a memeber of the dao
+export const isMember = async (tokenId, address, chain='stellar') => {
+    if(wrappingAddress != "") { 
+        try{
+            let resp = false
+            if(chain == 'stellar'){
+                const account = await server.getAccount(wrappingAddress)
+                const contract = new StellarSdk.Contract(tokenId);
+                address = new StellarSdk.Address(address);address = address.toScVal()
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call('balance', address)
+                    )
+                    .setTimeout(timeout) //using a time out of a hour
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                resp =  (StellarSdk.scValToNative(transactionMeta.result.retval)); 
+            }
+            else if(chain == 'xrp') {
+                //get the user balance of a token
+                const client = await xrpClient()
+                const response = await client.request({
+                    command: 'account_lines',
+                    account: address
+                });
+                if(response){
+                    const assetLine = response?.result?.lines || []
+                    for(let i=0;i<assetLine.length;i++){
+                        const assetHash = await Hash(`${assetLine[i].currency}:${assetLine[i].account}`)
+                        if(assetHash == tokenId){
+                            resp = Number(Math.abs(assetLine[i].balance))
+                            break;
+                        }
+                    } 
+                }
+            }
+            //get dao off chain info
+            const daoMeta = await getAlldaoInfo([tokenId])
+            if(daoMeta[tokenId]['joined'] == true && resp !== false){
+                return true;
+            }
         }
         catch(e) {
             return false
@@ -415,16 +621,31 @@ export const getTokenUserBal = async (tokenId, address) => {
     else {return false}
 }
 // get all Users tx
-export const getAllUsersTx = async () => {
+export const getAllUsersTx = async (address) => {
     try {
        //check if the url is http and from this domain
-       const url = API_URL + "get_user_tx&dao=" + daoContractId + "&address=" + walletAddress + "&id=" + Math.random() * 1000 
+       const url = API_URL + "get_user_tx&dao=" + daoContractId + "&address=" + address + "&id=" + Math.random() * 1000 
        const response = await fetch(url);
        if (!response.ok) {
          throw new Error("Network response was not ok");
        }
        const tx = await response.text(); 
        return (tx != "") ? JSON.parse(tx) : ""
+   } catch (error) { console.log(error)
+       return false;
+   }
+}
+// get all Users Chats
+export const getAllChats = async (userId) => {
+    try {
+       //check if the url is http and from this domain
+       const url = API_URL + "get_chat&uid=" + userId + "&id=" + Math.random() * 1000 
+       const response = await fetch(url);
+       if (!response.ok) {
+         throw new Error("Network response was not ok");
+       }
+       const chat = await response.json(); 
+       return chat
    } catch (error) { console.log(error)
        return false;
    }
@@ -447,40 +668,19 @@ export const getUserMeta = async (addr) => {
 /* Get Joined dao membership date */
 export const getDaoJoinedDate = async (_address) => {
     try {
-       const daos = await getDaoMetadata();  
-       //loop through the daos
-       if(daos.daos.length > 0) {
-           let canContinue = true; let arr = []
-           let url = horizonServer + '/accounts/'+_address+'/transactions?limit=200&order=asc&include_failed=false'
-           while(canContinue){
-               let res = await fetch(url);
-               if (!res.ok) {
-                 canContinue = false
-               }else{
-                   res = await res.json();url = res._links.next.href;res = res._embedded.records;  
-                   if(res.length > 0) {
-                       //loop through the response
-                       for(let i=0;i<res.length;i++) { 
-                           const val = (res[i].memo || "").toLowerCase().trim()
-                           if(val == (version + ' creating dao') || val == (version + ' creating trustline') || val == (version + ' joining lumos dao') || val == (version + ' creating lumos dao')) {
-                               //get the date
-                                return res[i].created_at
-                                break;
-                           }
-                       }
-                      
-                   }
-                   else {
-                       break;
-                   }
-               }
-               
-           }
-           return ""
+        const tx = await getAllUsersTx(_address)
+        if(tx.length > 0){
+             for(let i=tx.length-1;i>-1;i--){
+                 if(tx[i]){
+                    const act = JSON.parse(tx[i])['action'].toLowerCase()
+                    if(act.indexOf('created lumos dao') > -1 || act.indexOf('joined')){
+                        //get the date
+                        return new Date(JSON.parse(tx[i])['date']).toLocaleDateString()
+                    }
+                 }
+             }
         }
-       else {
-           return ""
-       }
+        return ""
    } catch (error) { console.log(error)
        return [0, []];
    }
@@ -566,22 +766,42 @@ export const getUserComment = async (address) => {
 * @params {dao: Address}
 * returns @map | []
 **/ 
-export const getDaoDelegatee =  async (dao = "", user = "") => {
+export const getDaoDelegatee =  async (dao = "", user = "", chain='stellar') => {
     if(user != "" && dao != null && dao !== "") {   
         try{  
-             
-            const account = await server.getAccount(wrappingAddress)
-            let address = new StellarSdk.Address(user);address = address.toScVal()
-            dao = new StellarSdk.Address(dao);dao = dao.toScVal()
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
-                .addOperation(
-                    contract.call("get_delegatee", dao, address)
-                )
-                .setTimeout(timeout) //using a time out of a hour
-                .build();
-            //Simulate the transaction to discover the storage footprint, and update the
-            let transactionMeta = (await server.simulateTransaction(transaction))
-            return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
+            if(chain=='stellar'){ 
+                const account = await server.getAccount(wrappingAddress)
+                let address = new StellarSdk.Address(user);address = address.toScVal()
+                dao = new StellarSdk.Address(dao);dao = dao.toScVal()
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call("get_delegatee", dao, address)
+                    )
+                    .setTimeout(timeout) //using a time out of a hour
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
+            }
+            else if(chain=='xrp'){
+                const res = await fetch(`${BACKEND_API}/chain/xrp/dao/delegatee`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        daoId:dao,
+                        delegator:user,
+                      }
+                    ),
+                    headers: {
+                    "content-type": "application/json",
+                    },
+                });
+                if(res.ok) {
+                    const resp = await res.json()
+                    if(resp.status) {
+                        return resp.delegatee
+                    }
+                }
+            }
         }
         catch(e) {
             //console.log(e)
@@ -589,6 +809,7 @@ export const getDaoDelegatee =  async (dao = "", user = "") => {
         }
     }
     else {return false}
+    return false;
 }
 /* Get user joined dao number  */
 export const getDaoJoinedWithInfo = async (_address) => {
@@ -597,7 +818,7 @@ export const getDaoJoinedWithInfo = async (_address) => {
        if (!response.ok) {
          throw new Error("Network response was not ok");
        }
-       let daos = await response.json();  
+       let daos = await response.json(); 
        if(daos.status) {
            return [daos['daos'].length, daos['daos']]
        }
@@ -610,32 +831,54 @@ export const getDaoJoinedWithInfo = async (_address) => {
  * @params {daoId: Address}
  * returns @map | []
 **/ 
-export const getDaoWithoutMeta =  async (daoId = []) => {
+export const getDaoWithoutMeta =  async (daoId = [], chain='stellar') => {
     if(wrappingAddress != "" && daoId.length > 0) {
         try{
-            const account = await server.getAccount(wrappingAddress);
-            //convert to stellar array
-            let addr = []; 
-            for(let i=0;i<daoId.length;i++){
-                addr.push(new StellarSdk.Address(daoId[i]))
+            if(chain == 'stellar'){
+                const account = await server.getAccount(wrappingAddress);
+                //convert to stellar array
+                let addr = []; 
+                for(let i=0;i<daoId.length;i++){
+                    addr.push(new StellarSdk.Address(daoId[i]))
+                }
+                addr = StellarSdk.nativeToScVal(addr) 
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call("get_all_dao", addr),
+                    )
+                    .setTimeout(timeout) //using a time out of a hourf
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                const dao = StellarSdk.scValToNative(transactionMeta.result.retval);
+                return dao
             }
-            addr = StellarSdk.nativeToScVal(addr) 
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
-                .addOperation(
-                    contract.call("get_all_dao", addr),
-                )
-                .setTimeout(timeout) //using a time out of a hourf
-                .build();
-            //Simulate the transaction to discover the storage footprint, and update the
-            let transactionMeta = (await server.simulateTransaction(transaction))
-            const dao = StellarSdk.scValToNative(transactionMeta.result.retval);
-            return dao
+            else if(chain =='xrp') {
+                const res = await fetch(`${BACKEND_API}/chain/xrp/dao/all`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        ids:daoId,
+                        address:walletAddress,
+                      }
+                    ),
+                    headers: {
+                    "content-type": "application/json",
+                    },
+                });
+                if(res.ok) {
+                    const resp = await res.json()
+                    if(resp.status) {
+                        return [resp.daoMeta[daoId[0]]]
+                    }
+                }
+            }
         }
         catch(e) {
             console.log(e)
             return []}
     }
     else {return []}
+    return []
 }
 // get dao users by dao name
 export const getDaoUsersP = async (daoName) => { 
@@ -683,21 +926,36 @@ export const getAllDelegates = async (dao) => {
    }
 }
 // get if an account has been locked
-export const getLocked = async (address) => { 
-    try {
-       //check if the url is http and from this domain
-       const response = await fetch(`${horizonServer}/accounts/${address}`);
-       if (response.ok) {
-         const resp = await response.json()
-         //get the signers
-         if(resp.signers) {
-             for(let i=0;i<resp.signers.length;i++) {
-                 if(resp.signers[i].key == address) {
-                     return (resp.signers[i].weight == 0) ? true : false;
-                 }
-             }
-         } 
-       }
+export const getLocked = async (address, chain) => { 
+    try { 
+        if(chain == 'stellar'){
+            //check if the url is http and from this domain
+            const response = await fetch(`${horizonServer}/accounts/${address}`);
+            if (response.ok) {
+                const resp = await response.json()
+                //get the signers
+                if(resp.signers) {
+                    for(let i=0;i<resp.signers.length;i++) {
+                        if(resp.signers[i].key == address) {
+                            return (resp.signers[i].weight == 0) ? true : false;
+                        }
+                    }
+                } 
+            }
+        }
+        else if(chain == 'xrp') {
+            // Get the account info
+            const client = await xrpClient()
+            const accountInfo = await client.request({
+                command: "account_info",
+                account: address,
+                ledger_index: "validated"
+            });
+            // Extract flags
+            const flags = accountInfo.result.account_flags;
+            // Check if the asfNoFreeze flag is set
+            return flags.noFreeze;
+        }
    } catch (error) { console.log(error)
        return false;
    }
@@ -705,15 +963,14 @@ export const getLocked = async (address) => {
 //calculate voting power of an address
 export const getMarketCap = async (asset = {}) => {
     //get the holders score
-    const url = API_URL + `asset_info&code=${asset.code}&issuer=${asset.issuer}`
+    const url = ((asset.chain=='stellar')?API_URL + `asset_info&`:BACKEND_API+'/chain/xrp/asset/info?') + (`code=${asset.code}&issuer=${asset.issuer}&network=${networkWalletUsed.toLowerCase()}`)
     try{
         const response = await fetch(url);
         if (!response.ok) {
-              throw new Error("Network response was not ok");
+            throw new Error("Network response was not ok");
         }
         const res = await response.json()
         return res;
-        
     } catch (error) { console.log(error)
         return false;
     }
@@ -733,28 +990,49 @@ export const getUserTx = async (addr) => {
        return false;
    }
 }
+// get dao users
+export const getUsersDao = async (dao) => {
+    try {
+       //check if the url is http and from this domain
+       const url = API_URL + "get_users_dao&dao=" + dao + "&id=" + Math.random() * 1000 
+       const response = await fetch(url);
+       if (!response.ok) {
+         throw new Error("Network response was not ok");
+       }
+       return ((await response.json())['user']).filter(value => value !== null && value !== undefined && value !== '');  
+   } catch (error) { console.log(error)
+       return false;
+   }
+}
 //check if user is an admin
-export const isAdmin = async (daoId = "") => {
+export const isAdmin = async (daoId = "", chain='stellar') => {
     //structure url
     if(walletAddress != "" && daoId != "") {
         try{
-            
-            const account = await server.getAccount(wrappingAddress)
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
-                .addOperation(
-                    contract.call("get_dao", (new StellarSdk.Address(daoId)).toScVal())
-                )
-                .setTimeout(timeout) //using a time out of a hour
-                .build();
-            //Simulate the transaction to discover the storage footprint, and update the
-            transaction = await server.prepareTransaction(transaction);
-            let transactionMeta = (await server.simulateTransaction(transaction))
-            let dao = StellarSdk.scValToNative(transactionMeta.result.retval);
-            if(dao['admins'] != undefined) { 
-                return dao.admins.includes(walletAddress) || dao.owner == walletAddress
+            if(chain == 'stellar'){
+                const account = await server.getAccount(wrappingAddress)
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call("get_dao", (new StellarSdk.Address(daoId)).toScVal())
+                    )
+                    .setTimeout(timeout) //using a time out of a hour
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                let dao = StellarSdk.scValToNative(transactionMeta.result.retval);
+                if(dao['admins'] != undefined) { 
+                    return dao.admins.includes(walletAddress) || dao.owner == walletAddress
+                }
+                else {return false}
             }
-            else {return false}
-            
+            else if(chain == 'xrp') {
+                const dao = (await getDaoInfo([daoId], chain))[daoId]
+                if(dao['admins'] != undefined) { 
+                    return dao.admins.includes(walletAddress) || dao.owner == walletAddress
+                }
+                else {return false}
+            }
         }
         catch(e) {return 2}
     }
@@ -867,89 +1145,89 @@ export const getVotingPower = async (asset = {}, address, total_voter = []) => {
         //get the holders score
         const url = `https://api.stellar.expert/explorer/${networkWalletUsed.toLowerCase()}/asset/${asset.asset.toUpperCase() +'-' + asset.address}/position/${address}`
         try{
-            let holder_pos;let response;
-            if(address != asset.issuer) {
-               response = await fetch(API_URL + `asset_holder&url=` + encodeURIComponent(url));
-               if (!response.ok) {
-                  throw new Error("Network response was not ok");
+                let holder_pos;let response;
+                if(address != asset.issuer) {
+                response = await fetch(API_URL + `asset_holder&chain=${CHAIN}&url=` + encodeURIComponent(url));
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                    }
+                    holder_pos = await response.text() * 1;//console.log(holder_pos)
                 }
-                holder_pos = await response.text() * 1;//console.log(holder_pos)
-            }
-            else {
-                holder_pos = 1; //making issuer account be in top 1 automatically
-            }
-            //calculate holders rank
-            if(holder_pos >= 1 && holder_pos <= 5) {holder_pos = 5}
-            else if(holder_pos >= 6 && holder_pos <= 50) {holder_pos = 4}
-            else if(holder_pos >= 51 && holder_pos <= 100) {holder_pos = 3}
-            else if(holder_pos >= 101 && holder_pos <= 500) {holder_pos = 2}
-            else {holder_pos = 1}
-            
-            //calculate activity using proposal
-            let act_pos = 1;
-            for(let i=0;i<total_voter.length;i++) {
-                if(total_voter[i].voter == address) {
-                    if(total_voter[i].vote > 1 && total_voter[i].vote <= 5){act_pos = 2}
-                    else if(total_voter[i].vote > 5 && total_voter[i].vote <= 25){act_pos = 3}
-                    else if(total_voter[i].vote > 25 && total_voter[i].vote <= 50){act_pos = 4}
-                    else if(total_voter[i].vote > 50){act_pos = 5}
-                    break;
+                else {
+                    holder_pos = 1; //making issuer account be in top 1 automatically
                 }
-            }
-            //using comment
-            response = await fetch(API_URL + `wallet_comment&address=` + address + "&dao_id=" + asset.dao + "&id=" + Math.random());
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-            let comt_act = await response.text() * 1;  
-            if(comt_act < 1) {comt_act = 1}
-            else if(comt_act >= 1 && comt_act <= 25) {comt_act = 2}
-            else if(comt_act >= 26 && comt_act <= 100) {comt_act = 3}
-            else if(comt_act >= 101 && comt_act <= 500) {comt_act = 4}
-            else {comt_act = 5}
-            //calculate the average
-            act_pos = (act_pos + comt_act) / 2
-            //get the age
-            response = await fetch(API_URL + `wallet_age&address=` + address);
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-            let age_pos = await response.text() * 1; 
-            if(age_pos < 1) {age_pos = 5}
-            else if(age_pos >= 1 && age_pos <= 6) {age_pos = 2}
-            else if(age_pos >= 6 && age_pos <= 12) {age_pos = 3}
-            else if(age_pos >= 12 && age_pos <= 24) {age_pos = 4}
-            else {age_pos = 5}
-            //get no of trades
-            response = await fetch(API_URL + `wallet_trade&address=` + address);
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-            let trade_pos = await response.text() * 1; 
-            if(trade_pos < 1) {trade_pos = 1}
-            else if(trade_pos >= 1 && trade_pos <= 100) {trade_pos = 2}
-            else if(trade_pos >= 101 && trade_pos <= 500) {trade_pos = 3}
-            else if(trade_pos >= 501 && trade_pos <= 1000) {trade_pos = 4}
-            else {trade_pos = 5}
-            
-            //fetch user xlm balances
-            response = await fetch(API_URL + `xlm_usd&address=` + address);
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }   
-            let xlm_act = await response.text() * 1;
-            if(xlm_act >= 0 && xlm_act <= 50) {xlm_act = 1}
-            else if(xlm_act >= 51 && xlm_act <= 100) {xlm_act = 2}
-            else if(xlm_act >= 101 && xlm_act <= 500) {xlm_act = 3}
-            else if(xlm_act >= 501 && xlm_act <= 1000) {xlm_act = 4}
-            else {xlm_act = 5}
-            
-            //do the overall calculation
-            const wal_act = (age_pos + trade_pos + xlm_act) / 3
-            const res =  ((0.5 * holder_pos) + (0.25 * act_pos) + (0.25 * wal_act))
-            if(((res % 1) + "").length > 7) return res.toFixed(5)
-            return res
-        } catch (error) { console.log(error)
+                //calculate holders rank
+                if(holder_pos >= 1 && holder_pos <= 5) {holder_pos = 5}
+                else if(holder_pos >= 6 && holder_pos <= 50) {holder_pos = 4}
+                else if(holder_pos >= 51 && holder_pos <= 100) {holder_pos = 3}
+                else if(holder_pos >= 101 && holder_pos <= 500) {holder_pos = 2}
+                else {holder_pos = 1}
+                
+                //calculate activity using proposal
+                let act_pos = 1;
+                for(let i=0;i<total_voter.length;i++) {
+                    if(total_voter[i].voter == address) {
+                        if(total_voter[i].vote > 1 && total_voter[i].vote <= 5){act_pos = 2}
+                        else if(total_voter[i].vote > 5 && total_voter[i].vote <= 25){act_pos = 3}
+                        else if(total_voter[i].vote > 25 && total_voter[i].vote <= 50){act_pos = 4}
+                        else if(total_voter[i].vote > 50){act_pos = 5}
+                        break;
+                    }
+                }
+                //using comment
+                response = await fetch(API_URL + `wallet_comment&address=` + address + "&dao_id=" + asset.dao + "&id=" + Math.random());
+                if (!response.ok) {
+                throw new Error("Network response was not ok");
+                }
+                let comt_act = await response.text() * 1;  
+                if(comt_act < 1) {comt_act = 1}
+                else if(comt_act >= 1 && comt_act <= 25) {comt_act = 2}
+                else if(comt_act >= 26 && comt_act <= 100) {comt_act = 3}
+                else if(comt_act >= 101 && comt_act <= 500) {comt_act = 4}
+                else {comt_act = 5}
+                //calculate the average
+                act_pos = (act_pos + comt_act) / 2
+                //get the age
+                response = await fetch(API_URL + `wallet_age&chain=${CHAIN}&address=` + address);
+                if (!response.ok) {
+                throw new Error("Network response was not ok");
+                }
+                let age_pos = await response.text() * 1; 
+                if(age_pos < 1) {age_pos = 5}
+                else if(age_pos >= 1 && age_pos <= 6) {age_pos = 2}
+                else if(age_pos >= 6 && age_pos <= 12) {age_pos = 3}
+                else if(age_pos >= 12 && age_pos <= 24) {age_pos = 4}
+                else {age_pos = 5}
+                //get no of trades
+                response = await fetch(API_URL + `wallet_trade&chain=${CHAIN}&address=` + address);
+                if (!response.ok) {
+                throw new Error("Network response was not ok");
+                }
+                let trade_pos = await response.text() * 1; 
+                if(trade_pos < 1) {trade_pos = 1}
+                else if(trade_pos >= 1 && trade_pos <= 100) {trade_pos = 2}
+                else if(trade_pos >= 101 && trade_pos <= 500) {trade_pos = 3}
+                else if(trade_pos >= 501 && trade_pos <= 1000) {trade_pos = 4}
+                else {trade_pos = 5}
+                
+                //fetch user xlm balances
+                response = await fetch(API_URL + `xlm_usd&chain=${CHAIN}&address=` + address);
+                if (!response.ok) {
+                throw new Error("Network response was not ok");
+                }   
+                let xlm_act = await response.text() * 1;
+                if(xlm_act >= 0 && xlm_act <= 50) {xlm_act = 1}
+                else if(xlm_act >= 51 && xlm_act <= 100) {xlm_act = 2}
+                else if(xlm_act >= 101 && xlm_act <= 500) {xlm_act = 3}
+                else if(xlm_act >= 501 && xlm_act <= 1000) {xlm_act = 4}
+                else {xlm_act = 5}
+                
+                //do the overall calculation
+                const wal_act = (age_pos + trade_pos + xlm_act) / 3
+                const res =  ((0.5 * holder_pos) + (0.25 * act_pos) + (0.25 * wal_act))
+                if(((res % 1) + "").length > 7) return res.toFixed(5)
+                return res
+        } catch (error) { 
             return false;
         }
 }
@@ -958,23 +1236,43 @@ export const getVotingPower = async (asset = {}, address, total_voter = []) => {
  * @params {voter: Address}
  * returns @map | []
 **/ 
-export const getDaoDelegators =  async (dao = "", voter = "") => {
+export const getDaoDelegators =  async (dao = "", voter = "",chain='stellar') => {
     if(voter != "" && dao != null && dao !== "") {   
         try{  
-             
-            const account = await server.getAccount(wrappingAddress)
-            let address = new StellarSdk.Address(voter);address = address.toScVal()
-            dao = new StellarSdk.Address(dao);dao = dao.toScVal()
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
-                .addOperation(
-                    contract.call("get_delegator", dao, address)
-                )
-                .setTimeout(timeout) //using a time out of a hour
-                .build();
-            //Simulate the transaction to discover the storage footprint, and update the
-            transaction = await server.prepareTransaction(transaction);
-            let transactionMeta = (await server.simulateTransaction(transaction))
-            return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
+            if(chain=='stellar'){
+                const account = await server.getAccount(wrappingAddress)
+                let address = new StellarSdk.Address(voter);address = address.toScVal()
+                dao = new StellarSdk.Address(dao);dao = dao.toScVal()
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call("get_delegator", dao, address)
+                    )
+                    .setTimeout(timeout) //using a time out of a hour
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                return (StellarSdk.scValToNative(transactionMeta.result.retval)); 
+            }
+            else if(chain=='xrp'){
+                const res = await fetch(`${BACKEND_API}/chain/xrp/dao/delegator`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        daoId:dao,
+                        delegatee:voter,
+                      }
+                    ),
+                    headers: {
+                    "content-type": "application/json",
+                    },
+                });
+                if(res.ok) {
+                    const resp = await res.json()
+                    if(resp.status) {
+                        return resp.delegators
+                    }
+                }
+            }
         }
         catch(e) {
             console.log(e)
@@ -982,8 +1280,21 @@ export const getDaoDelegators =  async (dao = "", voter = "") => {
         }
     }
     else {return false}
+    return false
 }
-
+/** To hash a string
+ * @params {value}
+ * @returns {hash}
+ */
+export const Hash = async (value) => {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(value);
+  
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+}
 /** To validate a document file
 * params {file} A file object
 * returns {boolean}
@@ -1002,10 +1313,18 @@ export const isDocument = (file) => {
         file.type.startsWith('application/vnd.openxmlformats-officedocument.presentationml.presentation')
     );
 }
+//to know which chain it was done
+export const isChain = (signer="") => {
+    //check for stellar
+    if(signer != ""){
+        if(signer.charAt(0) == "G" && signer.length == 56) {return 'stellar'}
+        if(signer.charAt(0) == "r" && signer.length == 33) {return 'xrp'}
+    }
+}
 //reddit oauth url
 export const getRedditOauthUri = (dao, domain) => {
     const clientId = process.env.NEXT_PUBLIC_REDDIT_CLIENT_ID;
-    const redirectUri = 'https://lumosdao.io/.well-known/asset.php?type=reddit_auth';
+    const redirectUri = 'https://testing.lumosdao.io/.well-known/asset.php?type=reddit_auth';
     const scopes = ['identity', 'read'];
     const randomString = dao + ":" + domain
     const authUrl = `https://www.reddit.com/api/v1/authorize?client_id=${clientId}&response_type=code&state=${randomString}&redirect_uri=${encodeURIComponent(redirectUri)}&duration=permanent&scope=${scopes.join('+')}`;
@@ -1017,3 +1336,27 @@ export const getGithubUri = (user) => {
     const authURL = `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=${redirectURI}&state=${user}&scope=user`;
     return authURL;
 }
+
+export const formatDate = (date=new Date()) => {
+    const day = date.getDate();
+    const month = date.toLocaleString('en-US', { month: 'long' });
+    const year = date.getFullYear();
+
+    // Determine the ordinal suffix
+    const suffix = (day % 10 === 1 && day !== 11) ? "st" :
+                   (day % 10 === 2 && day !== 12) ? "nd" :
+                   (day % 10 === 3 && day !== 13) ? "rd" : "th";
+
+    return `${day}${suffix} ${month}, ${year}`;
+};
+
+export const getVotingResults = (arrayA, objB) => {
+    const totalVotes = arrayA.reduce((sum, entry) => sum + Number(entry.voting_count), 0);
+    const objBs = JSON.parse(objB)
+  
+    return arrayA.map(entry => {
+      const optionLabel = objBs[entry.id.toString()] || "Unknown";
+      const votePercentage = totalVotes > 0 ? (Number(entry.voting_count) / totalVotes) * 100 : 0;
+      return { option: optionLabel, percentage: votePercentage.toFixed(2) + "%" };
+    });
+  }

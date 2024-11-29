@@ -9,29 +9,23 @@ import dotIcon from '../icons/dot.svg'
 //to draw proposal box
 export const drawProposal = (prop) => {
     let _div = document.createElement('div')
-    let h = (prop.yes_votes + prop.no_votes) + (((prop.yes_votes + prop.no_votes) > 1) ? " members" : " member")
     let voteYesRes = N(prop.yes_votes) * (N(prop.yes_voting_power) / (floatingConstant))
     let voteNoRes = N(prop.no_votes) * (N(prop.no_voting_power) / (floatingConstant))
     //calculate yes and no votes bar
-    const tmp = (N(prop.yes_votes) * (N(prop.yes_voting_power)/(floatingConstant))) + (N(prop.no_votes) * (N(prop.no_voting_power)/(floatingConstant)))
-    let yes_per = (Math.floor((100 / (tmp)) * (N(prop.yes_votes) * (N(prop.yes_voting_power)/(floatingConstant)))) + "%") || "0%"
-    let no_per = (Math.floor((100 / (tmp)) * (N(prop.no_votes) * (N(prop.no_voting_power)/(floatingConstant)))) + "%") || "0%"
-    if(tmp == 0) {
-       yes_per = '0%'
-       no_per = '0%'
+    let tmp = 0;let voterCount = 0;
+    prop.voting_label = JSON.parse(prop?.voting_label || "{}")
+    for(let i=0;i<(prop?.voting_options || []).length;i++) {
+      //sum up all the voting power
+      tmp += ((N(prop.voting_options[i]?.voting_count)/(floatingConstant)))
+      voterCount += N(prop.voting_options[i]?.voter_count)
     }
+    let h = (voterCount.toLocaleString() + (voterCount > 0 ? " members" : " member"))
     const id = prop.proposalId + '_countdown'
     let _link = `/dao/${prop.dao}/proposal/${prop.proposalId}`
-    _div.innerHTML = `<div class="p-6 bg-white rounded-lg shadow-md">
+    _div.innerHTML = `<div class="md:p-6 px-3 py-6 my-4 rounded-lg bg-[#F9FAFB]">
               <div class="flex justify-between items-center mb-10 font-[500]">
                 <p></p>
-                <div>
-                  <p class="text-sm flex items-center gap-1">Created by: 
-                  <img src="${API_URL + "user_img&user=" + prop.creator}" class='w-[30px] h-[30px] rounded-full'  alt="" /> 
-                  <a href='/user/${prop.creator}' class="text-blue-600">
-                  ${fAddr(prop.creator, 6)}
-                  </a></p>
-                </div>
+
                 <div class="small-card" ${(prop.voted == '3') ? "style='display:none'" : "" }>
                     <div class="small-card-text">You Voted ${(prop.voted == "2") ? '<span class="text-red">NO</span>' : '<span class="text-green">Yes</span>'}</div>
                 </div>
@@ -40,46 +34,58 @@ export const drawProposal = (prop) => {
                 </p>
               </div>
               
-              <div class="flex items-center justify-between">
-                <h2 class="text-xl font-[500] text-blue-500 underline"><a  href="${_link}">${prop.title}</a></h2>
-                <p class='text-red-500' id="${id}"></p>
+              <div class="flex justify-between items-start flex-col md:flex-row">
+                <div>
+                  <h2 class="text-xl font-[400]">${prop.title}</h2>
+                  <p class="text-sm text-[#5F6670] flex items-center gap-1">Created by: 
+                    <img src="${API_URL + "user_img&user=" + prop.creator}" class='w-[30px] h-[30px] mx-2 rounded-full'  alt="" /> 
+                    <a href='/user/${prop.creator}' class="text-[#5F6670]">
+                    ${fAddr(prop.creator, 6)}
+                    </a>
+                  </p>
+                </div>
+                <div class="flex items-center gap-2 py-[6px] px-4 bg-[#FEF7F2] rounded-full">
+                  <img src="/images/time.svg" />
+                  <p class='text-[#FF7B1B] text-[14px]' id="${id}"></p>
+                </div>
               </div>
+
               <div class="mt-4">
-                <p>
-                ${prop.description}
+                <p class="text-[#5F6670]">
+                  ${prop.description}
                 </p>
+                <a class="text-[#FF7B1B]" href="${_link}">See more</a>
               </div>
               <div class="mt-4 flex flex-col justify-between items-center gap-5">
-              <div class="border w-full rounded-md flex justify-between items-center">
-                <div style='width:${yes_per}' class='cursor-pointer flex items-center justify-between bg-[#03C17C] w-full text-white py-[6px] rounded-md text-center'>
-                  <div class="flex items-center text-gray-500">
-                    <p>Yes</p>
-                    <IoMdCheckmark />
+              ${(prop?.voting_options || []).map((option, index) => {
+                 return `<div class="w-full mb-[10px]">
+                <p class="text-[14px] mb-1">${prop.voting_label[index] || "For"}</p>
+                <div class="w-full border border-[#9F9D99] px-4 pt-6 pb-4 rounded-[6px]">
+                  <div class="flex w-full items-center gap-1">              
+                    <div class="bg-[#F2F4F7] w-full rounded-md flex justify-between items-center">
+                      <div style='width:${(tmp > 0)?(Math.floor((100 / tmp) * (N(option?.voting_count)/(floatingConstant))) + "%") : 0 || "0%"}' class='cursor-pointer flex items-center justify-between bg-[#FF7B1B] w-full text-white py-[3px] rounded-md text-center'>
+                      </div>
+                    </div>
+                    <p class="text-[#344054] text-[14px]">${(tmp > 0)?(Math.floor((100 / tmp) * (N(option?.voting_count)/(floatingConstant))) + "%") : 0 || "0%"}</p>
                   </div>
+                  <div class="text-[#5F6670] text-[13px] mt-2 flex items-center justify-between">
+                    <p>${N(option?.voter_count)} votes</p>
+                    <p>Voting power: ${N(option?.voting_count)}</p>
                   </div>
-                  <p>${yes_per}</p>
+                </div>
+              </div>`
+              }).join(' ')}
               </div>
-              <div class="border w-full rounded-md flex justify-between items-center">
-                <div style='width:${no_per}' class='cursor-pointer flex items-center justify-between bg-[#03C17C] w-full text-white rounded-md py-[6px] text-center'>
-                  <div class="flex items-center text-gray-500">
-                    <p>No</p>
-                    <IoMdCheckmark />
-                  </div>
-                  </div>
-                  <p>${no_per}</p>
-              </div>
-                
-              </div>
-              <div class="mt-4 flex justify-between items-center">
+              <div class="mt-4 flex justify-between items-center text-[12px]">
                 <div class='flex items-center gap-2'>
-                  <IoFingerPrintOutline class='text-blue-400 text-[20px]'/>
-                  <p class="">Proposal ID: ${prop.proposalId}</p>
+                  <IoFingerPrintOutline class='text-[#52606D] text-[15px]'/>
+                  <p class="text-[12px]">Proposal ID: ${prop.proposalId}</p>
                 </div>
                 <div class='flex items-center gap-3'>
                   <p class="text-sm text-gray-500">Voted by: ${h}</p>
-                  <button class="bg-[#198754] text-white rounded-md px-4 py-2"  id='prop_main_end_${prop.proposalId}' class="small-card" style='display:${(N(prop.status) != 1 && N(prop.status) != 0) ? "" : "none !important"}'>
+                  <!--<button class="bg-[#FF7B1C] text-white rounded-md px-4 py-2"  id='prop_main_end_${prop.proposalId}' class="small-card" style='display:${(N(prop.status) != 1 && N(prop.status) != 0) ? "" : "none !important"}'>
                     Result ${(voteYesRes > voteNoRes) ? "Yes" : "No"}
-                  </button>
+                  </button>-->
                 </div>
               </div>
              </div>
@@ -171,13 +177,15 @@ export const drawDelegateinfo = (params) => {
 //draw other address
 export const drawOtherAddress = (addr, addrName) => {
   let tm = document.createElement('div')
-  tm.innerHTML = `<div class="mt-2 bg-white shadow-lg rounded-lg p-3">
-            <img class='rounded-full'  src='${API_URL + 'user_img&user=' + addr}' alt="" style='width:30px;height:30px'>
-            <p class='text-green-700'>${addrName}</p>
-            <p class="font-[600] text-gray-500 bg-[#EFF2F6] p-2 mt-1 rounded-[6px]">
-               ${fAddr(addr)}
-            </p>
-          </div>`
+  tm.innerHTML = `<div class="mt-2 bg-white rounded-lg py-3 flex items-start gap-2">
+                    <img class='rounded-full'  src='${API_URL + 'user_img&user=' + addr}' alt="" style='width:30px;height:30px'>
+                    <div class='overflow-hidden'>
+                      <p class="font-[400] text-[#141B34]">
+                      ${fAddr(addr)}
+                      </p>
+                      <p class='text-[#FF7B1B] mt-2'>${addrName}</p>
+                    </div>
+                  </div>`
   return tm.firstElementChild
 }
 //draw admin user
@@ -221,9 +229,9 @@ export const drawUser = (params) => {
 //draw members
 export const drawMember = (params) => {
   return `
-  <div class='flex items-center justify-between relative' style='margin-bottom:20px'>
+  <div class='flex items-center justify-between relative border-b pb-2' style='margin-bottom:20px'>
                     <div class='flex items-center gap-2'>
-                      <img src='${API_URL + 'user_img&user=' + params.member}' class='rounded-full w-[30px]' alt="" style='flex-shrink:0' />
+                      <img src='${API_URL + 'user_img&user=' + params.member}' class='rounded-full w-[30px] h-[30px]' alt="" style='flex-shrink:0' />
                       <a href='/user/${params.member}' class='cursor-pointer'>${(params.member != walletAddress) ? fAddr(params.member) : "You"}</a>
                     </div>
                     <img style='display:${(params.member != walletAddress) ? '' : "none"}' src='${dotIcon.src}' id="memBan-btn_${params.member}" class='cursor-pointer' onclick='toggleMemberModal("member-ban_${params.member}", event)' />
@@ -241,9 +249,9 @@ export const drawMember = (params) => {
 }
 //draw delegate search results
 export const drawDelegateSearchResult = (param) => {
-          return `<div class="flex justify-between mt-4">
+          return `<div class="flex justify-between mt-4 border-b pb-2">
             <div class="flex gap-2 items-center">
-                <img src="${API_URL + 'user_img&user=' + param.user}" alt="Profile Image" class="w-12 h-12 rounded-full">
+                <img src="${API_URL + 'user_img&user=' + param.user}" alt="Profile Image" class="w-[30px] h-[30px] rounded-full">
                 <div class="text-center text-sm mt-2">${fAddr(param.user, 14)}</div>
             </div>
             <div>

@@ -7,10 +7,11 @@ import { fAddr, getAllDaoUsers, getUserInfo } from '../core/getter';
 import { stopTalking, talk } from '../components/alert/swal';
 import { toElem } from '../core/core';
 import { StrKey } from '@stellar/stellar-sdk';
+import { LuUsers2 } from "react-icons/lu";
+
 
 
 var users = [];var messages = []; var users_conversation = [];var chatIndex = 0;var firstTimeLoad = true;var typingTmr; 
-var loadFirst = false
 //GET PARAMS
 const daoId = daoContractId  
 let toWallet = ""; 
@@ -24,10 +25,9 @@ const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const Inbox = () => {
    const [usersModal, setUsersModal] = useState(false)
+   const [chatListDrawer, setChatListDrawer] = useState(false)
 
     const setUp = async() => { 
-        if(loadFirst)return;
-        loadFirst = true
         userMeta = await getAllDaoUsers();
         let _usr = []
         if(userMeta) {
@@ -211,6 +211,12 @@ const Inbox = () => {
        }
    }
    const selectChat = async (chatParams) => {
+
+        if (window.matchMedia("(max-width: 768px)").matches) {
+            console.log('Chat selected');
+            setChatListDrawer(true);
+        }
+        // setChatListDrawer(true)
        //To select a chat
        E('chatHead').style.display = ""
        E('chatHeadDisplay').innerText = (chatParams.user != 'Broadcast Messages')? await showUserInfo(chatParams.user,fAddr(chatParams.user, 6)) : chatParams.user;
@@ -235,6 +241,7 @@ const Inbox = () => {
            })
        }
        currentUser = chatParams.user
+       const userInfo = E(chatParams.user + '_info')
        if(messages[chatParams.user]) {
            for(let i=0;i<messages[chatParams.user].length; i++) {
                    //load only the messages
@@ -247,6 +254,7 @@ const Inbox = () => {
                        if(res.sender != _walletAddress) {
                            u.type = 'other'
                            u.mdisplay = res.sender.substring(0,5) + "..." + res.sender.substring(res.sender.length-6)
+                           u.user=res.sender
                        }
                        if(dte[0] != d.getDate() || dte[1] != d.getMonth() || dte[2] != d.getYear()) {
                            //draw the timeline
@@ -255,17 +263,19 @@ const Inbox = () => {
                            let year = d.getFullYear();
    
                            E('chatBody').innerHTML += `
-                           <center style='margin:10px 0px'>${day}, ${month} ${year}</center>
+                           <center style='margin:10px 0px' class="text-[12px]">${day}, ${month} ${year}</center>
                            `
                            dte = [d.getDate(), d.getMonth(), d.getYear()]
                        }
                        //draw the chat
-                       E('chatBody').innerHTML += drawChat(u)
+                       E('chatBody').innerHTML += await drawChat(u)
+                       userInfo.innerText = res.msg;
                        if(res.status != 'read' && res.sender == currentUser && currentUser.indexOf('Broadcast') == -1) {
                            if(res.receiver == 'all') {bunread = true}
                            else{unread = true}
                            msgId = res.id; //saving the last msg id of the unread message
                        }
+
                    }
                    
        }
@@ -291,7 +301,6 @@ const Inbox = () => {
                        //remove the unread msg tag
                        const userInfo = E(chatParams.user + '_info')
                        if(userInfo) {
-                           userInfo.innerText = ''
                            userInfo.setAttribute('data', 0)
                        }
                        
@@ -381,7 +390,7 @@ const Inbox = () => {
                    `
                    dte = [d.getDate(), d.getMonth(), d.getYear()]
               }
-              E('chatBody').innerHTML += drawChat({
+              E('chatBody').innerHTML += await drawChat({
                  type:'me', msg:msg, date:(new Date(Date())), status:'notsent', id:msgId
               })
               //scroll to end
@@ -407,7 +416,7 @@ const Inbox = () => {
            const res=msgParams
            const d = new Date(res.date)
            const u = {
-               type:'other', msg:res.msg, date:d, mdisplay: res.sender.substring(0,5) + "..." + res.sender.substring(res.sender.length-6), status:res.status, id:res.id
+               type:'other', msg:res.msg, date:d, mdisplay: res.sender.substring(0,5) + "..." + res.sender.substring(res.sender.length-6), status:res.status, id:res.id, user:res.sender
            }
            if(dte[0] != d.getDate() || dte[1] != d.getMonth() || dte[2] != d.getYear()) {
                //draw the timeline
@@ -420,7 +429,7 @@ const Inbox = () => {
                dte = [d.getDate(), d.getMonth(), d.getYear()]
            }
            let flg = false;
-           E('chatBody').innerHTML += drawChat(u)
+           E('chatBody').innerHTML += await drawChat(u)
            E('chatBody').scrollTop = E('chatBody').scrollHeight
            if(E(currentUser + '_user')){
                E('chatList').insertBefore(E(currentUser + '_user'), E('chatList').firstElementChild);
@@ -504,7 +513,6 @@ const Inbox = () => {
                        //remove the unread msg tag
                        const userInfo = E(currentUser + '_info')
                        if(userInfo) {
-                           userInfo.innerText = ''
                            userInfo.setAttribute('data', 0)
                        }
                        
@@ -603,7 +611,7 @@ const Inbox = () => {
    }
    const showUserInfo = async (addr, addrDisp) => {
        //to show user info if present
-       if(userMeta['users_info'][addr] && userMeta['users_info'][addr] != "") {
+       if(userMeta['users_info'][addr]) {
            return userMeta['users_info'][addr];
        }
        else {
@@ -612,7 +620,8 @@ const Inbox = () => {
            if(usr !== false) {
               if(usr.status) {
                   userMeta['users_info'][addr] = usr['user']['name']
-                  return (usr['user']['name'] != "")?usr['user']['name']:addrDisp;
+                  if(usr['user']['name'] != "") return usr['user']['name']
+                  return addrDisp
               } 
               else {
                   userMeta['users_info'][addr] = fAddr(addr, 6) //default to address
@@ -623,32 +632,36 @@ const Inbox = () => {
    }
    const drawUser = async (params, type='chat') => {
        const d = await showUserInfo(params.user, params.mdisplay)
-       return `<div  onclick='selectChat(${JSON.stringify(params)})' id='${(type == 'chat') ? params.user : Math.random()}_user' class='flex items-center gap-3 p-3 cursor-pointer hover:bg-gray-100'>
-                    <div class='w-[30px]'>
+       return `<div  onclick='selectChat(${JSON.stringify(params)})' id='${(type == 'chat') ? params.user : Math.random()}_user' class='flex items-center gap-3 py-3 cursor-pointer hover:bg-gray-100 my-2 border-b border-[#EDEDED]'>
+                    <div class='w-[30px] h-[30px]' style='flex-shrink:0'>
                         <img src="${API_URL + "user_img&user=" + params.user}" class='w-full h-full object-cover rounded-[50px]' />
                     </div>
                     <div>
-                        <p>${d}</p>
-                        <div class="small" style='display:flex;align-items:center'>
-                           <span id='${(type == 'chat') ? params.user : Math.random()}_online' class="fas fa-circle chat-online" style='margin-right:5px;display:none'></span>
-                           <span id='${(type == 'chat') ? params.user : Math.random()}_info'></span>
-                           <span id='${(type == 'chat') ? params.user : Math.random()}_typing' style='margin-left:5px;display:none'><em>Typing...</em></span>
-                           </div>
+                        <p class='text-[14px]'>${d}</p>
+                        <div class="small" style='display:flex; align-items:center;white-space:nowrap;oveflow:hidden;text-overflow:ellipsis'>
+                           <span id='${(type == 'chat') ? params.user : Math.random()}_online' class="p-[4px] rounded-full bg-green-400" style='margin-right:5px; display:none'></span>
+                           <span id='${(type == 'chat') ? params.user : Math.random()}_info' class='w-[10rem] text-[12px] text-gray-500 truncate'></span>
+                           <span id='${(type == 'chat') ? params.user : Math.random()}_typing' style='margin-left:5px;display:none'><em class='text-[10px]'>typing...</em></span>
+                        </div>
                     </div>
                 </div>`
    }
-   const drawChat = (params) => {
+   const drawChat = async (params) => {
+    const d = await showUserInfo(params.user, fAddr(params.user, 6))
     const bold = (params.status == 'read' && params.type == 'me') ? 'bold' : "";
-    return ` <div class='w-[340px] flex justify-between ${(params.type == 'me') ? 'ml-auto' : 'mr-auto'}  my-2'>
-                            <div class='bg-[#F8F9FA] rounded-[6px] w-[250px] mr-1 px-[16px] py-[8px]'>
-                                <p class='text-[#1B1B1B] mb-1 text-left'>You</p>
-                                <p class='text-[12px] text-left'>${params.msg}</p>
-                            </div>
-                            <div class='text-center flex flex-col justify-center items-center gap-1 mr-2'>
-                                <img src="${API_URL + "user_img&user=" + walletAddress}" className='w-[10px] h-[10px] rounded-full' style=" width:30px; height:30px; border-radius:50% " alt="" />
-                                <p id='${params.id}date' class='text-[12px]' style='display:${(params.status == 'notsent') ? 'none' : ''}; font-weight:${bold}'>
-                                  ${params.date.toLocaleTimeString()}
+    return ` <div class='w-[340px]  ${(params.type == 'me') ? 'ml-auto' : 'mr-auto'}  my-3'>
+                            <div class='flex items-center justify-between w-full mb-[2px] text-[12px]'>
+                                <p class='${(params.type == 'me') ? 'block text-[#344054] text-left text-[12px]' : 'hidden' }'>You</p>
+                                <div class='flex gap-[6px]'>
+                                    <img src="${API_URL + "user_img&user=" + params.user}" class='${(params.type == 'other') ? 'w-[20px] h-[20px] block rounded-full' : 'hidden' }'/>
+                                    <p class='${(params.type == 'other') ? 'block text-[#344054] text-left text-[12px]' : 'hidden' }'>${d}</p>
+                                </div>
+                                <p id='${params.id}date' class='text-[12px] text-[#344054]' style='display:${(params.status == 'notsent') ? 'none' : ''}; font-weight:${bold}'>
+                                ${params.date.toLocaleTimeString()}
                                 </p>
+                            </div>
+                            <div class='${(params.type == 'other') ? 'bg-[#F2F4F7] text-[#101828] rounded-b-[6px] rounded-tr-[6px] ml-[1.75rem]' : 'bg-[#0B1A54] text-white rounded-b-[6px] rounded-tl-[6px] mr-1'} px-[10px] py-[10px] break-words'>
+                                <p class='text-[12px] text-left'>${params.msg}</p>
                             </div>
                         </div>`
     }
@@ -664,65 +677,80 @@ const Inbox = () => {
         setUp()
     },[]) 
   return (
-    <div className='px-[3rem] mb-[80px] mt-[40px]'>
-        <p className='font-[500] mb-5 text-[26px]'>Inbox</p>
-        <div className='border w-full flex items-start rounded-[8px] bg-white relative'>
-            <div className='w-[25%] border-r h-[75dvh] overflow-y-scroll'>
-                <div className='p-5'>
-                    <input onInput={($event) => {searchUser($event)}} type="text" placeholder='Search...' className='border outline-none w-full p-[6px] rounded-[6px] bg-gray-100' />
-                    <button onClick={() => setUsersModal(true)} className='bg-[#DC3446] py-[8px] px-4 text-white rounded-[6px] mt-3'>Compose</button>
+    <div className='md:px-[5rem] px-[1rem] mb-[80px] mt-[40px] helvetica-font'>
+        <div id="parent" className='w-full flex items-start justify-between relative'>
+            <div className={chatListDrawer ? 'md:w-[23%] z-[999] w-full mr-auto h-[95dvh] md:h-[82dvh] overflow-y-scroll bg-[#FFFFFF] p-[24px] absolute left-[-1000px] transition-[0.5s] md:relative' : 'md:w-[23%] z-[999] left-0 transition-[0.5s] w-full mr-auto md:h-[82dvh] h-[95dvh] overflow-y-scroll bg-[#FFFFFF] p-[24px] absolute md:relative'}>
+                <div className='flex items-center justify-between mb-3'>
+                    <p className='text-[15px]'>Inbox</p>
+                    <img src='/images/close.svg' className='text-[18px] cursor-pointer md:hidden block' onClick={() => setChatListDrawer(true)}/>
                 </div>
-                <div id='searchList' style={{display:'none'}}>
-                        
-                </div>
-                <div  id='chatList'>
-                     
-                </div>
-            </div>
-            <div className='w-[75%] h-[75dvh] overflow-y-scroll'>
                 <div>
-                    <div id='chatHead' className='flex items-center gap-3 p-3 border-b'>
-                         <div className='flex items-center gap-3'>
-                                    <div className='w-[30px]'>
-                                        <img id='chatHeadImage' alt="" className='w-full h-full object-cover rounded-[50px]' />
-                                    </div>
-                                    <div className='text-[13px]'>
-                                        <p id='chatHeadDisplay'></p>
-                                        <p id='chatHeadInfo'></p>
-                                    </div>
+                    <input onInput={($event) => { searchUser($event) }} type="text" className='border outline-none w-full p-[6px] rounded-[4px] border-[#CDCDCD]' />
+                </div>
+                <div id='searchList' style={{ display: 'none' }}></div>
+                <div id='chatList'></div>
+            </div>
+            <div id="hello" className='md:w-[75%] w-full h-[95dvh] ml-auto overflow-y-scroll bg-[#FFFFFF] px-4 relative'>
+                <div>
+                    <div id='chatHead' className='flex items-center justify-between gap-3 p-3 border-b'>
+                        <div className='flex items-center gap-3'>
+                            <div className='w-[30px] h-[30px]'>
+                                <img id='chatHeadImage' alt="" className='w-full h-full object-cover rounded-full' />
+                            </div>
+                            <div className='text-[13px]'>
+                                <p id='chatHeadDisplay'></p>
+                                <p id='chatHeadInfo'></p>
+                            </div>
                         </div>
+                        <LuUsers2 className='text-[18px] cursor-pointer md:hidden block' onClick={() => setChatListDrawer(false)}/>
                     </div>
                 </div>
-                <div id='chatBody' className='text-center flex  h-[55dvh]' style={{flexDirection:'column', overflow:'auto'}}>
-                     <center style={{margin:'auto',height:'60vh', display:'flex', alignItems:'center', justifyContent:'center'}}>Getting messages</center> 
+                <div id='chatBody' className='text-center flex h-[78dvh] border-b border-[#EAECF0] flex-col overflow-auto'>
+                    <center style={{ margin: 'auto', height: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Getting messages</center>
                 </div>
-                <div id='sendMessageField'  className='flex px-6 py-4 border-t absolute w-[75%] bottom-0'>
-                    <input  id='chatMessage' onInput={() => {doIsTyping()}} onKeyUp = {() => {if(event.keyCode == 13){sendMessage()}}} type="text" className='p-2 w-full rounded-[6px] border outline-none' placeholder='Type your message here' />
-                    <button  onClick ={() => {sendMessage()}}  className='px-4 py-2 ml-2 rounded-[6px] text-white bg-green-700'>Send</button>
+                {/* <!-- Updated sendMessageField div --> */}
+                <div id='sendMessageField' className='flex items-center justify-center px-2 py-4 absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[95%] bg-white'>
+                    <input 
+                        id='chatMessage' 
+                        onInput={() => { doIsTyping() }} 
+                        onKeyUp={(event) => { if (event.keyCode === 13) sendMessage() }} 
+                        type="text" 
+                        className='p-2 w-full rounded-[6px] border outline-none' 
+                        placeholder='Message'
+                    />
+                    <button onClick={() => { sendMessage() }} className='px-2 py-2 ml-2 rounded-[6px] text-white bg-[#FF7B1B]'>
+                        <img src="/images/send.svg" alt="" />
+                    </button>
                 </div>
             </div>
         </div>
-            <div className="h-full w-full fixed top-0 left-0 z-[99]" 
-                style={(usersModal) ? { background:"rgba(14, 14, 14, 0.58)" } : {display:'none'}} 
-                onClick={() => setUsersModal(false)}></div>
-                <div className="bg-white md:w-[800px] w-[80%] flex flex-col items-center justify-center fixed top-[50%] left-[50%] pb-[1rem] rounded-[15px] z-[100] login-modal"
-                 style={(usersModal) ?{ transform: "translate(-50%, -50%)" }:{display:'none'}}>
-                    <div className='w-full h-full'>
-                            <div className='fixed p-5 border w-full bg-white'>
-                                <input onInput={($event) => {searchUser($event, "users")}} type="text" placeholder='Search...' className='outline border-blue-500 p-2 rounded-[4px] w-full bg-transparent' />
+
+        <div className="h-full w-full fixed top-0 left-0 z-[99]" 
+            style={(usersModal) ? { background:"rgba(14, 14, 14, 0.58)" } : {display:'none'}} 
+            onClick={() => setUsersModal(false)}></div>
+            <div className="bg-white md:w-[800px] w-[80%] flex flex-col items-center justify-center fixed top-[50%] left-[50%] pb-[1rem] rounded-[15px] z-[100] login-modal"
+                style={(usersModal) ?{ transform: "translate(-50%, -50%)" }:{display:'none'}}>
+                <div className='w-full h-full'>
+                        <div className='fixed p-5 border w-full bg-white'>
+                            <input onInput={($event) => {searchUser($event, "users")}} type="text" placeholder='Search...' className='outline border-blue-500 p-2 rounded-[4px] w-full bg-transparent' />
+                        </div>
+                        <div className='h-[450px] w-full p-5 rounded-[8px] overflow-y-scroll mt-[5rem]'>
+                            <div id='chatUsersList' className='flex flex-col gap-1'>
+                                
                             </div>
-                            <div className='h-[450px] w-full p-5 rounded-[8px] overflow-y-scroll mt-[5rem]'>
-                                <div id='chatUsersList' className='flex flex-col gap-1'>
-                                    
-                                </div>
-                                <div id='chatUsersSearchList' className='flex flex-col gap-1' style={{display:'none'}}>
-                                </div>
+                            <div id='chatUsersSearchList' className='flex flex-col gap-1' style={{display:'none'}}>
                             </div>
                         </div>
                     </div>
+                </div>
             
     </div>
   )
+
+//   <div class='text-center flex flex-col justify-center items-center gap-1 mr-2'>
+//   <img src="${API_URL + "user_img&user=" + walletAddress}" className='w-[10px] h-[10px] rounded-full' style=" width:30px; height:30px; border-radius:50% " alt="" />
+  
+// </div>
 }
 
 export default Inbox

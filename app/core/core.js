@@ -3,19 +3,20 @@
  * CONTAINS ALL FUNCTIONS NEEDED TO INTERACT WITH THE DAO VIA
 **/
 import * as StellarSdk from '@stellar/stellar-sdk';
-import { API_URL, S, networkUsed, networkWalletUsed, server, fee, timeout, daoContractId, contract, version, stellarServer, wrappingAddress, horizonServer, floatingConstant, BACKEND_API, walletConnectConfig, walletConnectNetwork, walletConnectNameSpace } from "../data/constant"
+import { API_URL, S, networkUsed, networkWalletUsed, server, fee, timeout, daoContractId, contract, version, stellarServer, wrappingAddress, horizonServer, floatingConstant, BACKEND_API, walletConnectConfig, walletConnectNetwork, xrpClient, xrp, TOML_URL, xrpTreasuryAddress } from "../data/constant"
 import freighterApi from '@stellar/freighter-api'
 import lobstrApi from '@lobstrco/signer-extension-api'
+import {isInstalled, signTransaction} from "@gemwallet/api"
 import { alert, stopTalking, talk } from '../components/alert/swal';
-import { fAddr, fNum, getTokenInfo, getTokenTomlInfo, getUserBan, isAdmin, isImageURLValid, readAssetToml } from './getter';
-import UniversalProvider from '@walletconnect/universal-provider' 
-import SignClient from '@walletconnect/sign-client'
-
+import { fAddr, fNum, getAlldaoInfo, getTokenTomlInfo, getUserBan, Hash, isAdmin, isImageURLValid, readAssetToml } from './getter';
+import UniversalProvider from '@walletconnect/universal-provider'  
+import { Xumm } from "xumm"
 
 /* GETTER UTILS */
 const E = (id) => {
   return document.getElementById(id);
 }; 
+
 /** To convert a bigInt to number
 * params {num}
 * returns {BigInt} 
@@ -26,6 +27,7 @@ export const N = (num) => {return ((num||0).toString() * 1)}
 * params {dispId} String - the id of the elemnt to display the image
 * params {type: 1[background] |2 [src]} Integer - specifies if its background or src that would be changes
 */
+
 export const validateImageUpload = (id, dispId, type = 1, callback = (e)=>{}, options = {}) => {
     E(id).onchange = async (event) => {
         try{
@@ -73,7 +75,7 @@ export const validateImageUpload = (id, dispId, type = 1, callback = (e)=>{}, op
                   E(dispId).innerHTML = ""; // Clear any previous image
                   E(dispId).appendChild(imageElement);
               }
-              else {
+              else { 
                   //using src
                   E(dispId).src = imageURL
               }
@@ -166,9 +168,7 @@ export const validateImageUploadSilently =  (callback = (e)=>{}, options = {}) =
            }
         fileInput.click()
 }
-    
-    
-  
+
 /* MODIFIERS */
 /** This function creates trustline
 * @params {code} String
@@ -179,91 +179,317 @@ export const validateImageUploadSilently =  (callback = (e)=>{}, options = {}) =
 export const createTrustline = async (code, issuer, address, daoName = "", daoId = "") => {
     try{
         if(walletAddress != "") {
-            const account = await server.getAccount(walletAddress)
-            //preparing arguements
-            let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
-            const asset = new StellarSdk.Asset(code, issuer)
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
-                .addOperation(
-                    // An operation to establist trustline
-                    StellarSdk.Operation.changeTrust({
-                      asset: asset,
-                      source: address,
-                    }),
-                 )
-                 .setTimeout(timeout)
-                 .addMemo(StellarSdk.Memo.text(version + ' joining lumos dao'))
-                 .build();
-            //sign and exec transactions
-            const res = await execTranst(transaction)
-            if(res.status === false) {
-                //something went wrong
-                return false
-            }
-            else {
-                await addDaoUser({
-                    type:'join',
-                    token:daoId
+            if(CHAIN == 'stellar'){
+                const account = await server.getAccount(walletAddress)
+                //preparing arguements
+                let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
+                const asset = new StellarSdk.Asset(code, issuer)
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to establist trustline
+                        StellarSdk.Operation.changeTrust({
+                        asset: asset,
+                        source: address,
+                        }),
+                    )
+                    .setTimeout(timeout)
+                    .addMemo(StellarSdk.Memo.text(version + ' joining lumos dao'))
+                    .build();
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else {
+                    await addDaoUser({
+                        type:'join',
+                        token:daoId
+                    })
+                    await addTx({hash:res.hash,
+                    address:walletAddress,
+                    action:"Joined DAO " + daoName,
+                    data: daoId
                 })
-                await addTx({hash:res.hash,
-                   address:walletAddress,
-                   action:"Joined DAO " + daoName,
-                   data: daoId
-               })
-               return {status: true}
+                return {status: true}
+                }
+            }
+            else if(CHAIN == 'xrp') {
+                const client = await xrpClient()
+                const trustTx = await client.autofill({
+                    "TransactionType": "TrustSet",
+                    "Account": walletAddress,
+                    "LimitAmount": {
+                      "currency": code,
+                      "issuer": issuer,
+                      "value": "1000000000000000000000" 
+                    }
+                })
+                const res = await execTranst(trustTx)
+                if(res.status === false) {
+                    //something went wrong
+                    return {status:false, msg:res.msg}
+                }
+                else {
+                    await addDaoUser({
+                        type:'join',
+                        token:daoId
+                    })
+                    await addTx({
+                        hash:res.hash,
+                        address:walletAddress,
+                        action:"Joined DAO " + daoName,
+                        data: daoId
+                    })
+                    return {status: true}
+                }
             }
         }
         else {return false}
     }
     catch(e) {console.log(e); return false}
 }
+/** This function burns token
+ * @params {amount}
+ * @params {tokenId}
+ * returns {statusObject} | {statusBoolean}
+**/
+export const burnToken = async (amount, code, issuer) => {
+    try{
+        if(walletAddress != "") {
+            if(CHAIN == 'stellar'){
+                const account = await server.getAccount(walletAddress)
+                //preparing arguements
+                let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
+                const asset = new StellarSdk.Asset(code, issuer)
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to call mint on the contract
+                        StellarSdk.Operation.payment({
+                            amount: amount,
+                            asset: asset,
+                            destination: issuer,
+                            source: walletAddress,
+                        })
+                    )
+                    .setTimeout(timeout)
+                    .addMemo(StellarSdk.Memo.text(version + ' Burning Asset'))
+                    .build();
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else {
+                    return {status: true}
+                }
+            }
+            else if(CHAIN == 'xrp') {
+                const client = await xrpClient()
+                const burnTx = await client.autofill({
+                    "TransactionType": "Payment",
+                    "Account": walletAddress,
+                    "Amount": {
+                      "currency": code,
+                      "value": amount,
+                      "issuer": issuer
+                    },
+                    "Destination": issuer,
+                    "DestinationTag": 1 
+                })
+                const res = await execTranst(burnTx)
+                if(res.status === false) {
+                    //something went wrong
+                    return {status:false, msg:res.msg}
+                }
+                else {
+                   return {status: true}
+                }
+            }
+        }
+        else {return false}
+    }
+    catch(e) {console.log(e); return false}
+}
+/** This function removes a trustline
+     * @params {code} String
+     * @params {issuer} String
+     * @params {address} String
+     * returns {statusObject} | {statusBoolean}
+**/
+export const removeTrustline = async (code, issuer, address, daoName = "", daoId = "") => {
+    try{
+        if(walletAddress != "") {
+            if(CHAIN == 'stellar'){
+                const account = await server.getAccount(walletAddress)
+                //preparing arguements
+                let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
+                const asset = new StellarSdk.Asset(code, issuer)
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to establist trustline
+                        StellarSdk.Operation.changeTrust({
+                        asset: asset,
+                        source: address,
+                        limit:'0'
+                        }),
+                    )
+                    .setTimeout(timeout)
+                    .addMemo(StellarSdk.Memo.text(version + ' leaving lumos dao'))
+                    .build();
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else {
+                    await addDaoUser({
+                        type:'left',
+                        token:daoId
+                    })
+                    await addTx({
+                        hash:res.hash,
+                        address:walletAddress,
+                        action:"Left DAO " + daoName,
+                        data: daoId
+                    })
+                    return {status: true}
+                }
+            }
+            else if(CHAIN == 'xrp') {
+                const client = await xrpClient()
+                const trustTx = await client.autofill({
+                    "TransactionType": "TrustSet",
+                    "Account": walletAddress,
+                    "LimitAmount": {
+                      "currency": code,
+                      "issuer": issuer,
+                      "value": "0" 
+                    }
+                })
+                const res = await execTranst(trustTx)
+                if(res.status === false) {
+                    //something went wrong
+                    return {status:false, msg:res.msg}
+                }
+                else {
+                    await addDaoUser({
+                        type:'left',
+                        token:daoId
+                    })
+                    await addTx({
+                        hash:res.hash,
+                        address:walletAddress,
+                        action:"Left DAO " + daoName,
+                        data: daoId
+                    })
+                    return {status: true}
+                }
+            }
+        }
+        else {return false}
+    }
+    catch(e) {console.log(e); return false}
+}
+
+//to leave a dao
+export const leaveDao = async (code, issuer, daoId, daoName) => {  
+    //leave the dao
+    const res = await removeTrustline(code, issuer, walletAddress, daoName, daoId)
+    return res;
+}
 /** This list of functions deploy a new asset
 * @params {assetCode}
 * returns {statusObject {status, assetId}} | {statusBoolean}
 **/
-export const deployStellarAsset = async (asset, signingKey = null) => {
-    try{
-      const xdrAsset = asset.toXDRObject();
-      const encoder = new TextEncoder(); 
-      const encodedData = encoder.encode(networkUsed);
-      const networkId = S.hash(encodedData.buffer);
-      const preimage = S.xdr.HashIdPreimage.envelopeTypeContractId(
-         new S.xdr.HashIdPreimageContractId({
-           networkId: networkId,
-           contractIdPreimage: S.xdr.ContractIdPreimage.contractIdPreimageFromAsset(xdrAsset),
-         })
-       );
-       const contractId = S.StrKey.encodeContract(S.hash(preimage.toXDR()));
-       const deployFunction = S.xdr.HostFunction.hostFunctionTypeCreateContract(
-         new S.xdr.CreateContractArgs({
-           contractIdPreimage: S.xdr.ContractIdPreimage.contractIdPreimageFromAsset(xdrAsset),
-           executable: S.xdr.ContractExecutable.contractExecutableToken(),
-         })
-       );
-       const res = await invokeAndUnwrap(
-         S.Operation.invokeHostFunction({
-           func: deployFunction,
-           auth: [],
-         }),
-         () => undefined,
-         signingKey
-       );
-        
-       if(res.status) {
-           res.value = StellarSdk.scValToNative(res.value)
-           //save the tx first
-           await addTx({hash:res.hash,
-               address:walletAddress,
-               action:"Create new Stellar Asset (" + asset.code + ")",
-               data:asset.code
-           })
-       }
-       return res
+export const deployStellarAsset = async (code, issuer, signingKey = null) => {
+    try{ 
+        if(CHAIN == 'stellar'){
+            const asset = new S.Asset(code, issuer)
+            const xdrAsset = asset.toXDRObject();
+            const encoder = new TextEncoder(); 
+            const encodedData = encoder.encode(networkUsed);
+            const networkId = S.hash(encodedData.buffer);
+            const preimage = S.xdr.HashIdPreimage.envelopeTypeContractId(
+                new S.xdr.HashIdPreimageContractId({
+                networkId: networkId,
+                contractIdPreimage: S.xdr.ContractIdPreimage.contractIdPreimageFromAsset(xdrAsset),
+                })
+            );
+            const contractId = S.StrKey.encodeContract(S.hash(preimage.toXDR()));
+            const deployFunction = S.xdr.HostFunction.hostFunctionTypeCreateContract(
+                new S.xdr.CreateContractArgs({
+                contractIdPreimage: S.xdr.ContractIdPreimage.contractIdPreimageFromAsset(xdrAsset),
+                executable: S.xdr.ContractExecutable.contractExecutableToken(),
+                })
+            );
+            const res = await invokeAndUnwrap(
+                S.Operation.invokeHostFunction({
+                func: deployFunction,
+                auth: [],
+                }),
+                () => undefined,
+                signingKey
+            );
+                
+            if(res.status) {
+                res.value = StellarSdk.scValToNative(res.value)
+                //save the tx first
+                await addTx({hash:res.hash,
+                    address:issuer,
+                    action:"Create new Stellar Asset (" + asset.code + ")",
+                    data:asset.code
+                })
+            }
+            return res
+        }
+        else if(CHAIN == 'xrp') {
+            //configure the account settings
+            const client = await xrpClient()
+            const assetTx = await client.autofill({
+                "TransactionType": "AccountSet",
+                "Account": signingKey.address,
+                "TransferRate": 0,
+                "TickSize": 7,
+                "Domain": Buffer.from(TOML_URL, 'utf8').toString('hex'),
+                "SetFlag": xrp.AccountSetAsfFlags.asfDefaultRipple,
+                "Flags": (xrp.AccountSetTfFlags.tfDisallowXRP |
+                    xrp.AccountSetTfFlags.tfRequireDestTag)
+       
+            })
+            const res = await execTranst(assetTx, signingKey)
+            if(res.status === false) {
+                //something went wrong
+                return false
+            }
+            else {
+                //create settings for the hot wallet
+                const assetTx = await client.autofill({
+                    "TransactionType": "AccountSet",
+                    "Account": walletAddress,
+                    "Domain": Buffer.from(TOML_URL, 'utf8').toString('hex'),
+                    "SetFlag": xrp.AccountSetAsfFlags.asfDefaultRipple,
+                    "Flags": (xrp.AccountSetTfFlags.tfDisallowXRP |
+                        xrp.AccountSetTfFlags.tfRequireDestTag)
+           
+                })
+                const resp = await execTranst(assetTx)
+                if(resp.status === false) {
+                    //something went wrong
+                    return {status:false, msg:res.msg}
+                } 
+                return {status:true, value:await Hash(`${code}:${issuer}`)}
+            }
+
+        }
     }
     catch(e) {
         console.log(e)
         return {status:false, msg:e.message || e  || "Something went wrong"}
     }
+    return {status:false, msg:"Something went wrong"}
 }
 export const invokeAndUnwrap = async (operation, parse, signingKey=null) => {
   const result = await invoke(operation, false, parse, signingKey); 
@@ -306,7 +532,6 @@ export const invokeTransaction = async(tx, sim, parse, signingKey=null) => {
 export const exeTranst = async (transaction = "", signingKey = null) => {
     if(transaction !== "") {
         //prepare xdr
-         
         let xdr = await transaction.toXDR();
         try { 
             if(signingKey != null) {
@@ -392,7 +617,7 @@ export const exeTranst = async (transaction = "", signingKey = null) => {
       } catch (err) {
         // Catch and report any errors we've thrown
         console.log("Sending transaction failed", err);
-        return {status:false, msg:err.message || ""}
+        return {status:false, msg:err.msg || err || "Something went wrong"}
     }
 }
 }
@@ -402,177 +627,225 @@ export const exeTranst = async (transaction = "", signingKey = null) => {
 **/
 export const execTranst = async (transaction = "", signingKey = null) => {
     if(transaction !== "") {
-        //prepare xdr
-        const server = new StellarSdk.SorobanRpc.Server(stellarServer); 
-        let xdr = await transaction.toXDR(); 
-        try {
-            if(signingKey != null) {
-                //sign with signing key
-                transaction.sign(StellarSdk.Keypair.fromSecret(signingKey.secret()));
-            }
-            else{
-                if(WALLET_TYPE.toLowerCase() == "freighter") xdr = await freighterApi.signTransaction(xdr, networkWalletUsed) //sign with freighter
-                if(WALLET_TYPE.toLowerCase() == "lobstr") xdr = await lobstrApi.signTransaction(xdr)
-                if(WALLET_TYPE.toLowerCase() == "wallet_connect") {
-                    //create provider
-                    const signClient = await SignClient.init(
-                        {
-                            projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_ID,
-                            // optional parameters
-                            relayUrl: 'wss://relay.walletconnect.com',
-                            metadata: {
-                                name: 'Lumos Dao',
-                                description: 'Create DAOs on Lumos Dao',
-                                url: 'https://app.lumosdao.com/',
-                                icons: ["https://lumosdao.io/public/images/Image.png"]
-                            },
-                    })
-                    walletConnectConfig.client = signClient
-                    const provider = await UniversalProvider.init(walletConnectConfig)
-                    const lastKeyIndex = signClient.session.getAll().length - 1
-                    const session = signClient.session.getAll()[lastKeyIndex]
-                    if(session){
-                        provider.namespace = walletConnectNameSpace
-                        signClient.namespace = walletConnectNameSpace
-                        provider.on('session_event', ({ event, chainId }) => {
-                            console.log('session_event', event, chainId)
-                        })
-
-                        xdr = await signClient.request({
-                            topic:session.topic,
-                            chainId: walletConnectNetwork,
-                            request: {
-                                method: 'stellar_signXDR',
-                                params: {xdr}
-                            }
-                        })
-                        if(xdr) xdr = xdr.signedXDR
+        if(CHAIN == 'stellar'){
+            //prepare xdr
+            const server = new StellarSdk.SorobanRpc.Server(stellarServer); 
+            let xdr = await transaction.toXDR(); 
+            try {
+                if(signingKey != null) {
+                    //sign with signing key
+                    transaction.sign(StellarSdk.Keypair.fromSecret(signingKey.secret()));
+                }
+                else{
+                    if(WALLET_TYPE.toLowerCase() == "freighter") xdr = await freighterApi.signTransaction(xdr, networkWalletUsed) //sign with freighter
+                    if(WALLET_TYPE.toLowerCase() == "lobstr") xdr = await lobstrApi.signTransaction(xdr)
+                    if(WALLET_TYPE.toLowerCase() == "wallet_connect") {
+                        //create provider
+                        const provider = await UniversalProvider.init(walletConnectConfig)
+                        const session = JSON.parse(localStorage.getItem('LUMOS_WALLET_CONNECT_DATA') || "{}")
+                        if(session.namespaces){
+                            provider.session = session
+                            console.log(provider.session)
+                            xdr = await provider.request({
+                                method:"stellar_signXDR",
+                                params:xdr
+                            }, walletConnectNetwork)
+                        }
+                        else {
+                            //disconnect wallet
+                            localStorage.setItem('selectedWallet', '') 
+                            localStorage.setItem('LUMOS_WALLET', '') 
+                            localStorage.setItem('LUMOS_WALLET_CONNECT_EXPIRY', 0)
+                            alert("Wallet disconnected", 'Wallet Error')
+                        }
+                    }
+                    
+                    //recreate signed transaction
+                    transaction = new StellarSdk.Transaction(xdr, networkUsed)
+                }
+                //transaction.sign();
+                let sendResponse = await server.sendTransaction(transaction);
+                if (sendResponse.status === "PENDING") {
+                let getResponse = await server.getTransaction(sendResponse.hash);
+                const hash = sendResponse.hash
+                // Poll `getTransaction` until the status is not "NOT_FOUND"
+                while (getResponse.status === "NOT_FOUND") {
+                    // See if the transaction is complete
+                    getResponse = await server.getTransaction(sendResponse.hash);
+                    // Wait one second
+                    await new Promise((resolve) => setTimeout(resolve, 1000));
+                }
+                if (getResponse.status === "SUCCESS") {
+                    // Make sure the transaction's resultMetaXDR is not empty
+                    if (!getResponse.resultMetaXdr) {
+                    return {status:true, msg:"", hash}
+                    }
+                    // Find the return value from the contract and return it
+                    
+                    //let transactionMeta = getResponse.resultMetaXdr;
+                    let returnValue = getResponse.returnValue
+                    return {status:true, value: returnValue, hash}
+                } else { 
+                    let error = (StellarSdk.scValToNative(getResponse.resultXdr._attributes.result))
+                    if(error[0]._value._value._switch.name.toLowerCase().indexOf('underfunded') > -1){
+                        error = "Not enough XLM"
                     }
                     else {
-                        //disconnect wallet
-                        localStorage.setItem('selectedWallet', '') 
-                        localStorage.setItem('LUMOS_WALLET', '') 
-                        localStorage.setItem('LUMOS_WALLET_CONNECT_EXPIRY', 0)
-                        alert("Wallet disconnected", 'Wallet Error')
+                        error = error[0]._value._value._switch.name
+                    }
+                    return {status:false, msg:error || "Transaction failed"}
+                }
+                } else {
+                     return {status:false, msg:'Unable to submit transaction<br>Invalid wallet signature'}
+                }
+            } catch (err) {
+                // Catch and report any errors we've thrown
+                console.log("Sending transaction failed", err);
+                return {status:false, msg:err.message}
+            }
+        }
+        else if(CHAIN == 'xrp') {
+            const client = await xrpClient()
+            try {
+                if(signingKey != null) { 
+                    //sign with signing key
+                    const tx = signingKey.sign(transaction);
+                    transaction = tx.tx_blob
+                }
+                else{
+                    if(WALLET_TYPE.toLowerCase() == "gem"){
+                        if(await isInstalled()){
+                            const tx = await signTransaction({transaction}) //sign with gem
+                            //recreate signed transaction
+                            transaction = tx.result?.signature
+                        }
+                    }
+                    else if(WALLET_TYPE.toLowerCase() == "xama"){
+                        const xama = new Xumm(process.env.NEXT_PUBLIC_XAMA_PUBLIC_KEY, process.env.NEXT_PUBLIC_XAMA_SECRET_KEY)
+                        await xama.authorize()
+                        const { created, resolved } = await xama.payload.createAndSubscribe(transaction, 
+                            eventMessage => {
+                            if ('signed' in eventMessage.data) {
+                              // The `signed` property is present, true (signed) / false (rejected)
+                              return eventMessage
+                            }
+                        })
+                        //popop the sig request
+                        window.open(created.next.always)
+                        const {response} = await resolved
+                        if(response){
+                            if(response?.dispatched_result === 'tesSUCCESS') {
+                                return {status:true, value:response?.dispatched_result, hash:response?.txid}
+                            }
+                            else{
+                                return {status:true, value:'Transaction error', hash:response?.txid}
+                            }
+                        }
+                        else{
+                            return {status:false, msg:'Transaction error', hash:""}
+                        }
                     }
                 }
-                
-                //recreate signed transaction
-                transaction = new StellarSdk.Transaction(xdr, networkUsed)
+                let sendResponse = await client.submitAndWait(transaction)
+                if (sendResponse.result.meta.TransactionResult === 'tesSUCCESS') {
+                    console.log('Transaction was successful!');
+                    return {status:true, value:sendResponse.result.meta.TransactionResult, hash:sendResponse.result.hash}
+                } else {
+                    console.log(sendResponse)
+                    return {status:false, msg:'Transaction error', hash:sendResponse.result.hash}
+                }
+            } catch (err) {
+                // Catch and report any errors we've thrown
+                console.log("Sending transaction failed", err);
+                return {status:false, msg:err.message}
             }
-            //transaction.sign();
-            let sendResponse = await server.sendTransaction(transaction);
-            if (sendResponse.status === "PENDING") {
-              let getResponse = await server.getTransaction(sendResponse.hash);
-              const hash = sendResponse.hash
-              // Poll `getTransaction` until the status is not "NOT_FOUND"
-              while (getResponse.status === "NOT_FOUND") {
-                // See if the transaction is complete
-                getResponse = await server.getTransaction(sendResponse.hash);
-                // Wait one second
-                await new Promise((resolve) => setTimeout(resolve, 1000));
-              }
-              if (getResponse.status === "SUCCESS") {
-                // Make sure the transaction's resultMetaXDR is not empty
-                if (!getResponse.resultMetaXdr) {
-                   return {status:true, msg:"", hash}
-                }
-                // Find the return value from the contract and return it
-                
-                //let transactionMeta = getResponse.resultMetaXdr;
-                let returnValue = getResponse.returnValue
-                return {status:true, value: returnValue, hash}
-              } else { 
-                let error = (StellarSdk.scValToNative(getResponse.resultXdr._attributes.result))
-                if(error[0]._value._value._switch.name.toLowerCase().indexOf('underfunded') > -1){
-                    error = "Not enough XLM"
-                }
-                else {
-                    error = error[0]._value._value._switch.name
-                }
-                return {status:false, msg:error || "Transaction failed"}
-              }
-            } else {
-               return {status:false, msg:'Unable to submit transaction<br>Wrong Wallet Signature'}
-            }
-      } catch (err) {
-        // Catch and report any errors we've thrown
-        console.log("Sending transaction failed", err);
-        return {status:false, msg:err}
+        }
     }
-}
 }
 /** To verify if an asset has been wrapped
 * @params {params}
 * @params {callBack}
 **/
 export const verifyAsset = async (params = {code:"", issuer:""}) => {
-    if(wrappingAddress != "") {
-        try{
-             
-            const account = await server.getAccount(wrappingAddress)
-            let asset; let contract;
-            if(params.code.length == 56) {
-                contract = new StellarSdk.Contract(params.code);
+    if(CHAIN == 'stellar'){
+        if(wrappingAddress != "") {
+            try{
+                const account = await server.getAccount(wrappingAddress)
+                let asset; let contract;
+                if(params.code.length == 56) {
+                    contract = new StellarSdk.Contract(params.code);
+                }
+                else {
+                    asset = new StellarSdk.Asset(params.code, params.issuer)
+                    contract = new StellarSdk.Contract(asset.contractId(networkUsed));
+                }
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call("symbol")
+                    )
+                    .setTimeout(timeout) //using a time out of a hour
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                if(params.code.length == 56) {
+                    return params.code;  
+                }
+                else {
+                    return asset.contractId(networkUsed); 
+                }
             }
-            else {
-                asset = new StellarSdk.Asset(params.code, params.issuer)
-                contract = new StellarSdk.Contract(asset.contractId(networkUsed));
+            catch(e) {
+                return false
             }
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
-                .addOperation(
-                    contract.call("symbol")
-                )
-                .setTimeout(timeout) //using a time out of a hour
-                .build();
-            //Simulate the transaction to discover the storage footprint, and update the
-            transaction = await server.prepareTransaction(transaction);
-            let transactionMeta = (await server.simulateTransaction(transaction))
-            if(params.code.length == 56) {
-                return params.code;  
-            }
-            else {
-                return asset.contractId(networkUsed); 
-            }
-        }
-        catch(e) {
-            console.log(e)
-            return false
         }
     }
-    else {return false}
+    else if(CHAIN == 'xrp'){
+        return await Hash(`${params.code}:${params.issuer}`)
+    }
+    return false
 }
+
 /** This function checks
 *  if DAO exists
 * @params {daoId: Address}
 * returns @map | []
 **/ 
+
 export const isDao =  async (daoId) => {
     if(wrappingAddress != "" && daoId != undefined && daoId != "") {
         try{ 
-            const account = await server.getAccount(wrappingAddress)
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
-                .addOperation(
-                    contract.call("get_dao", (new StellarSdk.Address(daoId)).toScVal())
-                )
-                .setTimeout(timeout) //using a time out of a hour
-                .build();
-            //Simulate the transaction to discover the storage footprint, and update the
-            transaction = await server.prepareTransaction(transaction);
-            let transactionMeta = (await server.simulateTransaction(transaction))
-            let dao = StellarSdk.scValToNative(transactionMeta.result.retval);
-            if(dao['url'] != undefined) {  
-                return true
+            if(CHAIN == 'stellar'){
+                const account = await server.getAccount(wrappingAddress)
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase:networkUsed})
+                    .addOperation(
+                        contract.call("get_dao", (new StellarSdk.Address(daoId)).toScVal())
+                    )
+                    .setTimeout(timeout) //using a time out of a hour
+                    .build();
+                //Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                let transactionMeta = (await server.simulateTransaction(transaction))
+                let dao = StellarSdk.scValToNative(transactionMeta.result.retval);
+                if(dao['url'] != undefined) {  
+                    return true
+                }
+                else {return false}
             }
-            else {return false}
-            
+            else if(CHAIN == 'xrp') {
+                const daoMeta = await getAlldaoInfo([daoId].join(","))[daoId]
+                if(daoMeta) { 
+                    return true;
+                }
+                else {return false}
+            }
         }
         catch(e) {
-            //console.log(e)
             return false}
     }
     else {return []}
 }
+
 /** This function creates trustline
 * @params {code} String
 * @params {issuer} String
@@ -582,35 +855,58 @@ export const isDao =  async (daoId) => {
 export const createTrustlineQuiet = async (code, issuer, address) => {
     try{
         if(walletAddress != "") {
-            const account = await server.getAccount(walletAddress)
-            //preparing arguements
-            let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
-            const asset = new StellarSdk.Asset(code, issuer)
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
-                .addOperation(
-                    // An operation to establist trustline
-                    StellarSdk.Operation.changeTrust({
-                      asset: asset,
-                      source: address,
-                    }),
-                 )
-                 .setTimeout(timeout)
-                 .addMemo(StellarSdk.Memo.text(version + ' create trustline'))
-                 .build();
-            //sign and exec transactions
-            const res = await execTranst(transaction)
-            if(res.status === false) {
-                //something went wrong
-                return {status:false, msg:res.msg}
+            if(CHAIN == 'stellar'){
+                const account = await server.getAccount(walletAddress)
+                //preparing arguements
+                let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
+                const asset = new StellarSdk.Asset(code, issuer)
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to establist trustline
+                        StellarSdk.Operation.changeTrust({
+                        asset: asset,
+                        source: address,
+                        }),
+                    )
+                    .setTimeout(timeout)
+                    .addMemo(StellarSdk.Memo.text(version + ' create trustline'))
+                    .build();
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                if(res.status === false) {
+                    //something went wrong
+                    return {status:false, msg:res.msg}
+                }
+                else {
+                    return {status: true}
+                }
             }
             else {
-                return {status:false, msg:res.msg}
+                const client = await xrpClient()
+                const trustTx = await client.autofill({
+                    "TransactionType": "TrustSet",
+                    "Account": walletAddress,
+                    "LimitAmount": {
+                      "currency": code,
+                      "issuer": issuer,
+                      "value": "1000000000000000000000" 
+                    }
+                })
+                const res = await execTranst(trustTx)
+                if(res.status === false) {
+                    //something went wrong
+                    return {status:false, msg:res.msg}
+                }
+                else {
+                    return {status: true}
+                }
             }
         }
-        else {return {status:false, msg:"Connect wallet"}}
+        else {return {status:false, msg:"Connect Wallet"}}
     }
-    catch(e) {console.log(e); return {status:false, msg:e.message || e  || "Something went wrong"}}
+    catch(e) {console.log(e);return {status:false, msg:e.message || e  || "Something went wrong"}}
 }
+  
 /** This function creates the DAO
 * @params {paramsObject {name, token, about}
 * returns {daoId} | {statusBoolean}
@@ -618,56 +914,111 @@ export const createTrustlineQuiet = async (code, issuer, address) => {
 export const createDaos = async (params = {}) => {
     try{
         if(walletAddress != "") {
-            //first add dao info to off chain db
-            if(params.url.trim() != "" && params.token != "") {
-                const aToml = await readAssetToml(params.url); 
-                let code = await getTokenInfo(params.token, "symbol");code = code.replace(/[^a-zA-Z0-9]/g,"");
-                //fetch the token info
-                const tomlInfo = getTokenTomlInfo(aToml, code)
-                const coverImgx = tomlInfo.image.replace((code + tomlInfo.issuer), "cover_" + (code + tomlInfo.issuer)); 
-                const isCoverValid = await isImageURLValid(coverImgx)
-                const defCoverImg = (isCoverValid) ? coverImgx : 'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-        
-                //check if the url is http and from this domain
-                let url = API_URL + "new_dao&dao_id=" + daoContractId  + "&token=" + encodeURIComponent(params.token) + "&url=" + encodeURIComponent(params.url) 
-                url += "&domain=" + encodeURIComponent(params.domain) + "&name=" + encodeURIComponent(tomlInfo.name) + "&code=" +  encodeURIComponent(code) + "&owner=" +  encodeURIComponent(walletAddress) + "&issuer=" +  encodeURIComponent(tomlInfo.issuer)  + "&image=" +  encodeURIComponent(tomlInfo.image)  + "&cover_image=" +  encodeURIComponent(defCoverImg) + "&about=" +  encodeURIComponent(tomlInfo.desc) 
-                const response = await fetch(url);
-                if (!response.ok) {
-                  return {status: false, msg:'Network error'};
+            if(CHAIN == 'stellar'){
+                //first add dao info to off chain db
+                if(params.url.trim() != "" && params.token != "") {
+                    const aToml = await readAssetToml(params.url, CHAIN); 
+                    let code = params.code;code = code.replace(/[^a-zA-Z0-9]/g,"");
+                    //fetch the token info
+                    const tomlInfo = getTokenTomlInfo(aToml, code)
+                    const coverImgx = tomlInfo.image.replace((code + tomlInfo.issuer), "cover_" + (code + tomlInfo.issuer)); 
+                    const isCoverValid = await isImageURLValid(coverImgx)
+                    const defCoverImg = (isCoverValid) ? coverImgx : 'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+            
+                    //check if the url is http and from this domain
+                    let url = API_URL + "new_dao&dao_id=" + daoContractId  + "&token=" + encodeURIComponent(params.token) + "&url=" + encodeURIComponent(params.url) + "&chain=stellar"
+                    url += "&domain=" + encodeURIComponent(params.domain) + "&name=" + encodeURIComponent(tomlInfo.name) + "&code=" +  encodeURIComponent(code) + "&owner=" +  encodeURIComponent(walletAddress) + "&issuer=" +  encodeURIComponent(tomlInfo.issuer)  + "&image=" +  encodeURIComponent(tomlInfo.image)  + "&cover_image=" +  encodeURIComponent(defCoverImg) + "&about=" +  encodeURIComponent(tomlInfo.desc) 
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                    return {status: false, msg:'Network error'};
+                    }
+                    const res = await response.json();
+                    if(!res.status) {return {status: false, msg:'Network error'}}
+                }else{return {status: false, msg:'Unable to parse asset data'}}
+                //now add info to on chain
+                
+                const account = await server.getAccount(walletAddress)
+                //preparing arguements
+                let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
+                let _tokenAdr = new StellarSdk.Address(params.token); _tokenAdr = _tokenAdr.toScVal()
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to call create on the contract
+                        contract.call("create", _walletAdr, _tokenAdr)
+                    )
+                    .setTimeout(timeout)
+                    .addMemo(StellarSdk.Memo.text(version + ' Created Lumos Dao'))
+                    .build();
+                // Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                //sign and exec transactions
+                const res = await execTranst(transaction); console.log(res)
+                if(res.status === false) {
+                    //something went wrong
+                    return {status: false, msg:res.msg || 'Blockchain error'}
                 }
-                const res = await response.json();
-                if(!res.status) {return {status: false, msg:'Network error'}}
-            }else{return {status: false, msg:'Unable to parse asset data'}}
-            //now add info to on chain
-             
-            const account = await server.getAccount(walletAddress)
-            //preparing arguements
-            let _walletAdr = new StellarSdk.Address(walletAddress);_walletAdr = _walletAdr.toScVal()
-            let _tokenAdr = new StellarSdk.Address(params.token); _tokenAdr = _tokenAdr.toScVal()
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
-                .addOperation(
-                    // An operation to call create on the contract
-                    contract.call("create", _walletAdr, _tokenAdr)
-                 )
-                 .setTimeout(timeout)
-                 .addMemo(StellarSdk.Memo.text(version + ' Creating Lumos Dao'))
-                 .build();
-            // Simulate the transaction to discover the storage footprint, and update the
-            transaction = await server.prepareTransaction(transaction);
-            //sign and exec transactions
-            const res = await execTranst(transaction); console.log(res)
-            if(res.status === false) {
-                //something went wrong
-                return {status: false, msg:res.msg || 'Blockchain error'}
+                else {
+                    //save the tx first
+                await addTx({hash:res.hash,
+                    address:walletAddress,
+                    action:"Create new DAO " + params.name,
+                    data:params.token
+                })
+                return {status: (S.scValToNative(res.value))}
+                }
             }
-            else {
-                //save the tx first
-               await addTx({hash:res.hash,
-                   address:walletAddress,
-                   action:"Create new DAO " + params.name,
-                   data:params.token
-               })
-               return {status: (S.scValToNative(res.value))}
+            else if(CHAIN == 'xrp') {
+                //first make the payment
+                const hash = await payXrp(walletAddress, `${version} Created Lumos Dao`)
+                if(hash) {
+                    //create the dao
+                    if(params.url.trim() != "" && params.token != "") {
+                        let code = params.code;code = code.replace(/[^a-zA-Z0-9]/g,"");
+                        //fetch the token info
+                        const coverImgx = params.image.replace((code + params.issuer), "cover_" + (code + params.issuer)); 
+                        const isCoverValid = await isImageURLValid(coverImgx)
+                        const defCoverImg = (isCoverValid) ? coverImgx : 'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                        const res = await fetch(`${BACKEND_API}/chain/xrp/dao/new`, {
+                            method: "POST",
+                            body: JSON.stringify({
+                                dao:{
+                                    "token":params.token,              
+                                    "url": params.url,    
+                                    "domain": params.domain,         
+                                    "name": params.name,          
+                                    "code": code,                 
+                                    "owner": walletAddress,     
+                                    "issuer": params.issuer,  // XRP wallet address of the issuer
+                                    "image": params.image,   
+                                    "cover": defCoverImg,  
+                                    "desc": params.about
+                                },
+                                }
+                            ),
+                            headers: {
+                                "content-type": "application/json",
+                            },
+                        });
+                        if(res.ok) {
+                            const resp = await res.json()
+                            if(res.status) {
+                                await addTx({
+                                    hash,
+                                    address:walletAddress,
+                                    action:"Create new DAO " + params.name,
+                                    data:params.token
+                                })
+                                return {status: true}
+                            }
+                            else{
+                                return {status: false, msg:resp.msg}
+                            }
+                        }
+                    }else{return {status: false, msg:'Unable to parse asset data'}}
+                }
+                else {
+                    return {status: false, msg:'User cancelled the operation'}
+                }
             }
         }
         else {return {status: false, msg:'No wallet connected'}}
@@ -681,31 +1032,63 @@ export const createDaos = async (params = {}) => {
 **/
 export const fundIssuer = async (params) => {
     try{
-        if(walletAddress != "") {
-            //first check if the wallet already exists
-            try{ 
-                const response = await fetch(`${horizonServer}/accounts/${params.address}`);
-                if (response.status != 404) {
-                   return false
+        if(CHAIN == 'stellar'){
+            if(walletAddress != "") {
+                //first check if the wallet already exists
+                try{ 
+                    const response = await fetch(`${horizonServer}/accounts/${params.address}`);
+                    if (response.status != 404) {
+                    return false
+                    }
+                }catch(e) {
+                    return false
                 }
-            }catch(e) {
-                return false
+                const account = await server.getAccount(walletAddress)
+                //preparing arguements
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        StellarSdk.Operation.createAccount({
+                        destination: params.address,
+                        source:walletAddress,
+                        startingBalance: "2",
+                        }),
+                    )
+                    .setTimeout(timeout)
+                    .addMemo(StellarSdk.Memo.text(version + ' Creating issuer'))
+                    .build();
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                if(res.status === false) {
+                    //something went wrong
+                    return {status:false, msg:res.msg}
+                }
+                else {
+                    return {status: true}
+                }
+            }else{
+                return {status:false, msg:"Connect wallet"}
             }
-            const account = await server.getAccount(walletAddress)
-            //preparing arguements
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
-                .addOperation(
-                    StellarSdk.Operation.createAccount({
-                      destination: params.address,
-                      source:walletAddress,
-                      startingBalance: "2",
-                    }),
-                 )
-                 .setTimeout(timeout)
-                 .addMemo(StellarSdk.Memo.text(version + ' Creating issuer'))
-                 .build();
-            //sign and exec transactions
-            const res = await execTranst(transaction)
+        }
+        else if(CHAIN == 'xrp' && walletAddress != "") {
+            const client = await xrpClient()
+            //first check if issuer exists
+            try{
+                const info = await client.request({
+                    command: 'account_info',
+                    account: params.address,
+                    ledger_index: 'validated'
+                });
+                // Extract and log the balance (in drops, convert to XRP)
+                const bal = xrp.dropsToXrp(info?.result?.account_data?.Balance || 0);
+                if(bal > 10) return {status: true} 
+            }catch(e){}
+            const fundTx = await client.autofill({
+                "TransactionType": "Payment",
+                "Account": walletAddress,
+                "Amount": xrp.xrpToDrops(10.1),
+                "Destination": params.address
+            })
+            const res = await execTranst(fundTx)
             if(res.status === false) {
                 //something went wrong
                 return {status:false, msg:res.msg}
@@ -714,11 +1097,9 @@ export const fundIssuer = async (params) => {
                 return {status: true}
             }
         }
-        else {return {status:false, msg:"Connect wallet"}}
+        return {status:false, msg:"Connect Wallet"}
     }
-    catch(e) {console.log(e); 
-        return {status:false, msg:e.message || e || "Something went wrong"}
-    }
+    catch(e) {console.log(e); return {status:false, msg:e.message || e || "Something went wrong"}}
 }
 /** This function mints token to the owner
  * @params {amount}
@@ -728,34 +1109,67 @@ export const fundIssuer = async (params) => {
 export const mintToken = async (amount, code, issuer, des, signingKey = null) => {
     try{
         if(walletAddress != "") {
-            const account = await server.getAccount(signingKey.publicKey())
-            const asset = new StellarSdk.Asset(code, issuer)
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
-                .addOperation(
-                    // An operation to call mint on the contract
-                    StellarSdk.Operation.payment({
-                      amount: amount,
-                      asset: asset,
-                      destination: des,
-                      source: signingKey.publicKey(), 
-                    })
-                 )
-                 .setTimeout(timeout)
-                 .addMemo(StellarSdk.Memo.text(version + ' Minting total supply'))
-                 .build();
-            //sign and exec transactions
-            const res = await execTranst(transaction, signingKey)
-            if(res.status === false) {
-                //something went wrong
-                return {status:false, msg:res.msg}
+            if(CHAIN == 'stellar'){
+                const account = await server.getAccount(signingKey.publicKey())
+                const asset = new StellarSdk.Asset(code, issuer)
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to call mint on the contract
+                        StellarSdk.Operation.payment({
+                        amount: amount,
+                        asset: asset,
+                        destination: des,
+                        source: signingKey.publicKey(), 
+                        })
+                    )
+                    .setTimeout(timeout)
+                    .addMemo(StellarSdk.Memo.text(version + ' Minting total supply'))
+                    .build();
+                //sign and exec transactions
+                const res = await execTranst(transaction, signingKey)
+                if(res.status === false) {
+                    //something went wrong
+                    return {status:false, msg:res.msg}
+                }
+                else {
+                    return {status: true}
+                }
             }
-            else {
-                return {status:false, msg:res.msg}
+            else if(CHAIN == 'xrp') {
+                const client = await xrpClient()
+                const mintTx = await client.autofill({
+                    "TransactionType": "Payment",
+                    "Account": issuer,
+                    "Amount": {
+                      "currency": code,
+                      "value": amount,
+                      "issuer": issuer
+                    },
+                    "Destination": walletAddress,
+                    "DestinationTag": 1 
+                })
+                const res = await execTranst(mintTx, signingKey)
+                if(res.status === false) {
+                    //something went wrong
+                    return {status:false, msg:res.msg}
+                }
+                else {
+                    //save the tx first
+                    await addTx({
+                        hash:res.hash,
+                        address:issuer,
+                        action:"Create new Xrp Asset (" + code + ")",
+                        data:code 
+                    })
+                    return {status: true}
+                }
             }
         }
-        else {return {status:false, msg:"Connect wallet"}}
+        else {return {status:false, msg:"Connect Wallet"}}
     }
-    catch(e) {console.log(e); return {status:false, msg:e.message || e  || ""}}
+    catch(e) {console.log(e); 
+        return {status:false, msg:e.message || e  || "Something went wrong"}
+    }
 }
 /** This function locks an issuing wallet
  * @params {issuer} String
@@ -764,28 +1178,45 @@ export const mintToken = async (amount, code, issuer, des, signingKey = null) =>
 export const lockIssuerQuietly = async (params, signingKey = null) => {
     try{
         if(walletAddress != "") {
-            const account = await server.getAccount(signingKey.publicKey())
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
-                .addOperation(
-                    StellarSdk.Operation.setOptions({
-                        masterWeight: 0,
-                        source: params.issuer
-                   })
-                 )
-                 .setTimeout(timeout)
-                 .addMemo(StellarSdk.Memo.text(version + ' verifying dao'))
-                 .build();
-            //sign and exec transactions
-            const res = await execTranst(transaction, signingKey)
-            if(res.status === false) {
-                //something went wrong
-                return {status:false, msg:res.msg}
+            if(CHAIN == 'stellar'){
+                const account = await server.getAccount(signingKey.publicKey())
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        StellarSdk.Operation.setOptions({
+                            masterWeight: 0,
+                            source: params.issuer
+                    })
+                    )
+                    .setTimeout(timeout)
+                    .addMemo(StellarSdk.Memo.text(version + ' verifying dao'))
+                    .build();
+                //sign and exec transactions
+                const res = await execTranst(transaction, signingKey)
+                if(res.status === false) {
+                    //something went wrong
+                    return {status:false, msg:res.msg}
+                }
+                else {
+                    return {status: true}
+                }
             }
-            else {
-                return {status:false, msg:res.msg}
+            else if(CHAIN == 'xrp'){
+                const client = await xrpClient()
+                const lockTx = await client.autofill({
+                    TransactionType: "AccountSet",
+                    Account: signingKey.address,
+                    SetFlag: xrp.AccountSetAsfFlags.asfNoFreeze
+                })
+                //sign and exec transactions
+                const res = await execTranst(lockTx, signingKey)
+                if(res.status === false) {
+                    //something went wrong
+                    return {status:false, msg:res.msg}
+                }
+                else {return {status: true}}
             }
         }
-        else {return {status:false, msg:"Connect wallet"}}
+        else {return {status:false, msg:"Connect Wallet"}}
     }
     catch(e) {console.log(e); return {status:false, msg:e.message || e  || "Something went wrong"}}
 }
@@ -796,42 +1227,92 @@ export const lockIssuerQuietly = async (params, signingKey = null) => {
 export const createProposal = async (params = {}) => {
     try{
         if(walletAddress != "") {
-             
-            const account = await server.getAccount(walletAddress)
-            //preparing arguements
-            params.creator = new StellarSdk.Address(params.creator);params.creator = params.creator.toScVal()
-            const propDao = params.dao
-            params.dao = new StellarSdk.Address(params.dao); params.dao = params.dao.toScVal()
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
-                .addOperation(
-                    // An operation to call create on the contract
-                    contract.call("create_proposal", params.creator, params.dao)
-                 )
-                 .setTimeout(timeout)
-                 .addMemo(StellarSdk.Memo.text(version + ' Creating Lumos Proposal'))
-                 .build();
-            // Simulate the transaction to discover the storage footprint, and update the
-            transaction = await server.prepareTransaction(transaction);
-            //sign and exec transactions
-            const res = await execTranst(transaction)
-            if(res.status === false) {
-                //something went wrong
-                return false 
-            }
-            else {
-                let url = API_URL + "new_proposal&dao_id=" + daoContractId  + "&dao=" + encodeURIComponent(propDao) + "&links=" + encodeURIComponent(params.links) 
-                url += "&name=" + encodeURIComponent(params.name) + "&about=" +  encodeURIComponent(params.about) + "&prop_id=" + (StellarSdk.scValToNative(res.value)) + "&user=" + (walletAddress) + "&ipfs=" + (params.ipfs)
-                const response = await fetch(url);
-                if (!response.ok) {
-                  return false;
+            if(CHAIN == 'stellar'){
+                const account = await server.getAccount(walletAddress)
+                //preparing arguements
+                params.creator = new StellarSdk.Address(params.creator);params.creator = params.creator.toScVal()
+                const propDao = params.dao
+                params.dao = new StellarSdk.Address(params.dao); params.dao = params.dao.toScVal()
+                const voting_type = StellarSdk.nativeToScVal(params.voting_type)
+                const voting_option_no = StellarSdk.nativeToScVal(Object.keys(params?.voting_options || {}).length);
+                
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to call create on the contract
+                        contract.call("create_proposal", params.creator, params.dao, voting_type, voting_option_no)
+                    )
+                    .setTimeout(timeout)
+                    .addMemo(StellarSdk.Memo.text(version + ' Creating Lumos Proposal'))
+                    .build();
+                // Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                if(res.status === false) {
+                    //something went wrong
+                    return false 
                 }
-                if(!(await response.json()).status) {return false}
-                await addTx({hash:res.hash,
-                   address:walletAddress,
-                   action:"Created proposal " + params.name,
-                   data: JSON.stringify({dao:propDao,  proposal: N(StellarSdk.scValToNative(res.value))})
-                })
-                return {status: (StellarSdk.scValToNative(res.value))}
+                else {
+                    let url = API_URL + "new_proposal&dao_id=" + daoContractId  + "&dao=" + encodeURIComponent(propDao) + "&links=" + encodeURIComponent(params.links) + "&voting_options=" + JSON.stringify(params?.voting_options || {})
+                    url += "&name=" + encodeURIComponent(params.name) + "&about=" +  encodeURIComponent(params.about) + "&prop_id=" + (StellarSdk.scValToNative(res.value)) + "&user=" + (walletAddress) + "&ipfs=" + (params.ipfs)
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                    return false;
+                    }
+                    if(!(await response.json()).status) {return false}
+                    await addTx({hash:res.hash,
+                    address:walletAddress,
+                    action:"Created proposal " + params.name,
+                    data: JSON.stringify({dao:propDao,  proposal: N(StellarSdk.scValToNative(res.value))})
+                    })
+                    return {status: (StellarSdk.scValToNative(res.value))}
+                }
+            }
+            else if(CHAIN == 'xrp') {
+                //first make the payment
+                const hash = await payXrp(walletAddress, `${version} Created Proposal`)
+                if(hash) {
+                    //create the dao
+                    if(params.dao != "") {
+                      
+                        const res = await fetch(`${BACKEND_API}/chain/xrp/proposal/new`, {
+                            method: "POST",
+                            body: JSON.stringify({
+                                prop:{
+                                    creator:walletAddress,
+                                    dao:params.dao,
+                                    links:params.links,
+                                    name:params.name,
+                                    about:params.about,
+                                    user:walletAddress,
+                                    voting_type: params.voting_type,
+                                    voting_options: params.voting_options
+                                },
+                            }),
+                            headers: {
+                                "content-type": "application/json",
+                            },
+                        });
+                        if(res.ok) {
+                            const resp = await res.json()
+                            if(resp.status === true) {
+                                await addTx({
+                                    hash,
+                                    address:walletAddress,
+                                    action:"Created proposal " + params.name,
+                                    data: JSON.stringify({dao:params.dao,  proposal: N(resp.propId)})
+                                })
+                                return {status: resp.propId}
+                            }
+                            else{
+                                return {status: false, msg:resp.msg}
+                            }
+                        }
+                    }else{return {status: false, msg:'Unable to parse asset data'}}
+                }
+                else {
+                    return {status: false, msg:'User cancelled the operation'}
+                }
             }
         }
         else {return false}
@@ -845,13 +1326,6 @@ export const createProposal = async (params = {}) => {
 export const addDelegate = async (params = {}) => {
     try{
         if(walletAddress != "") {
-             
-            const account = await server.getAccount(walletAddress)
-            //preparing arguements
-            const daoId = params.dao
-            params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
-            const delegator = (new StellarSdk.Address(walletAddress)).toScVal()
-            const delegatee = (new StellarSdk.Address(params.delegatee)).toScVal()
             let memoTx = [];
             if(walletAddress != params.delegatee) {
                 memoTx[0] = ' Delegated voting power'  
@@ -861,40 +1335,80 @@ export const addDelegate = async (params = {}) => {
                 memoTx[0] = ' Reclaimed voting power'
                 memoTx[1] = ' Reclaimed voting power from ' + fAddr(params.del_address, 6)  
             }
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
-                .addOperation(
-                    // An operation to call create on the contract
-                    contract.call("add_delegate", params.dao, delegator, delegatee)
-                 )
-                 .setTimeout(timeout)
-                 .addMemo(StellarSdk.Memo.text(version + memoTx[0]))
-                 .build();
-            // Simulate the transaction to discover the storage footprint, and update the
-            transaction = await server.prepareTransaction(transaction);
-            //sign and exec transactions
-            const res = await execTranst(transaction)
-            if(res.status === false) {
-                //something went wrong
-                return false
+            const daoId = params.dao
+            let value="";let hash="";
+            if(CHAIN == 'stellar'){
+                const account = await server.getAccount(walletAddress)
+                //preparing arguements
+                params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
+                const delegator = (new StellarSdk.Address(walletAddress)).toScVal()
+                const delegatee = (new StellarSdk.Address(params.delegatee)).toScVal()
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to call create on the contract
+                        contract.call("add_delegate", params.dao, delegator, delegatee)
+                    )
+                    .setTimeout(timeout)
+                    .addMemo(StellarSdk.Memo.text(version + memoTx[0]))
+                    .build();
+                // Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else{value=StellarSdk.scValToNative(res.value);hash=res.hash}
             }
-            else {
-                if(StellarSdk.scValToNative(res.value) !== false) {
-                        await addTx({hash:res.hash,
-                           address:walletAddress,
-                           action:memoTx[1],
-                           data:params.delegatee
-                       })
-                       await addAlerts({
-                           other:walletAddress,
-                           user:params.del_address || "",
-                           action:memoTx[1],
-                           link:"dao/" + daoId,
-                           title:"Voting power delegation",
-                           type:'delegation'
-                       })
-               }
-               return {status: (StellarSdk.scValToNative(res.value))}
+            else if(CHAIN == 'xrp'){
+                hash = await payXrp(walletAddress, `${version} ${memoTx[0]}`)
+                if(hash) {
+                    //create the dao
+                    if(params.dao != "") {
+                        const res = await fetch(`${BACKEND_API}/chain/xrp/dao/setdelegator`, {
+                            method: "POST",
+                            body: JSON.stringify({
+                                daoId:params.dao,
+                                delegator:walletAddress,
+                                delegatee:params.delegatee
+                            }),
+                            headers: {
+                                "content-type": "application/json",
+                            },
+                        });
+                        if(res.ok) {
+                            const resp = await res.json()
+                            if(resp.status === true) {
+                                value = true
+                            }
+                            else{
+                                value = false
+                            }
+                        }
+                    }else{return false}
+                }
+                else {
+                    return false
+                }
             }
+            if(value !== false) {
+                await addTx({
+                   hash,
+                   address:walletAddress,
+                   action:memoTx[1],
+                   data:params.delegatee
+               })
+               await addAlerts({
+                   other:walletAddress,
+                   user:params.del_address || "",
+                   action:memoTx[1],
+                   link:"dao/" + daoId,
+                   title:"Voting power delegation",
+                   type:'delegation'
+               })
+            }
+            return value
         }
         else {return false}
     }
@@ -1062,7 +1576,7 @@ export const fArr = (arr) => {
     if(arr.length > 0) {
         let newArr = []
         for(let i=0;i<arr.length;i++) {
-            if(arr[i] != null) {newArr.push(arr[i])}
+            if(arr[i] != null && arr[i] != "") {newArr.push(arr[i])}
         }
          
         return newArr
@@ -1184,42 +1698,76 @@ export const claimJoiningBonus = async (params = {}) => {
 export const lockIssuer = async (params, signingKey = null) => {
     try{
         if(walletAddress != "") {
-            const account = await server.getAccount(walletAddress)
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
-                .addOperation(
-                    StellarSdk.Operation.setOptions({
-                        masterWeight: 0,
-                        source: params.issuer
-                      })
-                 )
-                 .setTimeout(timeout)
-                 .addMemo(StellarSdk.Memo.text(version + ' verifying dao'))
-                 .build();
-            //sign and exec transactions
-            const res = await execTranst(transaction, signingKey)
-            if(res.status === false) {
-                //something went wrong
-                return false
+            if(CHAIN == 'stellar'){
+                const account = await server.getAccount(signingKey.publicKey())
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        StellarSdk.Operation.setOptions({
+                            masterWeight: 0,
+                            source: params.issuer
+                    })
+                    )
+                    .setTimeout(timeout)
+                    .addMemo(StellarSdk.Memo.text(version + ' verifying dao'))
+                    .build();
+                //sign and exec transactions
+                const res = await execTranst(transaction, signingKey)
+                if(res.status === false) {
+                    //something went wrong
+                    return {status:false, msg:res.msg}
+                }
+                else {
+                    await addTx({hash:res.hash,
+                        address:walletAddress,
+                        action:`verified dao ${params.daoName}`,
+                        data:params.dao
+                    })
+                    //log alert
+                    await addAlerts({
+                        other:walletAddress,
+                        user:"all",
+                        action:`verified dao ${params.daoName}`,
+                        link:"dao/" + params.dao,
+                        title:'Verified dao',
+                        type:'verification'
+                    })
+                    return {status: true}
+                }
             }
-            else {
-                await addTx({hash:res.hash,
-                   address:walletAddress,
-                   action:`verified dao ${params.daoName}`,
-                   data:params.dao
-               })
-               //log alert
-               await addAlerts({
-                   other:walletAddress,
-                   user:"all",
-                   action:`verified dao ${params.daoName}`,
-                   link:"dao/" + params.dao,
-                   title:'Verified dao',
-                   type:'verification'
-               })
-               return {status: true}
+            else if(CHAIN == 'xrp'){
+                const client = await xrpClient()
+                const lockTx = await client.autofill({
+                    TransactionType: "AccountSet",
+                    Account: walletAddress,
+                    SetFlag: xrp.AccountSetAsfFlags.asfNoFreeze
+                })
+                //sign and exec transactions
+                const res = await execTranst(lockTx, signingKey)
+                if(res.status === false) {
+                    //something went wrong
+                    return {status:false, msg:res.msg}
+                }
+                else {
+                    await addTx({
+                        hash:res.hash,
+                        address:walletAddress,
+                        action:`verified dao ${params.daoName}`,
+                        data:params.dao
+                    })
+                    //log alert
+                    await addAlerts({
+                        other:walletAddress,
+                        user:"all",
+                        action:`verified dao ${params.daoName}`,
+                        link:"dao/" + params.dao,
+                        title:'Verified dao',
+                        type:'verification'
+                    })
+                    return {status: true}
+                }
             }
         }
-        else {return false}
+        else {return {status:false, msg:"Connect Wallet"}}
     }
     catch(e) {console.log(e); return false}
 }
@@ -1230,50 +1778,82 @@ export const lockIssuer = async (params, signingKey = null) => {
 export const setProposalSetting = async (params = {}) => {
     try{
         if(walletAddress != "") {
-             
-            const account = await server.getAccount(walletAddress)
-            //preparing arguements
-            const daoId = params.dao
-            params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
-            const owner = (new StellarSdk.Address(walletAddress)).toScVal()
-            const setting =  StellarSdk.nativeToScVal(params.setting)
+            let value="";let hash=""
             const settingType = (params.setting == 1) ? "Everyone can create proposal" : "Only admin can create proposal";
-            
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
-                .addOperation(
-                    // An operation to call create on the contract
-                    contract.call("set_proposal_settings", params.dao, owner, setting)
-                 )
-                 .setTimeout(timeout)
-                 .addMemo(StellarSdk.Memo.text(version + "proposal settings"))
-                 .build();
-            // Simulate the transaction to discover the storage footprint, and update the
-            transaction = await server.prepareTransaction(transaction);
-            //sign and exec transactions
-            const res = await execTranst(transaction)
-            if(res.status === false) {
-                //something went wrong
-                return false
+            const daoId = params.dao
+            if(CHAIN == 'stellar'){ 
+                const account = await server.getAccount(walletAddress)
+                //preparing arguements
+                params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
+                const owner = (new StellarSdk.Address(walletAddress)).toScVal()
+                const setting =  StellarSdk.nativeToScVal(params.setting)
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to call create on the contract
+                        contract.call("set_proposal_settings", params.dao, owner, setting)
+                    )
+                    .setTimeout(timeout)
+                    .addMemo(StellarSdk.Memo.text(version + "proposal settings"))
+                    .build();
+                // Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else{value=(StellarSdk.scValToNative(res.value));hash=res.hash}
             }
-            else {
-                await addTx({hash:res.hash,
-                   address:walletAddress,
-                   action:"changed proposal settings to " + settingType,
-                   data:params.owner
-               })
-               if((StellarSdk.scValToNative(res.value)) !== false) {
-                   //log alert for proposal owner
-                   await addAlerts({
-                       other:walletAddress,
-                       user:params.owner || "",
-                       action:"changed proposal settings to " + settingType,
-                       link:"dao/" + daoId,
-                       title:"Changed Proposal Settings",
-                       type:'proposal'
-                   })
-               }
-               return {status: (StellarSdk.scValToNative(res.value))}
+            else if(CHAIN == 'xrp'){
+                hash = await payXrp(walletAddress, `${version} proposal setting`)
+                if(hash) {
+                    //create the dao
+                    if(params.dao != "") {
+                        const res = await fetch(`${BACKEND_API}/chain/xrp/dao/setting`, {
+                            method: "POST",
+                            body: JSON.stringify({
+                                daoId:params.dao,
+                                user:walletAddress,
+                                setting:params.setting
+                            }),
+                            headers: {
+                                "content-type": "application/json",
+                            },
+                        });
+                        if(res.ok) {
+                            const resp = await res.json()
+                            if(resp.status === true) {
+                                value = resp.msg
+                            }
+                            else{
+                                value = resp.msg
+                            }
+                        }
+                    }else{return {status: false, msg:'Unable to parse asset data'}}
+                }
+                else {
+                    return false
+                }
             }
+            if(value !== false) {
+                await addTx({
+                     hash:hash,
+                     address:walletAddress,
+                     action:"changed proposal settings to " + settingType,
+                     data:params.owner
+                })
+                //log alert for proposal owner
+                await addAlerts({
+                    other:walletAddress,
+                    user:params.owner || "",
+                    action:"changed proposal settings to " + settingType,
+                    link:"dao/" + daoId,
+                    title:"Changed Proposal Settings",
+                    type:'proposal'
+                })
+            }
+            return {status: value}
         }
         else {return false}
     }
@@ -1342,48 +1922,81 @@ export const setJoiningBonus = async (params = {}) => {
 export const addAdmin = async (params = {}) => {
     try{
         if(walletAddress != "") {
-             
-            const account = await server.getAccount(walletAddress)
-            //preparing arguements
             const daoId = params.dao
-            params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
-            const owner = (new StellarSdk.Address(walletAddress)).toScVal()
-            const admin = (new StellarSdk.Address(params.admin)).toScVal()
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
-                .addOperation(
-                    // An operation to call create on the contract
-                    contract.call("add_admin", params.dao, owner, admin)
-                 )
-                 .setTimeout(timeout)
-                 .addMemo(StellarSdk.Memo.text(version + "Added admin"))
-                 .build();
-            // Simulate the transaction to discover the storage footprint, and update the
-            transaction = await server.prepareTransaction(transaction);
-            //sign and exec transactions
-            const res = await execTranst(transaction)
-            if(res.status === false) {
-                //something went wrong
-                return false
+            let value="";let hash=""
+            if(CHAIN == 'stellar'){
+                const account = await server.getAccount(walletAddress)
+                //preparing arguements
+                params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
+                const owner = (new StellarSdk.Address(walletAddress)).toScVal()
+                const admin = (new StellarSdk.Address(params.admin)).toScVal()
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to call create on the contract
+                        contract.call("add_admin", params.dao, owner, admin)
+                    )
+                    .setTimeout(timeout)
+                    .addMemo(StellarSdk.Memo.text(version + "Added admin"))
+                    .build();
+                // Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else{value=(StellarSdk.scValToNative(res.value))}
             }
-            else {
-                await addTx({hash:res.hash,
-                   address:walletAddress,
-                   action:"added admin " + fAddr(params.admin, 14),
-                   data:params.admin
-               })
-               if((StellarSdk.scValToNative(res.value)) !== false) {
-                   //log alert for proposal owner
-                   await addAlerts({
-                       other:walletAddress,
-                       user:params.admin || "",
-                       action:"added you as admin in dao " + params.daoName ,
-                       link:"dao/" + daoId,
-                       title:"Made admin",
-                       type:'admin'
-                   })
-               }
-               return {status: (StellarSdk.scValToNative(res.value))}
+            else if(CHAIN == 'xrp'){
+                hash = await payXrp(walletAddress, `${version} Added admin`)
+                if(hash) {
+                    //create the dao
+                    if(params.dao != "") {
+                        const res = await fetch(`${BACKEND_API}/chain/xrp/dao/addadmin`, {
+                            method: "POST",
+                            body: JSON.stringify({
+                                daoId:params.dao,
+                                user:walletAddress,
+                                admin:params.admin
+                            }),
+                            headers: {
+                                "content-type": "application/json",
+                            },
+                        });
+                        if(res.ok) {
+                            const resp = await res.json()
+                            if(resp.status === true) {
+                                value = resp.msg
+                            }
+                            else{
+                                value = resp.msg
+                            }
+                        }
+                    }else{return {status: false, msg:'Unable to parse asset data'}}
+                }
+                else {
+                    return false
+                }
             }
+            if(value !== false) {
+                await addTx({
+                    hash,
+                    address:walletAddress,
+                    action:"added admin " + fAddr(params.admin, 7),
+                    data:params.admin
+                })
+                //log alert for proposal owner
+                await addAlerts({
+                   other:walletAddress,
+                   user:params.admin || "",
+                   action:"added you as admin in dao " + params.daoName ,
+                   link:"dao/" + daoId,
+                   title:"Made admin",
+                   type:'admin'
+                })
+           }
+           return {status: value}
         }
         else {return false}
     }
@@ -1397,48 +2010,81 @@ export const addAdmin = async (params = {}) => {
 export const removeDaoAdmin = async (params = {}) => {
     try{
         if(walletAddress != "") {
-             
-            const account = await server.getAccount(walletAddress)
-            //preparing arguements
             const daoId = params.dao
-            params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
-            const owner = (new StellarSdk.Address(walletAddress)).toScVal()
-            const admin = (new StellarSdk.Address(params.admin)).toScVal()
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
-                .addOperation(
-                    // An operation to call create on the contract
-                    contract.call("remove_admin", params.dao, owner, admin)
-                 )
-                 .setTimeout(timeout)
-                 .addMemo(StellarSdk.Memo.text(version + " Removed admin"))
-                 .build();
-            // Simulate the transaction to discover the storage footprint, and update the
-            transaction = await server.prepareTransaction(transaction);
-            //sign and exec transactions
-            const res = await execTranst(transaction)
-            if(res.status === false) {
-                //something went wrong
-                return false
+            let hash="";let value=""
+            if(CHAIN == 'stellar'){
+                const account = await server.getAccount(walletAddress)
+                //preparing arguements
+                params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
+                const owner = (new StellarSdk.Address(walletAddress)).toScVal()
+                const admin = (new StellarSdk.Address(params.admin)).toScVal()
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to call create on the contract
+                        contract.call("remove_admin", params.dao, owner, admin)
+                    )
+                    .setTimeout(timeout)
+                    .addMemo(StellarSdk.Memo.text(version + " Removed admin"))
+                    .build();
+                // Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else{value=(StellarSdk.scValToNative(res.value))}
             }
-            else {
-                await addTx({hash:res.hash,
-                   address:walletAddress,
-                   action:"removed admin " + fAddr(params.admin, 14),
-                   data:params.admin
+            else if(CHAIN == 'xrp'){
+                hash = await payXrp(walletAddress, `${version} Removed admin`)
+                if(hash) {
+                    //create the dao
+                    if(params.dao != "") {
+                        const res = await fetch(`${BACKEND_API}/chain/xrp/dao/removeadmin`, {
+                            method: "POST",
+                            body: JSON.stringify({
+                                daoId:params.dao,
+                                user:walletAddress,
+                                admin:params.admin
+                            }),
+                            headers: {
+                                "content-type": "application/json",
+                            },
+                        });
+                        if(res.ok) {
+                            const resp = await res.json()
+                            if(resp.status === true) {
+                                value = resp.msg
+                            }
+                            else{
+                                value = resp.msg
+                            }
+                        }
+                    }else{return {status: false, msg:'Unable to parse asset data'}}
+                }
+                else {
+                    return false
+                }
+            }
+            if(value !== false) {
+                await addTx({
+                    hash,
+                    address:walletAddress,
+                    action:"removed admin " + fAddr(params.admin, 7),
+                    data:params.admin
+                })
+                //log out alert to user
+                await addAlerts({
+                   other:walletAddress,
+                   user:params.admin || "",
+                   action:"removed you as admin in dao " + params.daoName ,
+                   link:"dao/" + daoId,
+                   title:"Removed admin",
+                   type:'admin'
                })
-               if((StellarSdk.scValToNative(res.value)) !== false) {
-                   //log out alert to user
-                   await addAlerts({
-                       other:walletAddress,
-                       user:params.admin || "",
-                       action:"removed you as admin in dao " + params.daoName ,
-                       link:"dao/" + daoId,
-                       title:"Removed admin",
-                       type:'admin'
-                   })
-               }
-               return {status: (StellarSdk.scValToNative(res.value))}
-            }
+           }
+           return {status: value}
         }
         else {return false}
     }
@@ -1450,40 +2096,78 @@ export const removeDaoAdmin = async (params = {}) => {
 **/
 export const banDaoMember = async (params = {}) => {
    try{
-       const res = await isAdmin(params.dao)
+       const res = await isAdmin(params.dao, CHAIN)
        if(walletAddress != "" && res == true) {
-           const isBan = await getUserBan(params.dao, walletAddress)
-           if(isBan === false){
-                
-               const account = await server.getAccount(walletAddress)
-               //preparing arguements
-               params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
-               const owner = (new StellarSdk.Address(walletAddress)).toScVal()
-               const member = (new StellarSdk.Address(params.user)).toScVal()
-               let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
-                   .addOperation(
-                       // An operation to call create on the contract
-                       contract.call("ban_member", params.dao, owner, member)
-                    )
-                    .setTimeout(timeout)
-                    .addMemo(StellarSdk.Memo.text(version + " banned user "))
-                    .build();
-               // Simulate the transaction to discover the storage footprint, and update the
-               transaction = await server.prepareTransaction(transaction);
-               //sign and exec transactions
-               const res = await execTranst(transaction)
-               if(res.status === false) {
-                   //something went wrong
-                   return false
-               }
-               else {
-                   await addTx({hash:res.hash,
-                      address:walletAddress,
-                      action:"banned member " + fAddr(params.user, 6),
-                      data:params.user
-                  })
-                   return {status: (StellarSdk.scValToNative(res.value))}
-               }
+           const isBan = await getUserBan(params.dao, walletAddress, CHAIN)
+            if(isBan === false){
+                if(CHAIN == 'stellar'){
+                    const account = await server.getAccount(walletAddress)
+                    //preparing arguements
+                    params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
+                    const owner = (new StellarSdk.Address(walletAddress)).toScVal()
+                    const member = (new StellarSdk.Address(params.user)).toScVal()
+                    let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                            .addOperation(
+                            // An operation to call create on the contract
+                            contract.call("ban_member", params.dao, owner, member)
+                            )
+                            .setTimeout(timeout)
+                            .addMemo(StellarSdk.Memo.text(version + " banned user "))
+                            .build();
+                    // Simulate the transaction to discover the storage footprint, and update the
+                    transaction = await server.prepareTransaction(transaction);
+                    //sign and exec transactions
+                    const res = await execTranst(transaction)
+                    if(res.status === false) {
+                        //something went wrong
+                        return false
+                    }
+                    else {
+                        await addTx({hash:res.hash,
+                                address:walletAddress,
+                                action:"banned member " + fAddr(params.user, 6),
+                                data:params.user
+                        })
+                        return {status: (StellarSdk.scValToNative(res.value))}
+                    }
+                }
+                else if(CHAIN == 'xrp') {
+                    const hash = await payXrp(walletAddress, `${version} banned member`)
+                    if(hash) {
+                        //create the dao
+                        if(params.dao != "") {
+                            const res = await fetch(`${BACKEND_API}/chain/xrp/dao/ban`, {
+                                method: "POST",
+                                body: JSON.stringify({
+                                    daoId:params.dao,
+                                    user:walletAddress,
+                                    member:params.user
+                                }),
+                                headers: {
+                                    "content-type": "application/json",
+                                },
+                            });
+                            if(res.ok) {
+                                const resp = await res.json()
+                                if(resp.status === true) {
+                                    await addTx({
+                                        hash:res.hash,
+                                        address:walletAddress,
+                                        action:"banned member " + fAddr(params.user, 6),
+                                        data:params.user
+                                    })
+                                    return {status:"true"}
+                                }
+                                else{
+                                    return {status:"false"}
+                                }
+                            }
+                        }else{return false}
+                    }
+                    else {
+                        return false
+                    }
+                }
            }
            else if(isBan === true){
                //user has already been banned
@@ -1510,40 +2194,79 @@ export const banDaoMember = async (params = {}) => {
 **/
 export const unbanDaoMember = async (params = {}) => {
    try{
-       const res = await isAdmin(params.dao)
+       const res = await isAdmin(params.dao, CHAIN)
        if(walletAddress != "" && res == true) {
-           const isBan = await getUserBan(params.dao, walletAddress)
+           const isBan = await getUserBan(params.dao, walletAddress, CHAIN)
            if(isBan === false){
-                
-               const account = await server.getAccount(walletAddress)
-               //preparing arguements
-               params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
-               const owner = (new StellarSdk.Address(walletAddress)).toScVal()
-               const member = (new StellarSdk.Address(params.user)).toScVal()
-               let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
-                   .addOperation(
-                       // An operation to call create on the contract
-                       contract.call("un_ban_member", params.dao, owner, member)
-                    )
-                    .setTimeout(timeout)
-                    .addMemo(StellarSdk.Memo.text(version + " unbanned user "))
-                    .build();
-               // Simulate the transaction to discover the storage footprint, and update the
-               transaction = await server.prepareTransaction(transaction);
-               //sign and exec transactions
-               const res = await execTranst(transaction)
-               if(res.status === false) {
-                   //something went wrong
-                   return false
-               }
-               else {
-                   await addTx({hash:res.hash,
-                      address:walletAddress,
-                      action:"Unbanned member " + fAddr(params.user, 6),
-                      data:params.user
-                  })
-                   return {status: (StellarSdk.scValToNative(res.value))}
-               }
+               if(CHAIN == 'stellar'){
+                const account = await server.getAccount(walletAddress)
+                //preparing arguements
+                params.dao = new StellarSdk.Address(params.dao);params.dao = params.dao.toScVal()
+                const owner = (new StellarSdk.Address(walletAddress)).toScVal()
+                const member = (new StellarSdk.Address(params.user)).toScVal()
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to call create on the contract
+                        contract.call("un_ban_member", params.dao, owner, member)
+                        )
+                        .setTimeout(timeout)
+                        .addMemo(StellarSdk.Memo.text(version + " unbanned user "))
+                        .build();
+                // Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else {
+                    await addTx({
+                        hash:res.hash,
+                        address:walletAddress,
+                        action:"Unbanned member " + fAddr(params.user, 6),
+                        data:params.user
+                    })
+                    return {status: (StellarSdk.scValToNative(res.value))}
+                }
+            }
+            else if(CHAIN == 'xrp'){
+                const hash = await payXrp(walletAddress, `${version} unbanned member`)
+                if(hash) {
+                    //create the dao
+                    if(params.dao != "") {
+                        const res = await fetch(`${BACKEND_API}/chain/xrp/dao/unban`, {
+                            method: "POST",
+                            body: JSON.stringify({
+                                daoId:params.dao,
+                                user:walletAddress,
+                                member:params.user
+                            }),
+                            headers: {
+                                "content-type": "application/json",
+                            },
+                        });
+                        if(res.ok) {
+                            const resp = await res.json()
+                            if(resp.status === true) {
+                                await addTx({
+                                    hash:res.hash,
+                                    address:walletAddress,
+                                    action:"unbanned member " + fAddr(params.user, 6),
+                                    data:params.user
+                                })
+                                return {status:"true"}
+                            }
+                            else{
+                                return {status:"false"}
+                            }
+                        }
+                    }else{return false}
+                }
+                else {
+                    return false
+                }
+            }
            }
            else if(isBan === true){
                //user has already been banned
@@ -1570,37 +2293,69 @@ export const unbanDaoMember = async (params = {}) => {
 export const executeProposal = async (params = {}) => {
     try{
         if(walletAddress != "") {
-            const account = await server.getAccount(walletAddress)
-            //preparing arguements
-            params.owner = new StellarSdk.Address(walletAddress);params.owner = params.owner.toScVal()
-            const propId = StellarSdk.nativeToScVal(params.propId)
-            const status = StellarSdk.nativeToScVal(params.status * 1)
-            const _type = StellarSdk.nativeToScVal(params._type * 1)
             let msg = "";
-            if((params.status * 1) === 1) {
-                msg = ' approved Lumos Proposal'
+            if((params.status * 1) === 1) {msg = ' approved Lumos Proposal'}
+            else {msg = ' rejected Lumos Proposal'}
+            let value="";let hash=""
+            if(CHAIN == 'stellar'){
+                const account = await server.getAccount(walletAddress)
+                //preparing arguements
+                params.owner = new StellarSdk.Address(walletAddress);params.owner = params.owner.toScVal()
+                const propId = StellarSdk.nativeToScVal(params.propId)
+                const status = StellarSdk.nativeToScVal(params.status * 1)
+                const _type = StellarSdk.nativeToScVal(params._type * 1)
+                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                    .addOperation(
+                        // An operation to call create on the contract
+                        contract.call("execute_proposal", propId, params.owner, status, _type)
+                    )
+                    .setTimeout(timeout)
+                    .addMemo(StellarSdk.Memo.text(version + msg))
+                    .build();
+                // Simulate the transaction to discover the storage footprint, and update the
+                transaction = await server.prepareTransaction(transaction);
+                //sign and exec transactions
+                const res = await execTranst(transaction)
+                if(res.status === false) {
+                    //something went wrong
+                    return false
+                }
+                else{value = (StellarSdk.scValToNative(res.value));hash=res.hash}
             }
-            else {
-                msg = ' rejected Lumos Proposal'
+            else if(CHAIN == 'xrp'){
+                hash = await payXrp(walletAddress, `${version} ${msg}`)
+                if(hash) {
+                    //create the dao
+                    if(params.propId != "") {
+                        const res = await fetch(`${BACKEND_API}/chain/xrp/proposal/execute`, {
+                            method: "POST",
+                            body: JSON.stringify({
+                                propId:params.propId,
+                                daoId:params.daoId,
+                                user:walletAddress,
+                                status:params.status*1
+                            }),
+                            headers: {
+                                "content-type": "application/json",
+                            },
+                        });
+                        if(res.ok) {
+                            const resp = await res.json()
+                            if(resp.status === true) {
+                                value = resp.msg
+                            }
+                            else{
+                                value = resp.msg
+                            }
+                        }
+                    }else{return {status: false, msg:'Unable to parse asset data'}}
+                }
+                else {
+                    return false
+                }
             }
-            let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
-                .addOperation(
-                    // An operation to call create on the contract
-                    contract.call("execute_proposal", propId, params.owner, status, _type)
-                 )
-                 .setTimeout(timeout)
-                 .addMemo(StellarSdk.Memo.text(version + msg))
-                 .build();
-            // Simulate the transaction to discover the storage footprint, and update the
-            transaction = await server.prepareTransaction(transaction);
-            //sign and exec transactions
-            const res = await execTranst(transaction)
-            if(res.status === false) {
-                //something went wrong
-                return false
-            }
-            else {
-                if((StellarSdk.scValToNative(res.value)) === 'done'){
+            if(value) {
+                if(value === 'done'){
                     //save the active proposals mark
                     if((params.status * 1) === 1) {
                         const url = API_URL + "dao_active_proposal&token=" + params.daoId
@@ -1620,22 +2375,23 @@ export const executeProposal = async (params = {}) => {
                         if(!(await response.json()).status) {return false}
                     }
                     //save tx
-                    await addTx({hash:res.hash,
+                    await addTx({
+                       hash,
                        address:walletAddress, 
                        action:msg + ' with id PROP_' + params.propId,
                        data:  JSON.stringify({dao:params.daoId,  proposal: N(params.propId)})
                     })
-                   //log alert for proposal owner 
-                   addAlerts({
-                       other:walletAddress,
-                       user:params.creator || "",
-                       action:msg + ' with id PROP_' + params.propId,
-                       link:"dao/" + params.daoId + "/proposal/" + params.propId,
-                       title:msg.trim(),
-                       type:'execute'
-                   })
-               }
-               return {status: (StellarSdk.scValToNative(res.value))}
+                    //log alert for proposal owner 
+                    addAlerts({
+                        other:walletAddress,
+                        user:params.creator || "",
+                        action:msg + ' with id PROP_' + params.propId,
+                        link:"dao/" + params.daoId + "/proposal/" + params.propId,
+                        title:msg.trim(),
+                        type:'execute'
+                    })
+                }
+                return {status: value}
             }
         }
         else {return false}
@@ -1714,55 +2470,90 @@ export const sendProposalComment = async (propId, daoId, msg = "", address) => {
 export const voteProposal = async (params = {}) => {
         try{
             if(walletAddress != "") {
-                 
-                const account = await server.getAccount(walletAddress)
-                //first save voter reasons
-                //check if the url is http and from this domain
-                let url = API_URL +  "vote_reason&dao_id=" + params.daoId  + "&user=" + encodeURIComponent(walletAddress) + "&reason=" + encodeURIComponent(params.reason) + "&vote_type=" + params.vote_type
-                url += "&prop_id=" + encodeURIComponent(params.proposalId) 
-                const response = await fetch(url);
-                if (!response.ok) {
-                  return false;
+                let res=null;
+                if(CHAIN == 'stellar'){
+                    const account = await server.getAccount(walletAddress)
+                    //first save voter reasons
+                    //check if the url is http and from this domain
+                    let url = API_URL +  "vote_reason&dao_id=" + params.daoId  + "&user=" + encodeURIComponent(walletAddress) + "&reason=" + encodeURIComponent(params.reason) + "&vote_type=" + params.vote_type
+                    url += "&prop_id=" + encodeURIComponent(params.proposalId) 
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                    return false;
+                    }
+                    const resp = await response.json();
+                    if(!resp.status) {return false}
+                    //preparing arguements
+                    params.voters = new StellarSdk.Address(params.voters);params.voters = params.voters.toScVal()
+                    const propId = StellarSdk.nativeToScVal(params.proposalId)
+                    const vote_type = StellarSdk.nativeToScVal(params.vote_type)
+                    //multiply the 
+                    const voting_count = StellarSdk.nativeToScVal(params.voting_count.map(count => Math.round(count * floatingConstant)))
+                    let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
+                        .addOperation(
+                            // An operation to call create on the contract
+                            contract.call("vote_on_proposal", propId, params.voters, vote_type, voting_count)
+                        )
+                        .setTimeout(timeout)
+                        .addMemo(StellarSdk.Memo.text(version + ' Voting Lumos Proposal'))
+                        .build();
+                    // Simulate the transaction to discover the storage footprint, and update the
+                    transaction = await server.prepareTransaction(transaction);
+                    //sign and exec transactions
+                    res = await execTranst(transaction)
                 }
-                const resp = await response.json();
-                if(!resp.status) {return false}
-                //preparing arguements
-                params.voters = new StellarSdk.Address(params.voters);params.voters = params.voters.toScVal()
-                const propId = StellarSdk.nativeToScVal(params.proposalId)
-                const vote_type = StellarSdk.nativeToScVal(params.vote_type)
-                const voting_power = StellarSdk.nativeToScVal(Math.round(params.voting_power * floatingConstant))
-                let transaction = new StellarSdk.TransactionBuilder(account, { fee, networkPassphrase: networkUsed })
-                    .addOperation(
-                        // An operation to call create on the contract
-                        contract.call("vote_on_proposal", propId, params.voters, vote_type, voting_power)
-                     )
-                     .setTimeout(timeout)
-                     .addMemo(StellarSdk.Memo.text(version + ' Voting Lumos Proposal'))
-                     .build();
-                // Simulate the transaction to discover the storage footprint, and update the
-                transaction = await server.prepareTransaction(transaction);
-                //sign and exec transactions
-                const res = await execTranst(transaction)
-                if(res.status === false) {
+                else if(CHAIN == 'xrp') {
+                    hash = await payXrp(walletAddress, `${version} Voting`)
+                    if(hash) {
+                        //create the dao
+                        if(params.proposalId != "") {
+                            const resp = await fetch(`${BACKEND_API}/chain/xrp/proposal/vote`, {
+                                method: "POST",
+                                body: JSON.stringify({
+                                    votingInfo:{
+                                        /** PASS THE NECCESSARY INFO HERE */
+                                        walletAddress,
+                                        propId:params.proposalId,
+                                        daoId:params.daoId,
+                                        voteTypes:params.vote_type,
+                                        voteCounts: params.voting_count.map(count => Math.round(count * floatingConstant))
+                                    }
+                                }),
+                                headers: {
+                                    "content-type": "application/json",
+                                },
+                            });
+                            if(resp.status == 200) {
+                                res = await resp.json()
+                            }
+                        }else{return {status: false, msg:'Something went wrong'}}
+                    }
+                    else {
+                        return {status: false, msg:'Something went wrong'}
+                    }
+                }
+                if(res?.status === false) {
                     //something went wrong
-                    return false
+                    return res
                 }
                 else {
-                   await addTx({hash:res.hash,
-                       address:walletAddress,
-                       action:"Voted " + ((params.vote_type == 1) ? 'Yes' : 'No') + " on this proposal " + (params.name || ""),
-                       data:JSON.stringify({dao:params.daoId,  proposal: N(params.proposalId)})
-                   })
-                   //log alert for proposal owner
-                   await addAlerts({
-                       other:walletAddress,
-                       user:params.owner || "",
-                       action:"Voted " + ((params.vote_type == 1) ? 'Yes' : 'No') + " on this proposal " + (params.name || ""),
-                       link:"dao/" + params.daoId + "/proposal/" + params.proposalId,
-                       title:'Vote on proposal',
-                       type:'vote'
-                   })
-                   return {status: (StellarSdk.scValToNative(res.value))}
+                   if(res.value == "voted"){
+                        await addTx({hash:res.hash,
+                            address:walletAddress,
+                            action:"Voted " + params.vote_label.join(", ") + " on this proposal " + (params.name || ""),
+                            data:JSON.stringify({dao:params.daoId,  proposal: N(params.proposalId)})
+                        })
+                        //log alert for proposal owner
+                        await addAlerts({
+                            other:walletAddress,
+                            user:params.owner || "",
+                            action:"Voted " + params.vote_label.join(", ") + " on this proposal " + (params.name || ""),
+                            link:"dao/" + params.daoId + "/proposal/" + params.proposalId,
+                            title:'Vote on proposal',
+                            type:'vote'
+                        })
+                    }
+                   return {status:true, value: (StellarSdk.scValToNative(res.value))}
                 }
             }
             else {return false}
@@ -1826,6 +2617,39 @@ export const getDaoFirst = async (daoId) => {
        return false;
    }
 }
+/** To pay the xrp equivalent
+ * of storing a file in ipfs
+ */
+const payXrp = async (walletAddress, memo="") => {
+    try{
+        const client = await xrpClient()
+        const payTx = await client.autofill({
+            "TransactionType": "Payment",
+            "Account": walletAddress,
+            "Amount": xrp.xrpToDrops(0.01),
+            "Destination": xrpTreasuryAddress,
+            "Memos": [
+                {
+                    "Memo": {
+                        "MemoType": Buffer.from("Description", "utf8").toString("hex"),   
+                        "MemoData": Buffer.from(memo, "utf8").toString("hex")   
+                    }
+                }
+            ]
+        })
+        const res = await execTranst(payTx)
+        if(res.status === false) {
+            //something went wrong
+            return false
+        }
+        else {
+            return res.hash
+        }
+    }
+    catch(e){
+        return false
+    }
+}
 // get users first
 export const getUsersFirst = async (user) => {
     try {
@@ -1844,3 +2668,41 @@ export const getUsersFirst = async (user) => {
        return false;
    }
 } 
+//to send chat message
+export const sendChatBotMsg = async (userId, msg) => {
+    try {
+        if(userId != "") {
+            const res = await fetch(`${BACKEND_API}/chat`, {
+                method: "POST",
+                body: JSON.stringify({
+                    userId,
+                    prompt:msg    
+                }
+                ),
+                headers: {
+                    "content-type": "application/json",
+                },
+            });
+            if(res.ok) {
+                const resp = await res.json()
+                if(resp.status) {
+                    return resp?.data
+                }
+                else{
+                    return false
+                }
+            }
+       } 
+       else {return false}
+   } catch (error) { console.log(error)
+       return false;
+   }
+} 
+//function to switch chain
+export const switchChain = (chain = 'stellar') => {
+    //disconnect current chain
+    localStorage.setItem('selectedWallet', "")
+    localStorage.setItem('LUMOS_WALLET', "")
+    localStorage.setItem('LUMOS_CHAIN', '')
+    window.TRIGGER_CONNECT_WALLET = true
+}

@@ -3,19 +3,24 @@ import React, { useState } from 'react'
 import { FiChevronDown } from "react-icons/fi";
 import Alert from '../alert/Alert';
 import { useRouter } from 'next/navigation';
+import { GoChevronRight } from "react-icons/go";
 import {
     isConnected,
     requestAccess
-  } from "@stellar/freighter-api";
+} from "@stellar/freighter-api";
+import { Xumm } from "xumm"
 import lobstr from "@lobstrco/signer-extension-api";
+import {isInstalled, getAddress} from "@gemwallet/api"
 import {alert} from '../alert/swal'
 import { getUserInfo } from '@/app/core/getter';
 import UniversalProvider from '@walletconnect/universal-provider' 
 import SignClient from '@walletconnect/sign-client'
 import QRCode from 'qrcode';
-import { walletConnectConfig, walletConnectNameSpace, walletConnectNetwork } from '@/app/data/constant';
+import { walletConnectConfig, walletConnectNetwork } from '@/app/data/constant';
+import { IoCloseOutline } from 'react-icons/io5';
+import { RiLoader5Fill } from 'react-icons/ri';
 
-//https://lobstr.co/uni/wc/wc/?uri=
+ 
 const ConnectWalletModal = ({setConnectWallet}) => {
 
     const [msg, setMsg] = useState("")
@@ -24,9 +29,48 @@ const ConnectWalletModal = ({setConnectWallet}) => {
     const [qrModal, setQrModal] = useState(false)
     const [walletUri, setWalletUri] = useState("")
     const [walletLoading, setWalletLoading] = useState(false)
+    const [selectedNetwork, setSelectedNetwork] = useState('')
     const router = useRouter();
-   
-    const availableWallets = [
+
+    const availableNetworks = [
+        {
+            name: 'Stellar',
+            icon: '/images/stellar-network.svg',
+            commingSoon: false,
+        },
+        {
+            name: 'Ripple',
+            icon: '/images/xrp-network.svg',
+            commingSoon: false,
+        },
+        {
+            name: 'Solana',
+            icon: '/images/solana-network.svg',
+            commingSoon: true,
+        },
+        {
+            name: 'Ton',
+            icon: '/images/ton-network.svg',
+            commingSoon: true,
+        },
+        {
+            name: 'Ethereum',
+            icon: '/images/eth-network.svg',
+            commingSoon: true,
+        },
+        {
+            name: 'Avalanche',
+            icon: '/images/eth-network.svg',
+            commingSoon: true,
+        },
+        {
+            name: 'Polygon',
+            icon: '/images/polygon-network.svg',
+            commingSoon: true,
+        }
+    ]
+
+    const stellarWallets = [
         {
             name: 'Lobstr',
             icon: '/images/lobstr.jpg',
@@ -44,7 +88,28 @@ const ConnectWalletModal = ({setConnectWallet}) => {
         }
     ]
 
-    const availableMobileWallets = [
+    const xrpWallets = [
+        {
+            name: 'Gem',
+            icon: '/images/gem.svg',
+            url: 'https://freighter.app/',
+        },
+        {
+            name: 'Xaman',
+            icon: '/images/xaman.png',
+            url: 'https://xaman.app/',
+        }
+    ]
+   
+    const xrpMobileWallets = [
+        {
+            name: 'Xaman',
+            icon: '/images/xaman.png',
+            url: 'https://xaman.app/',
+        }
+    ]
+
+    const stellarMobileWallets = [
         {
             name: 'Wallet Connect',
             icon: '/images/walletConnectLogo.jpg',
@@ -59,7 +124,8 @@ const ConnectWalletModal = ({setConnectWallet}) => {
             return '%' + c.charCodeAt(0).toString(16);
         });
     }
-    async function connectWallet() {
+    async function connectWallet(selectedWallet) {
+        console.log(selectedWallet)
         if(!selectedWallet){
             setMsg("Please select a wallet.");
             setAlertType("warning");
@@ -70,12 +136,17 @@ const ConnectWalletModal = ({setConnectWallet}) => {
             try{
                 if(selectedWallet.name.toLowerCase() == 'freighter'){
                     //check if freighter is installed
+                    //we are calling it twice, because its usually fails the first time, its a freigther bug
+                    await isConnected()
                     const isInstalled = await isConnected()
                     if(isInstalled) {  
+                        //we are calling it twice, because its usually fails the first time, its a freigther bug
+                        await requestAccess() 
                         const userAddress = await requestAccess()
                         if(userAddress){
                             JSON.stringify(localStorage.setItem('selectedWallet', userAddress))
                             JSON.stringify(localStorage.setItem('LUMOS_WALLET', 'freighter'))
+                            JSON.stringify(localStorage.setItem('LUMOS_CHAIN', 'stellar'))
                             await auth2Fa(userAddress)
                         }
                         else {
@@ -96,6 +167,7 @@ const ConnectWalletModal = ({setConnectWallet}) => {
                         if(userAddress){
                             JSON.stringify(localStorage.setItem('selectedWallet', userAddress))
                             JSON.stringify(localStorage.setItem('LUMOS_WALLET', 'lobstr'))
+                            JSON.stringify(localStorage.setItem('LUMOS_CHAIN', 'stellar'))
                             await auth2Fa(userAddress)
                         }
                         else {
@@ -107,6 +179,79 @@ const ConnectWalletModal = ({setConnectWallet}) => {
                         alert('Lobstr wallet app is not installed in your browser.','Wallet Info','warn')
                      }
                 }
+                else if(selectedWallet.name.toLowerCase() == 'gem'){ 
+                    //check if lobstr is installed
+                    const isInstall = await isInstalled()
+                    if(isInstall) {  
+                        const userAddress = await getAddress()
+                        if(userAddress){
+                            JSON.stringify(localStorage.setItem('selectedWallet', userAddress.result.address))
+                            JSON.stringify(localStorage.setItem('LUMOS_WALLET', 'gem'))
+                            JSON.stringify(localStorage.setItem('LUMOS_CHAIN', 'xrp'))
+                            await auth2Fa(userAddress.result.address)
+                        }
+                        else {
+                            alert('User denied access','Wallet Connect Error')
+                        }
+                    }   
+                    else {
+                        //redirect to freighter website
+                        alert('Gem wallet app is not installed in your browser.','Wallet Info','warn')
+                     }
+                }
+                else if(selectedWallet.name.toLowerCase() == 'xaman'){ 
+                    //ping xama
+                    const xama = new Xumm(process.env.NEXT_PUBLIC_XAMA_PUBLIC_KEY, process.env.NEXT_PUBLIC_XAMA_SECRET_KEY)
+                    /*await xama.ping()
+                    const pay = await xama.payload.create({
+                        "txjson": {
+                          "TransactionType": "SignIn"
+                        }
+                      })
+                      console.log(pay)
+                    if(pay.next){
+                        //open websocket first
+                        const web = new WebSocket(pay?.refs?.websocket_status)
+                        web.onmessage = (e) => {
+                            console.log(e)
+                        }
+                    }
+                    return;*/
+                    xama.on("logout", async () => {
+                        console.log("Log out")
+                    })
+                    await xama.logout()
+                    xama.on("ready", (e) => console.log("Xama Ready", e))
+                    //success events
+                    xama.on("success", async (e) => {
+                      xama.user.account.then(async account => { 
+                        if(account){
+                            JSON.stringify(localStorage.setItem('selectedWallet', account))
+                            JSON.stringify(localStorage.setItem('LUMOS_WALLET', 'xama'))
+                            JSON.stringify(localStorage.setItem('LUMOS_CHAIN', 'xrp'))
+                            await auth2Fa(account)
+                        }
+                        else {
+                            alert('User denied access','Wallet Connect Error')
+                        }
+                      })
+                    })
+                    xama.on("retrieving", async (e) => { 
+                        xama.user.account.then(async account => { 
+                          if(account){
+                              JSON.stringify(localStorage.setItem('selectedWallet', account))
+                              JSON.stringify(localStorage.setItem('LUMOS_WALLET', 'xama'))
+                              JSON.stringify(localStorage.setItem('LUMOS_CHAIN', 'xrp'))
+                              await auth2Fa(account)
+                          }
+                          else {
+                              alert('User denied access','Wallet Connect Error')
+                          }
+                        })
+                    })
+                    //disconnect first any session
+                    xama.authorize() 
+                }
                 else if(selectedWallet.name.toLowerCase() == "wallet connect") {
                     const signClient = await SignClient.init(
                         {
@@ -116,7 +261,7 @@ const ConnectWalletModal = ({setConnectWallet}) => {
                             metadata: {
                                 name: 'Lumos Dao',
                                 description: 'Create DAOs on Lumos Dao',
-                                url: 'https://app.lumosdao.com/',
+                                url: 'https://app.lumosdao.org/',
                                 icons: ["https://lumosdao.io/public/images/Image.png"]
                             },
                     })
@@ -144,11 +289,23 @@ const ConnectWalletModal = ({setConnectWallet}) => {
                         });
                     })
                     const wallet = await provider.connect({
-                        optionalNamespaces: walletConnectNameSpace,
+                        optionalNamespaces: {
+                            stellar: {
+                            methods: [
+                                'stellar_signAndSubmitXDR',
+                                'stellar_signXDR',
+                            ],
+                            chains: [walletConnectNetwork],
+                            events: ['chainChanged', 'accountsChanged'],
+                            rpcMap: {
+                                pubnet:
+                                `https://rpc.walletconnect.com?chainId=${walletConnectNetwork}&projectId=${process.env.NEXT_PUBLIC_WALLET_CONNECT_ID}`
+                                }
+                            }
+                        },
                         skipPairing: false // optional to skip pairing ( later it can be resumed by invoking .pair())
                     })
                     if(wallet) {
-                        console.log(provider)
                         if(provider.session) {
                             let address = (provider.session.namespaces.stellar.accounts[0])
                             address = address.substring(address.lastIndexOf(":") + 1)
@@ -194,7 +351,7 @@ const ConnectWalletModal = ({setConnectWallet}) => {
     <>
     {
         (qrModal) ?
-            <div className='flex px-4 py-7 md:p-7 flex-col justify-center fixed top-[50%] left-[50%] bg-white md:w-[600px] border w-[97%] z-[9999999]' style={{ transform: "translate(-50%, -50%)" }}>
+            <div className='flex px-4 py-7 md:p-7 flex-col justify-center fixed top-[50%] left-[50%] bg-white md:w-[600px] border w-[97%] z-[9999999] helvetica-font' style={{ transform: "translate(-50%, -50%)" }}>
                     <div className='flex items-center justify-between mb-3 w-full'>
                         <p>Login with wallet connect</p>
                         <p className='text-[24px] cursor-pointer' onClick={() => setQrModal(false)}>&times;</p>
@@ -235,75 +392,171 @@ const ConnectWalletModal = ({setConnectWallet}) => {
         <></>
     }
         <div>
-            <div className="h-full w-full fixed top-0 left-0 z-[99]" style={{ background:"rgba(14, 14, 14, 0.58)" }} onClick={() => setConnectWallet(false)}></div>
-            <div className="bg-white md:w-[600px] max-w-[90%] px-4 flex flex-col items-center justify-center fixed top-[55%] left-[50%] pb-[4rem] rounded-[15px] z-[100] login-modal" style={{ transform: "translate(-50%, -50%)" }}>
-                <div className='flex items-center justify-between pt-3 px-6 w-full border-b'>
-                    <p className='text-[15px] md:text-[20px] font-[500]'>Connect Wallet</p>
-                    <p onClick={() => setConnectWallet(false)} className='text-gray-500 md:text-[35px] text-[25px] cursor-pointer'>&times;</p>
+            <div className="h-full w-full fixed top-0 left-0 z-[999]" style={{ background:"rgba(14, 14, 14, 0.58)" }} onClick={() => setConnectWallet(false)}></div>
+            <div className="bg-white md:w-[450px] w-[92%] px-2 flex flex-col items-start justify-center fixed top-[48%] left-[50%] pb-[3rem] rounded-[8px] z-[1000] login-modal" style={{ transform: "translate(-50%, -50%)" }}>
+                <div className='flex items-center justify-between pt-6 px-3 w-full'>
+                    <p className='text-[15px] md:text-[20px]'>Select Network</p>
+                    <IoCloseOutline onClick={() => setConnectWallet(false)} className='text-gray-500 md:text-[25px] text-[20px] cursor-pointer'/>
                 </div>
-                <div className='flex items-center justify-center flex-col text-center px-[20px]'>
-                    <p className='mt-10 font-[500] lg:text-[24px] text-[18px]'>Please Connect Your Account to Wallet</p>
-                    <div className='flex items-center justify-between w-[280px] sm:max-w-[280px] mt-10 mb-5 border px-4 py-[8px] rounded-full relative'>
-                        <div className='flex items-center gap-1' onClick={() => setDropdownOpen(!dropdownOpen)}>
-                            {
-                                selectedWallet.icon && <Image src={selectedWallet.icon} width="20" height="20"/>
-                            }
-                            <input type="text" className='text-gray-500 font-[500] outline-none cursor-pointer' placeholder='Choose your wallet' value={selectedWallet.name} />
-                        </div>
-                        <FiChevronDown onClick={() => setDropdownOpen(!dropdownOpen)} className='cursor-pointer text-gray-500 text-[20px]'/>
+                {
+                    selectedNetwork === '' &&
+                    <div className='flex items-start flex-col text-center w-full mt-6'>
                         {
-                            dropdownOpen && (
-                                <>
-                                    <div className='hidden sm:block absolute z-10 top-[40px] w-[100%] left-0 border mt-2 rounded-[10px] bg-white shadow-[0px 2px 4px rgba(0, 0, 0, 0.1)]'>
-                                        {
-                                            availableWallets.map((wallet, index) => {
-                                                return(
-                                                    <div key={index} onClick={() => {
-                                                        setSelectedWallet(wallet)
-                                                        setDropdownOpen(false)
-                                                    }} className='my-1 gap-1 flex items-center px-4 py-[8px] cursor-pointer hover:bg-gray-100 text-gray-500'>
-                                                        <Image src={wallet.icon} width="20" height={20}/>
-                                                        <p>{wallet.name}</p>
-                                                    </div>
-                                                )
-                                            })
-                                        }
+                            availableNetworks.map((network, index) => {
+                                return(
+                                    <div key={index} 
+                                        onClick={() => {
+                                            setSelectedNetwork(network)
+                                            console.log(network.name);
+                                            
+                                            // setConnectWallet(false)
+                                            // setSelectedWallet(network)
+                                            setDropdownOpen(false)
+                                        }} className='flex justify-between items-center w-full cursor-pointer hover:bg-gray-100 border-b px-4 pb-[12px] pt-[20px]'>
+                                        <div className='gap-[8px] flex items-center text-gray-500'>
+                                            <img src={network.icon} className='w-[35px]'/>
+                                            <p>{network.name}</p>
+                                        </div>
+                                            {
+                                                network.commingSoon === false ?
+                                                <GoChevronRight /> 
+                                                    :
+                                                <p className='text-[#344054] bg-[#F2F4F7] text-[12px] rounded-full py-1 px-3 inline-block min-w-[90px] text-center'>Coming soon</p>
+                                            }
                                     </div>
-                                    <div className='absolute sm:hidden block  z-10 top-[40px] w-[100%] left-0 border mt-2 rounded-[10px] bg-white shadow-[0px 2px 4px rgba(0, 0, 0, 0.1)]'>
-                                        {
-                                            availableMobileWallets.map((wallet, index) => {
-                                                return(
-                                                    <div key={index} onClick={() => {
-                                                        setSelectedWallet(wallet)
-                                                        setDropdownOpen(false)
-                                                    }} className='my-1 gap-1 flex items-center px-4 py-[8px] cursor-pointer hover:bg-gray-100 text-gray-500'>
-                                                        <Image src={wallet.icon} width="20" height={20}/>
-                                                        <p>{wallet.name}</p>
-                                                    </div>
-                                                )
-                                            })
-                                        }
-                                    </div>
-                                </>
-                            )
+                                )
+                            })
                         }
                     </div>
-                    {
-                        loader ? 
-                        <button className='bg-[#ffbf92] text-white px-5 py-[10px] rounded-full font-[500] w-[220px] cursor-not-allowed'>
-                            <Image src='/images/loader.webp' width="20" height="20" className='invert mx-auto'/>
-                        </button>
-                        :
-                        <button className='bg-[#DC6B19] text-white px-5 py-[10px] rounded-full font-[500] w-[220px]' onClick={connectWallet} >Connect Wallet</button>
-                    }
-                </div>
+                }
+
+                {
+                    selectedNetwork.name === "Stellar" &&
+                    <div className='md:flex items-start flex-col text-center w-full mt-6 hidden'>
+                        {
+                            stellarWallets.map((wallet, index) => {
+                                return(
+                                    <div key={index} 
+                                        onClick={() => {
+                                            // setConnectWallet(false)
+                                            setSelectedWallet(wallet)
+                                        }} className='flex justify-between items-center w-full cursor-pointer hover:bg-gray-100 border-b px-4 pb-[12px] pt-[20px]'>
+                                        <div className='gap-[8px] flex items-center text-gray-500'>
+                                            <img src={wallet.icon} className='w-[35px]'/>
+                                            <p>{wallet.name}</p>
+                                        </div>
+                                        {
+                                            loader ? 
+                                            <p className='bg-[#F2F4F7] rounded-full py-[6px] px-3 inline-flex justify-center items-center min-w-[90px] text-center text-[12px] cursor-not-allowed'>
+                                                <RiLoader5Fill  className='animate-spin text-center'/>
+                                            </p>
+                                                :
+                                            <p onClick={() => connectWallet(wallet)} className='text-[#344054] bg-[#F2F4F7] text-[12px] rounded-full py-1 px-3 inline-block min-w-[90px] text-center'>Connect</p>
+                                        }
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                }
+
+                {
+                    selectedNetwork.name === "Stellar" &&
+                    <div className='flex items-start flex-col text-center w-full mt-6 md:hidden'>
+                        {
+                            stellarMobileWallets.map((wallet, index) => {
+                                return(
+                                    <div key={index} 
+                                        onClick={() => {
+                                            // setConnectWallet(false)
+                                            setSelectedWallet(wallet)
+                                        }} className='flex justify-between items-center w-full cursor-pointer hover:bg-gray-100 border-b px-4 pb-[12px] pt-[20px]'>
+                                        <div className='gap-[8px] flex items-center text-gray-500'>
+                                            <img src={wallet.icon} className='w-[35px]'/>
+                                            <p>{wallet.name}</p>
+                                        </div>
+                                        {
+                                            loader ? 
+                                            <p className='bg-[#F2F4F7] rounded-full py-[6px] px-3 inline-flex justify-center items-center min-w-[90px] text-center text-[12px] cursor-not-allowed'>
+                                                <RiLoader5Fill  className='animate-spin text-center'/>
+                                            </p>
+                                                :
+                                            <p onClick={() => connectWallet(wallet)} className='text-[#344054] bg-[#F2F4F7] text-[12px] rounded-full py-1 px-3 inline-block min-w-[90px] text-center'>Connect</p>
+                                        }
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                }
+
+                {
+                    selectedNetwork.name === "Ripple" &&
+                    <div className='md:flex hidden items-start flex-col text-center w-full mt-6'>
+                        {
+                            xrpWallets.map((wallet, index) => {
+                                return(
+                                    <div key={index} 
+                                        onClick={() => {
+                                            // setConnectWallet(false)
+                                            setSelectedWallet(wallet)
+                                        }} className='flex justify-between items-center w-full cursor-pointer hover:bg-gray-100 border-b px-4 pb-[12px] pt-[20px]'>
+                                        <div className='gap-[8px] flex items-center text-gray-500'>
+                                            <img src={wallet.icon} className='w-[35px]'/>
+                                            <p>{wallet.name}</p>
+                                        </div>
+                                        {
+                                            loader ? 
+                                            <p className='bg-[#F2F4F7] rounded-full py-[6px] px-3 inline-flex justify-center items-center min-w-[90px] text-center text-[12px] cursor-not-allowed'>
+                                                <RiLoader5Fill  className='animate-spin text-center'/>
+                                            </p>
+                                                :
+                                            <p onClick={() => connectWallet(wallet)} className='text-[#344054] bg-[#F2F4F7] text-[12px] rounded-full py-1 px-3 inline-block min-w-[90px] text-center'>Connect</p>
+                                        }
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                }
+
+                {
+                    selectedNetwork.name === "Ripple" &&
+                    <div className='md:hidden flex items-start flex-col text-center w-full mt-6'>
+                        {
+                            xrpMobileWallets.map((wallet, index) => {
+                                return(
+                                    <div key={index} 
+                                        onClick={() => {
+                                            // setConnectWallet(false)
+                                            setSelectedWallet(wallet)
+                                        }} className='flex justify-between items-center w-full cursor-pointer hover:bg-gray-100 border-b px-4 pb-[12px] pt-[20px]'>
+                                        <div className='gap-[8px] flex items-center text-gray-500'>
+                                            <img src={wallet.icon} className='w-[35px]'/>
+                                            <p>{wallet.name}</p>
+                                        </div>
+                                        {
+                                            loader ? 
+                                            <p className='bg-[#F2F4F7] rounded-full py-[6px] px-3 inline-flex justify-center items-center min-w-[90px] text-center text-[12px] cursor-not-allowed'>
+                                                <RiLoader5Fill  className='animate-spin text-center'/>
+                                            </p>
+                                                :
+                                            <p onClick={() => connectWallet(wallet)} className='text-[#344054] bg-[#F2F4F7] text-[12px] rounded-full py-1 px-3 inline-block min-w-[90px] text-center'>Connect</p>
+                                        }
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                }
             </div>
-            {
-                msg && (
-                    <Alert msg={msg} alertType={alertType} setMsg={setMsg} />
-                )
-            }
         </div>
+
+        {
+            msg && (
+                <Alert msg={msg} alertType={alertType} setMsg={setMsg} />
+            )
+        }
     </>
   )
 }

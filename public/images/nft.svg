@@ -1,0 +1,9 @@
+<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="14.6458" cy="10.1406" rx="6.5" ry="2" stroke="#FF7B1B" stroke-width="1.5"/>
+<path d="M21.1458 14.6406C21.1458 15.7452 18.2356 16.6406 14.6458 16.6406C11.0559 16.6406 8.14575 15.7452 8.14575 14.6406" stroke="#FF7B1B" stroke-width="1.5"/>
+<path d="M21.1458 10.1406V18.9406C21.1458 20.1557 18.2356 21.1406 14.6458 21.1406C11.0559 21.1406 8.14575 20.1557 8.14575 18.9406V10.1406" stroke="#FF7B1B" stroke-width="1.5"/>
+<ellipse cx="7.64575" cy="3.14062" rx="6.5" ry="2" stroke="#FF7B1B" stroke-width="1.5"/>
+<path d="M5.14575 10.1406C3.25394 9.9104 1.51567 9.31517 1.14575 8.14062M5.14575 15.1406C3.25394 14.9104 1.51567 14.3152 1.14575 13.1406" stroke="#FF7B1B" stroke-width="1.5" stroke-linecap="round"/>
+<path d="M5.14575 20.1406C3.25394 19.9104 1.51567 19.3152 1.14575 18.1406L1.14575 3.14062" stroke="#FF7B1B" stroke-width="1.5" stroke-linecap="round"/>
+<path d="M14.1458 5.14062V3.14062" stroke="#FF7B1B" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

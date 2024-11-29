@@ -16,7 +16,8 @@ const DaoCard = ({dao}) => {
   **/
   const joinDao = async (event, code, issuer, name, daoId) => {
     event.stopPropagation();
-    if(!dao.joined){
+    if(!dao.joined){    
+      if(dao.chain == CHAIN){
         const id = talk("Joining " + name + " dao");
         const res = await createTrustline(code, issuer, walletAddress, name, daoId);
         if (res === false) {
@@ -36,19 +37,26 @@ const DaoCard = ({dao}) => {
             window.location.assign(`/dao/${daoId}`)
         }
         stopTalking(4, id);
+      }
+      else {
+        stopTalking(4, talk('Unsupported chain', 'fail'))
+      }
     }
   };
   useEffect(() => {
     window.walletAddress = localStorage.getItem('selectedWallet') || ""
   },[])
   return (
-    <div data={sortDetails} className="mx-auto bg-white shadow-lg w-full md:max-w-[430px] rounded-lg overflow-hidden cursor-pointer" onClick={() => location.assign(`/dao/${dao.id}`)} >
+    <div data={sortDetails} className="mx-auto bg-white border border-[#E6E7E8] w-full md:max-w-[430px] overflow-hidden cursor-pointer helvetica-font" onClick={() => location.assign(`/dao/${dao.id}`)} >
       <div className="relative">
           <img
               className="w-full h-32 sm:h-48 object-cover"
               src={dao.banner} // Replace with the path to your image
               alt="LumosDAO"
           />
+          {/* <button className="absolute top-4 left-4 ml-[10px] bg-blue-400 text-white rounded-full px-3 py-1 text-xs font-bold">
+             {(dao.chain!="")?dao.chain:"stellar"}
+         </button> */}
           {(dao.owner == walletAddress) ?
           <button className="absolute top-4 right-4 bg-yellow-400 text-white rounded-full px-3 py-1 text-xs font-bold">
              Owner
@@ -65,25 +73,39 @@ const DaoCard = ({dao}) => {
       </div>
       <div className="p-4">
           <div className="flex items-start flex-col gap-3">
-              <img className="w-[48px] h-[48px] mr-2 object-cover rounded-full mt-[-40px] relative z-[100]" src={dao.banner} alt="LumosDAO logo" /> {/* Replace with the path to your logo */}
-              <h1 className="text-lg font-semibold">{dao.title}</h1>
+            <div className='p-[4px] bg-[white] w-[70px] h-[70px] mt-[-50px] rounded-full relative z-[100]'>
+              <img className="w-full h-full rounded-full object-cover" src={dao.logo} alt="LumosDAO logo" /> {/* Replace with the path to your logo */}
+            </div>
+              <div className='flex items-center justify-between w-full'>
+                <h1 className="text-lg font-semibold">{dao.title}</h1>
+                <div className="flex items-center gap-1 text-[#141B34] bg-[#F2F6FE] px-3 py-[5px] rounded-full">
+                  <img src="/images/chain.svg" alt="" />
+                  <p>{(dao.chain!="")?dao.chain:"Stellar"}</p>
+                </div>
+              </div>
           </div>
-          <p className="mt-2 text-sm text-gray-600 h-[100px] overflow-y-scroll py-5">
+          <p className="text-sm text-gray-600 h-[100px] overflow-y-scroll pb-5 pt-3">
               {dao.description}
           </p>
-          <div className="mt-4">
-              <div className="text-sm font-semibold text-center flex items-center justify-center gap-3 my-5"> 
+
+          <div className="mt-4 flex items-center gap-5 text-[14px] w-full text-[#141B34] capitalize">
+
+            {/* <div className="flex items-center gap-1">
+              <img src="/images/token.svg" alt="" />
+              <p>Token Based</p>
+            </div> */}
+              {/* <div className="text-sm font-semibold text-center flex items-center justify-center gap-3 my-5"> 
                   <p className='h-[60px] w-[60px] flex items-center justify-center rounded-full text-[36px] bg-[#EFF2F6] text-[#f39c12]'>{dao.activeProposals}</p> 
                   <p className='text-[18px]'>Active proposals</p> 
-              </div>
-              <div className="mt-2 flex gap-3 justify-around">
-                  <div className="text-center bg-[#EFF2F6] w-full py-2 rounded-[10px]">
-                      <p className="text-lg font-bold text-[#f39c12]">{dao.members}</p>
-                      <p className="text-xs text-gray-600 font-[600]">Members</p>
+              </div> */}
+              <div className="mt-2 flex gap-3 justify-between w-full">
+                  <div className="border border-[#DBDEE3] w-full p-2 rounded-[10px]">
+                      <p className="text-[#141B34] mb-7">Members</p>
+                      <p className="ttext-[#141B34]">{dao.members}</p>
                   </div>
-                  <div className="text-center bg-[#EFF2F6] w-full py-2 rounded-[10px]">
-                      <p className="text-lg font-bold text-[#f39c12]">{dao.proposals}</p>
-                      <p className="text-xs text-gray-600 font-[600]">Proposals</p>
+                  <div className="border border-[#DBDEE3] w-full p-2 rounded-[10px]">
+                      <p className="text-[#141B34] mb-7">Proposals</p>
+                      <p className="ttext-[#141B34]">{dao.proposals}</p>
                   </div>
               </div>
           </div>

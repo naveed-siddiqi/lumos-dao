@@ -12,15 +12,17 @@ import { PiDotsThree, PiPencil } from 'react-icons/pi';
 import { BiCopy, BiDotsVerticalRounded } from "react-icons/bi";
 import Image from 'next/image';
 import { FaFacebook } from 'react-icons/fa';
-import { fAddr, fNum, getAlldaoInfo, getAllDelegates, getAllProposal, getDaoDelegatee, getDaoUsersP, getDaoWithoutMeta, getLocked, getMarketCap, getRedditOauthUri, getTokenUserBal, isBanned, readAssetToml } from '@/app/core/getter';
+import { fAddr, fNum, getAlldaoInfo, getAllDelegates, getAllProposal, getDaoDelegatee, getDaoUsersP, getDaoWithoutMeta, getLocked, getMarketCap, getRedditOauthUri, getTokenUserBal, getUsersDao, isBanned, readAssetToml } from '@/app/core/getter';
 import { drawAdminUser, drawDelegateinfo, drawDelegateModal, drawDelegateSearchResult, drawMember, drawOtherAddress, drawProposal, drawProposalReview, drawTopVoters, drawUser } from '@/app/core/draw';
-import { addAdmin, addDelegate, banDaoMember, claimJoiningBonus, copyLink, createTrustline, executeProposal, getDaoFirst, isSafeToml, lockIssuer, N, optimizeImg, paginate, reclaimJoiningBonus, removeDaoAdmin, setJoiningBonus, setProposalSetting, unbanDaoMember, validateImageUpload, validateImageUploadSilently } from '@/app/core/core';
+import { addAdmin, leaveDao, addDelegate, banDaoMember, claimJoiningBonus, copyLink, createTrustline, executeProposal, fArr, getDaoFirst, isSafeToml, lockIssuer, N, optimizeImg, paginate, reclaimJoiningBonus, removeDaoAdmin, setJoiningBonus, setProposalSetting, unbanDaoMember, validateImageUpload, validateImageUploadSilently } from '@/app/core/core';
 import { stopTalking, talk } from '@/app/components/alert/swal';
-import { API_URL, firebaseConfig, stellarExpert } from '@/app/data/constant'; 
+import { API_URL, firebaseConfig, networkWalletUsed, stellarExpert, xrpExplorer } from '@/app/data/constant'; 
 /* SOCIALS */
 import { TwitterAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { initializeApp } from "firebase/app"; 
 import { LoginButton } from '@telegram-auth/react';
+import SelectChain from '@/app/components/chain/SelectChain';
+import { RiVerifiedBadgeFill } from 'react-icons/ri';
  
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -39,27 +41,29 @@ let hasDaoLoadFirst = false
   
 const AboutDAO = () => {
 
-  const params = useParams()
   const [selectedTab, setSelectedTab] = useState('proposals') 
+  const [daoChain, setDaoChain] = useState({})
   const [modal, setModal] = useState('')
   const [edit, setEdit] = useState('') 
   const [delegators, setDelegators] = useState(false)
   const [innerDelegates, setInnerDelegatees] = useState([])
  
   /* RETRIEVE THE DAO SPECIFIC INFORMATION */
-  const  indexMain = async () => {
+  const indexMain = async () => {
     let _dao =  (window.location.href.substring(window.location.href.lastIndexOf("/") + 1)) || ""
     //fetch dao meta first
     dao = (await getAlldaoInfo(_dao))[_dao];  
+    setDaoChain({chain:dao.chain, name:(dao.chain=='stellar')?'Stellar':'XRPL'})
     //load dao meta function first
     setUp('meta')
     //get onchain info
-    dao = {...((await getDaoWithoutMeta([_dao]))[0]), ... dao};
+    dao = {...((await getDaoWithoutMeta((dao.chain=='stellar')?[_dao]:[dao.ipfs], dao.chain))[0]), ... dao};
     //show share on first load, only for owner
     is_Admin = dao.admins.includes(walletAddress) || (dao.owner == walletAddress)
+    //dao.owner = walletAddress
     if(dao.owner == walletAddress) {showDaoShareOnFirst(dao.token)}
     E('dao_save_toml').innerHTML = E('dao_save_toml').href = dao.url
-    dao.toml = await readAssetToml(dao.url)
+    dao.toml = await readAssetToml(dao.url, dao.chain)
     setUp(); 
     inbox_link += "?dao=" + _dao + "&name=" + dao.name
     E('tab3').innerText = "Members (" + dao.members + ")"
@@ -71,7 +75,7 @@ const AboutDAO = () => {
         //load info of all the proposals
         if (dao.proposals.length > 0) {
             //get all propsoal ifo
-            const props = await getAllProposal(dao.proposals, dao.token);
+            const props = await getAllProposal(dao.proposals, dao.token, dao.chain);
             if(props.status) { 
                 let temPropView = document.createElement('div') //hold proposal views, till they are done loading
                 let temRePropView = document.createElement('div') //hold proposal views, till they are done loading
@@ -123,7 +127,7 @@ const AboutDAO = () => {
     E('leaveDao').onclick = async () => {
         const id = talk("Getting ready")
         //first burn all the tokens
-        const bal = await getTokenUserBal(dao.token, walletAddress)
+        const bal = await getTokenUserBal(dao.token, walletAddress, CHAIN)
         if (bal > 0) {
             talk("First burning asset balance", 'norm', id)
             //burn tokens first
@@ -135,6 +139,12 @@ const AboutDAO = () => {
             talk("You have left this Dao", 'good', id)
             //hide button
             E('leaveDao').style.display = 'none'
+            E('joinDao').style.display = 'block'
+            dao['joined'] = false
+            daoUsers[daoUsers.indexOf(walletAddress)] = null //remove the user
+            daoUsers = fArr(daoUsers)
+            loadUsers()
+            setUp()
         } else {
             talk("Something went wrong", 'fail', id)
         }
@@ -153,15 +163,16 @@ const AboutDAO = () => {
             E('joinDao').style.display = 'none'
             E('leaveDao').style.display = 'block'
             dao['joined'] = true
+            daoUsers.push(walletAddress) //add new users
+            loadUsers()
             setUp()
         }
         stopTalking(4, id) 
     }
     //load users
     E('dao_users').innerHTML = `<center style='margin: 40px 20px'>Loading members</center>`
-    daoUsers = await getDaoUsersP(dao.name);
+    daoUsers = await getUsersDao(dao.token);
     daoDelegatee = await getAllDelegates(dao.token)
-    
     setTimeout(loadUsers, 50)
     setTimeout(loadDelegatee, 50)
   }
@@ -181,25 +192,24 @@ const AboutDAO = () => {
         }
       }
     }
-}
+  }
   /** Load dao info 
   * @params {type all|meta|chain}
   **/
-  const setUp = async (type = 'all') => { 
+  const setUp = async (type = 'all') => {  
     if (dao['token'] != undefined) {
         E('dao_name').innerHTML = E('dao_name_head').innerHTML = E('dao_save_name').innerHTML = E('user_delegate_dao_name').innerHTML = dao.name || "no name"
         E('dao_about').innerHTML = E('dao_save_about').innerHTML = dao.description || "Your friendly Lumos DAO community"
         //get token info name
         E('dao_token_name').innerHTML = E('dao_save_code').innerHTML = E('asset_info_name').innerHTML = dao.code
         E('dao_token_url').innerHTML = E('dao_token_url').href = dao.url
-        E('dao_explorer_stellar').href = stellarExpert + '/asset/' + dao.code + '-' + dao.issuer
+        E('dao_explorer_stellar').href = E('asset_name').href = (dao.chain == 'stellar')?stellarExpert + '/asset/' + dao.code + '-' + dao.issuer:`${xrpExplorer}/token/${dao.code}.${dao.issuer}`
+        E('dao_explorer_stellar').innerText = (dao.chain == 'stellar')?"Stellar.expert":`XrpScan`
         const coverImgx = (dao.cover != "" && dao.cover) ? dao.cover : (dao.img || "")
-        console.log(coverImgx)
         if(!(E('dao_cover_image').style.backgroundImage.indexOf(coverImgx) > -1)){
           E('dao_cover_image').style.backgroundImage = 'url(' + coverImgx + "?id=" + Math.random() + ')'
         }
-        E('dao_token_img').src = E('dao_save_img').src = E('dao_image').src = E('asset_info_img').src = (dao.image || "")   
-        E('asset_name').href = stellarExpert + '/asset/' + dao.code + "-" + dao.issuer
+        E('dao_save_img').src = E('dao_image').src = E('asset_info_img').src = (dao.image || "")   
         E('createProposal').href = `/dao/${dao.token}/proposal/create`
         if(dao.proposal_settings) {
             if(dao.proposal_settings == 1) {
@@ -304,15 +314,13 @@ const AboutDAO = () => {
             aToml.DOCUMENTATION.ORG_REDDIT = dao.reddit_url || aToml.DOCUMENTATION.ORG_REDDIT ||  ""
             aToml.DOCUMENTATION.ORG_INSTAGRAM = aToml.DOCUMENTATION.ORG_INSTAGRAM || ""
             aToml.DOCUMENTATION.ORG_DISCORD = aToml.DOCUMENTATION.ORG_DISCORD ||  ""
+            
             if(type == 'all' || type == 'chain') {
                 E('dao_website').innerHTML = E('dao_website').href = E('dao_save_domain').innerHTML = E('dao_save_website').innerText = (aToml.DOCUMENTATION != undefined) ? aToml.DOCUMENTATION.ORG_URL : ""
-                if (aToml.CURRENCIES) {
-                    const temp = (dao.owner || "")
-                    E('dao_others_address').innerHTML = ""
-                    E('dao_others_address').appendChild(drawOtherAddress(temp, 'DAO Creator'))
+                const temp = (dao.owner || "")
+                E('dao_others_address').innerHTML = ""
+                E('dao_others_address').appendChild(drawOtherAddress(temp, 'DAO Creator'))
     
-                }
-                
                 //check if its an approved wallet
                 if (dao.owner == walletAddress || dao.admins.includes(walletAddress)) { 
                     E('dao_setting').style.display = 'block'
@@ -399,19 +407,21 @@ const AboutDAO = () => {
             }
         }
         //check if locked
-        const isLocked = await getLocked(dao.issuer)
+        const isLocked = await getLocked(dao.issuer, dao.chain)
         if(!isLocked) {
             //show the locked msg
-            E('dao_unverify_badge').style.display = ""
+            // E('dao_unverify_badge').style.display = ""
             E('dao_verify_badge').style.display = "none" //hide the verify badge
-            E('dao_verify_warn').style.display = ""
             E('dao_asset_buy').style.display = 'none !important' //hide the buy buttons
         }
         else {
             E('dao_verify_badge').style.display = ""
-            E('dao_unverify_badge').style.display = "none" //hide the unverify badge
-            E('dao_verify_warn').style.display = "none"
+            // E('dao_unverify_badge').style.display = "none" //hide the unverify badge
             E('dao_asset_buy').style.display = "" //show the buy button
+        }
+        if(!dao.issuer == walletAddress){
+            //hide the verify message
+            E('dao_verify_warn').style.display = "none"
         }
         E('dao_save_about').style.display = 'block'
         E('addAdminInputField').style.display = "none" //hide the add admin input field
@@ -421,14 +431,25 @@ const AboutDAO = () => {
         //The api can cause a 31.s sec delay so put it last
         if(type == 'all') {
             const info = await getMarketCap({
-                code:dao.code, issuer:dao.issuer
+                code:dao.code, issuer:dao.issuer, chain:dao.chain
             })
             
             E('asset_info_holders').innerHTML = fNum(info.holders || 0)
-            E('asset_info_market').innerHTML = '$' + fNum((info.cap || 0)/1E7)
-            E('asset_info_supply').innerHTML = fNum((info.supply/1E7) || 0)
+            E('asset_info_market').innerHTML = '$' + fNum((info.cap || 0))
+            E('asset_info_supply').innerHTML = fNum((info.supply) || 0)
+            E('price_change').innerHTML = "$" + fNum((info?.price_change || 0).toFixed(3))
+            if(dao.chain == 'stellar'){
+                E('asset_info_xmagnetic_link').style.display = 'none'
+            }else{
+                E('asset_info_lobstr_link').style.display = 'none'
+                E('asset_info_lumen_link').style.display = 'none'
+                E('asset_info_scouply_link').style.display = 'none'
+            }
             E('asset_info_lobstr_link').href = `https://lobstr.co/trade/native/${dao.code}:${dao.issuer}`
             E('asset_info_lumen_link').href = `https://obm.lumenswap.io/swap/XLM/${dao.code}-${dao.issuer}`
+            E('asset_info_scouply_link').href = `https://scopuly.com/trade/${dao.code}-XLM/${dao.issuer}/native`   
+            E('asset_info_xmagnetic_link').href = `https://xmagnetic.org/dex/${dao.code}+${dao.issuer}+XRP?network=${((networkWalletUsed != 'TESTNET')?"MAINNET":"TESTNET").toLowerCase()}`   
+              
         }
     }
   }
@@ -614,12 +635,12 @@ const AboutDAO = () => {
             daoName:dao.name,
             dao:dao.token
         })
-        if(res !== false) {
+        if(res.status !== false) {
             stopTalking(3, talk('Issuing wallet locked', 'good', id))
             setUp()
         }
         else {
-            stopTalking(3, talk('Unable to lock issuing wallet<br>Something went wrong', 'fail', id))
+            stopTalking(3, talk('Unable to lock issuing wallet<br>' + res.msg, 'fail', id))
         }
     }
     else {
@@ -725,7 +746,8 @@ const AboutDAO = () => {
   useEffect(() => {
     window.E = (id) => document.getElementById(id)     
     window.walletAddress = localStorage.getItem('selectedWallet') || ""
-    
+    window.CHAIN = localStorage.getItem("LUMOS_CHAIN") || "stellar"
+  
     /* Top level function. Do not remove */
     window.toggleMemberModal = (m, event) => {
         if(E(m).style.display == 'none'){
@@ -967,18 +989,19 @@ const AboutDAO = () => {
         let id;
         const but = E(delegatee + '_delegate')
         //check if the user has delegated to another user
-        const delegators = await getDaoDelegatee(dao.token, walletAddress)
+        const delegators = await getDaoDelegatee(dao.token, walletAddress, CHAIN)
+        console.log(delegators)
         if(!delegators.includes(delegatee) && delegators.length > 0){
             stopTalking(3, talk("You have delegate your voting power", 'fail'))
             return ""
         }
         const del_address = delegatee
-        if (await isBanned(dao.token, walletAddress)) {
+        if (await isBanned(dao.token, walletAddress, CHAIN)) {
             stopTalking(3, talk("You have been banned from this dao", 'fail'))
             return ""
         }
         //check if user has joined the dao
-        if ((await getTokenUserBal(dao.token, walletAddress)) === false) {
+        if ((await getTokenUserBal(dao.token, walletAddress, CHAIN)) === false) {
             stopTalking(3, talk("You are not a member of this dao", 'fail'))
             return ""
         }
@@ -1087,7 +1110,7 @@ const AboutDAO = () => {
       //to save the changes to the toml file
       E('dao_save_button').onclick = async () => {
         //to update the dao toml file
-        if (await isBanned(dao.token, walletAddress)) {
+        if (await isBanned(dao.token, walletAddress, CHAIN)) {
             return ""
         }
         const fileInput = E('dao_save_image_edit');
@@ -1103,7 +1126,7 @@ const AboutDAO = () => {
                             setEdit("")
                             //save back the results
                             E('dao_save_about_edit').value = ""
-                            E('dao_save_about').innerHTML = desc
+                            E('dao_save_about').innerHTML = E('dao_about').innerHTML = desc
                             dao.description = desc
                             talk("Saved successfully", 'good', id)
                             saveWeb(id)
@@ -1135,7 +1158,7 @@ const AboutDAO = () => {
                             //save back the results
                             E('dao_save_website_edit').value = ""
                             //hiding the input element
-                            E('dao_save_website').innerHTML = E('dao_save_domain').innerText = E('dao_save_domain').href = web
+                            E('dao_website').innerHTML = E('dao_website').href = E('dao_save_website').innerHTML = E('dao_save_domain').innerText = E('dao_save_domain').href = web
                             dao.website = dao.toml.DOCUMENTATION.ORG_URL = web
                             talk("Saved successfully", 'good', id)
                             saveProposal(id)
@@ -1295,7 +1318,7 @@ const AboutDAO = () => {
         const addr = E('dao_search_admin').value.trim()
         if (walletAddress == dao.owner) {
             if (addr != "") {
-                if (addr !== dao.owner) {
+                if (addr !== dao.owner || true) {
                     if (isSafeToml(addr)) {
                         //check if its already an admin
                         if (dao.admins.includes(addr)) {
@@ -1307,7 +1330,7 @@ const AboutDAO = () => {
                         const id = talk("Checking address", "norm")
                         await new Promise((resolve) => setTimeout(resolve, 500));
                         talk("Adding admin", "norm", id)
-                        if ((await getTokenUserBal(dao.token, addr)) !== false) {
+                        if ((await getTokenUserBal(dao.token, addr, CHAIN)) !== false) {
                             //add admin on chain
                             const res = await addAdmin({
                                 admin: addr,
@@ -1335,7 +1358,7 @@ const AboutDAO = () => {
                         stopTalking(4, talk(msg, 'fail'))
                     }
                 } else {
-                    const msg = "The Dao onwer is alreasy an admin";
+                    const msg = "The Dao onwer is already an admin";
                     stopTalking(4, talk(msg, 'fail'))
                 }
             } else {
@@ -1370,65 +1393,130 @@ const AboutDAO = () => {
   useMemo(() => {
       if(modal == 'daoSettings') { setUp()}
   }, [modal])
+
+  const [isChecked, setIsChecked] = useState(false);
+
+  const toggleSwitch = () => {
+    setIsChecked(!isChecked);
+  };
+
+
   return (
-    <div className='mb-[5rem]'>
-      <div className='md:px-[3rem] px-[1rem] mt-[2.3rem] mb-5 flex items-center gap-1'>
-        <a href="/dao">Home </a>
-        <BsChevronRight />
-        <p id='dao_name_head'></p>
-      </div>
-      <div className="w-[93%] mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
-        <div className="bg-cover h-[300px]" id='dao_cover_image' style={{transition:'backgroundImage 200ms'}}>
+    <div className='mb-[5rem] helvetica-font'>
+      <SelectChain chain={daoChain.chain} name={daoChain.name} />
+      <div className="w-[100%] mx-auto overflow-hidden">
+        <div className="bg-cover h-[450px] rounded-none relative" id='dao_cover_image' style={{transition:'backgroundImage 200ms'}}>
+            <div className='text-white md:text-[17px] text-[12px] md:mx-[6.5rem] mx-[1rem] px-[1.5rem] mt-[2.3rem] mb-5 inline-flex py-2 items-center gap-1 bg-[#84848459] relative z-10 rounded-full'>
+                <a href="/dao">Home </a>
+                <BsChevronRight />
+                <p id='dao_name_head'></p>
+            </div>
+            <div className='top-0 h-full w-full absolute daoBg md:pr-[6.5rem] px-[1rem] flex gap-7 pb-[2rem] justify-end items-end text-white'>
+                <div className='hidden md:flex flex-col gap-3'>
+                    <p>Assets</p>
+                    <p id='dao_token_name' className='mr-4'></p>
+                </div>
+                <div className='hidden md:flex flex-col gap-1'>
+                    <p>Website</p>
+                    <a id='dao_website' href="#" className='mt-2 block overflow-hidden'></a>
+                </div>
+                <div className='hidden md:flex flex-col gap-1'>
+                    <p>Toml url</p>
+                    <a id='dao_token_url' href="#" className='mt-2 block overflow-hidden'></a>
+                </div>
+                <div className='hidden md:flex flex-col gap-1'>
+                    <p>Explorer</p>
+                    <a id='dao_explorer_stellar' href='#' className='mt-2 block'></a>
+                </div>
+            </div>
           {/* Background image */}
         </div>
-        <div className="p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <img id='dao_image'
-                className="w-[60px] h-[60px] rounded-full mt-[-45px]"
-                alt="DAO"
-              />
-              <div className="ml-3 mt-[-15px]">
-                <h3 id='dao_name' className="text-lg font-semibold"></h3>
-                <p id='dao_members' className="text-gray-600"></p>
-              </div>
+        <div className="py-4">
+            <div className="flex items-start flex-col gap-3 md:ml-[6.5rem] mx-[1rem]">
+                <a id='asset_name' href="#" className='p-[4px] bg-[white] md:w-[125px] md:h-[125px] h-[95px] w-[95px] mt-[-65px] rounded-full relative z-[100]'>
+                    <div id='dao_verify_badge' className='bg-white p-[3px] rounded-full absolute top-0 right-[5px] text-[22px]'>
+                        <RiVerifiedBadgeFill className='text-[#FF7B1C]'/>
+                    </div>
+                    <img className="w-full h-full rounded-full object-cover" id='dao_image' alt="LumosDAO logo" /> {/* Replace with the path to your logo */}
+                </a>
+                {/* <h1 className="text-lg font-semibold">{dao.title}</h1> */}
             </div>
-            <div className='flex items-center gap-3'>
-              <button style={{display:'none'}} id='dao_bonus' className="px-4 py-2 text-white rounded-full bg-[#198754] relative">
-                Claim bonus
-              </button>
-              <button style={{display:'none'}} id='dao_set_cover' className="px-4 py-2 text-white rounded-full bg-[#198754] relative">
-                 Set Cover
-              </button>
-              <button style={{display:'none'}} onClick={() => {setModal('daoSettings')}} id='dao_setting' className="px-4 py-2 text-white rounded-full bg-[#198754] ml-2 relative z-[2]" >
-                Dao Settings
-              </button>
-              <button style={{display:'none'}} id='leaveDao' className="px-4 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600">
-                Leave Dao
-              </button>
-              <button style={{display:'none'}} id='joinDao' className="px-4 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600">
-                Join Dao
-              </button>
-            </div>
-          </div>
-          <p id='dao_about' className="mt-4 text-gray-700">
-          </p>
-          <div className="mt-4 grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 items-start gap-3 flex-col ">
-            <div className='flex items-center gap-1 bg-[#EFF2F6] py-3 px-5 rounded-[6px] w-full'>
-              <p className='font-[600]'>Assets:</p>
-              <a id='asset_name' href="#" className='flex items-center gap-1'>
-                <p id='dao_token_name' className='font-[600] mr-4 text-blue-500'></p>
-                <div className='flex items-center gap-1 p-[5px] rounded-full border border-gray-500 border-dashed'>
-                  <img id='dao_token_img'
-                    className="w-[40px] h-[40px] rounded-full"
-                    alt="DAO"
-                    />
+            <div className='bg-white md:mt-[4rem] mt-[1.2rem] md:mx-[6.5rem] mx-[1rem] py-6 px-6'>
+                <div className='flex justify-between'>
+                    <div>
+                        <h3 id='dao_name' className="text-lg font-semibold"></h3>
+                        <p id='dao_members' className="text-gray-600"></p>
+                    </div>
+                    <div className='flex items-center gap-3 justify-start'>
+                        <div className="card-imgflex-social-link bg-[#000] p-[6px] text-white rounded-full" style={{display:'none'}}>
+                            <a id='dao_twitter' href="">
+                                <BsTwitterX />
+                            </a>
+                        </div>
+                        <div className="card-imgflex-social-link bg-[#EA0C5F] p-[6px] text-white rounded-full" style={{display:'none'}}>
+                            <a id='dao_instagram' href="">
+                                <BsInstagram />
+                            </a>
+                        </div>
+                        <div className="card-imgflex-social-link bg-[#5D6BF3] p-[6px] text-white rounded-full" style={{display:'none'}}>
+                            <a id='dao_discord' href="">
+                                <BsDiscord />
+                            </a>
+                        </div>
+                        <div className="card-imgflex-social-link bg-[#FF4500] p-[6px] text-white rounded-full" style={{display:'none'}}>
+                            <a id='dao_reddit' href="">
+                                <BsReddit />
+                            </a>
+                        </div>
+                        <div className="card-imgflex-social-link bg-[#3AABE1] p-[6px] text-white rounded-full" style={{display:'none'}}>
+                            <a id='dao_telegram' href="">
+                                <BsTelegram />
+                            </a>
+                        </div>
+                    </div>
                 </div>
-              </a>
-              <p id='dao_verify_badge' className='text-[13px] ml-1 bg-blue-500 rounded-full px-2 text-white' style={{display:'none'}}>Verified</p>
-              <p id='dao_unverify_badge' className='text-[13px] ml-1 bg-yellow-500 rounded-full px-2 text-white' style={{display:'none'}}>Unverified</p>
+                <div>
+                    <p id='dao_about' className="my-7 text-gray-700"></p>
+                    <div className='flex items-center gap-3'>
+                        <button style={{display:'none'}} id='dao_bonus' className="px-4 py-2 text-white rounded-[4px] bg-[#FF7B1B] relative">
+                            Claim bonus
+                        </button>
+                        <button style={{display:'none'}} id='dao_set_cover' className="px-4 py-2 text-white rounded-[4px] bg-[#FF7B1B] relative">
+                            Set Cover
+                        </button>
+                        <button style={{display:'none'}} onClick={() => {setModal('daoSettings')}} id='dao_setting' className="px-4 py-2 text-white rounded-[5px] bg-[#FF7B1B] ml-2 relative z-[2]" >
+                            Dao Settings
+                        </button>
+                        <button style={{display:'none'}} id='leaveDao' className="px-4 py-2 bg-orange-500 text-white rounded-[4px] hover:bg-orange-600">
+                            Leave Dao
+                        </button>
+                        <button style={{display:'none'}} id='joinDao' className="px-4 py-2 bg-orange-500 text-white rounded-[4px] hover:bg-orange-600">
+                            + Join Dao
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div className='bg-[#EFF2F6] py-3 px-5 font-[600] rounded-[6px] w-full'>
+            <div className='bg-white mt-[4rem] md:mx-[6.5rem] mx-[1rem] py-6 px-6'>
+                <div className='flex justify-between flex-col'>
+                    <div>
+                        <h3 className="text-md font-[400]">DAO Admins.</h3>
+                    </div>
+                    <div className='grid grid-cols-3 gap-3'>
+                        {/* <div className='flex items-start gap-3'>
+                            <img src="" alt="" />
+                            <div>
+                                <p>GBGF6Z33IHG5IJ...W5U3EQBBJHDRIX</p>
+                                <p>DAO Creator</p>
+                            </div>
+                        </div> */}
+                        <div id='dao_others_address' style={{display:'flex'}}>
+            
+                        </div>
+                    </div>
+                </div>
+            </div>
+          <div className="mt-4 grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 items-start gap-3 flex-col ">
+            {/* <div className='bg-[#EFF2F6] py-3 px-5 font-[600] rounded-[6px] w-full'>
               <p>Website</p>
               <a id='dao_website' href="#" className='text-blue-500 mt-2 block overflow-hidden'></a>
             </div>
@@ -1438,8 +1526,8 @@ const AboutDAO = () => {
             </div>
             <div className='bg-[#EFF2F6] py-3 px-5 font-[600] rounded-[6px] w-full'>
               <p>Explorer:</p>
-              <a id='dao_explorer_stellar' href='#' className='text-blue-500 mt-2 block'>Stellar.expert</a>
-            </div>
+              <a id='dao_explorer_stellar' href='#' className='text-blue-500 mt-2 block'></a>
+            </div> */}
           </div>
           <div id='dao_verify_warn' className="alert alert-danger m-0 p-2 text-xs w-100" role="alert" style={{display:'none'}}>
                 To verify your DAO and Assets,add a distributing wallet and lock your asset issuing account. <a href="#" 
@@ -1471,32 +1559,17 @@ const AboutDAO = () => {
                      <BsTelegram />
                   </a>
               </div>
-
           </div>
         </div>
       </div>
-      <div className="mt-16 md:px-[3rem] px-[1rem]">
-        <p className="text-sm text-gray-600 font-[600] text-[25px]">DAO Admins</p>
-        <div id='dao_others_address' style={{display:'flex'}}>  
-            
-        </div>
-      </div>
-
-      <div className='justify-between flex md:px-[3rem] px-[1rem] mt-10 mb-5'>
-        <p></p>
-        <a id='createProposal' href="#" className='bg-[#DC6B19] px-3 py-2 rounded-[6px] text-white md:text-[18px] text-[14px] flex items-center gap-2'>
-          <p>Create Proposal</p>
-          <AiOutlinePlusCircle />
-        </a>
-      </div>
-      
-      <div className='flex items-start gap-2 md:px-[3rem] px-[1rem] flex-col lg:flex-row'>
+    
+      <div className='flex items-start gap-2 md:mx-[6.5rem] mx-[1rem] sm:p-[1rem] py-[1rem] px-[0.5rem] flex-col lg:flex-row bg-white'>
         <div className='lg:w-[70%] w-full'>
-          <div className='flex items-center gap-6 font-[500] ml-2'>
-            <button className={ selectedTab === "proposals" ? `bg-[#DC6B19] rounded-t-[14px] px-6 py-2 text-white` : `text-gray-700`} onClick={() => setSelectedTab('proposals')}>Proposals <span id='tab1_count'></span></button>
-            <button id='tab3' className={ selectedTab === "members" ? `bg-[#DC6B19] rounded-t-[14px] px-6 py-2 text-white` : `text-gray-700`} onClick={() => setSelectedTab('members')}>Members</button>
-            <button className={ selectedTab === "delegates" ? `bg-[#DC6B19] rounded-t-[14px] px-6 py-2 text-white` : `text-gray-700`} onClick={() => setSelectedTab('delegates')}>Delegates</button>
-            <button id='tab5' style={{display:'none'}} className={ selectedTab === "review" ? `bg-[#DC6B19] rounded-t-[14px] px-6 py-2 text-white` : `text-gray-700`} onClick={() => setSelectedTab('review')}>Proposals In Review</button>
+          <div className='flex items-center font-[400]'>
+            <button className={ selectedTab === "proposals" ? `border-b border-gradient px-6 py-2 text-[#000000] text-[12px]` : `text-[#98A2B3] px-6 py-2 border-b text-[12px]`} onClick={() => setSelectedTab('proposals')}>Proposals <span id='tab1_count'></span></button>
+            <button id='tab3' className={ selectedTab === "members" ? `border-b border-gradient px-6 py-2 text-[#000000] text-[12px]` : `text-[#98A2B3] px-6 py-2 border-b text-[12px]`} onClick={() => setSelectedTab('members')}>Members</button>
+            <button className={ selectedTab === "delegates" ? `border-b border-gradient px-6 py-2 text-[#000000] text-[12px]` : `text-[#98A2B3] px-6 py-2 border-b text-[12px]`} onClick={() => setSelectedTab('delegates')}>Delegates</button>
+            <button id='tab5' style={{display:'none'}} className={ selectedTab === "review" ? `border-b border-gradient px-6 py-2 text-[#000000] text-[12px]` : `text-[#98A2B3] px-6 py-2 border-b text-[12px]`} onClick={() => setSelectedTab('review')}>Proposals In Review</button>
           </div>
           {
            <div id='proposal_views' style={(selectedTab === 'proposals') ? {}: {display:'none'}} >
@@ -1507,15 +1580,15 @@ const AboutDAO = () => {
            </div>
           }
           {
-            <div id='dao_users' style={(selectedTab === 'members') ? {}: {display:'none'}} className="p-6 bg-white rounded-lg shadow-md grid gap-5">
+            <div id='dao_users' style={(selectedTab === 'members') ? {}: {display:'none'}} className="p-6 bg-[#F9FAFB] rounded-lg mt-4 grid gap-5">
               
             </div>
           }
           {
             
             <div style={(selectedTab === 'delegates') ? {}: {display:'none'}} >
-              <div className='gap-4 bg-white w-full p-4 rounded-[6px]'>
-                <div  className='gap-4 flex items-end bg-white w-full p-4 rounded-[6px]'>
+              <div className='gap-4 bg-[#F9FAFB] w-full p-4 rounded-[6px] mt-4'>
+                <div  className='gap-4 flex items-end w-full rounded-[6px]'>
                     <div className='w-full'>
                     <div className='flex items-center justify-between w-full mb-2'>
                       <p>Add Delegate:</p>
@@ -1546,54 +1619,59 @@ const AboutDAO = () => {
           }
         </div>
 
-        <div className='lg:w-[30%] flex flex-col w-full mt-10'>
-          <div className="p-6 bg-white rounded-lg shadow-md">
+        <div className='lg:w-[30%] flex flex-col w-full'>
+            <div className='mb-5 flex justify-between'>
+                <p></p>
+                <a id='createProposal' href="#" className='bg-[#FF7B1C] px-3 py-2 rounded-[6px] text-white text-[14px] flex items-center gap-2'>
+                    <p>Create Proposal</p>
+                    <AiOutlinePlusCircle />
+                </a>
+            </div>
+          <div className="p-6 bg-[#F9FAFB] rounded-lg">
             <div className="">
               <div>
-                <h2 className="text-lg font-semibold">Asset</h2>
-                <div className="flex items-center my-5">
-                <img id='asset_info_img'
-                  className="w-[30px] h-[30px] rounded-full"
-                  alt="DAO"
-                />
-                <div className="ml-3">
-                  <h3 id='asset_info_name' className="font-semibold"></h3>
+                <h2 className="text-lg">Asset</h2>
+                <div className="flex items-center mb-5 mt-3">
+                    <img id='asset_info_img'
+                    className="w-[30px] h-[30px] rounded-full"
+                    alt="DAO"
+                    />
+                    <div className="ml-3">
+                        <h3 id='asset_info_name' className="font-[400]"></h3>
+                    </div>
+                    <div className='text-[#00C241] bg-[#E7F6EC] px-3 py-1 rounded-full flex gap-1 ml-4'>
+                        <img src="/images/rate.svg" alt="" />
+                        <p id='price_change'></p>
+                    </div>
                 </div>
               </div>
-              </div>
-              <div className="text-sm flex items-center justify-between">
-                <div>
+              <div className="text-sm flex items-center justify-between my-10">
+                <div className='text-center'>
                   <p>Marketcap</p>
-                  <p id='asset_info_market' className='mt-3 font-[500]'>$0</p>
+                  <p id='asset_info_market' className='mt-2 font-[500]'></p>
                 </div>
-                <div>
+                <div className='text-center'>
                   <p>Holders</p>
-                  <p id='asset_info_holders' className='mt-3 font-[500]'>3</p>
+                  <p id='asset_info_holders' className='mt-2 font-[500]'></p>
                 </div>
-                <div>
+                <div className='text-center'>
                   <p>Supply</p>
-                  <p id='asset_info_supply' className='mt-3 font-[500]'>1B</p>
+                  <p id='asset_info_supply' className='mt-2 font-[500]'></p>
                 </div>
               </div>
             </div>
-            <div id='dao_asset_buy' className="mt-6">
-              <a id='asset_info_lobstr_link' href="#">
-                <button className="hover:bg-[#198754] hover:text-white border border-[#198754] text-[#198754] text-[14px] rounded-full w-full py-[6px] mb-2 transition-all">
-                     Buy from lobstr
-                </button>
-              </a>
-              <a id='asset_info_lumen_link'>
-                <button className="hover:bg-[#198754] hover:text-white border border-[#198754] text-[#198754] text-[14px] rounded-full w-full py-[6px] mb-2 transition-all">
-                    Buy from Lumenswap
-                </button>
-              </a>
+            <div id='dao_asset_buy' className="mt-6 flex gap-3 justify-between" style={{display:'none'}}>
+              <a id='asset_info_lobstr_link' href="#" className="bg-[#D9D9D9] text-[#000] text-[14px] rounded-[10px] w-full text-center py-[10px] transition-all">Lobstr</a>
+              <a id='asset_info_lumen_link' className="border border-[#D9D9D9] text-[#000] text-[14px] rounded-[10px] w-full py-[10px] text-center transition-all">Lumenswap</a>
+              <a id='asset_info_scouply_link' className="border border-[#D9D9D9] text-[#000] text-[14px] rounded-[10px] w-full py-[10px] text-center transition-all">Scopuly</a>
+              <a id='asset_info_xmagnetic_link' className="border border-[#D9D9D9] text-[#000] text-[14px] rounded-[10px] w-full py-[10px] text-center transition-all">Xmagnetic</a>
             </div>
           </div>
-          <div id='topVoters' className="p-3 bg-white rounded-lg shadow-md mt-5">
+          <div id='topVoters' className="p-3 bg-[#F9FAFB] rounded-lg mt-5">
             <div className="mt-4">
               <div className='flex items-center justify-between mb-5'>
-                <p className="font-[600] text-[18px]">Top Voters</p>
-                <p className="text-[18px]">Participated in Proposal</p>
+                <p className="font-[400] text-[16px]">Top Voters</p>
+                {/* <p className="text-[18px]">Participated in Proposal</p> */}
               </div>
               <div id='topVotersView'></div>
               
@@ -1604,15 +1682,40 @@ const AboutDAO = () => {
       {
         <div style={(modal === 'daoSettings') ? {}: {display:'none'}}> 
          <div className="h-full w-full fixed top-0 left-0 z-[99]" style={{ background:"rgba(14, 14, 14, 0.58)" }} onClick={() => setModal('')}></div>
-          <div className="bg-white md:w-[700px] w-[80%] h-[90dvh] overflow-y-scroll flex flex-col items-start justify-center fixed top-[50%] left-[50%] px-[40px] py-[2rem] rounded-[15px] z-[100] login-modal" 
-          style={(modal === 'daoSettings') ? {transform: "translate(-50%, -50%)"}: {display:'none', transform: "translate(-50%, -50%)"}}>
-            <div className='flex items-start gap-[2rem] flex-col md:flex-row w-full mt-[20rem]'>
-                <div className='w-[160px] relative'>
-                    <img id='dao_save_img' className='rounded-full w-full' src="" alt="Project logo" />
-                    <PiPencil className='cursor-pointer text-[18px] absolute top-0 right-0' onClick={() => {E('dao_save_image_edit').click()}}/>
+          <div className="bg-white md:w-[700px] w-[80%] h-[90dvh] overflow-y-scroll flex flex-col items-start justify-center fixed top-[50%] left-[50%] px-[40px] py-[2rem] z-[100] login-modal" 
+            style={(modal === 'daoSettings') ? {transform: "translate(-50%, -50%)"}: {display:'none', transform: "translate(-50%, -50%)"}}>
+            <div className='flex items-start gap-[2rem] flex-col w-full mt-[20rem]'>
+                
+                {/* <div className='p-[4px] bg-[white]  mt-[-65px] rounded-full relative z-[100]'>
+                    <img className="w-full h-full rounded-full object-cover" id='dao_image' alt="LumosDAO logo" />
+                </div> */}
+
+                <div className='w-[100px] h-[100px] rounded-full mx-auto relative'>
+                    <img id='dao_save_img' className='object-cover rounded-full h-full w-full' src="" alt="Project logo" />
+                    <div className='p-2 bg-[#F0F0F0] absolute bottom-[-10px] right-[-10px] cursor-pointer border-4 rounded-full border-white'>
+                        <img src='/images/edit.svg' className='' onClick={() => {E('dao_save_image_edit').click()}} />
+                    </div>
                     <input id='dao_save_image_edit' type='file' style={{visibility:'hidden'}} />
                 </div>
-                <table className='text-[14px]'>
+                <div className='text-[14px] grid grid-cols-2 gap-4'>
+                    <div>
+                        <p>Project Name:</p>
+                        <p id='dao_save_name'>USD Coin</p>
+                    </div>
+                    <div>
+                        <p>Asset Code:</p>
+                        <p id='dao_save_code'></p>
+                    </div>
+                    <div>
+                        <p>Home domain:</p>
+                        <p><a id='dao_save_domain' target='_blank' className='text-blue-600'></a></p>
+                    </div>
+                    <div>
+                        <p>TOML:</p>
+                        <p><a id='dao_save_toml' target='_blank' className='text-blue-600'></a></p>
+                    </div>
+                </div>
+                {/* <table className='text-[14px]'>
                     <tbody>
                         <tr>
                             <td className='font-[500] w-[120px]'>Project Name:</td>
@@ -1633,7 +1736,7 @@ const AboutDAO = () => {
                             </td>
                         </tr>
                     </tbody>
-                </table>
+                </table> */}
             </div>
             <div className='mt-10 w-full'>
               <label className='flex items-center gap-1 mb-1'>Description: <PiPencil className='cursor-pointer text-[18px]' onClick={() => setEdit( edit === 'description' ? '' : 'description')}/> </label>
@@ -1646,27 +1749,27 @@ const AboutDAO = () => {
                 </>
               }
             </div>
-            <div className='mt-10'>
+            <div className='mt-10 w-full'>
               <label className='flex items-center gap-1 mb-1'>Website: <PiPencil className='cursor-pointer text-[18px]' onClick={() => setEdit( edit === 'website' ? '' : 'website')}/> </label>
               {
                 <>
-                <div style={(edit === 'website') ? {}: {display:'none'}} className='flex items-center gap-2'>
-                  <input id='dao_save_website_edit' type="text" placeholder='Description' className='border outline-none py-2 px-[6px] rounded-[6px]' />
+                <div style={(edit === 'website') ? {}: {display:'none'}} className='flex items-center gap-2 w-full'>
+                  <input id='dao_save_website_edit' type="text" placeholder='Website URL' className='border outline-none py-2 px-[6px] rounded-[6px] w-full'/>
                 </div>
                 <p style={(edit !== 'website') ? {}: {display:'none'}} id='dao_save_website'></p>
                 </>
               }
             </div>
             <div className='mt-10 w-full'>
-              <label className='flex items-center gap-1'>Social Profile</label>
-              <div className='flex items-center justify-between w-full'>
+              <label className='flex items-center gap-1 mb-1'>Social Profile</label>
+              <div className='flex items-center justify-between gap-5 w-full'>
                 <div onClick={() => {
                      saveSocials("twitter")
-                }} id='dao_save_twitter' style={{cursor:'pointer'}} className='flex items-center gap-1 bg-[#EFF2F6] py-2 px-4 rounded-[6px]'>
+                }} id='dao_save_twitter' style={{cursor:'pointer'}} className='flex justify-center items-center gap-1 bg-[#000] text-white py-2 px-4 rounded-[6px] w-full text-center'>
                   <BsTwitterX />
-                  <p id='dao_save_twitter_div'>Connect</p>
+                  <p id='dao_save_twitter_div'>Connect X</p>
                 </div>
-                <div id='dao_save_telegram' className='flex items-center gap-1 bg-[#EFF2F6] py-2 px-4 rounded-[6px]'>
+                <div id='dao_save_telegram' className='flex items-center gap-1 bg-[#1DA1F2] text-white py-2 px-4 rounded-[6px] w-full text-center'>
                       <LoginButton
                         botUsername={process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME}
                         buttonSize="medium"  
@@ -1680,15 +1783,15 @@ const AboutDAO = () => {
                 </div>
                 <div onClick={() => {
                      saveSocials("reddit")
-                }} id='dao_save_reddit'  style={{cursor:'pointer'}} className='flex items-center gap-1 bg-[#EFF2F6] py-2 px-4 rounded-[6px]'>
+                }} id='dao_save_reddit'  style={{cursor:'pointer'}} className='flex justify-center items-center gap-1 bg-[#FF5700] text-white py-2 px-4 rounded-[6px] w-full text-center'>
                   <BsReddit />
-                  <p id='dao_save_reddit_div'>Connect</p>
+                  <p id='dao_save_reddit_div'>Connect Reddit</p>
                 </div>
               </div>
             </div>
 
             <div className='mt-10'>
-              <p>Who can create proposals?</p>
+              <p className='mb-[6px]'>Who can create proposals?</p>
               <div>
                 <input id='dao_setting_proposal_every' type="radio" name="create_proposal" className='mr-[6px]' />
                 <label>Everyone</label>
@@ -1701,16 +1804,17 @@ const AboutDAO = () => {
             <div id='dao_admin_lists'>
 
             </div>
-            <div className='mt-10 w-full'>
-              <label className='flex items-center gap-1'>Add Admins: <PiPencil  onClick={() => {
+            <div className='mt-10 w-full border-b pb-5'>
+              <label className='flex items-center gap-1'>Add Admins: <PiPencil className='cursor-pointer'  onClick={() => {
                 if(E('addAdminInputField').style.display == 'none'){E('addAdminInputField').style.display='flex'}
                 else {E('addAdminInputField').style.display='none'}
-              }}/> </label>
+                }}/>
+             </label>
 
                 <div id='addAdminInputField' className='text-[13px] w-full flex-col'>
                   <div className='flex items-start gap-2 flex-col w-full'>
                     <input onInput={($event) => {searchAdminUser($event)}} id="dao_search_admin"  type="text" placeholder='Address' className='border outline-none py-2 px-[6px] rounded-[6px] w-full' />
-                    <button onClick={($event) => {searchAdminUser($event)}} className='bg-[#6C757D] text-white py-1 px-6 rounded-[50px]'>Save</button>
+                    <button onClick={($event) => {searchAdminUser($event)}} className='bg-[#FFF9F5] text-[#FF7B1B] py-2 px-4 rounded-[10px]'>Add Admin</button>
                   </div>
                   <div id='addNewAdmin' className='mt-4'>
                     <p className='mb-1'>Address found:</p>
@@ -1729,14 +1833,38 @@ const AboutDAO = () => {
              </div>
 
             <div className='w-full' id='is_dao_bonus_parent'>
-              <div className='mt-10'>
-                <label className='flex items-center gap-1'>DAO Joining Bonus</label>
-                <input id='is_dao_bonus_set'  type="checkbox"  ></input>
+              <div className='mt-10 flex items-center justify-between'>
+                <div>
+                    <p className='flex items-center gap-1'>DAO Joining Bonus</p>
+                    <p className='text-[#828282] w-[60%] font-[300] text-[14px]'>Give a bonus to new members as they join in order to incentivise them to invite more people</p>
+                </div>
+                {/* <input id='is_dao_bonus_set'  type="checkbox" /> */}
+                <label className="relative inline-block w-14 h-8 cursor-pointer">
+                <input
+                    type="checkbox"
+                    id='is_dao_bonus_set'
+                    checked={isChecked}
+                    onChange={toggleSwitch}
+                    className="sr-only"
+                />
+                <div
+                    className={`w-full h-full rounded-full transition duration-300 ${
+                    isChecked ? "bg-[#FF7B1B]" : "bg-gray-300"
+                    }`}
+                ></div>
+                <div
+                    className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-md transition-transform duration-300 transform ${
+                    isChecked ? "translate-x-6" : ""
+                    }`}
+                ></div>
+                </label>
               </div>
-              <div id='dao_bonus_view' className="mt-2 flex-wrap w-100 gap-3 w-full" >
-                <div className="balance font-medium text-xs"><span id='dao_bonus_name'></span> bonus balance : <span id='dao_bonus_balance' style={{fontSize: 'small', color:'#9c9a9a'}}></span></div>
-                <div className="balance font-medium text-xs"><span id='dao_bonus_name'></span> Reward per member : <span id='dao_bonus_budget' style={{fontSize: 'small', color:'#9c9a9a'}}></span></div>
-                <div className="flex flex-col mb-3 w-full" style={{marginTop:'10px'}}>
+              <div id='dao_bonus_view' className="mt-5 flex-wrap w-100 gap-3 w-full" >
+                <div className='flex gap-3'>
+                    <div className="balance text-xs text-[#9C9C9C]"><span id='dao_bonus_name'></span> bonus balance : <span id='dao_bonus_balance' style={{fontSize: 'small', color:'#9c9a9a'}}></span></div>
+                    <div className="balance text-xs text-[#9C9C9C]"><span id='dao_bonus_name'></span> Reward per member : <span id='dao_bonus_budget' style={{fontSize: 'small', color:'#9c9a9a'}}></span></div>
+                </div>
+                <div className="flex flex-col my-5 w-full" style={{marginTop:'10px'}}>
                     <p for="rewardBalance" className="text-[14px] text-muted">Add to bonus balance</p>
                     <input type="number" className='border outline-none py-2 px-[6px] rounded-[6px] w-full' id="rewardBalance" placeholder="Enter amount" />
                 </div>
@@ -1747,9 +1875,8 @@ const AboutDAO = () => {
               </div>
             </div>
             <div className='mt-10'>
-              <button id='dao_save_button' className='bg-green-600 text-white py-3 px-8 rounded-[50px]'>Save Settings</button>
+              <button id='dao_save_button' className='bg-[#FF7B1B] text-white py-2 px-5 rounded-[5px]'>Save Settings</button>
             </div>
-
           </div>
         </div>
       }

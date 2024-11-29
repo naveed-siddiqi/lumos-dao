@@ -11,5 +11,13 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        '.border-gradient': {
+          'border-image': 'linear-gradient(90deg, #FF7B1B 0%, #FFBF75 100%) 1',
+        },
+      });
+    },
+  ],
 }

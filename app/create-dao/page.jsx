@@ -4,8 +4,8 @@ import { BsUpload } from "react-icons/bs";
 import * as StellarSdk from '@stellar/stellar-sdk'; 
 import { createDaos, createTrustlineQuiet, deployStellarAsset, fundIssuer, isDao, isSafeToml, lockIssuerQuietly, mintToken, optimizeImg, validateImageUpload, verifyAsset, wrapAsset } from '../core/core';
 import { fAddr, isSubDomainExists, readAssetToml } from '../core/getter';
-import { API_URL, S, TOML_URL } from '../data/constant';
-import { stopTalking, talk } from '../components/alert/swal'; 
+import { API_URL, S, TOML_URL, xrp, xrpClient } from '../data/constant';
+import { stopTalking, talk } from '../components/alert/swal';  
 
 let assetAddress = null; 
 let issueAddress = "";
@@ -13,11 +13,14 @@ let approveWallets = []
 let assetUrl = null
 let upload_file = null
 let cover_upload = null;
-let issuingkeyPair = StellarSdk.Keypair.random() 
+let issuingkeyPair = ""
+let issuingAddress = ""
 let daoName = ""
+let chain = ""
+
 const CreateDao = () => { 
     
-      //This function search for assets
+    //This function search for assets
     const searchForAsset = async () => {
         const assetCode = E('assetCode').value.trim()
         const assetToml = E('assetUrl').value.trim()
@@ -31,7 +34,7 @@ const CreateDao = () => {
             E('assetButton').disabled = true //disable button
             E('asset_s').style.display = "none"
             const id = talk("Searching for Asset...")
-            const tomlDetails = await readAssetToml(assetToml)
+            const tomlDetails = await readAssetToml(assetToml, CHAIN)
             if(tomlDetails !== false) {
                 let flg = false
                 //display information
@@ -45,21 +48,12 @@ const CreateDao = () => {
                             E('asset_s_code').innerHTML = cur.code || ""
                             E('asset_s_domain').innerHTML = (tomlDetails.DOCUMENTATION) ? tomlDetails.DOCUMENTATION.ORG_URL : ""
                             E('dao_about').value = cur.desc || ""
-                            E('asset_s_img').src = cur.image || "{{ asset('images/topright.png') }}"
+                            E('asset_s_img').src = cur.image || cur.icon || "https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                             if(!(cur.issuer == undefined || cur.issuer == "")) {
                                 (tomlDetails.ACCOUNTS == undefined) ? tomlDetails.ACCOUNTS = [] :  "";
-                                if(cur.issuer == walletAddress || tomlDetails.ACCOUNTS.includes(walletAddress) || true) {
-                                    issueAddress = cur.issuer
-                                    approveWallets = tomlDetails.ACCOUNTS
-                                    assetUrl = assetToml
-                                }
-                                else {
-                                    stopTalking(4, talk("Your wallet address is not authorise to use this Asset", "fail"))
-                                    flg = false
-                                    stopTalking(1, id)
-                                     E('assetButton').disabled = false
-                                     return false;
-                                }
+                                issueAddress = cur.issuer
+                                approveWallets = tomlDetails.ACCOUNTS
+                                assetUrl = assetToml
                             }
                             else {
                                 flg = false
@@ -102,7 +96,6 @@ const CreateDao = () => {
             const res = await verifyAsset({
                 code:assetCode, issuer:issueAddress,
             })
-            console.log(res)
             if(res === false) {
                 //unwrapped token
                 E('asset_s_msg').innerHTML = `This asset has not been wrapped. Click on Wrap Asset`
@@ -177,9 +170,11 @@ const CreateDao = () => {
         const name = E('dao_name').value.trim()
         const desc = E('dao_about').value.trim()
         const _url = E('assetUrl').value.trim()
+        const code = E('asset_s_code').innerHTML.trim()
+        const img = E('asset_s_img').src.trim()
         if(name != "" && desc != "") {
             if(assetAddress != null) {
-                if(approveWallets.includes(walletAddress)) {
+                if(approveWallets.includes(walletAddress) ) {
                     //disable button
                     E('createButton').disabled = true
                     const dao_exists = await isDao(assetAddress)
@@ -197,6 +192,9 @@ const CreateDao = () => {
                             about:desc,
                             token:assetAddress,
                             url:_url,
+                            code,
+                            issuer:issueAddress,
+                            image:img
                         })
                         console.log(res)
                         daoName = name
@@ -239,7 +237,8 @@ const CreateDao = () => {
     
     //this function creates the dao based on the other type
     const createODao = async (event) => {
-        let userAddress = issuingkeyPair.publicKey()
+        let userAddress = (chain=='stellar')?issuingkeyPair.publicKey():issuingkeyPair.address;
+        issuingAddress = userAddress
         event.preventDefault()
         const aCode = E('asset_o_code').value.trim()
         const aSupply = E('asset_o_supply').value.trim()
@@ -259,21 +258,21 @@ const CreateDao = () => {
                 //first fund the issuing wallet
                 const id = talk(`Creating the issuing wallet...`)
                 await new Promise((resolve) => setTimeout(resolve, 500));
-                talk(`Funding the issuing wallet ${fAddr(issuingkeyPair.publicKey(), 5)}...`, 'norm', id)
+                talk(`Funding the issuing wallet ${fAddr(issuingAddress, 5)}...`, 'norm', id)
                 let res = await fundIssuer({
-                    address:issuingkeyPair.publicKey()
+                    address:issuingAddress
                 })
                 if(res.status !== false){
                     talk(`Funded the issuing wallet`, 'good', id)
                     await new Promise((resolve) => setTimeout(resolve, 500));
                     talk("Creating Asset for DAO...", 'norm', id)
                     //make wallet address the issuing keypair
-                    console.log(userAddress)
-                    res = await deployStellarAsset(new S.Asset(aCode, userAddress), issuingkeyPair)
+                    res = await deployStellarAsset(aCode, userAddress, issuingkeyPair)
                     if(res.status === false) {
                         //unwrapped token
                         talk("Unable to create Asset<br>" + res.msg, "fail", id)
                         stopTalking(4, id)
+                        E('createodao').disabled = false
                     }
                     else if(res.status === true || res.msg == "simulation fail"){
                         assetAddress = res.value
@@ -286,7 +285,7 @@ const CreateDao = () => {
                             //time to mint the asset
                             await new Promise((resolve) => setTimeout(resolve, 500));
                             //creating the toml file
-                            talk("Creating the Stellar toml file", "norm", id)
+                            talk(`Creating the ${CHAIN} toml file`, "norm", id)
                             uploadTomlFile(encodeURIComponent(createAssetToml({
                                 domain:tName,
                                 name:name,
@@ -295,19 +294,20 @@ const CreateDao = () => {
                                 issuer:userAddress,
                                 distributing:walletAddress,
                                 image:window.location.protocol + `//${TOML_URL}/.well-known/images/` + (aCode + userAddress) + ".png"
-                            })), tName, async (res, turl) => {
+                            })), tName, assetAddress, async (res, turl) => {
                                 if(res == true) {
                                     //upload the file
                                     uploadAssetImg(aCode + userAddress, tName, async (res, url) => {
                                         if(res == true) {
+                                            const daoImage = url
                                             //time to mint the asset
-                                            talk("Created the Stellar toml file", "good", id)
+                                            talk(`Created the ${CHAIN} toml file`, "good", id)
                                             E('asset_o_toml').innerHTML = turl
                                             if(res == true){
                                                 //talk("Domain set successfully", "good", id)
                                                 await new Promise((resolve) => setTimeout(resolve, 500));
                                                 talk("Minting suply", "norm", id)
-                                                res = await createTrustlineQuiet(aCode, issuingkeyPair.publicKey(), walletAddress)
+                                                res = await createTrustlineQuiet(aCode, issuingAddress, walletAddress)
                                                 if(res.status !== false){ 
                                                     res = await mintToken(aSupply, aCode, userAddress, walletAddress, issuingkeyPair)
                                                     if(res.status === false) {
@@ -320,10 +320,7 @@ const CreateDao = () => {
                                                     }
                                                     else if(res.status != undefined){
                                                         talk("Supply minted successfuly", "good", id)
-                                                        //time to extend the asset life
                                                         await new Promise((resolve) => setTimeout(resolve, 500));
-                                                        //talk("Extending Asset life", "norm", id)
-                                                        //await bumpContractInstance(assetAddress)
                                                         //verify the dao, then create the dao 
                                                         talk("locking issuing wallet", "norm", id)
                                                         //first transfer the balance before locking it
@@ -334,7 +331,7 @@ const CreateDao = () => {
                                                             talk("locked issuing wallet", "good", id)
                                                             //change the issuing wallet address, to cover of create dao fail
                                                             issuingkeyPair = StellarSdk.Keypair.random()
-                                                            E('issuing_address').innerText = fAddr(issuingkeyPair.publicKey(), 4)
+                                                            E('issuing_address').innerText = fAddr(issuingAddress, 4)
                                                             talk("Creating the DAO", "norm", id)
                                                             res = await createDaos({
                                                                 domain:tName,
@@ -342,6 +339,9 @@ const CreateDao = () => {
                                                                 about:about,
                                                                 token:assetAddress,
                                                                 url:turl,
+                                                                code:aCode,
+                                                                issuer:userAddress,
+                                                                image:daoImage
                                                             })
                                                             daoName = name
                                                             if(res.status === false) {
@@ -360,10 +360,12 @@ const CreateDao = () => {
                                                             else {
                                                                 E('createodao').disabled = false
                                                                 assetAddress = null
-                                                                talk("This asset has already being used", "fail", id)
+                                                                talk("This asset has already being used<br>Chnage the asset code", "fail", id)
                                                                 stopTalking(4, id)
                                                                 //change the issuing wallet address, to cover of create dao fail
-                                                                issuingkeyPair = StellarSdk.Keypair.random()
+                                                                issuingkeyPair = (chain == 'stellar')? StellarSdk.Keypair.random() : xrp.Wallet.generate()
+                                                                E('issuing_address').innerText = fAddr((chain=='stellar')?issuingkeyPair.publicKey():
+                                                                issuingkeyPair.address, 6)
                                                             }
                                                         }
                                                         else {
@@ -371,7 +373,9 @@ const CreateDao = () => {
                                                             E('createodao').disabled = false
                                                             stopTalking(4, id)
                                                             //change the issuing wallet address, to cover of create dao fail
-                                                            issuingkeyPair = StellarSdk.Keypair.random()
+                                                            issuingkeyPair = (chain == 'stellar')? StellarSdk.Keypair.random() : issuingkeyPair
+                                                            E('issuing_address').innerText = fAddr((chain=='stellar')?issuingkeyPair.publicKey():
+                                                            issuingkeyPair.address, 6)
                                                             
                                                         }
                                                     }
@@ -381,7 +385,10 @@ const CreateDao = () => {
                                                     talk("Unable to mint supply <br>" + res.msg, "fail", id)
                                                     stopTalking(4, id)
                                                     //change the issuing wallet address, to cover of create dao fail
-                                                    issuingkeyPair = StellarSdk.Keypair.random()
+                                                    issuingkeyPair = (chain == 'stellar')? StellarSdk.Keypair.random() : issuingkeyPair
+                                                    E('issuing_address').innerText = fAddr((chain=='stellar')?issuingkeyPair.publicKey():
+                                                    issuingkeyPair.address, 6)
+                                                            
                                                 }
                                             }
                                             else {
@@ -389,16 +396,19 @@ const CreateDao = () => {
                                                 talk("Unable to set domain<br>Something went wrong", "fail", id)
                                                 stopTalking(4, id)
                                                 //change the issuing wallet address, to cover of create dao fail
-                                                issuingkeyPair = StellarSdk.Keypair.random()
-                                                            
+                                                issuingkeyPair = (chain == 'stellar')? StellarSdk.Keypair.random() : issuingkeyPair
+                                                E('issuing_address').innerText = fAddr((chain=='stellar')?issuingkeyPair.publicKey():
+                                                issuingkeyPair.address, 6)
                                             }
                                         }
                                         else {
                                             E('createodao').disabled = false
-                                            talk("Unable to create Stellar file<br>Something went wrong", "fail", id)
+                                            talk(`Unable to create ${CHAIN} file<br>Something went wrong`, "fail", id)
                                             stopTalking(4, id)
                                             //change the issuing wallet address, to cover of create dao fail
-                                            issuingkeyPair = StellarSdk.Keypair.random()
+                                            issuingkeyPair = (chain == 'stellar')? StellarSdk.Keypair.random() : issuingkeyPair
+                                            E('issuing_address').innerText = fAddr((chain=='stellar')?issuingkeyPair.publicKey():
+                                            issuingkeyPair.address, 6)
                                         }
                                     })
                                 }
@@ -409,7 +419,7 @@ const CreateDao = () => {
                                     }
                                     else {
                                         E('createodao').disabled = false
-                                        talk("Unable to create Stellar file<br>Something went wrong", "fail", id)
+                                        talk(`Unable to create ${CHAIN} file<br>Something went wrong`, "fail", id)
                                     }
                                     stopTalking(4, id)
                                 }
@@ -471,16 +481,20 @@ const CreateDao = () => {
        // Send the FormData object with the image
         xhr.send(formData);
     }
-    const uploadTomlFile = (asset, name, callback) => {
+    const uploadTomlFile = (asset, name, dao, callback) => {
         const xhr = new XMLHttpRequest();
-        const url = API_URL + "toml&asset=" + asset + "&value=" + name
+        const url = API_URL + "toml&asset=" + asset + "&value=" + name + "&chain=" + CHAIN + "&dao=" + dao
         // Define the server endpoint (PHP file)
         xhr.open('GET', url, true);
         // Set up an event listener to handle the response
         xhr.onreadystatechange = function () {
-          if (xhr.readyState === 4 && xhr.status === 200) { // console.log(xhr.responseText)
-              if (xhr.responseText == "1") {callback(true, "http://" + name + "." + TOML_URL + "/.well-known/stellar.toml")}
-              else if(xhr.responseText == "0"){callback(true, "http://" + name + "." + TOML_URL + "/.well-known/stellar.toml")}
+          if (xhr.readyState === 4 && xhr.status === 200) {  
+              if (xhr.responseText == "1") {
+                callback(true, "http://" + name + "." + TOML_URL + `/.well-known/${(CHAIN=='stellar')?'stellar.toml':'xrp-ledger.toml'}`)
+              }
+              else if(xhr.responseText == "0"){
+                callback(true, "http://" + name + "." + TOML_URL + `/.well-known/${(CHAIN=='stellar')?'stellar.toml':'xrp-ledger.toml'}`)
+              }
               else {callback(false)}
           }
           else if (xhr.readyState === 4 && xhr.status !== 200) {
@@ -491,11 +505,45 @@ const CreateDao = () => {
         xhr.send(); 
     }
     const createAssetToml = (asset) => {
-        return `ACCOUNTS=["${asset.distributing}"]\n\n[DOCUMENTATION]\nORG_NAME="${asset.name}"\nORG_URL="http://${asset.domain}.lumosdao.io"\nORG_DESCRIPTION="${asset.about}"\nORG_LOGO="${asset.image}"\nORG_TWITTER=""\nORG_INSTAGRAM=""\nORG_DISCORD=""\nORG_TELEGRAM=""\nORG_REDDIT=""\nORG_SUPPORT_EMAIL=""\n\n[[CURRENCIES]]\ncode="${asset.code}"\nissuer="${asset.issuer}"\ndisplay_decimals=1\nname="${asset.name}"\ndesc="${asset.about}"\nstatus="live"\nimage="${asset.image}"`
+        if(chain == 'stellar'){
+            return `ACCOUNTS=["${asset.distributing}"]\n\n[DOCUMENTATION]\nORG_NAME="${asset.name}"\nORG_URL="http://${asset.domain}.testing.lumosdao.io"\nORG_DESCRIPTION="${asset.about}"\nORG_LOGO="${asset.image}"\nORG_TWITTER=""\nORG_INSTAGRAM=""\nORG_DISCORD=""\nORG_TELEGRAM=""\nORG_REDDIT=""\nORG_SUPPORT_EMAIL=""\n\n[[CURRENCIES]]\ncode="${asset.code}"\nissuer="${asset.issuer}"\ndisplay_decimals=1\nname="${asset.name}"\ndesc="${asset.about}"\nstatus="live"\nimage="${asset.image}"`
+        }
+        else {
+            return `# This file was auto generated in LumosDao
+[METADATA]
+modified = ${new Date().toISOString()}
+
+[[ACCOUNTS]]
+address = "${asset.issuer}"
+type="issuer"
+desc = "Lumos Dao asset issuer"
+
+[[ACCOUNTS]]
+address = "${asset.distributing}"
+type="distributing"
+desc = "Lumos Dao asset distributing"
+            
+[DOCUMENTATION]
+ORG_NAME="${asset.name}"
+ORG_URL="http://${asset.domain}.testing.lumosdao.io"
+ORG_DESCRIPTION="${asset.about}"\nORG_LOGO="${asset.image}"
+ORG_TWITTER=""
+ORG_INSTAGRAM=""
+ORG_DISCORD=""
+ORG_TELEGRAM=""
+ORG_REDDIT=""
+
+[[CURRENCIES]]
+code="${asset.code}"
+issuer="${asset.issuer}"
+icon="${asset.image}"
+network="testnet"
+display_decimals=6`
+        }
     } 
   
     /** Hooks */
-  useEffect(() => {
+    useEffect(() => {
         window.E = (id) => document.getElementById(id)     
   
         // //validate the image upload
@@ -519,12 +567,24 @@ const CreateDao = () => {
                 
             }
         })
+        E('asset_o_code').oninput = (e) => {
+            const value = E('asset_o_code').value.trim().replace(/ /g,"")
+            if(CHAIN == 'xrp') {
+                if(value.length > 3) {
+                    E('asset_o_code').value = value.substring(0, 3)
+                }
+            }
+        }
         //set the issuing address
-        E('issuing_address').innerText = fAddr(issuingkeyPair.publicKey(), 4)
+        chain = localStorage.getItem("LUMOS_CHAIN") || "stellar"
+        issuingkeyPair = (chain == 'stellar')? StellarSdk.Keypair.random() : xrp.Wallet.generate()
+        E('issuing_address').innerText = fAddr((chain=='stellar')?issuingkeyPair.publicKey():
+        issuingkeyPair.address, 6)
+        E('distributing_address').innerText = fAddr(walletAddress, 6)
   }, [])
 
   return (
-    <div className='px-[3rem] my-[80px]'>
+    <div className='px-[3rem] my-[80px] helvetica-font'>
         <div>
             <p className='font-[600] text-[24px] mb-1'>1.Create DAO for an existing Steller project</p>
             <p className='my-3'>Easily create a dedicated DAO for your existing token on Stellar. Build a hub for collaborative decision-making and project development.</p>
@@ -535,7 +595,7 @@ const CreateDao = () => {
                     <input id='assetCode' type="text" placeholder='LUMOS' className='bg-transparent outline-none p-3 border rounded-[8px] w-full'/>
                 </div>
                 <div className='w-full'>
-                    <p className='mb-3'>Asset Toml Url</p>
+                    <p className='mb-3'>Asset Supply Url</p>
                     <input id='assetUrl' type="text" placeholder='https://asset-domain/.well-known/stellar.toml' className='bg-transparent outline-none p-3 border rounded-[8px] w-full'/>
                 </div>
                 <div className='w-full'>
@@ -590,7 +650,7 @@ const CreateDao = () => {
                         <p className='w-3/4'>Deposit min 3 XLM in your wallets to cover the transaction fees</p>
                     </div>
                     <div className='flex'>
-                        <p className='w-[15%] font-[500]'>Stellar Toml Url:</p>
+                        <p className='w-[15%] font-[500]'>Assets Toml Url:</p>
                         <p id='asset_o_toml' className='w-3/4'></p>
                     </div>
                     <div className='flex'>
@@ -599,7 +659,7 @@ const CreateDao = () => {
                     </div>
                     <div className='flex'>
                         <p className='w-[15%] font-[500]'>Distributing address:</p>
-                        <p className='w-3/4 font-[500] text-blue-400'></p>
+                        <p id='distributing_address' className='w-3/4 font-[500] text-blue-400'></p>
                     </div>
                     <div className='grid grid-cols-4 gap-5'>
                         <div className=' w-full'>

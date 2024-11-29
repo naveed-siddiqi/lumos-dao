@@ -7,37 +7,130 @@
 
 html, body {
   scroll-behavior: smooth;
-  font-family: 'Mont', 'Poppins', sans-serif;
+  font-family: 'Nohemi', 'Poppins', sans-serif;
 }
 
 @font-face {
-  font-family: 'Mont';
-  src: url('/font/WEB/Mont-Regular.woff2') format('woff2'),
-       url('/font/WEB/Mont-Regular.woff') format('woff');
+  font-family: 'Nohemi';
+  src: url('/font/Nohemi-Font/Nohemi-ExtraLight.woff') format('woff');
+       /* url('/font/WEB/Mont-Regular.woff') format('woff'); */
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Nohemi';
+  src: url('/font/Nohemi-Font/Nohemi-Regular.woff') format('woff');
+       /* url('/font/WEB/Mont-Regular.woff') format('woff'); */
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Mont';
-  src: url('/font/WEB/Mont-SemiBold.woff2') format('woff2'),
-       url('/font/WEB/Mont-SemiBold.woff') format('woff');
+  font-family: 'Nohemi';
+  src: url('/font/Nohemi-Font/Nohemi-SemiBold.woff') format('woff');
+       /* url('/font/WEB/Mont-SemiBold.woff') format('woff'); */
   font-weight: 500;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Mont';
-  src: url('/font/WEB/Mont-Bold.woff2') format('woff2'),
-       url('/font/WEB/Mont-Bold.woff') format('woff');
-  font-weight: bold;
+  font-family: 'Nohemi';
+  src: url('/font/Nohemi-Font/Nohemi-Bold.woff') format('woff');
+       /* url('/font/WEB/Mont-Bold.woff') format('woff'); */
+  font-weight: 600;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Mont';
-  src: url('/font/WEB/Mont-Heavy.woff2') format('woff2'),
-       url('/font/WEB/Mont-Heavy.woff') format('woff');
-  font-weight: bold;
+  font-family: 'Nohemi';
+  src: url('/font/Nohemi-Font/Nohemi-Black.woff') format('woff');
+       /* url('/font/WEB/Mont-Heavy.woff') format('woff'); */
+  font-weight: 700;
   font-style: normal;
+}
+
+.helvetica-font{
+  font-family: 'Helvetica';
+}
+
+.topBg {
+  background: linear-gradient(138.39deg, #FFDD60 0%, #FC4646 42.5%, #492F8A 100%);
+}
+
+.videoBg{
+  backdrop-filter: blur(18.16499900817871px);
+  border: 1.05px solid #CECEFB33;
+  padding: 30px 18px 0;
+  /* background-color: red; */
+}
+
+.gradient-text{
+  background: linear-gradient(#FFDD60, #FC4646, #492F8A);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.daoBg{
+  background: linear-gradient(173.45deg, rgba(3, 3, 3, 0) -10.78%, #030303 103.71%);
+
+  /* background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.524)); */
+}
+
+/* Hide the default knob */
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 0;
+  height: 0;
+}
+
+input[type="range"]::-moz-range-thumb {
+  appearance: none;
+  width: 0;
+  height: 0;
+}
+
+input[type="range"]::-ms-thumb {
+  appearance: none;
+  width: 0;
+  height: 0;
+}
+
+/* Hide focus outline */
+input[type="range"]:focus {
+  outline: none;
+}
+/* Hide the default knob */
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 0;
+  height: 0;
+}
+
+input[type="range"]::-moz-range-thumb {
+  appearance: none;
+  width: 0;
+  height: 0;
+}
+
+input[type="range"]::-ms-thumb {
+  appearance: none;
+  width: 0;
+  height: 0;
+}
+
+/* Hide focus outline */
+input[type="range"]:focus {
+  outline: none;
+}
+
+#user_bg{
+  background-image: url('/images/profile3.jpeg');
+  background-position: center;
+  background-size: cover;
+}
+
+.blockchain-div-container .blockchain-div:nth-child(1) {
+  border-bottom: 1px solid #DCDCDC;
 }

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@creit.tech/stellar-wallets-kit": "^1.2.0",
+    "@gemwallet/api": "^3.8.0",
     "@lobstrco/signer-extension-api": "^1.0.0-beta.0",
     "@next/font": "^14.2.5",
     "@stellar/freighter-api": "^2.0.0",
@@ -23,7 +24,9 @@
     "@web3-storage/w3up-client": "^16.0.0",
     "firebase": "^10.13.0",
     "http-proxy": "^1.18.1",
+    "i": "^0.3.7",
     "next": "14.2.5",
+    "npm": "^10.9.0",
     "qrcode": "^1.5.4",
     "qrcodejs": "^1.0.0",
     "react": "^18",
@@ -38,7 +41,9 @@
     "sweetalert2": "^11.12.4",
     "swiper": "^11.1.5",
     "thirdweb": "^5.48.1",
-    "toml": "^3.0.0"
+    "toml": "^3.0.0",
+    "xrpl": "^4.0.0",
+    "xumm": "^1.7.8"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.19",

@@ -7,11 +7,12 @@ import ConnectWalletModal from "./components/connect-wallet-modal/ConnectWalletM
 import { useEffect, useState } from "react";
 import Head from "next/head";
 import SettingsModal from "./components/settings-modal/SettingsModal";
+import { Open_Sans } from '@next/font/google';
 // import favicon
 
 const metadata = {
   title: "LUMOS DAO",
-  description: "LUMOS DAO"
+  description: "LUMOS DAO",
 };
 
 export default function RootLayout({ children }) {
@@ -25,13 +26,12 @@ export default function RootLayout({ children }) {
   useEffect(() => {
     window.walletAddress = localStorage.getItem('selectedWallet') || ""
     window.WALLET_TYPE = localStorage.getItem('LUMOS_WALLET') || ""
+    window.CHAIN = (localStorage.getItem('LUMOS_CHAIN') || "").toLowerCase()
     window.E = (id) => document.getElementById(id)     
   }, [])
   return (
     <html lang="en">
-      <Head>
-      </Head>
-      <body style={{ backgroundColor:'#EFF2F6'}}>
+      <body style={{ backgroundColor:'#F9FAFB'}}>
         <link rel="icon" href="/images/Image.png" sizes="any" />
         <div className='min-h-screen flex flex-col'>
           <Navbar setConnectWallet={setConnectWallet} setSettings={setSettings} settings={settings}/>

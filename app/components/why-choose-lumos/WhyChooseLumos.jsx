@@ -3,7 +3,7 @@ import React from 'react'
 
 const WhyChooseLumos = ({img, title, info}) => {
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center helvetica-font">
       <div className='w-[280px] h-[280px] mx-auto flex items-center justify-center mb-[1rem]'>
         <Image src={img} width={150} height={150} className='w-full h-full border border-red-500 rounded-full shadow-lg object-contain'/>
         </div>
